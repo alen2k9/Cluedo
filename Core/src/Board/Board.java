@@ -214,10 +214,10 @@ public class Board extends JPanel{
         for (int i = 0; i < BOARD_WIDTH; i++){
             for (int j = 0; j < BOARD_HEIGHT; j++){
                 board[i][j].draw(g, left, top);
-                left += 30;
+                left += 40;
             }
             left = 0;
-            top += 30;
+            top += 40;
         }
     }
 }

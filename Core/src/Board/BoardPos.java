@@ -63,8 +63,10 @@ public class BoardPos extends JComponent{
          */
         if (this.getTileType() == TileType.BLANK){
             g2.setColor(Color.BLACK);
-            g2.fillRect(x, y, 30, 30);
-            g2.drawRect(x,y, 30,30);
+            g2.fillRect(x, y, 40, 40);
+            g2.drawRect(x,y, 40,40);
+            g2.setColor(Color.WHITE);
+            g2.drawString("(" + this.x + ", " + this.y + ") ", x , y + 15);
         }
 
         /**
@@ -72,8 +74,10 @@ public class BoardPos extends JComponent{
          */
         else if (this.getTileType() == TileType.HALLWAY){
             g2.setColor(Color.GREEN);
-            g2.fillRect(x, y, 30, 30);
-            g2.drawRect(x,y, 30,30);
+            g2.fillRect(x, y, 40, 40);
+            g2.drawRect(x,y, 40,40);
+            g2.setColor(Color.WHITE);
+            g2.drawString("(" + this.x + ", " + this.y + ") ", x , y + 15);
         }
 
         /**
@@ -81,8 +85,10 @@ public class BoardPos extends JComponent{
          */
         else if (this.getTileType() == TileType.SPAWN){
             g2.setColor(Color.BLUE);
-            g2.fillRect(x, y, 30, 30);
-            g2.drawRect(x,y, 30,30);
+            g2.fillRect(x, y, 40, 40);
+            g2.drawRect(x,y, 40,40);
+            g2.setColor(Color.WHITE);
+            g2.drawString("(" + this.x + ", " + this.y + ") ", x , y + 15);
         }
 
         /**
@@ -90,8 +96,10 @@ public class BoardPos extends JComponent{
          */
         else if (this.getTileType() == TileType.DOOR){
             g2.setColor(Color.CYAN);
-            g2.fillRect(x, y, 30, 30);
-            g2.drawRect(x,y, 30,30);
+            g2.fillRect(x, y, 40, 40);
+            g2.drawRect(x,y, 40,40);
+            g2.setColor(Color.WHITE);
+            g2.drawString("(" + this.x + ", " + this.y + ") ", x , y + 15);
         }
 
         /**
@@ -99,8 +107,10 @@ public class BoardPos extends JComponent{
          */
         else if (this.getTileType() == TileType.SECRETPASSAGE){
             g2.setColor(Color.RED);
-            g2.fillRect(x, y, 30, 30);
-            g2.drawRect(x,y, 30,30);
+            g2.fillRect(x, y, 40, 40);
+            g2.drawRect(x,y, 40,40);
+            g2.setColor(Color.WHITE);
+            g2.drawString("(" + this.x + ", " + this.y + ") ", x , y + 15);
         }
 
         /**
@@ -108,8 +118,10 @@ public class BoardPos extends JComponent{
          */
         else {
             g2.setColor(Color.GRAY);
-            g2.fillRect(x, y, 30, 30);
-            g2.drawRect(x,y, 30,30);
+            g2.fillRect(x, y, 40, 40);
+            g2.drawRect(x,y, 40,40);
+            g2.setColor(Color.WHITE);
+            g2.drawString("(" + this.x + ", " + this.y + ") ", x , y + 15);
         }
 
 
