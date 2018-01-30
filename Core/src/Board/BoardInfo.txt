@@ -11,9 +11,9 @@
 # I I I I I - - - - - - - - - - - - - D R R R R R #
 # I I I I I I I I - - T T T T T - - - R R R R R R #
 # I I I I I I I I - - T T T T T - - - R R R R R R #
-# I I I - I I I D - - T T T T T - - - R R R R D R #
-# I I - - - I I I - - T T T T T - - - - - - - - # #
-# I I I - I I I I - - T T T T T - - - L L D L L # #
+# I I I I I I I D - - T T T T T - - - R R R R D R #
+# I I I I I I I I - - T T T T T - - - - - - - - # #
+# I I I I I I I I - - T T T T T - - - L L D L L # #
 # I I I I I I D I - - T T T T T - - L L L L L L L #
 # # - - - - - - - - - T T D T T - - D L L L L L L #
 # 1 - - - - - - - - - - - - - - - - L L L L L L L #

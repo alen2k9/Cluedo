@@ -21,7 +21,7 @@ public class GameScreen implements Screen {
     @Override
     public void createScreen() {
         this.frame = new JFrame("Cluedo");
-        this.frame.setSize(1280,720);
+        //this.frame.setSize(1280,720);
         this.frame.setResizable(true);
         this.frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
@@ -66,11 +66,11 @@ public class GameScreen implements Screen {
         gbc.fill = GridBagConstraints.BOTH;
         contentPanel.add(mapPanel, gbc);
 
-        //backgroundPanel.add(contentPanel);
-        mainPanel.add(contentPanel);
+        backgroundPanel.add(contentPanel);
+        mainPanel.add(backgroundPanel);
         this.frame.getContentPane().add(this.mainPanel);
 
-        //this.frame.pack();
+        this.frame.pack();
     }
 
     @Override
@@ -88,8 +88,8 @@ public class GameScreen implements Screen {
 
         try {
             Board mapPanel = new Board(25);
-
-            ImageIcon mapImage = new ImageIcon("Assets/Board1.png");
+            mapPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 0,0));
+            ImageIcon mapImage = new ImageIcon("Assets/Board4.png");
             JLabel mapLabel = new JLabel("", mapImage, JLabel.CENTER);
             mapPanel.add(mapLabel, BorderLayout.CENTER);
 
