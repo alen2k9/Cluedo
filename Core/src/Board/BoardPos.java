@@ -19,33 +19,36 @@ public class BoardPos extends JComponent{
      */
     private int x;
     private int y;
+    private int tileSize;
     private Boolean traverseable;
     private Boolean isSecret;
     private TileType tileType;
     private Boolean occupied;
 
+
     /**
      * Default Constructor for the Class
      */
     public BoardPos(){
-        x = 0;
-        y = 0;
-        traverseable = false;
-        isSecret = false;
-        tileType = TileType.HALLWAY;
-        occupied = false;
+        this.x = 0;
+        this.y = 0;
+        this.traverseable = false;
+        this.isSecret = false;
+        this.tileType = TileType.HALLWAY;
+        this.occupied = false;
     }
 
     /**
      * Parametrized Constructor for the class
      */
-    public BoardPos(int a, int b, Boolean trav, Boolean secret, TileType type, Boolean occ){
-        x = a;
-        y = b;
-        traverseable = trav;
-        isSecret = secret;
-        tileType = type;
-        occupied = occ;
+    public BoardPos(int a, int b, int tileSize, Boolean trav, Boolean secret, TileType type, Boolean occ){
+        this.x = a;
+        this.y = b;
+        this.tileSize = tileSize;
+        this.traverseable = trav;
+        this.isSecret = secret;
+        this.tileType = type;
+        this.occupied = occ;
     }
 
 
@@ -63,8 +66,8 @@ public class BoardPos extends JComponent{
          */
         if (this.getTileType() == TileType.BLANK){
             g2.setColor(Color.BLACK);
-            g2.fillRect(x, y, 40, 40);
-            g2.drawRect(x,y, 40,40);
+            g2.fillRect(x, y, this.tileSize, this.tileSize);
+            g2.drawRect(x,y, this.tileSize,this.tileSize);
             g2.setColor(Color.WHITE);
             g2.drawString("(" + this.x + ", " + this.y + ") ", x , y + 15);
         }
@@ -74,8 +77,8 @@ public class BoardPos extends JComponent{
          */
         else if (this.getTileType() == TileType.HALLWAY){
             g2.setColor(Color.GREEN);
-            g2.fillRect(x, y, 40, 40);
-            g2.drawRect(x,y, 40,40);
+            g2.fillRect(x, y, this.tileSize, this.tileSize);
+            g2.drawRect(x,y, this.tileSize,this.tileSize);
             g2.setColor(Color.WHITE);
             g2.drawString("(" + this.x + ", " + this.y + ") ", x , y + 15);
         }
@@ -85,8 +88,8 @@ public class BoardPos extends JComponent{
          */
         else if (this.getTileType() == TileType.SPAWN){
             g2.setColor(Color.BLUE);
-            g2.fillRect(x, y, 40, 40);
-            g2.drawRect(x,y, 40,40);
+            g2.fillRect(x, y, this.tileSize, this.tileSize);
+            g2.drawRect(x,y, this.tileSize,this.tileSize);
             g2.setColor(Color.WHITE);
             g2.drawString("(" + this.x + ", " + this.y + ") ", x , y + 15);
         }
@@ -96,8 +99,8 @@ public class BoardPos extends JComponent{
          */
         else if (this.getTileType() == TileType.DOOR){
             g2.setColor(Color.CYAN);
-            g2.fillRect(x, y, 40, 40);
-            g2.drawRect(x,y, 40,40);
+            g2.fillRect(x, y, this.tileSize, this.tileSize);
+            g2.drawRect(x,y, this.tileSize,this.tileSize);
             g2.setColor(Color.WHITE);
             g2.drawString("(" + this.x + ", " + this.y + ") ", x , y + 15);
         }
@@ -107,8 +110,8 @@ public class BoardPos extends JComponent{
          */
         else if (this.getTileType() == TileType.SECRETPASSAGE){
             g2.setColor(Color.RED);
-            g2.fillRect(x, y, 40, 40);
-            g2.drawRect(x,y, 40,40);
+            g2.fillRect(x, y, this.tileSize, this.tileSize);
+            g2.drawRect(x,y, this.tileSize,this.tileSize);
             g2.setColor(Color.WHITE);
             g2.drawString("(" + this.x + ", " + this.y + ") ", x , y + 15);
         }
@@ -118,8 +121,8 @@ public class BoardPos extends JComponent{
          */
         else {
             g2.setColor(Color.GRAY);
-            g2.fillRect(x, y, 40, 40);
-            g2.drawRect(x,y, 40,40);
+            g2.fillRect(x, y, this.tileSize, this.tileSize);
+            g2.drawRect(x,y, this.tileSize,this.tileSize);
             g2.setColor(Color.WHITE);
             g2.drawString("(" + this.x + ", " + this.y + ") ", x , y + 15);
         }
@@ -133,27 +136,27 @@ public class BoardPos extends JComponent{
      */
 
     public void setX(int a){
-        x = a;
+        this.x = a;
     }
 
     public void setY(int a){
-        y = a;
+        this.y = a;
     }
 
     public void setTraverseable(Boolean trav){
-        traverseable = trav;
+        this.traverseable = trav;
     }
 
     public void setIsSecret(Boolean secret){
-        isSecret = secret;
+        this.isSecret = secret;
     }
 
     public void setTileType(TileType type){
-        tileType = type;
+        this.tileType = type;
     }
 
     public void setOccupied(Boolean occ){
-        occupied = occ;
+        this.occupied = occ;
     }
 
 
@@ -161,27 +164,27 @@ public class BoardPos extends JComponent{
      *Accessor Methods for Class
      */
     public int getXCoord() {
-        return x;
+        return this.x;
     }
 
     public int getYCoord(){
-        return y;
+        return this.y;
     }
 
     public boolean isTraversable(){
-        return traverseable;
+        return this.traverseable;
     }
 
     public boolean isSecretPassage(){
-        return isSecret;
+        return this.isSecret;
     }
 
     public boolean isOccupied(){
-        return occupied;
+        return this.occupied;
     }
 
     public TileType getTileType() {
-        return tileType;
+        return this.tileType;
     }
 
 }

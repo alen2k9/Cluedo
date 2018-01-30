@@ -14,10 +14,13 @@ public class Board extends JPanel{
     public final int BOARD_HEIGHT = 26;
     public BoardPos[][] board;
 
+    private int tileSize;
+
    //Playable board is 25 rows and 24 columns
 
-    public Board() throws IOException{
+    public Board(int tileSize) throws IOException{
         try{
+            this.tileSize = tileSize;
             board = parseBoardFile();
         }
         catch(IOException ex){
@@ -70,7 +73,7 @@ public class Board extends JPanel{
                  * Secrete Passage Tile
                  */
                 else if (line[j].matches("2")){
-                    tmp = new BoardPos(i, j, false, true,TileType.SECRETPASSAGE, false);
+                    tmp = new BoardPos(i, j, this.tileSize, false, true,TileType.SECRETPASSAGE, false);
                     System.out.print("(" + i + "," + j + ") : " + TileType.SECRETPASSAGE + " ,");
                 }
 
@@ -189,7 +192,7 @@ public class Board extends JPanel{
      * @return : Returns the boardPos created as a result of the above information
      */
     public BoardPos createNonTraversal(int a, int b, TileType type){
-        return new BoardPos(a, b, false, false, type, false);
+        return new BoardPos(a, b, this.tileSize, false, false, type, false);
     }
     /**
      * Method used to create a traversable tile such as a hall tile
@@ -199,7 +202,7 @@ public class Board extends JPanel{
      * @return : Returns the boardPos created as a result of the above information
      */
     public BoardPos createTraversal(int a, int b, TileType type){
-        return new BoardPos(a, b, true,false, type, false);
+        return new BoardPos(a, b, this.tileSize, true,false, type, false);
     }
 
     /**
@@ -214,10 +217,10 @@ public class Board extends JPanel{
         for (int i = 0; i < BOARD_WIDTH; i++){
             for (int j = 0; j < BOARD_HEIGHT; j++){
                 board[i][j].draw(g, left, top);
-                left += 40;
+                left += this.tileSize;
             }
             left = 0;
-            top += 40;
+            top += this.tileSize;
         }
     }
 }
