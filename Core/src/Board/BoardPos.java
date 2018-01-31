@@ -69,7 +69,6 @@ public class BoardPos extends JComponent{
             g2.fillRect(x, y, this.tileSize, this.tileSize);
             g2.drawRect(x,y, this.tileSize,this.tileSize);
             g2.setColor(Color.WHITE);
-            g2.drawString(this.x + "," + this.y, x , y + 15);
         }
 
         /**
@@ -80,7 +79,6 @@ public class BoardPos extends JComponent{
             g2.fillRect(x, y, this.tileSize, this.tileSize);
             g2.drawRect(x,y, this.tileSize,this.tileSize);
             g2.setColor(Color.WHITE);
-            g2.drawString(this.x + "," + this.y, x , y + 15);
         }
 
         /**
@@ -91,7 +89,6 @@ public class BoardPos extends JComponent{
             g2.fillRect(x, y, this.tileSize, this.tileSize);
             g2.drawRect(x,y, this.tileSize,this.tileSize);
             g2.setColor(Color.WHITE);
-            g2.drawString(this.x + "," + this.y, x , y + 15);
         }
 
         /**
@@ -102,7 +99,6 @@ public class BoardPos extends JComponent{
             g2.fillRect(x, y, this.tileSize, this.tileSize);
             g2.drawRect(x,y, this.tileSize,this.tileSize);
             g2.setColor(Color.WHITE);
-            g2.drawString(this.x + "," + this.y, x , y + 15);
         }
 
         /**
@@ -113,7 +109,6 @@ public class BoardPos extends JComponent{
             g2.fillRect(x, y, this.tileSize, this.tileSize);
             g2.drawRect(x,y, this.tileSize,this.tileSize);
             g2.setColor(Color.WHITE);
-            g2.drawString(this.x + "," + this.y, x , y + 15);
         }
 
         /**
@@ -124,8 +119,9 @@ public class BoardPos extends JComponent{
             g2.fillRect(x, y, this.tileSize, this.tileSize);
             g2.drawRect(x,y, this.tileSize,this.tileSize);
             g2.setColor(Color.WHITE);
-            g2.drawString(this.x + "," + this.y, x , y + 15);
         }
+
+        g2.drawString(this.x + "," + this.y, x , y + 15);
 
 
     }

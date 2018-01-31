@@ -36,8 +36,8 @@ public class Board extends JPanel{
     public BoardPos[][] parseBoardFile() throws IOException{
 
         BoardPos[][] tmpBoard = new BoardPos[BOARD_WIDTH][BOARD_HEIGHT];
-        URL url = getClass().getResource("BoardInfo.txt");
-        File boardFile = new File(url.getPath());
+        //URL url = getClass().getResource("src/Board/BoardInfo.txt");
+        File boardFile = new File("src/Board/BoardInfo.txt");
 
         BufferedReader br = new BufferedReader(new FileReader(boardFile));
         String cLine;

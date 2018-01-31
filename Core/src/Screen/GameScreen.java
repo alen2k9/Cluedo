@@ -1,6 +1,7 @@
 package Screen;
 
 import Board.Board;
+import Characters.Players;
 import Screen.Panel.BackgroundPanel;
 
 import javax.swing.*;
