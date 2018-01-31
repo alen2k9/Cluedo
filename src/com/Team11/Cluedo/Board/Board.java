@@ -1,4 +1,4 @@
-package Board;
+package com.Team11.Cluedo.Board;
 
 import javax.swing.*;
 import java.awt.*;
@@ -36,9 +36,11 @@ public class Board extends JPanel{
     public BoardPos[][] parseBoardFile() throws IOException{
 
         BoardPos[][] tmpBoard = new BoardPos[BOARD_WIDTH][BOARD_HEIGHT];
-        //URL url = getClass().getResource("src/Board/BoardInfo.txt");
-        File boardFile = new File("src/Board/BoardInfo.txt");
+        //URL url = getClass().getResource("src/com.Team11.Cluedo.Board/BoardInfo.txt");
+        //File boardFile = new File(getClass().getResource("BoardInfo.txt"));
 
+        URL url = getClass().getResource("BoardInfo.txt");
+        File boardFile = new File(url.getPath());
         BufferedReader br = new BufferedReader(new FileReader(boardFile));
         String cLine;
 
@@ -48,7 +50,7 @@ public class Board extends JPanel{
             for (int j = 0; j < line.length; j++){
 
                 /**
-                 * Create a blank Board Position to work with
+                 * Create a blank com.Team11.Cluedo.Board Position to work with
                  */
                 BoardPos tmp = null;
 
@@ -206,7 +208,7 @@ public class Board extends JPanel{
     }
 
     /**
-     * Method which handles the painting of the Board on a panel / in a frame
+     * Method which handles the painting of the com.Team11.Cluedo.Board on a panel / in a frame
      */
     public void paintComponent(Graphics g){
         int top = 0, left = 0;

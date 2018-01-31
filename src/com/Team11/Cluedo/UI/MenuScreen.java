@@ -1,4 +1,4 @@
-package Screen;
+package com.Team11.Cluedo.UI;
 
 import javax.swing.*;
 

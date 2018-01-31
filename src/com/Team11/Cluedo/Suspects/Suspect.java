@@ -1,20 +1,21 @@
-package Characters;
+package com.Team11.Cluedo.Suspects;
 
-import Board.Board;
+import com.Team11.Cluedo.Board.Board;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
 
-public class Character extends JComponent{
+public class Suspect extends JComponent{
     private int x;
     private int y;
     private String name;
 
-    public Character(){
+    public Suspect(){
 
     }
 
-    public Character(int a, int b, String n){
+    public Suspect(int a, int b, String n){
         this.x = a;
         this.y = b;
         this.name = n;

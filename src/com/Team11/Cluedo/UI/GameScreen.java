@@ -1,8 +1,8 @@
-package Screen;
+package com.Team11.Cluedo.UI;
 
-import Board.Board;
-import Characters.Players;
-import Screen.Panel.BackgroundPanel;
+import com.Team11.Cluedo.Board.Board;
+import com.Team11.Cluedo.UI.Panel.BackgroundPanel;
+import com.Team11.Cluedo.Suspects.Suspect;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -36,7 +36,7 @@ public class GameScreen implements Screen {
         JPanel contentPanel = new JPanel(new GridBagLayout());
         contentPanel.setOpaque(false);
 
-        ImageIcon backgroundImage = new ImageIcon(GameScreen.class.getResource("../assets/backgroundTile.png"));
+        ImageIcon backgroundImage = new ImageIcon(getClass().getResource("..\\Assets\\backgroundTile.PNG"));
         Image bgroundImage = backgroundImage.getImage();
         BackgroundPanel backgroundPanel = new BackgroundPanel(bgroundImage,BackgroundPanel.TILED);
 
@@ -93,13 +93,13 @@ public class GameScreen implements Screen {
         try {
             Board boardPanel = new Board(25);
             boardPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 0,0));
-            ImageIcon boardImage = new ImageIcon(GameScreen.class.getResource("../Assets/Board4.png"));
+            ImageIcon boardImage = new ImageIcon(getClass().getResource("..\\Assets\\Board4.PNG"));
             JLabel boardLabel = new JLabel("", boardImage, JLabel.CENTER);
             boardPanel.add(boardLabel, BorderLayout.CENTER);
 
             return boardPanel;
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Error. Board Layout not found.");
+            JOptionPane.showMessageDialog(null, "Error. com.Team11.Cluedo.Board Layout not found.");
             return null;
         }
     }

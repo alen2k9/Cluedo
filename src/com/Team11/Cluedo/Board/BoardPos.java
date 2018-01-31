@@ -4,7 +4,7 @@
  * Conor Beenham -
  * Alen Thomas   -
  */
-package Board;
+package com.Team11.Cluedo.Board;
 
 import javax.swing.*;
 import java.awt.*;

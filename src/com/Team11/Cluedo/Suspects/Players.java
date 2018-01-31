@@ -1,7 +1,6 @@
-package Characters;
+package com.Team11.Cluedo.Suspects;
 
 import javax.swing.*;
-import java.awt.*;
 
 public class Players extends JPanel {
 

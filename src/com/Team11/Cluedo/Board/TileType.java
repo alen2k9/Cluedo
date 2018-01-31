@@ -1,4 +1,4 @@
-package Board;
+package com.Team11.Cluedo.Board;
 
 public enum TileType {
     SPAWN, KITCHEN, BALLROOM, HALLWAY,LOUNGE, CONSERVATORY, DININGROOM, CELLAR, BILLIARDROOM,
