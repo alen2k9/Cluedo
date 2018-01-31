@@ -7,11 +7,14 @@ import Screen.Panel.BackgroundPanel;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 
 public class GameScreen implements Screen {
     private JFrame frame;
     private JPanel mainPanel;
+    private JTextArea infoOutput;
 
     public GameScreen() throws IOException{
         this.createScreen();
@@ -33,7 +36,7 @@ public class GameScreen implements Screen {
         JPanel contentPanel = new JPanel(new GridBagLayout());
         contentPanel.setOpaque(false);
 
-        ImageIcon backgroundImage = new ImageIcon("assets/backgroundTile.png");
+        ImageIcon backgroundImage = new ImageIcon(GameScreen.class.getResource("../assets/backgroundTile.png"));
         Image bgroundImage = backgroundImage.getImage();
         BackgroundPanel backgroundPanel = new BackgroundPanel(bgroundImage,BackgroundPanel.TILED);
 
@@ -60,7 +63,7 @@ public class GameScreen implements Screen {
         contentPanel.add(infoPanel, gbc);
 
 
-        Board mapPanel = setupMapPanel();
+        Board mapPanel = setupBoardPanel();
 
         gbc.gridx = 0; gbc.gridy = 0;
         gbc.gridwidth = 10; gbc.gridheight = 10;
@@ -85,17 +88,18 @@ public class GameScreen implements Screen {
         this.frame.dispose();
     }
 
-    private Board setupMapPanel() {
+    private Board setupBoardPanel() {
 
         try {
-            Board mapPanel = new Board(25);
-            mapPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 0,0));
-            ImageIcon mapImage = new ImageIcon("Assets/Board4.png");
-            JLabel mapLabel = new JLabel("", mapImage, JLabel.CENTER);
-            mapPanel.add(mapLabel, BorderLayout.CENTER);
+            Board boardPanel = new Board(25);
+            boardPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 0,0));
+            ImageIcon boardImage = new ImageIcon(GameScreen.class.getResource("../Assets/Board4.png"));
+            JLabel boardLabel = new JLabel("", boardImage, JLabel.CENTER);
+            boardPanel.add(boardLabel, BorderLayout.CENTER);
 
-            return mapPanel;
+            return boardPanel;
         } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error. Board Layout not found.");
             return null;
         }
     }
@@ -104,14 +108,27 @@ public class GameScreen implements Screen {
         JPanel commandPanel = new JPanel(new BorderLayout());
         commandPanel.setBorder(new TitledBorder("Command Entry"));
         JTextField commandInput = new JTextField(30);
-        commandPanel.add(commandInput, BorderLayout.CENTER);
+
+
+        JButton testButton = new JButton("Input");
+        testButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String input = commandInput.getText() + '\n';
+                infoOutput.append(input);
+                commandInput.setText("");
+            }
+        });
+
+        commandPanel.add(commandInput, BorderLayout.LINE_START);
+        commandPanel.add(testButton, BorderLayout.LINE_END);
 
         return commandPanel;
     }
 
     private JPanel setupInfoPanel() {
         JPanel infoPanel = new JPanel(new BorderLayout());
-        JTextArea infoOutput = new JTextArea(10, 30);
+        infoOutput = new JTextArea(10, 30);
         infoOutput.setEditable(false); infoOutput.setLineWrap(true);
         JScrollPane scrollPane = new JScrollPane(infoOutput);
         infoPanel.add(scrollPane, BorderLayout.CENTER);

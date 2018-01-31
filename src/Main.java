@@ -1,7 +1,5 @@
-import Board.Board;
 import Screen.GameScreen;
 
-import javax.swing.*;
 import java.io.IOException;
 
 public class Main {
