@@ -1,6 +1,7 @@
 package com.Team11.Cluedo.UI;
 
 import com.Team11.Cluedo.Board.Board;
+import com.Team11.Cluedo.Suspects.Players;
 import com.Team11.Cluedo.UI.Panel.BackgroundPanel;
 import com.Team11.Cluedo.Suspects.Suspect;
 
@@ -42,8 +43,6 @@ public class GameScreen implements Screen {
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(3,3,1,3);
-
-
 
         JPanel cardPanel = setupCardPanel();
         gbc.gridx = 0; gbc.gridy = 11;
@@ -96,6 +95,7 @@ public class GameScreen implements Screen {
             ImageIcon boardImage = new ImageIcon(getClass().getResource("..\\Assets\\Board4.PNG"));
             JLabel boardLabel = new JLabel("", boardImage, JLabel.CENTER);
             boardPanel.add(boardLabel, BorderLayout.CENTER);
+
 
             return boardPanel;
         } catch (Exception e) {

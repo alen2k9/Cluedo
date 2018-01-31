@@ -1,6 +1,7 @@
 package com.Team11.Cluedo.Suspects;
 
 import com.Team11.Cluedo.Board.Board;
+import javafx.scene.shape.Ellipse;
 
 import javax.swing.*;
 import java.awt.*;
@@ -30,7 +31,7 @@ public class Suspect extends JComponent{
         this.y = a;
     }
 
-    public void setName(String n){
+    public void setSuspectName(String n){
         this.name = n;
     }
 
@@ -46,15 +47,25 @@ public class Suspect extends JComponent{
         return ("(" + this.x + ", " + this.y + ") ");
     }
 
-    public String getName(){
+    public String getSuspectName(){
         return this.name;
     }
 
+    /**
+     *
+     * @param g : The Graphic to Draw
+     * @param x : The X coordinate to draw at
+     * @param y : THe Y coordinate to draw at
+     */
     public void draw(Graphics g, int x, int y){
         Graphics2D g2 = (Graphics2D) g;
-        //Ellipse ellipse = new Ellipse(x, y, 25, 25);
-        g2.setColor(Color.BLACK);
-        g2.fill(new Ellipse2D.Double(x,y, 25,25));
+        System.out.println("Draw Called");
+        g2.setColor(Color.RED);
+
+        g2.fill(new Ellipse2D.Double(x*25, y*25, 20, 20));
+        //g2.fillRect(x*25, y*25, 20, 20);
+        //g2.drawRect(x*25,y*25, 20, 20);
+
     }
 
     /**
