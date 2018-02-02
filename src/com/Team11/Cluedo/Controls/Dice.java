@@ -4,17 +4,17 @@ import java.util.Random;
 
 public class Dice {
 
-    int dice;
+    private int dice;
 
-    public void roll()
+    public Dice()
     {
         Random rand = new Random();
-        this.dice = rand.nextInt(10) + 2;
+        dice = rand.nextInt(11) + 2;
     }
 
     public int getdice()
     {
-        return this.dice;
+        return dice;
     }
 
 
