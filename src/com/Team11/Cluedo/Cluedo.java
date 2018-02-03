@@ -1,6 +1,7 @@
 package com.Team11.Cluedo;
 
 import com.Team11.Cluedo.Board.Board;
+import com.Team11.Cluedo.Controls.Command;
 import com.Team11.Cluedo.Suspects.Players;
 import com.Team11.Cluedo.Suspects.Suspect;
 import com.Team11.Cluedo.UI.GameScreen;
@@ -25,10 +26,11 @@ public class Cluedo {
             test.add(bPanel) ;
             test.add(players);
             testFrame.add(players);
-            //testFrame.add(bPanel);
+            testFrame.add(bPanel);
             testFrame.pack();
             testFrame.setVisible(true);
-            //GameScreen gameScreen = new GameScreen();
+            GameScreen gameScreen = new GameScreen();
+            Command com = new Command(gameScreen);
         }
     }
 
