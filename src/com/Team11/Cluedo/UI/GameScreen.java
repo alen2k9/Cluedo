@@ -11,11 +11,15 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.awt.event.KeyEvent;
 
 public class GameScreen implements Screen {
     private JFrame frame;
     private JPanel mainPanel;
-    private JTextArea infoOutput;
+    public JTextArea infoOutput;
+    public JButton testButton;
+    public String input;
+    public JTextField commandInput;
 
     public GameScreen() throws IOException{
         this.createScreen();
@@ -107,19 +111,9 @@ public class GameScreen implements Screen {
     private JPanel setupCommandPanel() {
         JPanel commandPanel = new JPanel(new BorderLayout());
         commandPanel.setBorder(new TitledBorder("Command Entry"));
-        JTextField commandInput = new JTextField(30);
+        commandInput = new JTextField(30);
 
-
-        JButton testButton = new JButton("Input");
-        testButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String input = commandInput.getText() + '\n';
-                infoOutput.append(input);
-                commandInput.setText("");
-            }
-        });
-
+        testButton = new JButton("Input");
         commandPanel.add(commandInput, BorderLayout.LINE_START);
         commandPanel.add(testButton, BorderLayout.LINE_END);
 
