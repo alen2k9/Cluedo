@@ -40,7 +40,7 @@ public class Command {
                     main_panel.infoOutput.append(main_panel.input);
                     main_panel.infoOutput.append("Welcome\n");
                     main_panel.infoOutput.append("Please enter the following\n ");
-                    main_panel.infoOutput.append("l - Left\n r - Right\n u - Up\n d - Down\n ");
+                    main_panel.infoOutput.append("l - Left\n r - Right\n u - Up\n d - Down ");
                     movement();
                     main_panel.commandInput.setText("");
 
@@ -74,36 +74,38 @@ public class Command {
         main_panel.testButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
 
-                main_panel.input = main_panel.commandInput.getText() + '\n';
-                main_panel.infoOutput.append(main_panel.input);
+
+
+
+
 
                 while(main_panel.commandInput.getText().equals("u") || main_panel.commandInput.getText().equals("d")
                         || main_panel.commandInput.getText().equals("l") || main_panel.commandInput.getText().equals("r"))
                 {
                     if(main_panel.commandInput.getText().equals("u"))
                     {
-                        main_panel.infoOutput.append("Up");
+                        main_panel.infoOutput.append("\nUp");
                         //move character up
                         main_panel.commandInput.setText("");
                         movement();
                     }
                     else if(main_panel.commandInput.getText().equals("d"))
                     {
-                        main_panel.infoOutput.append("Down");
+                        main_panel.infoOutput.append("\nDown");
                         //move character down
                         main_panel.commandInput.setText("");
                         movement();
                     }
                     else if(main_panel.commandInput.getText().equals("l"))
                     {
-                        main_panel.infoOutput.append("Left");
+                        main_panel.infoOutput.append("\nLeft");
                         //move character left
                         main_panel.commandInput.setText("");
                         movement();
                     }
                     else if(main_panel.commandInput.getText().equals("r"))
                     {
-                        main_panel.infoOutput.append("Right");
+                        main_panel.infoOutput.append("\nRight");
                         //move character right
                         main_panel.commandInput.setText("");
                         movement();
