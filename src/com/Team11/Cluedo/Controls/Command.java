@@ -15,16 +15,16 @@ public class Command {
     public Command(GameScreen Main_Panel) {
 
 
-       main_panel = Main_Panel;
+        main_panel = Main_Panel;
 
 
-       command();
+        command();
     }
 
 
     private void command()
     {
-       // JOptionPane.showMessageDialog(null, "obi wan kenobi","show Message" ,JOptionPane.INFORMATION_MESSAGE, hello);
+        // JOptionPane.showMessageDialog(null, "obi wan kenobi","show Message" ,JOptionPane.INFORMATION_MESSAGE, hello);
 
         main_panel.infoOutput.append("Welcome to Cluedo\n");
         main_panel.infoOutput.append("Please enter 1 to continue\n");
@@ -47,7 +47,7 @@ public class Command {
                 }
 
                 main_panel.commandInput.setText("");
-                 }
+            }
         });
     }
 
