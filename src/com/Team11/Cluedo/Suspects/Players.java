@@ -1,42 +1,65 @@
+/**
+ * Code to handle the creation of the suspects into an array
+ *
+ * Authors :    Jack Geraghty - 16384181
+ *              Conor Beenham -
+ *              Alen Thomas   -
+ */
+
+
 package com.Team11.Cluedo.Suspects;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class Players extends JPanel{
+public class Players extends JPanel {
 
-    Suspect suspects[];
+    public final int NUM_PLAYERS = 6;
+    public final Point S1SPAWN = new Point(1,10);
+    public final Point S2SPAWN = new Point(1,15);
+    public final Point S3SPAWN = new Point(7,24);
+    public final Point S4SPAWN = new Point(18,1);
+    public final Point S5SPAWN = new Point(20,24);
+    public final Point S6SPAWN = new Point(25,8);
 
-    public Players(int numPlayers){
-        suspects = createSuspects(numPlayers);
-    }
-
-    public String getPos(int i){
-        return suspects[i].getPos();
-    }
+    private Suspect[] players = new Suspect[NUM_PLAYERS];
 
 
-    public Suspect[] createSuspects(int numPlayers){
-        String charSetOne[] = {"Jack", "Alen"};
-        String charsetOne[] = {"Conor", "Eoghan"};
+    public Players(){
+        for (int i = 0; i < NUM_PLAYERS; i++){
+            if (i == 0){
+                players[i] = new Suspect(S1SPAWN, "Player One", i);
+            }
 
-        int[] spawn_x = {1,1};
-        int[] spawn_y = {10, 15};
+            else if (i == 1){
+                players[i] = new Suspect(S2SPAWN, "Player Two", i);
+            }
+            else if (i == 2){
+                players[i] = new Suspect(S3SPAWN, "Player Three", i);
+            }
 
-        Suspect[] suspects = new Suspect[1];
+            else if (i == 3){
+                players[i] = new Suspect(S4SPAWN, "Player Four", i);
+            }
+            else if (i == 4){
+                players[i] = new Suspect(S5SPAWN, "Player Five", i);
+            }
+            else if (i == 5){
+                players[i] = new Suspect(S6SPAWN, "Player Six", i);
+            }
 
-        for (int i = 0; i < numPlayers; i++){
-            suspects[i] = new Suspect(spawn_y[i], spawn_x[i], charSetOne[i]);
+            //System.out.println("Created new suspect at location : " + players[i].getLoc());
+
         }
 
-        return suspects;
     }
 
     public void paintComponent(Graphics g){
 
-        for (int i  = 0; i < suspects.length; i++){
+        for (int i  = 0; i < players.length; i++){
             System.out.println("attempting to paint");
-            suspects[i].draw(g, suspects[i].getXCoord(), suspects[i].getYCoord());
+            players[i].draw(g);
         }
     }
+
 }

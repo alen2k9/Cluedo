@@ -94,7 +94,7 @@ public class GameScreen implements Screen {
     private Board setupBoardPanel() {
 
         try {
-            Board boardPanel = new Board(25);
+            Board boardPanel = new Board();
             boardPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 0,0));
             ImageIcon boardImage = new ImageIcon(getClass().getResource("..\\Assets\\Board4.PNG"));
             JLabel boardLabel = new JLabel("", boardImage, JLabel.CENTER);

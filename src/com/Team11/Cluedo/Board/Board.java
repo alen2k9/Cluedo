@@ -1,3 +1,12 @@
+/**
+ * Code to handle the creation of the cluedo board.
+ *
+ * Authors :    Jack Geraghty - 16384181
+ *              Conor Beenham -
+ *              Alen Thomas   -
+ */
+
+
 package com.Team11.Cluedo.Board;
 
 import javax.swing.*;
@@ -8,19 +17,26 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
 
-public class Board extends JPanel{
+public class Board extends JPanel {
 
+    /**
+     * Constants for the board width and height and the size of each tile
+     */
     public final int BOARD_WIDTH = 27;
     public final int BOARD_HEIGHT = 26;
-    public BoardPos[][] board;
+    public final int TILE_SIZE = 25;
 
-    private int tileSize;
+    private BoardPos[][] board;
 
-   //Playable board is 25 rows and 24 columns
-
-    public Board(int tileSize) throws IOException{
+    /**
+     * Default Constructor
+     * @throws IOException : Reads board information from the BoardInfo.txt file
+     */
+    public Board() throws IOException{
+        /**
+         * Try and read the file and assign the return value to the board variable
+         */
         try{
-            this.tileSize = tileSize;
             board = parseBoardFile();
         }
         catch(IOException ex){
@@ -29,149 +45,144 @@ public class Board extends JPanel{
     }
 
     /**
-     * Takes in the board information from a .txt file and parses it into an array consisting of BoardPos objects
-     * @return: Returns an array consisting of all the board positions
+     * Method to parse information from the boardInfo.txt file and setup each of the board positions based off of that information
+     * @return : A matrix array of boardPos objects
      * @throws IOException
      */
-    public BoardPos[][] parseBoardFile() throws IOException{
-
+    public BoardPos[][] parseBoardFile() throws IOException {
+        //Create a boardPos array to assign BoardPos objects to and return
         BoardPos[][] tmpBoard = new BoardPos[BOARD_WIDTH][BOARD_HEIGHT];
-        //URL url = getClass().getResource("src/com.Team11.Cluedo.Board/BoardInfo.txt");
-        //File boardFile = new File(getClass().getResource("BoardInfo.txt"));
 
+        //Find the boardInfo.txt and open it
         URL url = getClass().getResource("BoardInfo.txt");
         File boardFile = new File(url.getPath());
+
+        //Open a buffered reader to read each line
         BufferedReader br = new BufferedReader(new FileReader(boardFile));
+
+        //Store each line in a string and then split that line into individual characters and create new boardPos objects depending on that character
         String cLine;
 
-        for (int i = 0; (cLine = br.readLine()) != null; i++){
+        for (int i = 0; (cLine = br.readLine()) != null; i++) {
             String line[] = cLine.split(" ");
 
-            for (int j = 0; j < line.length; j++){
+            for (int j = 0; j < line.length; j++) {
 
                 /**
-                 * Create a blank com.Team11.Cluedo.Board Position to work with
+                 * Create a blank com.Team11.Cluedo.BoardPosition to work with
                  */
                 BoardPos tmp = null;
 
                 /**
                  * Blank Space Tile
                  */
-                if (line[j].matches("#")){
-                    tmp = createNonTraversal(i, j, TileType.BLANK);
-                    //System.out.println("X: " + i + ", Y: " + j + ", TileType: " + TileType.BLANK);
-                    System.out.print("(" + i + "," + j + ") : " + TileType.BLANK + " ,");
+                if (line[j].matches("#")) {
+                    tmp = createNonTraversal(new Point(i,j), TileType.BLANK);
                 }
 
                 /**
                  * Spawn Tile
                  */
-                else if (line[j].matches("1")){
-                    tmp = createNonTraversal(i,j, TileType.SPAWN);
-                    System.out.print("(" + i + "," + j + ") : " + TileType.SPAWN + " ,");
+                else if (line[j].matches("1")) {
+                    tmp = createNonTraversal(new Point(i,j), TileType.SPAWN);
                 }
 
                 /**
                  * Secrete Passage Tile
                  */
-                else if (line[j].matches("2")){
-                    tmp = new BoardPos(i, j, this.tileSize, false, true,TileType.SECRETPASSAGE, false);
-                    System.out.print("(" + i + "," + j + ") : " + TileType.SECRETPASSAGE + " ,");
+                else if (line[j].matches("2")) {
+                    tmp = new BoardPos(new Point(i,j), true, false, false, TileType.SECRETPASSAGE, TILE_SIZE );
                 }
 
                 /**
                  * Kitchen Tile
                  */
-                else if (line[j].matches("K")){
-                    tmp = createNonTraversal(i,j, TileType.KITCHEN);
-                    System.out.print("(" + i + "," + j + ") : " + TileType.KITCHEN + " ,");
+                else if (line[j].matches("K")) {
+                    tmp = createNonTraversal(new Point(i,j), TileType.KITCHEN);
                 }
 
                 /**
                  * Ballroom Tile
                  */
-                else if (line[j].matches("B")){
-                    tmp = createNonTraversal(i,j, TileType.BALLROOM);
-                    System.out.print("(" + i + "," + j + ") : " + TileType.BALLROOM + " ,");
+                else if (line[j].matches("B")) {
+                    tmp = createNonTraversal(new Point(i,j), TileType.BALLROOM);
                 }
 
                 /**
                  * Conservatory Tile
                  */
-                else if (line[j].matches("C")){
-                    tmp = createNonTraversal(i,j, TileType.CONSERVATORY);
-                    System.out.print("(" + i + "," + j + ") : " + TileType.CONSERVATORY + " ,");
+                else if (line[j].matches("C")) {
+                    tmp = createNonTraversal(new Point(i,j), TileType.CONSERVATORY);
                 }
 
                 /**
                  * Dining Room Tile
                  */
-                else if (line[j].matches("I")){
-                    tmp = createNonTraversal(i,j, TileType.DININGROOM);
-                    System.out.print("(" + i + "," + j + ") : " + TileType.DININGROOM + " ,");
+                else if (line[j].matches("I")) {
+                    tmp = createNonTraversal(new Point(i,j), TileType.DININGROOM);
+                    //System.out.print("(" + i + "," + j + ") : " + TileType.DININGROOM + " ,");
                 }
 
                 /**
                  * Cellar Tile
                  */
-                else if (line[j].matches("T")){
-                    tmp = createNonTraversal(i,j, TileType.CELLAR);
-                    System.out.print("(" + i + "," + j + ") : " + TileType.CELLAR + " ,");
+                else if (line[j].matches("T")) {
+                    tmp = createNonTraversal(new Point(i,j), TileType.CELLAR);
                 }
 
                 /**
                  * Billiard Room
                  */
-                else if (line[j].matches("R")){
-                    tmp = createNonTraversal(i,j, TileType.BILLIARDROOM);
-                    System.out.print("(" + i + "," + j + ") : " + TileType.BILLIARDROOM + " ,");
+                else if (line[j].matches("R")) {
+                    tmp = createNonTraversal(new Point(i,j), TileType.BILLIARDROOM);
                 }
 
                 /**
                  * Library Tile
                  */
-                else if (line[j].matches("U")){
-                    tmp = createNonTraversal(i,j, TileType.LIBRARY);
-                    System.out.print("(" + i + "," + j + ") : " + TileType.LIBRARY + " ,");
+                else if (line[j].matches("U")) {
+                    tmp = createNonTraversal(new Point(i,j), TileType.LIBRARY);
                 }
 
                 /**
                  * Hall Tile
                  */
-                else if (line[j].matches("H")){
-                    tmp = createNonTraversal(i,j, TileType.HALL);
-                    System.out.print("(" + i + "," + j + ") : " + TileType.HALL + " ,");
+                else if (line[j].matches("H")) {
+                    tmp = createNonTraversal(new Point(i,j), TileType.HALL);
                 }
 
                 /**
                  * Study Tile
                  */
-                else if (line[j].matches("S")){
-                    tmp = createNonTraversal(i,j, TileType.STUDY);
-                    System.out.print("(" + i + "," + j + ") : " + TileType.STUDY + " ,");
+                else if (line[j].matches("S")) {
+                    tmp = createNonTraversal(new Point(i,j), TileType.STUDY);
                 }
 
                 /**
                  *  Lounge Tile
                  */
-                else if (line[j].matches("L")){
-                    tmp = createNonTraversal(i,j, TileType.LOUNGE);
-                    System.out.print("(" + i + "," + j + ") : " + TileType.LOUNGE + " ,");
+                else if (line[j].matches("L")) {
+                    tmp = createNonTraversal(new Point(i,j), TileType.LOUNGE);
                 }
 
                 /**
                  * Door Tile
                  */
-                else if (line[j].matches("D")){
-                    tmp = createTraversal(i,j, TileType.DOOR);
-                    System.out.print("(" + i + "," + j + ") : " + TileType.DOOR + " ,");
+                else if (line[j].matches("D")) {
+                    tmp = createTraversal(new Point(i,j), TileType.DOOR);
                 }
 
-                else if (line[j].matches("-")){
-                    tmp = createTraversal(i, j, TileType.HALLWAY);
-                    System.out.print("(" + i + "," + j + ") : " + TileType.HALLWAY + " ,");
+                /**
+                 * Hallway Tile
+                 */
+                else if (line[j].matches("-")) {
+                    tmp = createTraversal(new Point(i,j), TileType.HALLWAY);
                 }
-                else{
+
+                /**
+                 * Error
+                 */
+                else {
                     System.out.println("Unknown Tile Type, Please Check BoardInfo.txt");
                 }
                 /**
@@ -180,35 +191,39 @@ public class Board extends JPanel{
                 tmpBoard[i][j] = tmp;
 
             }
-            System.out.println();
+
+
         }
-
+        /**
+         * Once all of the lines have been read in and all of the tiles created return the matrix
+         */
         return tmpBoard;
+
     }
 
     /**
-     * Method used to create a non traversable tile such as a room tile or blank tile
-     * @param a: Signifies the x coordinate
-     * @param b: Signifies the y coordinate
-     * @param type: Signifies the type of the tile, enum from TileType.java
-     * @return : Returns the boardPos created as a result of the above information
+     * Method used to create a tile that isn't traversable
+     * @param p : The x,y location of that tile
+     * @param t : The type of tile that it is
+     * @return : The boardPos object created
      */
-    public BoardPos createNonTraversal(int a, int b, TileType type){
-        return new BoardPos(a, b, this.tileSize, false, false, type, false);
-    }
-    /**
-     * Method used to create a traversable tile such as a hall tile
-     * @param a: Signifies the x coordinate
-     * @param b: Signifies the y coordinate
-     * @param type: Signifies the type of the tile, enum from TileType.java
-     * @return : Returns the boardPos created as a result of the above information
-     */
-    public BoardPos createTraversal(int a, int b, TileType type){
-        return new BoardPos(a, b, this.tileSize, true,false, type, false);
+    public BoardPos createNonTraversal(Point p, TileType t){
+        return new BoardPos(p, false, false, false, t, TILE_SIZE);
     }
 
     /**
-     * Method which handles the painting of the com.Team11.Cluedo.Board on a panel / in a frame
+     * Method to create a tile that is traversable
+     * @param p : The x,y location of that tile
+     * @param t : The type of tile that it is
+     * @return : The boardPos object created
+     */
+    public BoardPos createTraversal(Point p, TileType t){
+        return new BoardPos(p, false, true, false, t, TILE_SIZE);
+    }
+
+    /**
+     * Method to handle the painting of the boardPos matrix
+     * @param g
      */
     public void paintComponent(Graphics g){
         int top = 0, left = 0;
@@ -218,11 +233,11 @@ public class Board extends JPanel{
          */
         for (int i = 0; i < BOARD_WIDTH; i++){
             for (int j = 0; j < BOARD_HEIGHT; j++){
-                board[i][j].draw(g, left, top);
-                left += this.tileSize;
+                board[i][j].draw(g, new Point(left, top));
+                left += TILE_SIZE;
             }
             left = 0;
-            top += this.tileSize;
+            top += TILE_SIZE;
         }
     }
 }
