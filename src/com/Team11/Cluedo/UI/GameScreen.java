@@ -21,10 +21,13 @@ public class GameScreen implements Screen {
     public String input;
     public JTextField commandInput;
 
+
+
     public GameScreen() throws IOException{
         this.createScreen();
         this.setupScreen();
         this.displayScreen();
+        frame.getRootPane().setDefaultButton(testButton);
     }
 
     @Override
@@ -126,6 +129,7 @@ public class GameScreen implements Screen {
         infoOutput.setEditable(false); infoOutput.setLineWrap(true);
         JScrollPane scrollPane = new JScrollPane(infoOutput);
         infoPanel.add(scrollPane, BorderLayout.CENTER);
+
 
         return infoPanel;
     }

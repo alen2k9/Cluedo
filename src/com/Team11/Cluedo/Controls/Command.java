@@ -64,7 +64,7 @@ public class Command {
 
     public /*int*/ void Diceroll(){
         //Roll dice and animate using Dice class
-        //reurn number of dice roll for movement function
+        //return number of dice roll for movement function
 
     }
 
