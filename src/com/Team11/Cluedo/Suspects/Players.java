@@ -37,7 +37,6 @@ public class Players extends JComponent {
     public void paintComponent(Graphics g){
         for (Suspect suspect : players
              ) {
-            //System.out.println("attempting to paint");
             suspect.draw(g);
         }
     }
