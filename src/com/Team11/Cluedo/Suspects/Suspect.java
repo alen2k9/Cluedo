@@ -2,14 +2,11 @@
  * Class which contains the behavior for the suspects of the game
  *
  * Authors :    Jack Geraghty - 163884181
- *              Conor Beenham -
+ *              Conor Beenham - 16350851
  *              Alen Thomas   -
  */
 
 package com.Team11.Cluedo.Suspects;
-
-import com.Team11.Cluedo.Board.Board;
-import com.Team11.Cluedo.Board.BoardPos;
 
 import javax.swing.*;
 import java.awt.*;
@@ -97,13 +94,13 @@ public class Suspect extends JComponent {
         /**
          * Depending on the suspectID of each suspect they will be drawn as different coloured ellipses
          */
+        Image playerToken = null;
 
         /**
          * First player is red
          */
         if (this.getSuspectID() == 0){
             g2.setColor(Color.RED);
-            System.out.println("Drawing a red ellipse");
         }
 
         /**
@@ -114,10 +111,10 @@ public class Suspect extends JComponent {
         }
 
         /**
-         * Third player is cyan
+         * Third player is purple
          */
         else if (this.getSuspectID() == 2){
-            g2.setColor(Color.orange);
+            g2.setColor(new Color(156, 2, 221));
         }
 
         /**

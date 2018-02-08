@@ -5,4 +5,5 @@ public interface Screen {
     void setupScreen();
     void displayScreen();
     void closeScreen();
+    void reDraw();
 }

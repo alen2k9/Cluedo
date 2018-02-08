@@ -1,6 +1,5 @@
 package com.Team11.Cluedo.Controls;
 
-import com.Team11.Cluedo.Suspects.Direction;
 import com.Team11.Cluedo.UI.GameScreen;
 
 import java.awt.event.ActionEvent;

@@ -2,19 +2,15 @@
  * Code to handle the creation of the cluedo board.
  *
  * Authors :    Jack Geraghty - 16384181
- *              Conor Beenham -
+ *              Conor Beenham - 16350851
  *              Alen Thomas   -
  */
-
 
 package com.Team11.Cluedo.Board;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
 
 public class Board extends JComponent {
@@ -54,11 +50,10 @@ public class Board extends JComponent {
         BoardPos[][] tmpBoard = new BoardPos[BOARD_WIDTH][BOARD_HEIGHT];
 
         //Find the boardInfo.txt and open it
-        URL url = getClass().getResource("BoardInfo.txt");
-        File boardFile = new File(url.getPath());
+        InputStream in = getClass().getResourceAsStream("BoardInfo.txt");
 
         //Open a buffered reader to read each line
-        BufferedReader br = new BufferedReader(new FileReader(boardFile));
+        BufferedReader br = new BufferedReader(new InputStreamReader(in));
 
         //Store each line in a string and then split that line into individual characters and create new boardPos objects depending on that character
         String cLine;

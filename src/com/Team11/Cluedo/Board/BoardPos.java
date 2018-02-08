@@ -2,7 +2,7 @@
  * Class which handles the concept of each tile on the board
  *
  * Authors :     Jack Geraghty - 16384181
- *               Conor Beenham -
+ *               Conor Beenham - 16350851
  *               Alen Thomas   -
  */
 

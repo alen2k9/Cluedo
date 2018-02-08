@@ -2,7 +2,7 @@
  * Code to handle the creation of the suspects into an array
  *
  * Authors :    Jack Geraghty - 16384181
- *              Conor Beenham -
+ *              Conor Beenham - 16350851
  *              Alen Thomas   -
  */
 

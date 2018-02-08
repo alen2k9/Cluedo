@@ -31,4 +31,9 @@ public class MenuScreen implements Screen {
     public void closeScreen() {
 
     }
+
+    @Override
+    public void reDraw() {
+
+    }
 }
