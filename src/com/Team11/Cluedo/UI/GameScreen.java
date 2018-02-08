@@ -12,6 +12,7 @@ import java.io.IOException;
 public class GameScreen implements Screen {
     private JFrame frame;
     private JPanel mainPanel;
+    private BoardUI boardPanel;
 
     private JTextArea infoOutput;
     private JButton testButton;
@@ -67,10 +68,7 @@ public class GameScreen implements Screen {
         gbc.fill = GridBagConstraints.VERTICAL;
         contentPanel.add(infoPanel, gbc);
 
-
-        Players boardPanel = setupBoardPanel();
-        //JPanel boardPanel = setupBoardPanel();
-
+        this.boardPanel = new BoardUI(this.gamePlayers, new BoardComponent());
         gbc.gridx = 0; gbc.gridy = 0;
         gbc.gridwidth = 10; gbc.gridheight = 10;
         gbc.fill = GridBagConstraints.BOTH;
@@ -92,31 +90,6 @@ public class GameScreen implements Screen {
     public void closeScreen() {
         this.mainPanel.removeAll();
         this.frame.dispose();
-    }
-
-    private Players setupBoardPanel() {
-
-        try {
-            //JPanel boardPanel = new JPanel();
-            Board boardPanel = new Board();
-            boardPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 0,0));
-            ImageIcon boardImage = new ImageIcon(getClass().getResource("..\\Assets\\Board4.PNG"));
-            JLabel boardLabel = new JLabel("", boardImage, JLabel.CENTER);
-            boardPanel.add(boardLabel, BorderLayout.CENTER);
-
-            Players players = this.gamePlayers;
-
-            //ImageIcon boardImage = new ImageIcon(getClass().getResource("..\\Assets\\Board4.PNG"));
-            //JLabel boardLabel = new JLabel(boardImage);
-            boardLabel.setBounds(0,0,boardImage.getIconWidth(), boardImage.getIconHeight());
-            boardPanel.add(boardLabel);
-
-            players.add(boardLabel);
-            return players;
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Error. com.Team11.Cluedo.Board Layout not found.");
-            return null;
-        }
     }
 
     private JPanel setupCommandPanel() {
@@ -170,10 +143,41 @@ public class GameScreen implements Screen {
     }
 
     public void reDraw() {
-        this.gamePlayers.repaint();
+        this.boardPanel.repaint();
     }
 
     public Players getGamePlayers() {
         return gamePlayers;
+    }
+
+    public class BoardComponent extends JComponent {
+        public void paintComponent(Graphics g) {
+            System.out.println("BOARD IMAGE FOUND");
+            Graphics2D g2 = (Graphics2D) g;
+            Image img1 = Toolkit.getDefaultToolkit().getImage("Board3.PNG");
+            g2.drawImage(img1, 0, 0, this);
+            g2.finalize();
+        }
+    }
+
+    public class BoardUI extends JLayeredPane {
+        Players gamePlayers;
+        BoardComponent boardComponent;
+
+        public BoardUI(Players players, BoardComponent board) {
+            this.gamePlayers = players;
+            this.boardComponent = board;
+
+            this.add(this.boardComponent, 0);
+            this.add(this.gamePlayers, 1);
+
+            Dimension imageSize = new Dimension(650, 675);
+            this.setPreferredSize(imageSize);
+        }
+
+        public void paint(Graphics g) {
+            boardComponent.paintComponent(g);
+            this.gamePlayers.paintComponent(g);
+        }
     }
 }

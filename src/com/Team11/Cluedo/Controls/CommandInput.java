@@ -27,6 +27,7 @@ public class CommandInput {
 
                 if(mainPanel.getCommandInput().getText().equals("1"))
                 {
+                    mainPanel.reDraw();
                     mainPanel.getInfoOutput().append(mainPanel.getInput());
                     mainPanel.getInfoOutput().append("Welcome\n");
                     mainPanel.getInfoOutput().append("Please enter the following\n ");

@@ -17,7 +17,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
 
-public class Board extends JPanel {
+public class Board extends JComponent {
 
     /**
      * Constants for the board width and height and the size of each tile
@@ -227,6 +227,7 @@ public class Board extends JPanel {
      */
     public void paintComponent(Graphics g){
         int top = 0, left = 0;
+        System.out.println("Drawing Board");
 
         /**
          * Loop through and paint every tile in the board

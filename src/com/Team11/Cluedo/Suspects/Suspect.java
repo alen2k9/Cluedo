@@ -151,7 +151,7 @@ public class Suspect extends JComponent {
         /**
          * Draw the ellipse at an offset of the suspects location and the size of each tile
          */
-        g2.fill(new Ellipse2D.Double((this.location.getX() * 25) + 7, (this.location.getY() * 25) + 7, 20,20));
+        g2.fill(new Ellipse2D.Double((this.location.getX() * 25), (this.location.getY() * 25), 25,25));
     }
 
     /**

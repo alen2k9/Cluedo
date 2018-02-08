@@ -12,7 +12,7 @@ package com.Team11.Cluedo.Suspects;
 import javax.swing.*;
 import java.awt.*;
 
-public class Players extends JPanel {
+public class Players extends JComponent {
     private int numPlayers;
     private int remainingPlayers;
 
