@@ -9,11 +9,17 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.awt.event.KeyEvent;
 
 public class GameScreen implements Screen {
     private JFrame frame;
     private JPanel mainPanel;
-    private JTextArea infoOutput;
+    public JTextArea infoOutput;
+    public JButton testButton;
+    public String input;
+    public JTextField commandInput;
+
+
 
     private Players gamePlayers;
 
@@ -23,6 +29,7 @@ public class GameScreen implements Screen {
         this.createScreen();
         this.setupScreen();
         this.displayScreen();
+        frame.getRootPane().setDefaultButton(testButton);
     }
 
     @Override
@@ -93,7 +100,15 @@ public class GameScreen implements Screen {
     private Players setupBoardPanel() {
 
         try {
+<<<<<<< HEAD
             JPanel boardPanel = new JPanel();
+=======
+            Board boardPanel = new Board();
+            boardPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 0,0));
+            ImageIcon boardImage = new ImageIcon(getClass().getResource("..\\Assets\\Board4.PNG"));
+            JLabel boardLabel = new JLabel("", boardImage, JLabel.CENTER);
+            boardPanel.add(boardLabel, BorderLayout.CENTER);
+>>>>>>> adf0b6d7d8ac1a0cf2b87acbef460a79ca7ca2d6
 
             Players players = this.gamePlayers;
 
@@ -113,19 +128,9 @@ public class GameScreen implements Screen {
     private JPanel setupCommandPanel() {
         JPanel commandPanel = new JPanel(new BorderLayout());
         commandPanel.setBorder(new TitledBorder("Command Entry"));
-        JTextField commandInput = new JTextField(30);
+        commandInput = new JTextField(30);
 
-
-        JButton testButton = new JButton("Input");
-        testButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String input = commandInput.getText() + '\n';
-                infoOutput.append(input);
-                commandInput.setText("");
-            }
-        });
-
+        testButton = new JButton("Input");
         commandPanel.add(commandInput, BorderLayout.LINE_START);
         commandPanel.add(testButton, BorderLayout.LINE_END);
 
@@ -138,6 +143,7 @@ public class GameScreen implements Screen {
         infoOutput.setEditable(false); infoOutput.setLineWrap(true);
         JScrollPane scrollPane = new JScrollPane(infoOutput);
         infoPanel.add(scrollPane, BorderLayout.CENTER);
+
 
         return infoPanel;
     }

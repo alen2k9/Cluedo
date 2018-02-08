@@ -1,125 +1,213 @@
 /**
- * Contains the functionality of the board positions as well as the information for drawing them on the screen
- * Jack Geraghty - 16384181
- * Conor Beenham -
- * Alen Thomas   -
+ * Class which handles the concept of each tile on the board
+ *
+ * Authors :     Jack Geraghty - 16384181
+ *               Conor Beenham -
+ *               Alen Thomas   -
  */
+
 package com.Team11.Cluedo.Board;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 
-public class BoardPos extends JComponent{
+public class BoardPos extends JComponent {
     /**
-     * Int X :  The x coordinate of the tile
-     * Int y :  The y coordinate of the tile
-     * Boolean Traversable : Can the tile be moved on
-     * TileType tileType : What kind of tile is it?
-     * Boolean Occupied : Does it currently have a player on it
+     * @Param location : The x,y location of the boardPos
+     * @Param isSecret : Boolean used to indicate whether or not the tile is a secrete passageway
+     * @Param isTraversable : Boolean used to indicate whether or not the suspects can move on it
+     * @Param isOccupied : Boolean used to indicate whether or not there is a suspect on the tile or not
+     * @Param type : Enum used to identify what kind of tile the tile is
+     * @Param tileSize : Integer which contains the size of each tile
+     * @Param neighbours : An arrayList which will be used as part of the full suspect movement
      */
-    private int x;
-    private int y;
+    private Point location;
+    private boolean isSecret;
+    private boolean isTraversable;
+    private boolean isOccupied;
+    private TileType type;
     private int tileSize;
-    private Boolean traverseable;
-    private Boolean isSecret;
-    private TileType tileType;
-    private Boolean occupied;
-
+    private ArrayList<BoardPos> neighbours = new ArrayList<>();
 
     /**
-     * Default Constructor for the Class
+     * Default Constructor
      */
     public BoardPos(){
-        this.x = 0;
-        this.y = 0;
-        this.traverseable = false;
+        this.location.setLocation(0,0);
         this.isSecret = false;
-        this.tileType = TileType.HALLWAY;
-        this.occupied = false;
+        this.isTraversable = false;
+        this.isOccupied = false;
+        this.type = TileType.BLANK;
+        this.tileSize = 0;
     }
 
     /**
-     * Parametrized Constructor for the class
+     * Parametrized Constructor
+     * @param loc : The x,y location of the tile
+     * @param secret : Is it a secret
+     * @param traverse : Is it traversable
+     * @param occ : Is it occupied
+     * @param t : What type of tile is it
+     * @param size : The size of the tile
      */
-    public BoardPos(int a, int b, int tileSize, Boolean trav, Boolean secret, TileType type, Boolean occ){
-        this.x = a;
-        this.y = b;
-        this.tileSize = tileSize;
-        this.traverseable = trav;
+    public BoardPos(Point loc, boolean secret, boolean traverse, boolean occ, TileType t, int size){
+        this.location = loc;
         this.isSecret = secret;
-        this.tileType = type;
-        this.occupied = occ;
+        this.isTraversable = traverse;
+        this.isOccupied = occ;
+        this.type = t;
+        this.tileSize = size;
     }
 
+    /**
+     * Method to set the location of the tile
+     * @param p
+     */
+    public void setLoc(Point p){
+        this.location.setLocation(p);
+    }
 
     /**
-     * Method which handles the drawing of each of the various types of Tile
-     * @param g : Graphics Component
-     * @param x : X Coordinate
-     * @param y : Y Cooridinate
+     * Method to return the location of the tile
+     * @return
      */
-    public void draw(Graphics g, int x, int y){
+    public Point getLocation(){
+        return this.location;
+    }
+
+    /**
+     * Method to set whether or not the tile is a secret passageway
+     * @param s
+     */
+    public void setSecret(boolean s){
+        this.isSecret = s;
+    }
+
+    /**
+     * Method to return if the location is a secret
+     * @return
+     */
+    public boolean isSecret() {
+        return this.isSecret;
+    }
+
+    /**
+     * Method to set whether or not the tile is traversable
+     * @param t
+     */
+    public void setTraversable(boolean t){
+        this.isTraversable = t;
+    }
+
+    /**
+     * Method to return if the tile is traversable or not
+     * @return
+     */
+    public boolean isTraversable(){
+        return this.isTraversable;
+    }
+
+    /**
+     * Method to see if the tile is occupuied or not
+     * @param o
+     */
+    public void setOccupied(boolean o){
+        this.isOccupied = o;
+    }
+
+    /**
+     * Method to return whether or not the tile is occupied
+     * @return
+     */
+    public boolean isOccupied(){
+        return this.isOccupied;
+    }
+
+    /**
+     * Method to set the type of tile it is
+     * @param t
+     */
+    public void setType(TileType t){
+        this.type = t;
+    }
+
+    /**
+     * Method to return what type of tile it is
+     * @return
+     */
+    public TileType getType(){
+        return this.type;
+    }
+
+    /**
+     * Method to handle the drawing of boardPos object
+     * @param g : The graphic to draw
+     * @param p : Where to draw the boardPos
+     */
+    public void draw(Graphics g, Point p){
         Graphics2D g2 = (Graphics2D) g;
 
         /**
-         * Blank Tiles
+         * Blank Tile
          */
-        if (this.getTileType() == TileType.BLANK){
-            g2.setColor(Color.WHITE);
-            g2.fillRect(x, y, this.tileSize, this.tileSize);
-            g2.drawRect(x,y, this.tileSize,this.tileSize);
+        if (this.getType() == TileType.BLANK){
+            g2.setColor(Color.BLACK);
+            g2.fillRect((int)p.getX(), (int)p.getY(), this.tileSize, this.tileSize);
+            g2.drawRect((int)p.getX(), (int)p.getY(), this.tileSize, this.tileSize);
             g2.setColor(Color.WHITE);
         }
 
         /**
-         * Hallway Tiles
+         * Hallway Tile
          */
-        else if (this.getTileType() == TileType.HALLWAY){
+        else if(this.getType() == TileType.HALLWAY){
             g2.setColor(Color.GREEN);
-            g2.fillRect(x, y, this.tileSize, this.tileSize);
-            g2.drawRect(x,y, this.tileSize,this.tileSize);
+            g2.fillRect((int)p.getX(), (int)p.getY(), this.tileSize, this.tileSize);
+            g2.drawRect((int)p.getX(), (int)p.getY(), this.tileSize, this.tileSize);
             g2.setColor(Color.WHITE);
         }
 
         /**
-         * Spawn Tiles
+         * DOOR Tile
          */
-        else if (this.getTileType() == TileType.SPAWN){
-            g2.setColor(Color.BLUE);
-            g2.fillRect(x, y, this.tileSize, this.tileSize);
-            g2.drawRect(x,y, this.tileSize,this.tileSize);
-            g2.setColor(Color.WHITE);
-        }
-
-        /**
-         * Door Tiles
-         */
-        else if (this.getTileType() == TileType.DOOR){
+        else if(this.getType() == TileType.DOOR){
             g2.setColor(Color.CYAN);
-            g2.fillRect(x, y, this.tileSize, this.tileSize);
-            g2.drawRect(x,y, this.tileSize,this.tileSize);
+            g2.fillRect((int)p.getX(), (int)p.getY(), this.tileSize, this.tileSize);
+            g2.drawRect((int)p.getX(), (int)p.getY(), this.tileSize, this.tileSize);
             g2.setColor(Color.WHITE);
         }
 
         /**
-         * Secrete Passageway Tiles
+         * Spawn Tile
          */
-        else if (this.getTileType() == TileType.SECRETPASSAGE){
+        else if(this.getType() == TileType.SPAWN){
             g2.setColor(Color.RED);
-            g2.fillRect(x, y, this.tileSize, this.tileSize);
-            g2.drawRect(x,y, this.tileSize,this.tileSize);
+            g2.fillRect((int)p.getX(), (int)p.getY(), this.tileSize, this.tileSize);
+            g2.drawRect((int)p.getX(), (int)p.getY(), this.tileSize, this.tileSize);
             g2.setColor(Color.WHITE);
         }
 
         /**
-         * All other tiles
+         * Secret Tile
          */
-        else {
-            g2.setColor(Color.GRAY);
-            g2.fillRect(x, y, this.tileSize, this.tileSize);
-            g2.drawRect(x,y, this.tileSize,this.tileSize);
+        else if(this.getType() == TileType.SECRETPASSAGE){
+            g2.setColor(Color.BLUE);
+            g2.fillRect((int)p.getX(), (int)p.getY(), this.tileSize, this.tileSize);
+            g2.drawRect((int)p.getX(), (int)p.getY(), this.tileSize, this.tileSize);
             g2.setColor(Color.WHITE);
         }
+
+        /**
+         * All Other Tiles
+         */
+        else{
+            g2.setColor(Color.GRAY);
+            g2.fillRect((int)p.getX(), (int)p.getY(), this.tileSize, this.tileSize);
+            g2.drawRect((int)p.getX(), (int)p.getY(), this.tileSize, this.tileSize);
+            g2.setColor(Color.WHITE);
+        }
+<<<<<<< HEAD
 
         //g2.drawString(this.x + "," + this.y, x , y + 15);
 
@@ -133,54 +221,11 @@ public class BoardPos extends JComponent{
 
     public void setX(int a){
         this.x = a;
+=======
+>>>>>>> adf0b6d7d8ac1a0cf2b87acbef460a79ca7ca2d6
     }
 
-    public void setY(int a){
-        this.y = a;
+    public void findNeighbours(BoardPos bp){
+
     }
-
-    public void setTraverseable(Boolean trav){
-        this.traverseable = trav;
-    }
-
-    public void setIsSecret(Boolean secret){
-        this.isSecret = secret;
-    }
-
-    public void setTileType(TileType type){
-        this.tileType = type;
-    }
-
-    public void setOccupied(Boolean occ){
-        this.occupied = occ;
-    }
-
-
-    /**
-     *Accessor Methods for Class
-     */
-    public int getXCoord() {
-        return this.x;
-    }
-
-    public int getYCoord(){
-        return this.y;
-    }
-
-    public boolean isTraversable(){
-        return this.traverseable;
-    }
-
-    public boolean isSecretPassage(){
-        return this.isSecret;
-    }
-
-    public boolean isOccupied(){
-        return this.occupied;
-    }
-
-    public TileType getTileType() {
-        return this.tileType;
-    }
-
 }
