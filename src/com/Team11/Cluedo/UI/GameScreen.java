@@ -7,20 +7,16 @@ import com.Team11.Cluedo.UI.Panel.BackgroundPanel;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.awt.event.KeyEvent;
 
 public class GameScreen implements Screen {
     private JFrame frame;
     private JPanel mainPanel;
-    public JTextArea infoOutput;
-    public JButton testButton;
-    public String input;
-    public JTextField commandInput;
 
-
+    private JTextArea infoOutput;
+    private JButton testButton;
+    private String input;
+    private JTextField commandInput;
 
     private Players gamePlayers;
 
@@ -125,7 +121,7 @@ public class GameScreen implements Screen {
 
     private JPanel setupCommandPanel() {
         JPanel commandPanel = new JPanel(new BorderLayout());
-        commandPanel.setBorder(new TitledBorder("Command Entry"));
+        commandPanel.setBorder(new TitledBorder("CommandInput Entry"));
         commandInput = new JTextField(30);
 
         testButton = new JButton("Input");
@@ -151,5 +147,33 @@ public class GameScreen implements Screen {
         cardPanel.setBackground(Color.DARK_GRAY);
 
         return cardPanel;
+    }
+
+    public JTextArea getInfoOutput() {
+        return infoOutput;
+    }
+
+    public JButton getTestButton() {
+        return testButton;
+    }
+
+    public JTextField getCommandInput() {
+        return commandInput;
+    }
+
+    public String getInput() {
+        return input;
+    }
+
+    public void setInput(String input) {
+        this.input = input;
+    }
+
+    public void reDraw() {
+        this.gamePlayers.repaint();
+    }
+
+    public Players getGamePlayers() {
+        return gamePlayers;
     }
 }

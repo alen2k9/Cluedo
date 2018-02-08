@@ -8,6 +8,9 @@
 
 package com.Team11.Cluedo.Suspects;
 
+import com.Team11.Cluedo.Board.Board;
+import com.Team11.Cluedo.Board.BoardPos;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
@@ -148,13 +151,13 @@ public class Suspect extends JComponent {
         /**
          * Draw the ellipse at an offset of the suspects location and the size of each tile
          */
-        g2.fill(new Ellipse2D.Double(this.location.getX()*25, this.location.getY()*25, 20,20));
+        g2.fill(new Ellipse2D.Double((this.location.getX() * 25) + 7, (this.location.getY() * 25) + 7, 20,20));
     }
 
     /**
-     * Method for handling the movement of the suspects
+     * Method for handling the playerMovement of the suspects
      * Very much in a test state for the first sprint of the assignment
-     * Only has very basic movement with no restriction on where the suspect can move to
+     * Only has very basic playerMovement with no restriction on where the suspect can playerMove to
      */
     public void move(Direction dir, int numMove){
         /**

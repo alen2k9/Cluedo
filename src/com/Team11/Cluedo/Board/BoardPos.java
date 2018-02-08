@@ -16,11 +16,11 @@ public class BoardPos extends JComponent {
     /**
      * @Param location : The x,y location of the boardPos
      * @Param isSecret : Boolean used to indicate whether or not the tile is a secrete passageway
-     * @Param isTraversable : Boolean used to indicate whether or not the suspects can move on it
+     * @Param isTraversable : Boolean used to indicate whether or not the suspects can playerMove on it
      * @Param isOccupied : Boolean used to indicate whether or not there is a suspect on the tile or not
      * @Param type : Enum used to identify what kind of tile the tile is
      * @Param tileSize : Integer which contains the size of each tile
-     * @Param neighbours : An arrayList which will be used as part of the full suspect movement
+     * @Param neighbours : An arrayList which will be used as part of the full suspect playerMovement
      */
     private Point location;
     private boolean isSecret;

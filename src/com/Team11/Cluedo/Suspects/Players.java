@@ -13,53 +13,44 @@ import javax.swing.*;
 import java.awt.*;
 
 public class Players extends JPanel {
+    private int numPlayers;
+    private int remainingPlayers;
 
-    public final int NUM_PLAYERS = 6;
-    public final Point S1SPAWN = new Point(1,10);
-    public final Point S2SPAWN = new Point(1,15);
-    public final Point S3SPAWN = new Point(7,24);
-    public final Point S4SPAWN = new Point(18,1);
-    public final Point S5SPAWN = new Point(20,24);
-    public final Point S6SPAWN = new Point(25,8);
+    private final Point[] SUSPECT_SPAWN = new Point[]
+            {new Point(10,1), new Point(15,1), new Point(24,7),
+             new Point(1,18), new Point(24,20), new Point(8,25)};
+    private final String[] PLAYER_NAME = new String[] {
+            "Player One", "Player Two", "Player Three", "Player Four", "Player Five", "Player Six"};
 
-    private Suspect[] players = new Suspect[NUM_PLAYERS];
+    private Suspect[] players;
 
+    public Players(int numPlayers){
+        this.numPlayers = numPlayers;
+        this.remainingPlayers = numPlayers;
+        this.players = new Suspect[this.numPlayers];
 
-    public Players(){
-        for (int i = 0; i < NUM_PLAYERS; i++){
-            if (i == 0){
-                players[i] = new Suspect(S1SPAWN, "Player One", i);
-            }
-
-            else if (i == 1){
-                players[i] = new Suspect(S2SPAWN, "Player Two", i);
-            }
-            else if (i == 2){
-                players[i] = new Suspect(S3SPAWN, "Player Three", i);
-            }
-
-            else if (i == 3){
-                players[i] = new Suspect(S4SPAWN, "Player Four", i);
-            }
-            else if (i == 4){
-                players[i] = new Suspect(S5SPAWN, "Player Five", i);
-            }
-            else if (i == 5){
-                players[i] = new Suspect(S6SPAWN, "Player Six", i);
-            }
-
-            //System.out.println("Created new suspect at location : " + players[i].getLoc());
-
+        for (int i = 0; i < this.numPlayers; i++){
+            players[i] = new Suspect(SUSPECT_SPAWN[i], PLAYER_NAME[i], i);
         }
-
     }
 
     public void paintComponent(Graphics g){
-
-        for (int i  = 0; i < players.length; i++){
-            System.out.println("attempting to paint");
-            players[i].draw(g);
+        for (Suspect suspect : players
+             ) {
+            //System.out.println("attempting to paint");
+            suspect.draw(g);
         }
     }
 
+    public void playerMove(int player, Direction dir, int space) {
+        players[player].move(dir,space);
+    }
+
+    public int getRemainingPlayers() {
+        return remainingPlayers;
+    }
+
+    public void setRemainingPlayers(int amount) {
+        this.remainingPlayers = amount;
+    }
 }
