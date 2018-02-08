@@ -1,9 +1,7 @@
 package com.Team11.Cluedo.UI;
 
-import com.Team11.Cluedo.Board.Board;
 import com.Team11.Cluedo.Suspects.Players;
 import com.Team11.Cluedo.UI.Panel.BackgroundPanel;
-import com.Team11.Cluedo.Suspects.Suspect;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -17,7 +15,11 @@ public class GameScreen implements Screen {
     private JPanel mainPanel;
     private JTextArea infoOutput;
 
-    public GameScreen() throws IOException{
+    private Players gamePlayers;
+
+    public GameScreen(Players gamePlayers) throws IOException{
+        this.gamePlayers = gamePlayers;
+
         this.createScreen();
         this.setupScreen();
         this.displayScreen();
@@ -62,12 +64,13 @@ public class GameScreen implements Screen {
         contentPanel.add(infoPanel, gbc);
 
 
-        Board mapPanel = setupBoardPanel();
+        Players boardPanel = setupBoardPanel();
+        //JPanel boardPanel = setupBoardPanel();
 
         gbc.gridx = 0; gbc.gridy = 0;
         gbc.gridwidth = 10; gbc.gridheight = 10;
         gbc.fill = GridBagConstraints.BOTH;
-        contentPanel.add(mapPanel, gbc);
+        contentPanel.add(boardPanel, gbc);
 
         backgroundPanel.add(contentPanel);
         mainPanel.add(backgroundPanel);
@@ -87,17 +90,20 @@ public class GameScreen implements Screen {
         this.frame.dispose();
     }
 
-    private Board setupBoardPanel() {
+    private Players setupBoardPanel() {
 
         try {
-            Board boardPanel = new Board(25);
-            boardPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 0,0));
+            JPanel boardPanel = new JPanel();
+
+            Players players = this.gamePlayers;
+
             ImageIcon boardImage = new ImageIcon(getClass().getResource("..\\Assets\\Board4.PNG"));
-            JLabel boardLabel = new JLabel("", boardImage, JLabel.CENTER);
-            boardPanel.add(boardLabel, BorderLayout.CENTER);
+            JLabel boardLabel = new JLabel(boardImage);
+            boardLabel.setBounds(0,0,boardImage.getIconWidth(), boardImage.getIconHeight());
+            boardPanel.add(boardLabel);
 
-
-            return boardPanel;
+            players.add(boardLabel);
+            return players;
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Error. com.Team11.Cluedo.Board Layout not found.");
             return null;

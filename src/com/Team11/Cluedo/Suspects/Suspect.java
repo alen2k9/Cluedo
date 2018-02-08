@@ -62,10 +62,9 @@ public class Suspect extends JComponent{
         System.out.println("Draw Called");
         g2.setColor(Color.RED);
 
-        g2.fill(new Ellipse2D.Double(x*25, y*25, 20, 20));
+        g2.fill(new Ellipse2D.Double((x*25)+7, (y*25)+7, 20, 20));
         //g2.fillRect(x*25, y*25, 20, 20);
         //g2.drawRect(x*25,y*25, 20, 20);
-
     }
 
     /**

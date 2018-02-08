@@ -121,7 +121,7 @@ public class BoardPos extends JComponent{
             g2.setColor(Color.WHITE);
         }
 
-        g2.drawString(this.x + "," + this.y, x , y + 15);
+        //g2.drawString(this.x + "," + this.y, x , y + 15);
 
 
     }
