@@ -13,15 +13,11 @@ public class Cluedo {
     public static void main(String[] args) throws IOException{
 
         {
-<<<<<<< HEAD
-            Board gameBoard = new Board(25);
-            Players gamePlayers = new Players(6);
+            Board gameBoard = new Board();
+            Players gamePlayers = new Players();
 
             GameScreen gameScreen = new GameScreen(gamePlayers);
-=======
-            GameScreen gameScreen = new GameScreen();
             Command com = new Command(gameScreen);
->>>>>>> adf0b6d7d8ac1a0cf2b87acbef460a79ca7ca2d6
         }
     }
 

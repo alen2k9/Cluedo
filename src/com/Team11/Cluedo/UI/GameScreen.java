@@ -1,5 +1,6 @@
 package com.Team11.Cluedo.UI;
 
+import com.Team11.Cluedo.Board.Board;
 import com.Team11.Cluedo.Suspects.Players;
 import com.Team11.Cluedo.UI.Panel.BackgroundPanel;
 
@@ -100,20 +101,17 @@ public class GameScreen implements Screen {
     private Players setupBoardPanel() {
 
         try {
-<<<<<<< HEAD
-            JPanel boardPanel = new JPanel();
-=======
+            //JPanel boardPanel = new JPanel();
             Board boardPanel = new Board();
             boardPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 0,0));
             ImageIcon boardImage = new ImageIcon(getClass().getResource("..\\Assets\\Board4.PNG"));
             JLabel boardLabel = new JLabel("", boardImage, JLabel.CENTER);
             boardPanel.add(boardLabel, BorderLayout.CENTER);
->>>>>>> adf0b6d7d8ac1a0cf2b87acbef460a79ca7ca2d6
 
             Players players = this.gamePlayers;
 
-            ImageIcon boardImage = new ImageIcon(getClass().getResource("..\\Assets\\Board4.PNG"));
-            JLabel boardLabel = new JLabel(boardImage);
+            //ImageIcon boardImage = new ImageIcon(getClass().getResource("..\\Assets\\Board4.PNG"));
+            //JLabel boardLabel = new JLabel(boardImage);
             boardLabel.setBounds(0,0,boardImage.getIconWidth(), boardImage.getIconHeight());
             boardPanel.add(boardLabel);
 

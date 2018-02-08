@@ -117,11 +117,6 @@ public class Suspect extends JComponent {
             g2.setColor(Color.orange);
         }
 
-<<<<<<< HEAD
-        g2.fill(new Ellipse2D.Double((x*25)+7, (y*25)+7, 20, 20));
-        //g2.fillRect(x*25, y*25, 20, 20);
-        //g2.drawRect(x*25,y*25, 20, 20);
-=======
         /**
          * Fourth player is yellow
          */
@@ -154,7 +149,6 @@ public class Suspect extends JComponent {
          * Draw the ellipse at an offset of the suspects location and the size of each tile
          */
         g2.fill(new Ellipse2D.Double(this.location.getX()*25, this.location.getY()*25, 20,20));
->>>>>>> adf0b6d7d8ac1a0cf2b87acbef460a79ca7ca2d6
     }
 
     /**

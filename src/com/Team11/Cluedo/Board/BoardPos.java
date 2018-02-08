@@ -207,7 +207,6 @@ public class BoardPos extends JComponent {
             g2.drawRect((int)p.getX(), (int)p.getY(), this.tileSize, this.tileSize);
             g2.setColor(Color.WHITE);
         }
-<<<<<<< HEAD
 
         //g2.drawString(this.x + "," + this.y, x , y + 15);
 
@@ -218,12 +217,6 @@ public class BoardPos extends JComponent {
     /**
      * Mutator Methods for Class
      */
-
-    public void setX(int a){
-        this.x = a;
-=======
->>>>>>> adf0b6d7d8ac1a0cf2b87acbef460a79ca7ca2d6
-    }
 
     public void findNeighbours(BoardPos bp){
 
