@@ -208,7 +208,7 @@ public class BoardPos extends JComponent {
             g2.setColor(Color.WHITE);
         }
 
-        //g2.drawString(this.x + "," + this.y, x , y + 15);
+        //g2.drawString(this.getLocation().getX() + "," + this.getLocation().getY(), (int)this.getLocation().getX() , (int)this.getLocation().getY() + 15);
 
 
     }
