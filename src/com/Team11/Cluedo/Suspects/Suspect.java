@@ -19,12 +19,6 @@ public class Suspect extends JComponent {
     private Color playerColour;
 
     /**
-     * Default Constructor
-     */
-    public Suspect(){
-    }
-
-    /**
      * Parametrized Constuctor
      * @param p : The location of the player
      * @param name : The name of the player
@@ -100,7 +94,7 @@ public class Suspect extends JComponent {
     public void draw(Graphics g){
         Graphics2D g2 = (Graphics2D) g;
 
-        System.out.println("Draw Called");
+        //System.out.println("Draw Called");
         /**
          * Depending on the suspectID of each suspect they will be drawn as different coloured ellipses
          */
@@ -133,30 +127,57 @@ public class Suspect extends JComponent {
          * Moving up
          */
         if (dir == Direction.NORTH){
+            if (this.getLoc().getY() != 0.0) {
+                this.location.setLocation(this.location.getX(), this.location.getY() - numMove);
+            }
 
-            this.location.setLocation(this.location.getX(), this.location.getY() - numMove);
+            else{
+                System.out.println("Y : " + this.getY());
+                System.out.println("Cannot move up");
+            }
         }
 
         /**
          * Moving down
          */
         else if (dir == Direction.SOUTH){
-            //if (this.getLoc())
-            this.location.setLocation(this.location.getX(), this.location.getY() + numMove);
+            if (this.getLoc().getY() != 26.0) {
+                this.location.setLocation(this.location.getX(), this.location.getY() + numMove);
+            }
+
+            else{
+                System.out.println("Y : " + this.getY());
+                System.out.println("Cannot move down");
+            }
         }
 
         /**
          * Moving right
          */
         else if (dir == Direction.EAST) {
-            this.location.setLocation(this.location.getX() + numMove, this.location.getY());
+            if (this.getLoc().getX() != 25.0) {
+                this.location.setLocation(this.location.getX() + numMove, this.location.getY());
+            }
+
+            else{
+                System.out.println("X : " + this.getX());
+                System.out.println("Cannot move right");
+            }
         }
 
         /**
          * Moving left
          */
         else if (dir == Direction.WEST){
-            this.location.setLocation(this.location.getX() - numMove, this.location.getY());
+            if (this.getLoc().getX() != 0.0){
+                this.location.setLocation(this.location.getX() - numMove, this.location.getY());
+            }
+
+            else{
+                System.out.println("X : " + this.getX());
+                System.out.println("Cannot move left");
+            }
+
         }
 
         else{

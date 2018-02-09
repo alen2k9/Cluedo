@@ -148,77 +148,28 @@ public class BoardPos extends JComponent {
     public void draw(Graphics g, Point p){
         Graphics2D g2 = (Graphics2D) g;
 
-        /**
-         * Blank Tile
-         */
-        if (this.getType() == TileType.BLANK){
-            g2.setColor(Color.BLACK);
-            g2.fillRect((int)p.getX(), (int)p.getY(), this.tileSize, this.tileSize);
-            g2.drawRect((int)p.getX(), (int)p.getY(), this.tileSize, this.tileSize);
-            g2.setColor(Color.WHITE);
+        switch (this.type) {
+            case BLANK:
+                g2.setColor(Color.BLACK);
+                break;
+            case HALLWAY:
+                g2.setColor(Color.GREEN);
+                break;
+            case DOOR:
+                g2.setColor(Color.cyan);
+                break;
+            case SPAWN:
+                g2.setColor(Color.RED);
+                break;
+            case SECRETPASSAGE:
+                g2.setColor(Color.blue);
+                break;
+            default:
+                g2.setColor(Color.gray);
+                break;
         }
-
-        /**
-         * Hallway Tile
-         */
-        else if(this.getType() == TileType.HALLWAY){
-            g2.setColor(Color.GREEN);
-            g2.fillRect((int)p.getX(), (int)p.getY(), this.tileSize, this.tileSize);
-            g2.drawRect((int)p.getX(), (int)p.getY(), this.tileSize, this.tileSize);
-            g2.setColor(Color.WHITE);
-        }
-
-        /**
-         * DOOR Tile
-         */
-        else if(this.getType() == TileType.DOOR){
-            g2.setColor(Color.CYAN);
-            g2.fillRect((int)p.getX(), (int)p.getY(), this.tileSize, this.tileSize);
-            g2.drawRect((int)p.getX(), (int)p.getY(), this.tileSize, this.tileSize);
-            g2.setColor(Color.WHITE);
-        }
-
-        /**
-         * Spawn Tile
-         */
-        else if(this.getType() == TileType.SPAWN){
-            g2.setColor(Color.RED);
-            g2.fillRect((int)p.getX(), (int)p.getY(), this.tileSize, this.tileSize);
-            g2.drawRect((int)p.getX(), (int)p.getY(), this.tileSize, this.tileSize);
-            g2.setColor(Color.WHITE);
-        }
-
-        /**
-         * Secret Tile
-         */
-        else if(this.getType() == TileType.SECRETPASSAGE){
-            g2.setColor(Color.BLUE);
-            g2.fillRect((int)p.getX(), (int)p.getY(), this.tileSize, this.tileSize);
-            g2.drawRect((int)p.getX(), (int)p.getY(), this.tileSize, this.tileSize);
-            g2.setColor(Color.WHITE);
-        }
-
-        /**
-         * All Other Tiles
-         */
-        else{
-            g2.setColor(Color.GRAY);
-            g2.fillRect((int)p.getX(), (int)p.getY(), this.tileSize, this.tileSize);
-            g2.drawRect((int)p.getX(), (int)p.getY(), this.tileSize, this.tileSize);
-            g2.setColor(Color.WHITE);
-        }
-
-        //g2.drawString(this.getLocation().getX() + "," + this.getLocation().getY(), (int)this.getLocation().getX() , (int)this.getLocation().getY() + 15);
-
-
+        g2.fillRect((int)p.getX(), (int)p.getY(), this.tileSize, this.tileSize);
+        g2.drawRect((int)p.getX(), (int)p.getY(), this.tileSize, this.tileSize);
     }
 
-
-    /**
-     * Mutator Methods for Class
-     */
-
-    public void findNeighbours(BoardPos bp){
-
-    }
 }

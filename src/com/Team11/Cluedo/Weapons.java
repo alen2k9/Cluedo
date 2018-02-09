@@ -27,7 +27,7 @@ public class Weapons extends JComponent{
     /**
      * ArrayLists containing all of the spawn points in the for each of the rooms
      */
-    private ArrayList<ArrayList<Point>> spawnLists = new ArrayList<>();
+    private ArrayList<ArrayList<Point>> spawnLists = new ArrayList<ArrayList<Point>>();
 
     private ArrayList<Point> kitchenSpawns = new ArrayList<>();
     private ArrayList<Point> ballroomSpawns = new ArrayList<>();
@@ -45,26 +45,26 @@ public class Weapons extends JComponent{
      * Each room has six different positions in which a weapon can be as it is possible for all of the weapons to be in a single room
      */
     private void fillKitchen(){
-        kitchenSpawns.add(new Point(1,2));
-        kitchenSpawns.add(new Point(2,2));
-        kitchenSpawns.add(new Point(1,3));
-        kitchenSpawns.add(new Point(1,4));
-        kitchenSpawns.add(new Point(1,5));
-        kitchenSpawns.add(new Point(1,6));
+        kitchenSpawns.add(new Point(1, 3));
+        kitchenSpawns.add(new Point(2, 3));
+        kitchenSpawns.add(new Point(3, 3));
+        kitchenSpawns.add(new Point(4, 3));
+        kitchenSpawns.add(new Point(5, 3));
+        kitchenSpawns.add(new Point(6, 3));
     }
 
     private void fillBallroom(){
-        ballroomSpawns.add(new Point( 10,5));
-        ballroomSpawns.add(new Point( 11,5));
-        ballroomSpawns.add(new Point( 12,5));
-        ballroomSpawns.add(new Point( 13,5));
-        ballroomSpawns.add(new Point( 14,5));
-        ballroomSpawns.add(new Point( 15,5 ));
+        ballroomSpawns.add(new Point(10,4));
+        ballroomSpawns.add(new Point(11,4));
+        ballroomSpawns.add(new Point(12,4));
+        ballroomSpawns.add(new Point(13,4));
+        ballroomSpawns.add(new Point(14,4));
+        ballroomSpawns.add(new Point(15,4));
     }
 
     private void fillConservatory(){
         conservatorySpawns.add(new Point(19,3));
-        conservatorySpawns.add(new Point(20,3 ));
+        conservatorySpawns.add(new Point(20,3));
         conservatorySpawns.add(new Point(21,3));
         conservatorySpawns.add(new Point(22,3));
         conservatorySpawns.add(new Point(23,3));
@@ -78,51 +78,52 @@ public class Weapons extends JComponent{
         diningroomSpawns.add(new Point(4,12));
         diningroomSpawns.add(new Point(5,12));
         diningroomSpawns.add(new Point(6,12));
+
     }
 
     private void fillBilliardroom(){
-        billiardroomSpawns.add(new Point( 19,9));
-        billiardroomSpawns.add(new Point( 20,9));
-        billiardroomSpawns.add(new Point( 21,9));
-        billiardroomSpawns.add(new Point( 22,9));
-        billiardroomSpawns.add(new Point( 23,9));
-        billiardroomSpawns.add(new Point( 24,9));
+        billiardroomSpawns.add(new Point(19, 11 ));
+        billiardroomSpawns.add(new Point(20, 11 ));
+        billiardroomSpawns.add(new Point(21, 11 ));
+        billiardroomSpawns.add(new Point(22, 11 ));
+        billiardroomSpawns.add(new Point(23, 11 ));
+        billiardroomSpawns.add(new Point(24, 11 ));
     }
 
     private void fillLibrary(){
-        librarySpawns.add(new Point(18,24));
-        librarySpawns.add(new Point(17,24));
-        librarySpawns.add(new Point(16,24));
-        librarySpawns.add(new Point(15,24));
-        librarySpawns.add(new Point(14,24));
-        librarySpawns.add(new Point(13,24));
+        librarySpawns.add(new Point(19, 16));
+        librarySpawns.add(new Point(20, 16));
+        librarySpawns.add(new Point(21, 16));
+        librarySpawns.add(new Point(22, 16));
+        librarySpawns.add(new Point(23, 16));
+        librarySpawns.add(new Point(24, 16));
     }
 
     private void fillLounge(){
-        loungeSpawns.add(new Point(22, 1));
-        loungeSpawns.add(new Point(22, 2));
-        loungeSpawns.add(new Point(22, 3));
-        loungeSpawns.add(new Point(22, 4));
-        loungeSpawns.add(new Point( 22,5));
-        loungeSpawns.add(new Point(22, 6));
+        loungeSpawns.add(new Point(1,21));
+        loungeSpawns.add(new Point(2,21));
+        loungeSpawns.add(new Point(3,21));
+        loungeSpawns.add(new Point(4,21));
+        loungeSpawns.add(new Point(5,21));
+        loungeSpawns.add(new Point(6,21));
     }
 
     private void fillHall(){
-        hallSpawns.add(new Point(24, 10));
-        hallSpawns.add(new Point(24, 11));
-        hallSpawns.add(new Point(24, 12));
-        hallSpawns.add(new Point(24, 13));
-        hallSpawns.add(new Point(24, 14));
-        hallSpawns.add(new Point(24, 15));
+        hallSpawns.add(new Point(10, 24));
+        hallSpawns.add(new Point(11, 24));
+        hallSpawns.add(new Point(12, 24));
+        hallSpawns.add(new Point(13, 24));
+        hallSpawns.add(new Point(14, 24));
+        hallSpawns.add(new Point(15, 24));
     }
 
     private void fillStudy(){
-        studySpawns.add(new Point(24, 18));
-        studySpawns.add(new Point(24, 19));
-        studySpawns.add(new Point(24, 20));
-        studySpawns.add(new Point(24, 21));
-        studySpawns.add(new Point(24, 22));
-        studySpawns.add(new Point(24, 23));
+        studySpawns.add(new Point(19,24));
+        studySpawns.add(new Point(20,24));
+        studySpawns.add(new Point(21,24));
+        studySpawns.add(new Point(22,24));
+        studySpawns.add(new Point(23,24));
+        studySpawns.add(new Point(24,24));
     }
 
 
@@ -143,8 +144,6 @@ public class Weapons extends JComponent{
          * Used until we have actual graphics for them
          */
         private String weaponGraphic;
-
-        public Weapon(){}
 
         public Weapon(int i, String n, String weaponG){
             this.weaponID = i;
@@ -190,10 +189,10 @@ public class Weapons extends JComponent{
             Graphics2D g2 = (Graphics2D) g;
 
             g2.setColor(Color.BLACK);
-            g2.fill(new Ellipse2D.Double((int)this.getLocation().getY()*25, (int)this.getLocation().getX()*25, 20,20));
+            g2.fill(new Ellipse2D.Double((int)this.getLocation().getX()*25, (int)this.getLocation().getY()*25, 20,20));
             g2.setColor(Color.WHITE);
 
-            g2.drawString(this.weaponGraphic,(int)this.getLocation().getY()*25 + 8, (int)this.getLocation().getX()*25 + 14);
+            g2.drawString(this.weaponGraphic,(int)this.getLocation().getX()*25 + 6, (int)this.getLocation().getY()*25 + 14);
 
         }
     }
@@ -208,7 +207,6 @@ public class Weapons extends JComponent{
      * Default Constructor
      */
     public Weapons(){
-        addAllRooms();
         fillKitchen();
         fillBallroom();
         fillConservatory();
@@ -218,28 +216,52 @@ public class Weapons extends JComponent{
         fillLounge();
         fillHall();
         fillStudy();
+        addAllRooms();
+
         for (int i = 0; i < NUM_WEAPONS; i++){
             weapons[i] = new Weapon(i, weaponName[i],weaponGraphics[i]);
         }
 
+        /**
+         * Add all weapons to rooms
+         */
         for (int i = 0; i < weapons.length; i++){
-            Random rn = new Random();
-            int rand = rn.nextInt(9);
-            addWeaponToRoom(i, spawnLists.get(rand));
+            addWeaponToBoard(weapons[i].getWeaponID());
         }
 
+    }
+
+    private void addWeaponToBoard(int weaponID){
+        Random random = new Random();
+        int randomInt = random.nextInt(spawnLists.size());
+        ArrayList<Point> tmpList = this.spawnLists.get(randomInt);
+
+        Point spawnPoint = getRandomPoint(tmpList);
+        //System.out.println(weapons[weaponID].getName() + " = " + spawnPoint.getLocation());
+        weapons[weaponID].setLocation(spawnPoint);
+    }
+
+    public Point getRandomPoint(ArrayList<Point> pointList){
+        Random random = new Random();
+        int randomInt = random.nextInt(pointList.size());
+
+        Point retPoint = pointList.get(randomInt);
+        //System.out.println("Random Num" + randomInt + "Random Point: " + retPoint.getLocation());
+        pointList.remove(randomInt);
+        return retPoint;
     }
 
     public void addAllRooms(){
         this.spawnLists.add(kitchenSpawns);
         this.spawnLists.add(ballroomSpawns);
-        this.spawnLists.add(conservatorySpawns);
         this.spawnLists.add(diningroomSpawns);
         this.spawnLists.add(billiardroomSpawns);
         this.spawnLists.add(librarySpawns);
         this.spawnLists.add(loungeSpawns);
         this.spawnLists.add(hallSpawns);
         this.spawnLists.add(studySpawns);
+        this.spawnLists.add(conservatorySpawns);
+
     }
 
     /**
@@ -251,22 +273,6 @@ public class Weapons extends JComponent{
         return weapons[i];
     }
 
-    /**
-     * Method to add a weapon to a room once an accusation has been made
-     * Weapons are placed into the room at a random location from the rooms spawn list
-     * @param weaponID : The ID of the weapon to place into the room
-     * */
-    public void addWeaponToRoom(int weaponID, ArrayList<Point> spawnList){
-
-        Random rand = new Random();
-        int ranN;
-
-        ranN = rand.nextInt(spawnList.size());
-        weapons[weaponID].setLocation(spawnList.get(ranN));
-        spawnList.remove(ranN);
-        System.out.println(weapons[weaponID].getName() + " added to board at " + weapons[weaponID].getLocation().toString());
-
-    }
 
     public void paintComponent(Graphics g){
         for(int i = 0; i < weapons.length; i++){
