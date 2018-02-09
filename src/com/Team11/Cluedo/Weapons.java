@@ -8,8 +8,10 @@
 
 package com.Team11.Cluedo;
 
+
 import javax.swing.*;
 import java.awt.*;
+import java.awt.geom.Ellipse2D;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -25,6 +27,8 @@ public class Weapons extends JComponent{
     /**
      * ArrayLists containing all of the spawn points in the for each of the rooms
      */
+    private ArrayList<ArrayList<Point>> spawnLists = new ArrayList<>();
+
     private ArrayList<Point> kitchenSpawns = new ArrayList<>();
     private ArrayList<Point> ballroomSpawns = new ArrayList<>();
     private ArrayList<Point> conservatorySpawns = new ArrayList<>();
@@ -35,11 +39,12 @@ public class Weapons extends JComponent{
     private ArrayList<Point> studySpawns = new ArrayList<>();
     private ArrayList<Point> hallSpawns = new ArrayList<>();
 
+
     /**
      * Methods to add all of the spawn points to each of the spawning lists
      * Each room has six different positions in which a weapon can be as it is possible for all of the weapons to be in a single room
      */
-    public void fillKitchen(){
+    private void fillKitchen(){
         kitchenSpawns.add(new Point(2,1));
         kitchenSpawns.add(new Point(2,2));
         kitchenSpawns.add(new Point(3,1));
@@ -48,7 +53,7 @@ public class Weapons extends JComponent{
         kitchenSpawns.add(new Point(6,1));
     }
 
-    public void fillBallroom(){
+    private void fillBallroom(){
         ballroomSpawns.add(new Point(5, 10));
         ballroomSpawns.add(new Point(5, 11));
         ballroomSpawns.add(new Point(5, 12));
@@ -57,7 +62,7 @@ public class Weapons extends JComponent{
         ballroomSpawns.add(new Point(5, 15));
     }
 
-    public void fillConservatory(){
+    private void fillConservatory(){
         conservatorySpawns.add(new Point(3,19));
         conservatorySpawns.add(new Point(3,20));
         conservatorySpawns.add(new Point(3,21));
@@ -66,7 +71,7 @@ public class Weapons extends JComponent{
         conservatorySpawns.add(new Point(3,24));
     }
 
-    public void fillDiningroom(){
+    private void fillDiningroom(){
         diningroomSpawns.add(new Point(12,1));
         diningroomSpawns.add(new Point(12,2));
         diningroomSpawns.add(new Point(12,3));
@@ -75,7 +80,7 @@ public class Weapons extends JComponent{
         diningroomSpawns.add(new Point(12,6));
     }
 
-    public void fillBilliardroom(){
+    private void fillBilliardroom(){
         billiardroomSpawns.add(new Point(9, 19));
         billiardroomSpawns.add(new Point(9, 20));
         billiardroomSpawns.add(new Point(9, 21));
@@ -84,7 +89,7 @@ public class Weapons extends JComponent{
         billiardroomSpawns.add(new Point(9, 24));
     }
 
-    public void fillLibrary(){
+    private void fillLibrary(){
         librarySpawns.add(new Point(24, 18));
         librarySpawns.add(new Point(24, 17));
         librarySpawns.add(new Point(24, 16));
@@ -93,7 +98,7 @@ public class Weapons extends JComponent{
         librarySpawns.add(new Point(24, 13));
     }
 
-    public void fillLounge(){
+    private void fillLounge(){
         loungeSpawns.add(new Point(1 ,22));
         loungeSpawns.add(new Point(2 ,22));
         loungeSpawns.add(new Point(3 ,22));
@@ -102,7 +107,7 @@ public class Weapons extends JComponent{
         loungeSpawns.add(new Point(6 ,22));
     }
 
-    public void fillHall(){
+    private void fillHall(){
         hallSpawns.add(new Point(10,24));
         hallSpawns.add(new Point(11,24));
         hallSpawns.add(new Point(12,24));
@@ -111,7 +116,7 @@ public class Weapons extends JComponent{
         hallSpawns.add(new Point(15,24));
     }
 
-    public void fillStudy(){
+    private void fillStudy(){
         studySpawns.add(new Point(18,24));
         studySpawns.add(new Point(19,24));
         studySpawns.add(new Point(20,24));
@@ -169,7 +174,9 @@ public class Weapons extends JComponent{
             Graphics2D g2 = (Graphics2D) g;
 
             g2.setColor(Color.BLACK);
-            System.out.println("Draw Called");
+            g2.fill(new Ellipse2D.Double((int)this.getLocation().getY()*25, (int)this.getLocation().getX()*25, 20,20));
+            g2.setColor(Color.WHITE);
+
             /**
              * Candlestick
              */
@@ -182,7 +189,7 @@ public class Weapons extends JComponent{
              */
 
             else if (this.getWeaponID() == 1){
-                g2.drawString("D", (int)this.getLocation().getX()*25, (int)this.getLocation().getY()*25);
+                g2.drawString("D", (int)this.getLocation().getY()*25, (int)this.getLocation().getX()*25);
             }
 
             /**
@@ -190,23 +197,21 @@ public class Weapons extends JComponent{
              */
 
             else if (this.getWeaponID() == 2){
-                g2.drawString("LP", (int)this.getLocation().getX()*25, (int)this.getLocation().getY()*25);
+                g2.drawString("LP", (int)this.getLocation().getY()*25, (int)this.getLocation().getX()*25);
             }
 
             /**
              * Revolver
              */
-
             else if (this.getWeaponID() == 3){
-                g2.drawString("Re", (int)this.getLocation().getX()*25, (int)this.getLocation().getY()*25);
+                g2.drawString("Re", (int)this.getLocation().getY()*25, (int)this.getLocation().getX()*25);
             }
 
             /**
              * Rope
              */
-
             else if (this.getWeaponID() == 4){
-                g2.drawString("R", (int)this.getLocation().getX()*25, (int)this.getLocation().getY()*25);
+                g2.drawString("R", (int)this.getLocation().getY()*25, (int)this.getLocation().getX()*25);
             }
 
             /**
@@ -214,7 +219,7 @@ public class Weapons extends JComponent{
              */
 
             else if (this.getWeaponID() == 5){
-                g2.drawString("S", (int)this.getLocation().getX()*25, (int)this.getLocation().getY()*25);
+                g2.drawString("S", (int)this.getLocation().getY()*25, (int)this.getLocation().getX()*25);
             }
 
             else{
@@ -232,6 +237,7 @@ public class Weapons extends JComponent{
      * Default Constructor
      */
     public Weapons(){
+        addAllRooms();
         fillKitchen();
         fillBallroom();
         fillConservatory();
@@ -241,17 +247,28 @@ public class Weapons extends JComponent{
         fillLounge();
         fillHall();
         fillStudy();
-
-        for (int i = 0; i < weapons.length; i++){
-            Random rn = new Random();
-            int rand = rn.nextInt(10);
-            addWeaponToRoom(i, rand);
-        }
-
         for (int i = 0; i < NUM_WEAPONS; i++){
             weapons[i] = new Weapon(i, weaponName[i]);
         }
 
+        for (int i = 0; i < weapons.length; i++){
+            Random rn = new Random();
+            int rand = rn.nextInt(10);
+            addWeaponToRoom(i, spawnLists.get(rand));
+        }
+
+    }
+
+    public void addAllRooms(){
+        this.spawnLists.add(kitchenSpawns);
+        this.spawnLists.add(ballroomSpawns);
+        this.spawnLists.add(conservatorySpawns);
+        this.spawnLists.add(diningroomSpawns);
+        this.spawnLists.add(billiardroomSpawns);
+        this.spawnLists.add(librarySpawns);
+        this.spawnLists.add(loungeSpawns);
+        this.spawnLists.add(hallSpawns);
+        this.spawnLists.add(studySpawns);
     }
 
     /**
@@ -267,103 +284,17 @@ public class Weapons extends JComponent{
      * Method to add a weapon to a room once an accusation has been made
      * Weapons are placed into the room at a random location from the rooms spawn list
      * @param weaponID : The ID of the weapon to place into the room
-     * @param roomID : The room to put the weapon in
-     */
-    public void addWeaponToRoom(int weaponID, int roomID){
+     * */
+    public void addWeaponToRoom(int weaponID, ArrayList<Point> spawnList){
 
         Random rand = new Random();
         int ranN;
 
-        /**
-         * Kitchen
-         */
-        if (roomID == 0){
-            ranN = rand.nextInt(kitchenSpawns.size() + 1);
-            weapons[weaponID].setLocation(kitchenSpawns.get(ranN));
-            kitchenSpawns.remove(ranN);
-            System.out.println(weapons[weaponID].getName() + " added to kitchen at position " + weapons[weaponID].getLocation().toString());
-        }
+        ranN = rand.nextInt(spawnList.size() + 1);
+        weapons[weaponID].setLocation(spawnList.get(ranN));
+        spawnList.remove(ranN);
+        System.out.println(weapons[weaponID].getName() + " added to board at " + weapons[weaponID].getLocation().toString());
 
-        /**
-         * Ball Room
-         */
-        else if (roomID == 1){
-            ranN = rand.nextInt(ballroomSpawns.size() + 1);
-            weapons[weaponID].setLocation(ballroomSpawns.get(ranN));
-            ballroomSpawns.remove(ranN);
-            System.out.println(weapons[weaponID].getName() + " added to Ball Room at position " + weapons[weaponID].getLocation().toString());
-        }
-
-        /**
-         * Conservatory
-         */
-        else if (roomID == 2){
-            ranN = rand.nextInt(conservatorySpawns.size() + 1);
-            weapons[weaponID].setLocation(conservatorySpawns.get(ranN));
-            conservatorySpawns.remove(ranN);
-            System.out.println(weapons[weaponID].getName() + " added to Conservatory at position " + weapons[weaponID].getLocation().toString());
-        }
-
-        /**
-         * Dining Room
-         */
-        else if (roomID == 3){
-            ranN = rand.nextInt(diningroomSpawns.size() + 1);
-            weapons[weaponID].setLocation(diningroomSpawns.get(ranN));
-            diningroomSpawns.remove(ranN);
-            System.out.println(weapons[weaponID].getName() + " added to Dinging Room at position " + weapons[weaponID].getLocation().toString());
-        }
-
-        /**
-         * Billiard Room
-         */
-        else if (roomID == 4){
-            ranN = rand.nextInt(billiardroomSpawns.size() + 1);
-            weapons[weaponID].setLocation(billiardroomSpawns.get(ranN));
-            billiardroomSpawns.remove(ranN);
-            System.out.println(weapons[weaponID].getName() + " added to Billiard at position " + weapons[weaponID].getLocation().toString());
-        }
-
-        /**
-         * Library
-         */
-        else if (roomID == 5){
-            ranN = rand.nextInt(librarySpawns.size() + 1);
-            weapons[weaponID].setLocation(librarySpawns.get(ranN));
-            librarySpawns.remove(ranN);
-            System.out.println(weapons[weaponID].getName() + " added to Library at position " + weapons[weaponID].getLocation().toString());
-        }
-
-
-        /**
-         * Lounge
-         */
-        else if (roomID == 6){
-            ranN = rand.nextInt(loungeSpawns.size() + 1);
-            weapons[weaponID].setLocation(loungeSpawns.get(ranN));
-            loungeSpawns.remove(ranN);
-            System.out.println(weapons[weaponID].getName() + " added to Lounge at position " + weapons[weaponID].getLocation().toString());
-        }
-
-        /**
-         * Hall
-         */
-        else if (roomID == 7){
-            ranN = rand.nextInt(hallSpawns.size() + 1);
-            weapons[weaponID].setLocation(hallSpawns.get(ranN));
-            hallSpawns.remove(ranN);
-            System.out.println(weapons[weaponID].getName() + " added to Hall at position " + weapons[weaponID].getLocation().toString());
-        }
-
-        /**
-         * Study
-         */
-        else if (roomID == 8){
-            ranN = rand.nextInt(studySpawns.size() + 1);
-            weapons[weaponID].setLocation(studySpawns.get(ranN));
-            studySpawns.remove(ranN);
-            System.out.println(weapons[weaponID].getName() + " added to Study at position " + weapons[weaponID].getLocation().toString());
-        }
     }
 
     public void paintComponent(Graphics g){
