@@ -1,6 +1,8 @@
 package com.Team11.Cluedo.Controls;
 
+import com.Team11.Cluedo.Suspects.Direction;
 import com.Team11.Cluedo.UI.GameScreen;
+
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -74,6 +76,8 @@ public class CommandInput {
                     {
                         mainPanel.getInfoOutput().append("\nUp");
                         //playerMove character up
+                        mainPanel.getGamePlayers().playerMove(1, Direction.NORTH, 1);
+                        mainPanel.reDraw();
                         mainPanel.getCommandInput().setText("");
                         playerMovement();
                     }
@@ -81,6 +85,8 @@ public class CommandInput {
                     {
                         mainPanel.getInfoOutput().append("\nDown");
                         //playerMove character down
+                        mainPanel.getGamePlayers().playerMove(1, Direction.SOUTH, 1);
+                        mainPanel.reDraw();
                         mainPanel.getCommandInput().setText("");
                         playerMovement();
                     }
@@ -88,6 +94,8 @@ public class CommandInput {
                     {
                         mainPanel.getInfoOutput().append("\nLeft");
                         //playerMove character left
+                        mainPanel.getGamePlayers().playerMove(1, Direction.WEST, 1);
+                        mainPanel.reDraw();
                         mainPanel.getCommandInput().setText("");
                         playerMovement();
                     }
@@ -95,6 +103,8 @@ public class CommandInput {
                     {
                         mainPanel.getInfoOutput().append("\nRight");
                         //playerMove character right
+                        mainPanel.getGamePlayers().playerMove(1, Direction.EAST, 1);
+                        mainPanel.reDraw();
                         mainPanel.getCommandInput().setText("");
                         playerMovement();
                     }
