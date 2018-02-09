@@ -12,6 +12,7 @@ package com.Team11.Cluedo.UI;
 import com.Team11.Cluedo.Board.Board;
 import com.Team11.Cluedo.Suspects.Players;
 import com.Team11.Cluedo.UI.Panel.BackgroundPanel;
+import com.Team11.Cluedo.Weapons;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -31,10 +32,12 @@ public class GameScreen implements Screen {
 
     private Players gamePlayers;
     private Board gameBoard;
+    private Weapons gameWeapons;
 
-    public GameScreen(Players gamePlayers, Board gameBoard) throws IOException{
+    public GameScreen(Players gamePlayers, Board gameBoard, Weapons gameWeapons) throws IOException{
         this.gamePlayers = gamePlayers;
         this.gameBoard = gameBoard;
+        this.gameWeapons = gameWeapons;
 
         this.createScreen();
         this.setupScreen();
@@ -78,7 +81,7 @@ public class GameScreen implements Screen {
         gbc.fill = GridBagConstraints.BOTH;
         contentPanel.add(infoPanel, gbc);
 
-        this.boardPanel = new BoardUI(this.gamePlayers, this.gameBoard, new BoardComponent());
+        this.boardPanel = new BoardUI(this.gamePlayers, this.gameBoard, this.gameWeapons, new BoardComponent());
         gbc.gridx = 0; gbc.gridy = 0;
         gbc.gridwidth = 10; gbc.gridheight = 10;
         gbc.fill = GridBagConstraints.NONE;
@@ -162,39 +165,41 @@ public class GameScreen implements Screen {
     }
 
     public class BoardComponent extends JComponent {
+        @Override
         public void paintComponent(Graphics g) {
             URL in = this.getClass().getResource("Board.png");
-            Graphics2D g2 = (Graphics2D) g;
             Image img1 = Toolkit.getDefaultToolkit().getImage(in);
-            g2.drawImage(img1, 0, 0, this);
-            g2.finalize();
+            g.drawImage(img1, 0, 0, this);
         }
     }
 
     public class BoardUI extends JLayeredPane {
         Players gamePlayers;
         Board gameBoard;
+        Weapons gameWeapons;
         BoardComponent boardComponent;
 
-        public BoardUI(Players players, Board board, BoardComponent boardImage) {
+        public BoardUI(Players players, Board board, Weapons weapons, BoardComponent boardImage) {
             this.gamePlayers = players;
             this.gameBoard = board;
+            this.gameWeapons = weapons;
             this.boardComponent = boardImage;
 
-            this.setLayout(new BorderLayout());
-
-            this.add(this.gameBoard, 0);
-            this.add(this.boardComponent, 1);
-            this.add(this.gamePlayers, 2);
+            this.add(this.gameBoard, new Integer(0));
+            this.add(this.boardComponent, new Integer(1));
+            this.add(this.gamePlayers, new Integer(2));
+            this.add(this.gameWeapons, new Integer(3));
 
             Dimension imageSize = new Dimension(650, 675);
             this.setPreferredSize(imageSize);
         }
 
+        @Override
         public void paint(Graphics g) {
             gameBoard.paintComponent(g);
             boardComponent.paintComponent(g);
-            this.gamePlayers.paintComponent(g);
+            gamePlayers.paintComponent(g);
+            gameWeapons.paintComponent(g);
         }
     }
 }

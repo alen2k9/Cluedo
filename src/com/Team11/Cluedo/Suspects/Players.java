@@ -18,7 +18,7 @@ public class Players extends JComponent {
 
     private final Point[] SUSPECT_SPAWN = new Point[]
             {new Point(10,1), new Point(15,1), new Point(24,7),
-             new Point(1,18), new Point(24,20), new Point(8,25)};
+             new Point(24,20), new Point(8,25), new Point(1,18)};
     private final String[] PLAYER_NAME = new String[] {
             "Miss White", "Mr. Green", "Ms. Peacock", "Mr. Plum", "Miss Scarlett", "Colonel Mustard"};
 

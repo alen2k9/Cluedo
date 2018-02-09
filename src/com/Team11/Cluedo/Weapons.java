@@ -160,18 +160,22 @@ public class Weapons extends JComponent{
             return this.weaponID;
         }
 
+        @Override
         public void setName(String n){
             this.name = n;
         }
 
+        @Override
         public String getName(){
             return this.name;
         }
 
+        @Override
         public void setLocation(Point p){
             this.location = p;
         }
 
+        @Override
         public Point getLocation(){
             return this.location;
         }
@@ -189,7 +193,7 @@ public class Weapons extends JComponent{
             g2.fill(new Ellipse2D.Double((int)this.getLocation().getY()*25, (int)this.getLocation().getX()*25, 20,20));
             g2.setColor(Color.WHITE);
 
-            g2.drawString(this.weaponGraphic,(int)this.getLocation().getY()*25 + 10, (int)this.getLocation().getX()*25 + 10);
+            g2.drawString(this.weaponGraphic,(int)this.getLocation().getY()*25 + 8, (int)this.getLocation().getX()*25 + 14);
 
         }
     }

@@ -12,7 +12,9 @@ public class Cluedo {
         {
             Board gameBoard = new Board();
             Players gamePlayers = new Players(6);
-            GameScreen gameScreen = new GameScreen(gamePlayers, gameBoard);
+            Weapons gameWeapons = new Weapons();
+
+            GameScreen gameScreen = new GameScreen(gamePlayers, gameBoard, gameWeapons);
             gameScreen.reDraw();
             CommandInput gameInput = new CommandInput(gameScreen);
         }
