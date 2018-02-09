@@ -11,7 +11,7 @@ public class Cluedo {
     public static void main(String[] args) throws IOException{
         {
             Board gameBoard = new Board();
-            Players gamePlayers = new Players(4);
+            Players gamePlayers = new Players(6);
             GameScreen gameScreen = new GameScreen(gamePlayers, gameBoard);
             gameScreen.reDraw();
             CommandInput gameInput = new CommandInput(gameScreen);

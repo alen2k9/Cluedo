@@ -97,6 +97,17 @@ public class Suspect extends JComponent {
         Image playerToken = null;
 
         /**
+         * Player One - Miss White
+         * Player Two - Mr. Plum
+         * Player Three - Ms. Peacock
+         * Player Four - Colonel Mustard
+         * Player Five - Mr. Green
+         * Player Six - Miss. Scarlett
+         */
+
+
+
+        /**
          * First player is red
          */
         if (this.getSuspectID() == 0){
@@ -118,7 +129,7 @@ public class Suspect extends JComponent {
         }
 
         /**
-         * Fourth player is yellow
+         * Fourth player is Yellow/ Colonel Mustard
          */
         else if (this.getSuspectID() == 3){
             g2.setColor(Color.YELLOW);

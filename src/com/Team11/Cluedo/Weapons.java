@@ -13,7 +13,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class Weapons extends JPanel{
+public class Weapons extends JComponent{
 
     public final int NUM_WEAPONS = 6;
 
@@ -260,10 +260,10 @@ public class Weapons extends JPanel{
     /**
      * Method to add a weapon to a room once an accusation has been made
      * Weapons are placed into the room at a random location from the rooms spawn list
-     * @param wID : The ID of the weapon to place into the room
-     * @param rn : The room to put the weapon in
+     * @param weaponID : The ID of the weapon to place into the room
+     * @param roomID : The room to put the weapon in
      */
-    public void addWeaponToRoom(int wID, int rn){
+    public void addWeaponToRoom(int weaponID, int roomID){
 
         Random rand = new Random();
         int ranN;
@@ -271,92 +271,92 @@ public class Weapons extends JPanel{
         /**
          * Kitchen
          */
-        if (rn == 0){
+        if (roomID == 0){
             ranN = rand.nextInt(kitchenSpawns.size() + 1);
-            weapons[wID].setLocation(kitchenSpawns.get(ranN));
+            weapons[weaponID].setLocation(kitchenSpawns.get(ranN));
             kitchenSpawns.remove(ranN);
-            System.out.println(weapons[wID].getName() + " added to kitchen at position " + weapons[wID].getLocation().toString());
+            System.out.println(weapons[weaponID].getName() + " added to kitchen at position " + weapons[weaponID].getLocation().toString());
         }
 
         /**
          * Ball Room
          */
-        else if (rn == 1){
+        else if (roomID == 1){
             ranN = rand.nextInt(ballroomSpawns.size() + 1);
-            weapons[wID].setLocation(ballroomSpawns.get(ranN));
+            weapons[weaponID].setLocation(ballroomSpawns.get(ranN));
             ballroomSpawns.remove(ranN);
-            System.out.println(weapons[wID].getName() + " added to Ball Room at position " + weapons[wID].getLocation().toString());
+            System.out.println(weapons[weaponID].getName() + " added to Ball Room at position " + weapons[weaponID].getLocation().toString());
         }
 
         /**
          * Conservatory
          */
-        else if (rn == 2){
+        else if (roomID == 2){
             ranN = rand.nextInt(conservatorySpawns.size() + 1);
-            weapons[wID].setLocation(conservatorySpawns.get(ranN));
+            weapons[weaponID].setLocation(conservatorySpawns.get(ranN));
             conservatorySpawns.remove(ranN);
-            System.out.println(weapons[wID].getName() + " added to Conservatory at position " + weapons[wID].getLocation().toString());
+            System.out.println(weapons[weaponID].getName() + " added to Conservatory at position " + weapons[weaponID].getLocation().toString());
         }
 
         /**
          * Dining Room
          */
-        else if (rn == 3){
+        else if (roomID == 3){
             ranN = rand.nextInt(diningroomSpawns.size() + 1);
-            weapons[wID].setLocation(diningroomSpawns.get(ranN));
+            weapons[weaponID].setLocation(diningroomSpawns.get(ranN));
             diningroomSpawns.remove(ranN);
-            System.out.println(weapons[wID].getName() + " added to Dinging Room at position " + weapons[wID].getLocation().toString());
+            System.out.println(weapons[weaponID].getName() + " added to Dinging Room at position " + weapons[weaponID].getLocation().toString());
         }
 
         /**
          * Billiard Room
          */
-        else if (rn == 4){
+        else if (roomID == 4){
             ranN = rand.nextInt(billiardroomSpawns.size() + 1);
-            weapons[wID].setLocation(billiardroomSpawns.get(ranN));
+            weapons[weaponID].setLocation(billiardroomSpawns.get(ranN));
             billiardroomSpawns.remove(ranN);
-            System.out.println(weapons[wID].getName() + " added to Billiard at position " + weapons[wID].getLocation().toString());
+            System.out.println(weapons[weaponID].getName() + " added to Billiard at position " + weapons[weaponID].getLocation().toString());
         }
 
         /**
          * Library
          */
-        else if (rn == 5){
+        else if (roomID == 5){
             ranN = rand.nextInt(librarySpawns.size() + 1);
-            weapons[wID].setLocation(librarySpawns.get(ranN));
+            weapons[weaponID].setLocation(librarySpawns.get(ranN));
             librarySpawns.remove(ranN);
-            System.out.println(weapons[wID].getName() + " added to Library at position " + weapons[wID].getLocation().toString());
+            System.out.println(weapons[weaponID].getName() + " added to Library at position " + weapons[weaponID].getLocation().toString());
         }
 
 
         /**
          * Lounge
          */
-        else if (rn == 6){
+        else if (roomID == 6){
             ranN = rand.nextInt(loungeSpawns.size() + 1);
-            weapons[wID].setLocation(loungeSpawns.get(ranN));
+            weapons[weaponID].setLocation(loungeSpawns.get(ranN));
             loungeSpawns.remove(ranN);
-            System.out.println(weapons[wID].getName() + " added to Lounge at position " + weapons[wID].getLocation().toString());
+            System.out.println(weapons[weaponID].getName() + " added to Lounge at position " + weapons[weaponID].getLocation().toString());
         }
 
         /**
          * Hall
          */
-        else if (rn == 7){
+        else if (roomID == 7){
             ranN = rand.nextInt(hallSpawns.size() + 1);
-            weapons[wID].setLocation(hallSpawns.get(ranN));
+            weapons[weaponID].setLocation(hallSpawns.get(ranN));
             hallSpawns.remove(ranN);
-            System.out.println(weapons[wID].getName() + " added to Hall at position " + weapons[wID].getLocation().toString());
+            System.out.println(weapons[weaponID].getName() + " added to Hall at position " + weapons[weaponID].getLocation().toString());
         }
 
         /**
          * Study
          */
-        else if (rn == 8){
+        else if (roomID == 8){
             ranN = rand.nextInt(studySpawns.size() + 1);
-            weapons[wID].setLocation(studySpawns.get(ranN));
+            weapons[weaponID].setLocation(studySpawns.get(ranN));
             studySpawns.remove(ranN);
-            System.out.println(weapons[wID].getName() + " added to Study at position " + weapons[wID].getLocation().toString());
+            System.out.println(weapons[weaponID].getName() + " added to Study at position " + weapons[weaponID].getLocation().toString());
         }
     }
 
