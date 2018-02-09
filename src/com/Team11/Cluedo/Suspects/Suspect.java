@@ -133,13 +133,8 @@ public class Suspect extends JComponent {
          * Moving up
          */
         if (dir == Direction.NORTH){
-            if (this.getLocation().getY() == 0){
-                System.out.println("Cannot move Up, add the edge of board");
-            }
-            else{
-                this.location.setLocation(this.location.getX(), this.location.getY() - numMove);
-            }
 
+            this.location.setLocation(this.location.getX(), this.location.getY() - numMove);
         }
 
         /**
