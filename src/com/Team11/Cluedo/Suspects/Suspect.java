@@ -16,6 +16,7 @@ public class Suspect extends JComponent {
     private String name;
     private Point location;
     private int suspectID;
+    private Color playerColour;
 
     /**
      * Default Constructor
@@ -29,10 +30,11 @@ public class Suspect extends JComponent {
      * @param name : The name of the player
      * @param ID : The ID associated with the player
      */
-    public Suspect(Point p, String name, int ID){
+    public Suspect(Point p, String name, int ID, Color c){
         this.name = name;
         this.location = p;
         this.suspectID = ID;
+        this.playerColour = c;
     }
 
     /**
@@ -75,6 +77,14 @@ public class Suspect extends JComponent {
         this.suspectID = i;
     }
 
+    public void setPlayerColour(Color c){
+        this.playerColour = c;
+    }
+
+    public Color getPlayerColour(){
+        return this.playerColour;
+    }
+
     /**
      * Accessor Method to return the id of the suspect
      * @return
@@ -105,56 +115,7 @@ public class Suspect extends JComponent {
          * Player Six - Miss. Scarlett
          */
 
-
-
-        /**
-         * First player is red
-         */
-        if (this.getSuspectID() == 0){
-            g2.setColor(Color.RED);
-        }
-
-        /**
-         * Second player is blue
-         */
-        else if (this.getSuspectID() == 1){
-            g2.setColor(Color.BLUE);
-        }
-
-        /**
-         * Third player is purple
-         */
-        else if (this.getSuspectID() == 2){
-            g2.setColor(new Color(156, 2, 221));
-        }
-
-        /**
-         * Fourth player is Yellow/ Colonel Mustard
-         */
-        else if (this.getSuspectID() == 3){
-            g2.setColor(Color.YELLOW);
-        }
-
-        /**
-         * Fifth player is white
-         */
-        else if (this.getSuspectID() == 4){
-            g2.setColor(Color.WHITE);
-        }
-
-        /**
-         * Sixth player is black
-         */
-        else if (this.getSuspectID() == 5){
-            g2.setColor(Color.BLACK);
-        }
-
-        /**
-         * Otherwise set the colour to green
-         */
-        else{
-            g2.setColor(Color.GREEN);
-        }
+        g2.setColor(this.getPlayerColour());
 
         /**
          * Draw the ellipse at an offset of the suspects location and the size of each tile
@@ -172,13 +133,20 @@ public class Suspect extends JComponent {
          * Moving up
          */
         if (dir == Direction.NORTH){
-            this.location.setLocation(this.location.getX(), this.location.getY() - numMove);
+            if (this.getLocation().getY() == 0){
+                System.out.println("Cannot move Up, add the edge of board");
+            }
+            else{
+                this.location.setLocation(this.location.getX(), this.location.getY() - numMove);
+            }
+
         }
 
         /**
          * Moving down
          */
         else if (dir == Direction.SOUTH){
+            //if (this.getLoc())
             this.location.setLocation(this.location.getX(), this.location.getY() + numMove);
         }
 

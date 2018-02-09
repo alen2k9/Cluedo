@@ -20,8 +20,18 @@ public class Players extends JComponent {
             {new Point(10,1), new Point(15,1), new Point(24,7),
              new Point(1,18), new Point(24,20), new Point(8,25)};
     private final String[] PLAYER_NAME = new String[] {
-            "Miss Scarlett", "", "Player Three", "Mr. Green", "Miss White", "Player Six"};
+            "Miss White", "Mr. Green", "Ms. Peacock", "Mr. Plum", "Miss Scarlett", "Colonel Mustard"};
 
+    /**
+     * Player One - Miss White
+     * Player Two - Mr. Green
+     * Player Three - Ms. Peacock
+     * Player Four - Mr. Plum
+     * Player Five - Miss Scarlett
+     * Player Six - Colonel Mustard
+     *
+     * */
+    private final Color[] PLAYER_COLORS = {Color.WHITE, Color.GREEN, Color.BLUE, new Color(168, 2, 221), Color.RED, Color.YELLOW};
     private Suspect[] players;
 
     public Players(int numPlayers){
@@ -30,7 +40,7 @@ public class Players extends JComponent {
         this.players = new Suspect[this.numPlayers];
 
         for (int i = 0; i < this.numPlayers; i++){
-            players[i] = new Suspect(SUSPECT_SPAWN[i], PLAYER_NAME[i], i);
+            players[i] = new Suspect(SUSPECT_SPAWN[i], PLAYER_NAME[i], i, PLAYER_COLORS[i]);
         }
     }
 

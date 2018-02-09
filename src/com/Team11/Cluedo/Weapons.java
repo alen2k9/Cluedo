@@ -242,6 +242,12 @@ public class Weapons extends JComponent{
         fillHall();
         fillStudy();
 
+        for (int i = 0; i < weapons.length; i++){
+            Random rn = new Random();
+            int rand = rn.nextInt(10);
+            addWeaponToRoom(i, rand);
+        }
+
         for (int i = 0; i < NUM_WEAPONS; i++){
             weapons[i] = new Weapon(i, weaponName[i]);
         }
