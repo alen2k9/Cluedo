@@ -20,6 +20,19 @@ public class Weapons extends JComponent{
     public final int NUM_WEAPONS = 6;
 
     /**
+     * NOTES on RoomID for moveWeaponToRoom Method
+     * RoomID 0 - kitchen
+     * RoomID 1 - ballroom
+     * RoomID 2 - dining room
+     * RoomID 3 - billiard room
+     * RoomID 4 - library
+     * RoomID 5 - lounge
+     * RoomID 6 - hall
+     * RoomID 7 - study
+     * RoomID 8 - Conservatory
+     */
+
+    /**
      * List of all of the names of the weapons
      */
     private String[] weaponName = {"Candlestick", "Dagger", "Lead Pipe", "Revolver", "Rope", "Spanner"};
@@ -140,6 +153,7 @@ public class Weapons extends JComponent{
         private int weaponID;
         private String name;
         private Point location;
+        private int currentRoom;
 
         /**
          * Used until we have actual graphics for them
@@ -185,6 +199,14 @@ public class Weapons extends JComponent{
         }
 
         public String getWeaponGraphic(){return this.weaponGraphic;}
+
+        public void setCurrentRoom(int c){
+            this.currentRoom = c;
+        }
+
+        public int getCurrentRoom(){
+            return this.currentRoom;
+        }
 
         public void draw(Graphics g){
             Graphics2D g2 = (Graphics2D) g;
@@ -240,9 +262,22 @@ public class Weapons extends JComponent{
         Point spawnPoint = getRandomPoint(tmpList);
         //System.out.println(weapons[weaponID].getName() + " = " + spawnPoint.getLocation());
         weapons[weaponID].setLocation(spawnPoint);
+        weapons[weaponID].setCurrentRoom(randomInt);
+        tmpList.remove(spawnPoint);
     }
 
-    public Point getRandomPoint(ArrayList<Point> pointList){
+    public void moveWeaponToRoom(int weaponID, int roomID){
+
+        Point currentPoint = weapons[weaponID].getLocation();
+        int currRoom = weapons[weaponID].getCurrentRoom();
+        Point nextPoint = getRandomPoint(spawnLists.get(roomID));
+
+        spawnLists.get(currRoom).add(currentPoint);
+        weapons[weaponID].setLocation(nextPoint);
+        spawnLists.get(roomID).remove(nextPoint);
+    }
+
+    private Point getRandomPoint(ArrayList<Point> pointList){
         Random random = new Random();
         int randomInt = random.nextInt(pointList.size());
 
@@ -252,7 +287,7 @@ public class Weapons extends JComponent{
         return retPoint;
     }
 
-    public void addAllRooms(){
+    private void addAllRooms(){
         this.spawnLists.add(kitchenSpawns);
         this.spawnLists.add(ballroomSpawns);
         this.spawnLists.add(diningroomSpawns);
@@ -262,8 +297,9 @@ public class Weapons extends JComponent{
         this.spawnLists.add(hallSpawns);
         this.spawnLists.add(studySpawns);
         this.spawnLists.add(conservatorySpawns);
-
     }
+
+
 
     /**
      * Method to get a weapon at a specific index in the weapons array
