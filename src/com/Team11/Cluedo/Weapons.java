@@ -27,7 +27,8 @@ public class Weapons extends JComponent{
     /**
      * ArrayLists containing all of the spawn points in the for each of the rooms
      */
-    private ArrayList<ArrayList<Point>> spawnLists = new ArrayList<ArrayList<Point>>();
+    private ArrayList<ArrayList<Point>> spawnLists = new ArrayList<>();
+
 
     private ArrayList<Point> kitchenSpawns = new ArrayList<>();
     private ArrayList<Point> ballroomSpawns = new ArrayList<>();

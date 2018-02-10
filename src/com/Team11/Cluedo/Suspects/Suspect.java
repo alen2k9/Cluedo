@@ -10,13 +10,13 @@ package com.Team11.Cluedo.Suspects;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.geom.Ellipse2D;
 
 public class Suspect extends JComponent {
     private String name;
     private Point location;
     private int suspectID;
     private Color playerColour;
+    private Image playerTokenImage;
 
     /**
      * Parametrized Constuctor
@@ -24,11 +24,12 @@ public class Suspect extends JComponent {
      * @param name : The name of the player
      * @param ID : The ID associated with the player
      */
-    public Suspect(Point p, String name, int ID, Color c){
+    public Suspect(Point p, String name, int ID, Color c, Image playerTokenImage){
         this.name = name;
         this.location = p;
         this.suspectID = ID;
         this.playerColour = c;
+        this.playerTokenImage = playerTokenImage;
     }
 
     /**
@@ -75,8 +76,12 @@ public class Suspect extends JComponent {
         this.playerColour = c;
     }
 
-    public Color getPlayerColour(){
+    private Color getPlayerColour(){
         return this.playerColour;
+    }
+
+    private Image getPlayerTokenImage() {
+        return this.playerTokenImage;
     }
 
     /**
@@ -98,7 +103,6 @@ public class Suspect extends JComponent {
         /**
          * Depending on the suspectID of each suspect they will be drawn as different coloured ellipses
          */
-        Image playerToken = null;
 
         /**
          * Player One - Miss White
@@ -114,7 +118,7 @@ public class Suspect extends JComponent {
         /**
          * Draw the ellipse at an offset of the suspects location and the size of each tile
          */
-        g2.fill(new Ellipse2D.Double((this.location.getX() * 25), (this.location.getY() * 25), 25,25));
+        g2.drawImage(this.playerTokenImage, (int)(this.location.getX() * 25), (int)(this.location.getY() * 25), 25, 25,null);
     }
 
     /**

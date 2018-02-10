@@ -9,6 +9,7 @@
 
 package com.Team11.Cluedo.UI;
 
+import com.Team11.Cluedo.Assets.Assets;
 import com.Team11.Cluedo.Board.Board;
 import com.Team11.Cluedo.Suspects.Players;
 import com.Team11.Cluedo.UI.Panel.BackgroundPanel;
@@ -34,10 +35,13 @@ public class GameScreen implements Screen {
     private Board gameBoard;
     private Weapons gameWeapons;
 
-    public GameScreen(Players gamePlayers, Board gameBoard, Weapons gameWeapons) throws IOException{
+    private Assets gameAssets;
+
+    public GameScreen(Players gamePlayers, Board gameBoard, Weapons gameWeapons, Assets gameAssets) throws IOException{
         this.gamePlayers = gamePlayers;
         this.gameBoard = gameBoard;
         this.gameWeapons = gameWeapons;
+        this.gameAssets = gameAssets;
 
         this.createScreen();
         this.setupScreen();
@@ -58,7 +62,7 @@ public class GameScreen implements Screen {
         JPanel contentPanel = new JPanel(new GridBagLayout());
         contentPanel.setOpaque(false);
 
-        ImageIcon backgroundImage = new ImageIcon(getClass().getResource("backgroundTile.png"));
+        ImageIcon backgroundImage = this.gameAssets.getBackgroundTile();
         Image bgroundImage = backgroundImage.getImage();
         BackgroundPanel backgroundPanel = new BackgroundPanel(bgroundImage,BackgroundPanel.TILED);
 
@@ -167,9 +171,8 @@ public class GameScreen implements Screen {
     public class BoardComponent extends JComponent {
         @Override
         public void paintComponent(Graphics g) {
-            URL in = this.getClass().getResource("Board.png");
-            Image img1 = Toolkit.getDefaultToolkit().getImage(in);
-            g.drawImage(img1, 0, 0, this);
+            Image boardImage = gameAssets.getBoardImage();
+            g.drawImage(boardImage, 0, 0, this);
         }
     }
 
