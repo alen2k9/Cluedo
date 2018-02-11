@@ -148,7 +148,8 @@ public class BoardPos extends JComponent {
     public void draw(Graphics g, Point p){
         Graphics2D g2 = (Graphics2D) g;
 
-        switch (this.type) {
+
+        /*switch (this.type) {
             case BLANK:
                 g2.setColor(Color.BLACK);
                 break;
@@ -167,7 +168,8 @@ public class BoardPos extends JComponent {
             default:
                 g2.setColor(Color.gray);
                 break;
-        }
+        }*/
+        g2.setColor(Color.BLACK);
         g2.fillRect((int)p.getX(), (int)p.getY(), this.tileSize, this.tileSize);
         g2.drawRect((int)p.getX(), (int)p.getY(), this.tileSize, this.tileSize);
     }

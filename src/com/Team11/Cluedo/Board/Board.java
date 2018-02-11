@@ -222,7 +222,7 @@ public class Board extends JComponent {
      */
     public void paintComponent(Graphics g){
         int top = 0, left = 0;
-        System.out.println("Drawing Board");
+        //System.out.println("Drawing Board");
 
         /**
          * Loop through and paint every tile in the board

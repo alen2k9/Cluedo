@@ -16,14 +16,14 @@ public class CommandInput {
     public CommandInput(GameScreen mainPanel, Weapons weaponGame) {
         this.mainPanel = mainPanel;
         this.weaponGame = weaponGame;
-        mainPanel.getInfoOutput().append("Welcome to Cluedo\n");
-        initialSetup();
+        mainPanel.getInfoOutput().append("Welcome to Cluedo\nEnter 1 to move Players\nEnter 2 to move Weapons\n");
+        //initialSetup();
         introduction();
     }
 
     private void initialSetup()
     {
-        mainPanel.getInfoOutput().append("Please enter 1 to move player\n");
+        mainPanel.getInfoOutput().append("\nPlease enter 1 to move player\n");
         mainPanel.getInfoOutput().append("Please enter 2 to move Weapons\n");
     }
 
@@ -31,40 +31,46 @@ public class CommandInput {
 
     private void introduction()
     {
+        boolean doOnce = false;
+
         mainPanel.getTestButton().addActionListener(new ActionListener() {
-
             public void actionPerformed(ActionEvent e) {
-                mainPanel.setInput( mainPanel.getCommandInput().getText() + '\n');
+                mainPanel.setInput(mainPanel.getCommandInput().getText() + '\n');
+                //initialSetup();
 
-                if(mainPanel.getCommandInput().getText().equals("1"))
-                {
-                    mainPanel.reDraw();
-                    mainPanel.getInfoOutput().append(mainPanel.getInput());
-                    mainPanel.getInfoOutput().append("Welcome\n");
-                    mainPanel.getInfoOutput().append("Please enter the following\n ");
-                    mainPanel.getInfoOutput().append("l - Left\n r - Right\n u - Up\n d - Down ");
-                    playerMovement();
+                    if (mainPanel.getCommandInput().getText().equals("1")) {
+                        mainPanel.reDraw();
+                        mainPanel.getInfoOutput().append(mainPanel.getInput());
+                        //mainPanel.getInfoOutput().append("Welcome\n");
+                        mainPanel.getInfoOutput().append("Please enter the following\n ");
+                        mainPanel.getInfoOutput().append("l - Left\n r - Right\n u - Up\n d - Down\n 'back' - Return to Options ");
+                        playerMovement();
+                        mainPanel.getCommandInput().setText("");
+
+                    } else if (mainPanel.getCommandInput().getText().equals("2")) {
+                        mainPanel.reDraw();
+                        mainPanel.getInfoOutput().append(mainPanel.getInput());
+                        //mainPanel.getInfoOutput().append("Welcome\n");
+                        mainPanel.getInfoOutput().append("Please enter the following\n ");
+                        mainPanel.getInfoOutput().append("Rooms to choose from:\n- Kitchen\n- Ballroom\n- Conservatory\n- Biliard Room\n- Library\n" +
+                                "- Study\n- Hall \n- Lounge\n- Dining Room \n- Cellar\n\n");
+                        mainPanel.getInfoOutput().append("Weapons to choose from\n");
+                        mainPanel.getInfoOutput().append("- Candlestick\n- Dagger\n- Lead Pipe\n- Revolver\n- Rope\n- Spanner");
+                        weaponMovement();
+                    }
+
+                    else if(mainPanel.getCommandInput().getText().equals("")){
+                        mainPanel.reDraw();
+                    }
+
                     mainPanel.getCommandInput().setText("");
-
-                }
-
-                else if(mainPanel.getCommandInput().getText().equals("2"))
-                {
-                    mainPanel.reDraw();
-                    mainPanel.getInfoOutput().append(mainPanel.getInput());
-                    mainPanel.getInfoOutput().append("Welcome\n");
-                    mainPanel.getInfoOutput().append("Please enter the following\n ");
-                    mainPanel.getInfoOutput().append("Rooms to choose from:\n- Kitchen\n- Ballroom\n- Conservatory\n- Biliard Room\n- Library\n" +
-                            "- Study\n- Hall \n- Lounge\n- Dining Room \n- Cellar\n\n");
-                    mainPanel.getInfoOutput().append("Weapons to choose from\n");
-                    mainPanel.getInfoOutput().append("- Candlestick\n- Dagger\n- Lead Pipe\n- Revolver\n- Rope\n- Spanner");
-                    weaponMovement();
-
-
-                }
-                mainPanel.getCommandInput().setText("");
             }
         });
+
+        if (!doOnce){
+            mainPanel.getTestButton().doClick();
+            doOnce = true;
+        }
 
     }
 
@@ -90,77 +96,86 @@ public class CommandInput {
     public void weaponMovement()
     {
         ChoiceOption choice = new ChoiceOption();
-        mainPanel.getInfoOutput().append("\n\n" + choice.getWeapon() + " has been moved to " + choice.getRoom() + "\n\n");
         int weapon = 0;
         int room = 0;
 
+        if (choice.getWeapon() != null){
+            /**
+             * Moving Weapon
+             */
+            if(choice.getRoom().equals("Kitchen"))      //move weapon based on user choice as chosen on joption Pane
+            {
+                room = 0;
+            }
+            else if (choice.getRoom().equals("Ballroom"))
+            {
+                room = 1;
+            }
+            else if (choice.getRoom().equals("Conservatory"))
+            {
+                room = 8;
+            }
+            else if (choice.getRoom().equals("Billiard Room"))
+            {
+                room = 3;
+            }
+            else if (choice.getRoom().equals("Library"))
+            {
+                room = 4;
+            }
+            else if (choice.getRoom().equals("Study"))
+            {
+                room = 7;
+            }
+            else if (choice.getRoom().equals("Hall"))
+            {
+                room = 6;
+            }
+            else if (choice.getRoom().equals("Lounge"))
+            {
+                room = 5;
+            }
+            else if (choice.getRoom().equals("Dining Room"))
+            {
+                room = 2;
+            }
+            //private String[] weaponName = {"Candlestick", "Dagger", "Lead Pipe", "Revolver", "Rope", "Spanner"};
 
-        if(choice.getRoom().equals("Kitchen"))      //move weapon based on user choice as chosen on joption Pane
-        {
-            room = 0;
-        }
-        else if (choice.getRoom().equals("Ballroom"))
-        {
-            room = 1;
-        }
-        else if (choice.getRoom().equals("Conservatory"))
-        {
-            room = 8;
-        }
-        else if (choice.getRoom().equals("Billiard Room"))
-        {
-            room = 3;
-        }
-        else if (choice.getRoom().equals("Library"))
-        {
-            room = 4;
-        }
-        else if (choice.getRoom().equals("Study"))
-        {
-            room = 7;
-        }
-        else if (choice.getRoom().equals("Hall"))
-        {
-            room = 6;
-        }
-        else if (choice.getRoom().equals("Lounge"))
-        {
-            room = 5;
-        }
-        else if (choice.getRoom().equals("Dining Room"))
-        {
-            room = 2;
-        }
-        //private String[] weaponName = {"Candlestick", "Dagger", "Lead Pipe", "Revolver", "Rope", "Spanner"};
+            if (choice.getWeapon().equals("Candlestick"))
+            {
+                weapon = 0;
+            }
+            else if(choice.getWeapon().equals("Dagger"))
+            {
+                weapon = 1;
+            }
+            else if(choice.getWeapon().equals("Lead Pipe"))
+            {
+                weapon = 2;
+            }
+            else if(choice.getWeapon().equals("Revolver"))
+            {
+                weapon = 3;
+            }
+            else if(choice.getWeapon().equals("Rope"))
+            {
+                weapon = 4;
+            }
+            else if(choice.getWeapon().equals("Spanner"))
+            {
+                weapon = 5;
+            }
 
-        if (choice.getWeapon().equals("Candlestick"))
-        {
-            weapon = 0;
-        }
-        else if(choice.getWeapon().equals("Dagger"))
-        {
-            weapon = 1;
-        }
-        else if(choice.getWeapon().equals("Lead Pipe"))
-        {
-            weapon = 2;
-        }
-        else if(choice.getWeapon().equals("Revolver"))
-        {
-            weapon = 3;
-        }
-        else if(choice.getWeapon().equals("Rope"))
-        {
-            weapon = 4;
-        }
-        else if(choice.getWeapon().equals("Spanner"))
-        {
-            weapon = 5;
+            weaponGame.moveWeaponToRoom(weapon, room);
+            mainPanel.getInfoOutput().append("\n\n" + choice.getWeapon() + " has been moved to " + choice.getRoom() + "\n\n");
+            mainPanel.reDraw();
+
         }
 
-
-        weaponGame.moveWeaponToRoom(weapon, room);
-        mainPanel.reDraw();
+        else{
+            mainPanel.getInfoOutput().append("\nReturning to Main Menu\n");
+            initialSetup();
+        }
 
     }
 
@@ -171,9 +186,6 @@ public class CommandInput {
          */
         mainPanel.getTestButton().addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                while(mainPanel.getCommandInput().getText().equals("u") || mainPanel.getCommandInput().getText().equals("d")
-                        || mainPanel.getCommandInput().getText().equals("l") || mainPanel.getCommandInput().getText().equals("r"))
-                {
                     if(mainPanel.getCommandInput().getText().equals("u"))
                     {
                         mainPanel.getInfoOutput().append("\nUp");
@@ -211,9 +223,16 @@ public class CommandInput {
                         playerMovement();
                     }
 
+                    else if (mainPanel.getCommandInput().getText().equals("back")){
+                        mainPanel.getInfoOutput().append("\n\nReturning to Main Menu\nEnter 1 to Move\nEnter 2 to move a weapon\n");
+                        mainPanel.getCommandInput().setText("");
+                        System.out.println("Returning to main menu");
+                        introduction();
+                    }
 
 
-                }
+
+
                 mainPanel.getCommandInput().setText("");
             }
         });

@@ -14,13 +14,22 @@ public class ChoiceOption {
 
     public void makeChoice()
     {
-        String[] weaponchoice = { "Candlestick", "Dagger", "Lead Pipe", "Revolver", "Rope", "Spanner" };
-        weapon = (String) JOptionPane.showInputDialog(null, "Choose the Weapon you want to move",
-                "Weapon Movement", JOptionPane.QUESTION_MESSAGE, null, weaponchoice, weaponchoice[0]);
+        String[] weaponChoice = { "Candlestick", "Dagger", "Lead Pipe", "Revolver", "Rope", "Spanner" };
+        String[] roomChoice = { "Kitchen", "Ballroom", "Conservatory", "Billiard Room", "Library", "Study", "Hall", "Lounge", "Dining Room", "Cellar" };
 
-        String[] roomchoice = { "Kitchen", "Ballroom", "Conservatory", "Billiard Room", "Library", "Study", "Hall", "Lounge", "Dining Room", "Cellar" };
-        room = (String) JOptionPane.showInputDialog(null, "Choose the Room you want to move it into",
-                "Weapon Movement", JOptionPane.QUESTION_MESSAGE, null, roomchoice, roomchoice[0]);
+        weapon = (String) JOptionPane.showInputDialog(null, "Choose the Weapon you want to move",
+                "Weapon Movement", JOptionPane.QUESTION_MESSAGE, null, weaponChoice, weaponChoice[0]);
+
+
+        if (weapon != null){
+            room = (String) JOptionPane.showInputDialog(null, "Choose the Room you want to move it into",
+                    "Weapon Movement", JOptionPane.QUESTION_MESSAGE, null, roomChoice, roomChoice[0]);
+        }
+
+        else{
+            System.out.println("Cancelling weapon movement");
+        }
+
     }
 
     public String getRoom() {
