@@ -15,11 +15,11 @@ public class ChoiceOption {
     public void makeChoice()
     {
         String[] weaponchoice = { "Candlestick", "Dagger", "Lead Pipe", "Revolver", "Rope", "Spanner" };
-        weapon = (String) JOptionPane.showInputDialog(null, "Choose your Weapon",
+        weapon = (String) JOptionPane.showInputDialog(null, "Choose the Weapon you want to move",
                 "Weapon Movement", JOptionPane.QUESTION_MESSAGE, null, weaponchoice, weaponchoice[0]);
 
-        String[] roomchoice = { "Kitchen", "Ballroom", "Conservatory", "Biliard Room", "Library", "Study", "Hall", "Lounge", "Dining Room", "Cellar" };
-        room = (String) JOptionPane.showInputDialog(null, "Choose your Room.",
+        String[] roomchoice = { "Kitchen", "Ballroom", "Conservatory", "Billiard Room", "Library", "Study", "Hall", "Lounge", "Dining Room", "Cellar" };
+        room = (String) JOptionPane.showInputDialog(null, "Choose the Room you want to move it into",
                 "Weapon Movement", JOptionPane.QUESTION_MESSAGE, null, roomchoice, roomchoice[0]);
     }
 

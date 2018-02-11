@@ -2,6 +2,7 @@ package com.Team11.Cluedo.Controls;
 
 import com.Team11.Cluedo.Suspects.Direction;
 import com.Team11.Cluedo.UI.GameScreen;
+import com.Team11.Cluedo.Weapons;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -10,9 +11,11 @@ import java.awt.event.ActionListener;
 
 public class CommandInput {
     private GameScreen mainPanel;
+    private Weapons weaponGame;
 
-    public CommandInput(GameScreen mainPanel) {
+    public CommandInput(GameScreen mainPanel, Weapons weaponGame) {
         this.mainPanel = mainPanel;
+        this.weaponGame = weaponGame;
         mainPanel.getInfoOutput().append("Welcome to Cluedo\n");
         initialSetup();
         introduction();
@@ -87,7 +90,78 @@ public class CommandInput {
     public void weaponMovement()
     {
         ChoiceOption choice = new ChoiceOption();
-        mainPanel.getInfoOutput().append("\n\n" + choice.getRoom() + " has " + choice.getWeapon());
+        mainPanel.getInfoOutput().append("\n\n" + choice.getWeapon() + " has been moved to " + choice.getRoom() + "\n\n");
+        int weapon = 0;
+        int room = 0;
+
+
+        if(choice.getRoom().equals("Kitchen"))      //move weapon based on user choice as chosen on joption Pane
+        {
+            room = 0;
+        }
+        else if (choice.getRoom().equals("Ballroom"))
+        {
+            room = 1;
+        }
+        else if (choice.getRoom().equals("Conservatory"))
+        {
+            room = 8;
+        }
+        else if (choice.getRoom().equals("Billiard Room"))
+        {
+            room = 3;
+        }
+        else if (choice.getRoom().equals("Library"))
+        {
+            room = 4;
+        }
+        else if (choice.getRoom().equals("Study"))
+        {
+            room = 7;
+        }
+        else if (choice.getRoom().equals("Hall"))
+        {
+            room = 6;
+        }
+        else if (choice.getRoom().equals("Lounge"))
+        {
+            room = 5;
+        }
+        else if (choice.getRoom().equals("Dining Room"))
+        {
+            room = 2;
+        }
+        //private String[] weaponName = {"Candlestick", "Dagger", "Lead Pipe", "Revolver", "Rope", "Spanner"};
+
+        if (choice.getWeapon().equals("Candlestick"))
+        {
+            weapon = 0;
+        }
+        else if(choice.getWeapon().equals("Dagger"))
+        {
+            weapon = 1;
+        }
+        else if(choice.getWeapon().equals("Lead Pipe"))
+        {
+            weapon = 2;
+        }
+        else if(choice.getWeapon().equals("Revolver"))
+        {
+            weapon = 3;
+        }
+        else if(choice.getWeapon().equals("Rope"))
+        {
+            weapon = 4;
+        }
+        else if(choice.getWeapon().equals("Spanner"))
+        {
+            weapon = 5;
+        }
+
+
+        weaponGame.moveWeaponToRoom(weapon, room);
+        mainPanel.reDraw();
+
     }
 
     public void playerMovement()

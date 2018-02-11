@@ -19,7 +19,7 @@ public class Cluedo {
 
             GameScreen gameScreen = new GameScreen(gamePlayers, gameBoard, gameWeapons, gameAssets);
             gameScreen.reDraw();
-            CommandInput gameInput = new CommandInput(gameScreen);
+            CommandInput gameInput = new CommandInput(gameScreen, gameWeapons);
         }
     }
 

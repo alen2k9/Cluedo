@@ -224,7 +224,7 @@ public class Weapons extends JComponent{
      * Array of all of the weapons for the game
      */
     private Weapon[] weapons = new Weapon[NUM_WEAPONS];
-    private String[] weaponGraphics = {"C", "LP", "Re", "R", "D", "S"};
+    private String[] weaponGraphics = {"C","D", "LP", "Re", "R", "S"};
 
     /**
      * Default Constructor
