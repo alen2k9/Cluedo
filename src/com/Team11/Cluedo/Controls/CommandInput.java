@@ -3,7 +3,7 @@ package com.Team11.Cluedo.Controls;
 import com.Team11.Cluedo.Suspects.Direction;
 import com.Team11.Cluedo.UI.GameScreen;
 
-
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -13,14 +13,21 @@ public class CommandInput {
 
     public CommandInput(GameScreen mainPanel) {
         this.mainPanel = mainPanel;
+        mainPanel.getInfoOutput().append("Welcome to Cluedo\n");
         initialSetup();
+        introduction();
     }
 
     private void initialSetup()
     {
-        mainPanel.getInfoOutput().append("Welcome to Cluedo\n");
-        mainPanel.getInfoOutput().append("Please enter 1 to continue\n");
+        mainPanel.getInfoOutput().append("Please enter 1 to move player\n");
+        mainPanel.getInfoOutput().append("Please enter 2 to move Weapons\n");
+    }
 
+
+
+    private void introduction()
+    {
         mainPanel.getTestButton().addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
@@ -38,9 +45,24 @@ public class CommandInput {
 
                 }
 
+                else if(mainPanel.getCommandInput().getText().equals("2"))
+                {
+                    mainPanel.reDraw();
+                    mainPanel.getInfoOutput().append(mainPanel.getInput());
+                    mainPanel.getInfoOutput().append("Welcome\n");
+                    mainPanel.getInfoOutput().append("Please enter the following\n ");
+                    mainPanel.getInfoOutput().append("Rooms to choose from:\n- Kitchen\n- Ballroom\n- Conservatory\n- Biliard Room\n- Library\n" +
+                            "- Study\n- Hall \n- Lounge\n- Dining Room \n- Cellar\n\n");
+                    mainPanel.getInfoOutput().append("Weapons to choose from\n");
+                    mainPanel.getInfoOutput().append("- Candlestick\n- Dagger\n- Lead Pipe\n- Revolver\n- Rope\n- Spanner");
+                    weaponMovement();
+
+
+                }
                 mainPanel.getCommandInput().setText("");
             }
         });
+
     }
 
     public void playerTurn(int currentUser)
@@ -60,6 +82,12 @@ public class CommandInput {
     public /*int*/ void Diceroll(){
         //Roll dice and animate using Dice class
         //return number of dice roll for playerMovement function
+    }
+
+    public void weaponMovement()
+    {
+        ChoiceOption choice = new ChoiceOption();
+        mainPanel.getInfoOutput().append("\n\n" + choice.getRoom() + " has " + choice.getWeapon());
     }
 
     public void playerMovement()
@@ -108,6 +136,9 @@ public class CommandInput {
                         mainPanel.getCommandInput().setText("");
                         playerMovement();
                     }
+
+
+
                 }
                 mainPanel.getCommandInput().setText("");
             }
