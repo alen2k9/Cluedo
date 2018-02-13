@@ -1,9 +1,9 @@
 /**
  * Code to handle the creation of the gamescreen and UI.
  *
- * Authors :    Jack Geraghty - 16384181
- *              Conor Beenham - 16350851
- *              Alen Thomas   -
+ * Authors Team11:  Jack Geraghty - 16384181
+ *                  Conor Beenham - 16350851
+ *                  Alen Thomas   - 16333003
  */
 
 
@@ -19,7 +19,6 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.io.IOException;
-import java.net.URL;
 
 public class GameScreen implements Screen {
     private JFrame frame;
@@ -100,12 +99,14 @@ public class GameScreen implements Screen {
 
     @Override
     public void displayScreen() {
+        Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
+        this.frame.setLocation(dimension.width/2 - frame.getSize().width/2, dimension.height/2 - (frame.getSize().height/2));
         this.frame.setVisible(true);
     }
 
     @Override
     public void closeScreen() {
-        this.mainPanel.removeAll();
+        this.frame.removeAll();
         this.frame.dispose();
     }
 
@@ -199,7 +200,7 @@ public class GameScreen implements Screen {
 
         @Override
         public void paint(Graphics g) {
-            gameBoard.paintComponent(g);
+            //gameBoard.paintComponent(g);
             boardComponent.paintComponent(g);
             gamePlayers.paintComponent(g);
             gameWeapons.paintComponent(g);

@@ -1,4 +1,9 @@
-package com.Team11.Cluedo.Controls;
+/**
+ *
+ * Authors Team11:  Jack Geraghty - 16384181
+ *                  Conor Beenham - 16350851
+ *                  Alen Thomas   - 16333003
+ */package com.Team11.Cluedo.Controls;
 
 import com.Team11.Cluedo.Suspects.Direction;
 import com.Team11.Cluedo.UI.GameScreen;

@@ -1,9 +1,9 @@
 /**
  * Code to handle the creation of the cluedo board.
  *
- * Authors :    Jack Geraghty - 16384181
- *              Conor Beenham - 16350851
- *              Alen Thomas   -
+ * Authors Team11:  Jack Geraghty - 16384181
+ *                  Conor Beenham - 16350851
+ *                  Alen Thomas   - 16333003
  */
 
 package com.Team11.Cluedo.Board;

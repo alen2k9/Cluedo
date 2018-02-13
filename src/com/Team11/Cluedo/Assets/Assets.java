@@ -1,3 +1,11 @@
+/**
+ * Code to handle the import and distribution of assets.
+ *
+ * Authors Team11:  Jack Geraghty - 16384181
+ *                  Conor Beenham - 16350851
+ *                  Alen Thomas   - 16333003
+ */
+
 package com.Team11.Cluedo.Assets;
 
 import javax.swing.*;
@@ -5,7 +13,7 @@ import javax.tools.Tool;
 import java.awt.*;
 
 public class Assets {
-    private Image boardImage;
+    private Image boardImage, splashImage;
     private ImageIcon backgroundTile;
 
     private Image whiteToken, greenToken, peacockToken, plumToken, scarletToken, mustardToken;
@@ -51,5 +59,10 @@ public class Assets {
     public Image getMustardToken() {
         this.mustardToken = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("mustardToken.png"));
         return mustardToken;
+    }
+
+    public Image getSplashImage() {
+        this.splashImage = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("splashImage.png"));
+        return splashImage;
     }
 }

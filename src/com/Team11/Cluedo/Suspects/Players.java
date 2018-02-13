@@ -1,9 +1,9 @@
 /**
- * Code to handle the creation of the suspects into an array
+ * Code to handle the players in the game.
  *
- * Authors :    Jack Geraghty - 16384181
- *              Conor Beenham - 16350851
- *              Alen Thomas   -
+ * Authors Team11:  Jack Geraghty - 16384181
+ *                  Conor Beenham - 16350851
+ *                  Alen Thomas   - 16333003
  */
 
 

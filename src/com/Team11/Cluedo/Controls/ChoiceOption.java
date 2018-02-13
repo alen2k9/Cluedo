@@ -1,18 +1,24 @@
+/**
+ *
+ * Authors Team11:  Jack Geraghty - 16384181
+ *                  Conor Beenham - 16350851
+ *                  Alen Thomas   - 16333003
+ */
 package com.Team11.Cluedo.Controls;
 
 import javax.swing.*;
 
 public class ChoiceOption {
 
-    public String weapon;
-    public String room;
+    private String weapon;
+    private String room;
 
     public ChoiceOption()
     {
         makeChoice();
     }
 
-    public void makeChoice()
+    private void makeChoice()
     {
         String[] weaponChoice = { "Candlestick", "Dagger", "Lead Pipe", "Revolver", "Rope", "Spanner" };
         String[] roomChoice = { "Kitchen", "Ballroom", "Conservatory", "Billiard Room", "Library", "Study", "Hall", "Lounge", "Dining Room", "Cellar" };

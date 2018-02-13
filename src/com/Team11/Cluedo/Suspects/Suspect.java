@@ -1,9 +1,9 @@
 /**
- * Class which contains the behavior for the suspects of the game
+ * Code to handle the behaviour of the suspects.
  *
- * Authors :    Jack Geraghty - 163884181
- *              Conor Beenham - 16350851
- *              Alen Thomas   -
+ * Authors Team11:  Jack Geraghty - 16384181
+ *                  Conor Beenham - 16350851
+ *                  Alen Thomas   - 16333003
  */
 
 package com.Team11.Cluedo.Suspects;

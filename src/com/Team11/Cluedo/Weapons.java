@@ -1,9 +1,9 @@
 /**
- * Code to handle the weapons of the cluedo game and where they should be placed on to the board and how they are drawn
+ * Class which handles the weapons of the cluedo game and where they should be placed on to the board and how they are drawn
  *
- * Authors :    Jack Geraghty - 16384181
- *              Conor Beenham -
- *              Alen Thomas   -
+ * Authors Team11:  Jack Geraghty - 16384181
+ *                  Conor Beenham - 16350851
+ *                  Alen Thomas   - 16333003
  */
 
 package com.Team11.Cluedo;
