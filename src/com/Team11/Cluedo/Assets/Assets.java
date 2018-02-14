@@ -13,56 +13,90 @@ import javax.tools.Tool;
 import java.awt.*;
 
 public class Assets {
-    private Image boardImage, splashImage;
-    private ImageIcon backgroundTile;
-
-    private Image whiteToken, greenToken, peacockToken, plumToken, scarletToken, mustardToken;
-
     public Assets() {
     }
 
     public Image getBoardImage() {
-        this.boardImage = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("Board.png"));
-        return boardImage;
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("Board.png"));
     }
 
     public ImageIcon getBackgroundTile() {
-        this.backgroundTile = new ImageIcon(this.getClass().getResource("backgroundTile.png"));
-        return backgroundTile;
+        return new ImageIcon(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("backgroundTile.png")));
     }
 
     public Image getWhiteToken() {
-        this.whiteToken = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("whiteToken.png"));
-        return whiteToken;
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("whiteToken.png"));
     }
 
     public Image getGreenToken() {
-        this.greenToken = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("greenToken.png"));
-        return greenToken;
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("greenToken.png"));
     }
 
     public Image getPeacockToken() {
-        this.peacockToken = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("peacockToken.png"));
-        return peacockToken;
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("peacockToken.png"));
     }
 
     public Image getPlumToken() {
-        this.plumToken = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("plumToken.png"));
-        return plumToken;
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("plumToken.png"));
     }
 
     public Image getScarletToken() {
-        this.scarletToken = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("scarletToken.png"));
-        return scarletToken;
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("scarletToken.png"));
     }
 
     public Image getMustardToken() {
-        this.mustardToken = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("mustardToken.png"));
-        return mustardToken;
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("mustardToken.png"));
+    }
+
+    public Image getWhiteCard() {
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("whiteCard.png"));
+    }
+
+    public Image getGreenCard() {
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("greenCard.png"));
+    }
+
+    public Image getPeacockCard() {
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("peacockCard.png"));
+    }
+
+    public Image getPlumCard() {
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("plumCard.png"));
+    }
+
+    public Image getScarletCard() {
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("scarletCard.png"));
+    }
+
+    public Image getMustardCard() {
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("mustardCard.png"));
+    }
+
+    public Image getSelectedWhiteCard() {
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("whiteCard_Selected.png"));
+    }
+
+    public Image getSelectedGreenCard() {
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("greenCard_Selected.png"));
+    }
+
+    public Image getSelectedPeacockCard() {
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("peacockCard_Selected.png"));
+    }
+
+    public Image getSelectedPlumCard() {
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("plumCard_Selected.png"));
+    }
+
+    public Image getSelectedScarletCard() {
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("scarletCard_Selected.png"));
+    }
+
+    public Image getSelectedMustardCard() {
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("mustardCard_Selected.png"));
     }
 
     public Image getSplashImage() {
-        this.splashImage = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("splashImage.png"));
-        return splashImage;
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("splashImage.png"));
     }
 }

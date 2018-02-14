@@ -9,7 +9,6 @@ import com.Team11.Cluedo.Suspects.Direction;
 import com.Team11.Cluedo.UI.GameScreen;
 import com.Team11.Cluedo.Weapons;
 
-import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -21,59 +20,52 @@ public class CommandInput {
     public CommandInput(GameScreen mainPanel, Weapons weaponGame) {
         this.mainPanel = mainPanel;
         this.weaponGame = weaponGame;
-        mainPanel.getInfoOutput().append("Welcome to Cluedo\nEnter 1 to move Players\nEnter 2 to move Weapons\n");
-        //initialSetup();
-        introduction();
     }
 
-    private void initialSetup()
+    public void initialSetup()
     {
         mainPanel.getInfoOutput().append("\nPlease enter 1 to move player\n");
         mainPanel.getInfoOutput().append("Please enter 2 to move Weapons\n");
     }
 
-
-
-    private void introduction()
+    public void introduction()
     {
         boolean doOnce = false;
 
-        mainPanel.getTestButton().addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                mainPanel.setInput(mainPanel.getCommandInput().getText() + '\n');
-                //initialSetup();
+        mainPanel.getEnterButton().addActionListener(e -> {
+            mainPanel.setInput(mainPanel.getCommandInput().getText() + '\n');
+            //initialSetup();
 
-                    if (mainPanel.getCommandInput().getText().equals("1")) {
-                        mainPanel.reDraw();
-                        mainPanel.getInfoOutput().append(mainPanel.getInput());
-                        //mainPanel.getInfoOutput().append("Welcome\n");
-                        mainPanel.getInfoOutput().append("Please enter the following\n ");
-                        mainPanel.getInfoOutput().append("l - Left\n r - Right\n u - Up\n d - Down\n 'back' - Return to Options ");
-                        playerMovement();
-                        mainPanel.getCommandInput().setText("");
-
-                    } else if (mainPanel.getCommandInput().getText().equals("2")) {
-                        mainPanel.reDraw();
-                        mainPanel.getInfoOutput().append(mainPanel.getInput());
-                        //mainPanel.getInfoOutput().append("Welcome\n");
-                        mainPanel.getInfoOutput().append("Please enter the following\n ");
-                        mainPanel.getInfoOutput().append("Rooms to choose from:\n- Kitchen\n- Ballroom\n- Conservatory\n- Biliard Room\n- Library\n" +
-                                "- Study\n- Hall \n- Lounge\n- Dining Room \n- Cellar\n\n");
-                        mainPanel.getInfoOutput().append("Weapons to choose from\n");
-                        mainPanel.getInfoOutput().append("- Candlestick\n- Dagger\n- Lead Pipe\n- Revolver\n- Rope\n- Spanner");
-                        weaponMovement();
-                    }
-
-                    else if(mainPanel.getCommandInput().getText().equals("")){
-                        mainPanel.reDraw();
-                    }
-
+                if (mainPanel.getCommandInput().getText().equals("1")) {
+                    mainPanel.reDraw();
+                    mainPanel.getInfoOutput().append(mainPanel.getInput());
+                    //mainPanel.getInfoOutput().append("Welcome\n");
+                    mainPanel.getInfoOutput().append("Please enter the following\n ");
+                    mainPanel.getInfoOutput().append("l - Left\n r - Right\n u - Up\n d - Down\n 'back' - Return to Options ");
+                    playerMovement();
                     mainPanel.getCommandInput().setText("");
-            }
+
+                } else if (mainPanel.getCommandInput().getText().equals("2")) {
+                    mainPanel.reDraw();
+                    mainPanel.getInfoOutput().append(mainPanel.getInput());
+                    //mainPanel.getInfoOutput().append("Welcome\n");
+                    mainPanel.getInfoOutput().append("Please enter the following\n ");
+                    mainPanel.getInfoOutput().append("Rooms to choose from:\n- Kitchen\n- Ballroom\n- Conservatory\n- Biliard Room\n- Library\n" +
+                            "- Study\n- Hall \n- Lounge\n- Dining Room \n- Cellar\n\n");
+                    mainPanel.getInfoOutput().append("Weapons to choose from\n");
+                    mainPanel.getInfoOutput().append("- Candlestick\n- Dagger\n- Lead Pipe\n- Revolver\n- Rope\n- Spanner");
+                    weaponMovement();
+                }
+
+                else if(mainPanel.getCommandInput().getText().equals("")){
+                    mainPanel.reDraw();
+                }
+
+                mainPanel.getCommandInput().setText("");
         });
 
         if (!doOnce){
-            mainPanel.getTestButton().doClick();
+            mainPanel.getEnterButton().doClick();
             doOnce = true;
         }
 
@@ -189,7 +181,7 @@ public class CommandInput {
         /*
         Player movement function found in: this.mainPanel.getGamePlayers().playerMove(PLAYER, DIRECTION, AMUONT);
          */
-        mainPanel.getTestButton().addActionListener(new ActionListener() {
+        mainPanel.getEnterButton().addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                     if(mainPanel.getCommandInput().getText().equals("u"))
                     {
