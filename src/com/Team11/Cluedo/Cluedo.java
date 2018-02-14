@@ -15,7 +15,7 @@ public class Cluedo {
             Assets gameAssets = new Assets();
 
             Board gameBoard = new Board();
-            Players gamePlayers = new Players(6, gameAssets);
+            Players gamePlayers = new Players(6, gameAssets, gameBoard);
             Weapons gameWeapons = new Weapons();
 
             GameScreen gameScreen = new GameScreen(gamePlayers, gameBoard, gameWeapons, gameAssets);
