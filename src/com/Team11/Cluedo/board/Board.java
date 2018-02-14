@@ -1,9 +1,9 @@
 /**
  * Code to handle the creation of the cluedo board.
  *
- * Authors :    Jack Geraghty - 16384181
- *              Conor Beenham - 16350851
- *              Alen Thomas   -
+ * Authors Team11:  Jack Geraghty - 16384181
+ *                  Conor Beenham - 16350851
+ *                  Alen Thomas   - 16333003
  */
 
 package com.Team11.Cluedo.board;
@@ -11,6 +11,7 @@ package com.Team11.Cluedo.board;
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
+import java.net.URL;
 
 public class Board extends JComponent {
 
@@ -42,9 +43,9 @@ public class Board extends JComponent {
     /**
      * Method to parse information from the boardInfo.txt file and setup each of the board positions based off of that information
      * @return : A matrix array of boardPos objects
-     * @throws IOException if the file cannot be found
+     * @throws IOException
      */
-    private BoardPos[][] parseBoardFile() throws IOException {
+    public BoardPos[][] parseBoardFile() throws IOException {
         //Create a boardPos array to assign BoardPos objects to and return
         BoardPos[][] tmpBoard = new BoardPos[BOARD_WIDTH][BOARD_HEIGHT];
 
@@ -201,7 +202,7 @@ public class Board extends JComponent {
      * @param t : The type of tile that it is
      * @return : The boardPos object created
      */
-    private BoardPos createNonTraversal(Point p, TileType t){
+    public BoardPos createNonTraversal(Point p, TileType t){
         return new BoardPos(p, false, false, false, t, TILE_SIZE);
     }
 
@@ -211,48 +212,8 @@ public class Board extends JComponent {
      * @param t : The type of tile that it is
      * @return : The boardPos object created
      */
-    private BoardPos createTraversal(Point p, TileType t){
+    public BoardPos createTraversal(Point p, TileType t){
         return new BoardPos(p, false, true, false, t, TILE_SIZE);
-    }
-
-    private void findNeighbours(){
-
-        //Assign the neighbours for the corner positions
-
-        //TopLeft
-        board[0][0].addNeighbour(board[0][1]);
-        board[0][0].addNeighbour(board[1][0]);
-        //TopRight
-        board[0][BOARD_WIDTH].addNeighbour(board[0][BOARD_WIDTH-1]);
-        board[0][BOARD_WIDTH].addNeighbour(board[1][BOARD_WIDTH]);
-
-
-        for (int i = 0; i < BOARD_HEIGHT; i++){
-            for (int j = 0; j < BOARD_WIDTH; j++){
-
-                /*
-                if (board[i][j].getLoc() == new Point(0,0)){
-
-                    board[i][j].addNeighbour(board[i][j+1]);
-                    board[i][j].addNeighbour(board[i+1][j]);
-                }
-
-                else if (board[i][j].getLoc() == new Point (BOARD_WIDTH,0)){
-
-                    board[i][j].addNeighbour(board[i][BOARD_WIDTH-1]);
-                    board[i][j].addNeighbour(board[i+1][BOARD_WIDTH]);
-                }
-
-                else if (board[i][j].getLoc() == new Point (0,BOARD_HEIGHT)){
-
-                    board[i][j].addNeighbour(board[i][BOARD_HEIGHT-1]);
-                    board[i][j].addNeighbour(board[i+1][BOARD_HEIGHT]);
-                }
-
-                */
-            }
-
-        }
     }
 
     /**
@@ -261,7 +222,7 @@ public class Board extends JComponent {
      */
     public void paintComponent(Graphics g){
         int top = 0, left = 0;
-        //System.out.println("Drawing board");
+        //System.out.println("Drawing Board");
 
         /**
          * Loop through and paint every tile in the board

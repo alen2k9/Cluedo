@@ -1,4 +1,9 @@
-package com.Team11.Cluedo.controls;
+/**
+ *
+ * Authors Team11:  Jack Geraghty - 16384181
+ *                  Conor Beenham - 16350851
+ *                  Alen Thomas   - 16333003
+ */package com.Team11.Cluedo.Controls;
 
 import java.util.Random;
 
@@ -16,9 +21,4 @@ public class Dice {
     {
         return dice;
     }
-
-
-
-
-
 }

@@ -1,9 +1,9 @@
 /**
- * Class which contains the behavior for the suspects of the game
+ * Code to handle the behaviour of the suspects.
  *
- * Authors :    Jack Geraghty - 163884181
- *              Conor Beenham - 16350851
- *              Alen Thomas   -
+ * Authors Team11:  Jack Geraghty - 16384181
+ *                  Conor Beenham - 16350851
+ *                  Alen Thomas   - 16333003
  */
 
 package com.Team11.Cluedo.suspects;
@@ -12,40 +12,50 @@ import javax.swing.*;
 import java.awt.*;
 
 public class Suspect extends JComponent {
-    private String name;
-    private Point location;
     private int suspectID;
-    private Color playerColour;
+    private String suspectName;
+    private String playerName;
+    private Point location;
     private Image playerTokenImage;
+    private Image playerCardImage;
+
+    public final String[] PLAYER_NAMES = new String[] {"Player One", "Player Two", "Player Three",
+            "Player Four", "Player Five", "Player Six"};
 
     /**
      * Parametrized Constuctor
-     * @param p : The location of the player
-     * @param name : The name of the player
-     * @param ID : The ID associated with the player
+     * @param location : The location of the player
+     * @param suspectName : The suspectName of the player
+     * @param suspectID : The ID associated with the player
      */
-    public Suspect(Point p, String name, int ID, Color c, Image playerTokenImage){
-        this.name = name;
-        this.location = p;
-        this.suspectID = ID;
-        this.playerColour = c;
+    public Suspect(int suspectID, String suspectName, String playerName, Point location, Image playerTokenImage, Image playerCardImage){
+        this.suspectID = suspectID;
+        this.suspectName = suspectName;
+        this.playerName = playerName;
+        this.location = location;
         this.playerTokenImage = playerTokenImage;
+        this.playerCardImage = playerCardImage;
     }
 
     /**
-     * Method to set the name of the suspect
-     * @param n : The name to give them
+     * Method to set the suspectName of the suspect
+     * @param n : The suspectName to give them
      */
     public void setName(String n){
-        this.name = n;
+        this.suspectName = n;
     }
 
     /**
-     * Accessor Method to return the name of the suspect
-     * @return : The name of the suspect
+     * Accessor Method to return the suspectName of the suspect
+     * @return : The suspectName of the suspect
      */
+    @Override
     public String getName(){
-        return this.name;
+        return this.suspectName;
+    }
+
+    public String getPlayerName() {
+        return this.playerName;
     }
 
     /**
@@ -70,14 +80,6 @@ public class Suspect extends JComponent {
      */
     public void setSuspectID(int i){
         this.suspectID = i;
-    }
-
-    public void setPlayerColour(Color c){
-        this.playerColour = c;
-    }
-
-    private Color getPlayerColour(){
-        return this.playerColour;
     }
 
     private Image getPlayerTokenImage() {
@@ -113,8 +115,6 @@ public class Suspect extends JComponent {
          * Player Six - Miss. Scarlett
          */
 
-        g2.setColor(this.getPlayerColour());
-
         /**
          * Draw the ellipse at an offset of the suspects location and the size of each tile
          */
@@ -141,8 +141,8 @@ public class Suspect extends JComponent {
             }
         }
 
-        /**
-         * Moving down
+        /*
+          Moving down
          */
         else if (dir == Direction.SOUTH){
             if (this.getLoc().getY() != 26.0) {
