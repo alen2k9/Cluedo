@@ -6,7 +6,7 @@
  *               Alen Thomas   -
  */
 
-package com.Team11.Cluedo.Board;
+package com.Team11.Cluedo.board;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,13 +14,13 @@ import java.util.ArrayList;
 
 public class BoardPos extends JComponent {
     /**
-     * @Param location : The x,y location of the boardPos
-     * @Param isSecret : Boolean used to indicate whether or not the tile is a secrete passageway
-     * @Param isTraversable : Boolean used to indicate whether or not the suspects can playerMove on it
-     * @Param isOccupied : Boolean used to indicate whether or not there is a suspect on the tile or not
-     * @Param type : Enum used to identify what kind of tile the tile is
-     * @Param tileSize : Integer which contains the size of each tile
-     * @Param neighbours : An arrayList which will be used as part of the full suspect playerMovement
+     * location : The x,y location of the boardPos
+     * isSecret : Boolean used to indicate whether or not the tile is a secrete passageway
+     * isTraversable : Boolean used to indicate whether or not the suspects can playerMove on it
+     * isOccupied : Boolean used to indicate whether or not there is a suspect on the tile or not
+     * type : Enum used to identify what kind of tile the tile is
+     * tileSize : Integer which contains the size of each tile
+     * neighbours : An arrayList which will be used as part of the full suspect playerMovement
      */
     private Point location;
     private boolean isSecret;
@@ -30,17 +30,6 @@ public class BoardPos extends JComponent {
     private int tileSize;
     private ArrayList<BoardPos> neighbours = new ArrayList<>();
 
-    /**
-     * Default Constructor
-     */
-    public BoardPos(){
-        this.location.setLocation(0,0);
-        this.isSecret = false;
-        this.isTraversable = false;
-        this.isOccupied = false;
-        this.type = TileType.BLANK;
-        this.tileSize = 0;
-    }
 
     /**
      * Parametrized Constructor
@@ -62,7 +51,7 @@ public class BoardPos extends JComponent {
 
     /**
      * Method to set the location of the tile
-     * @param p
+     * @param p : Point to set as location
      */
     public void setLoc(Point p){
         this.location.setLocation(p);
@@ -70,15 +59,15 @@ public class BoardPos extends JComponent {
 
     /**
      * Method to return the location of the tile
-     * @return
+     * @return : Returns the boardPos location as a point
      */
-    public Point getLocation(){
+    public Point getLoc(){
         return this.location;
     }
 
     /**
      * Method to set whether or not the tile is a secret passageway
-     * @param s
+     * @param s : Boolean whether the tile is secrete or not
      */
     public void setSecret(boolean s){
         this.isSecret = s;
@@ -86,7 +75,7 @@ public class BoardPos extends JComponent {
 
     /**
      * Method to return if the location is a secret
-     * @return
+     * @return : Is the position a secret passage
      */
     public boolean isSecret() {
         return this.isSecret;
@@ -94,7 +83,7 @@ public class BoardPos extends JComponent {
 
     /**
      * Method to set whether or not the tile is traversable
-     * @param t
+     * @param t : Boolean whether the player can move on the tile
      */
     public void setTraversable(boolean t){
         this.isTraversable = t;
@@ -102,7 +91,7 @@ public class BoardPos extends JComponent {
 
     /**
      * Method to return if the tile is traversable or not
-     * @return
+     * @return : If the tile is traversable or not
      */
     public boolean isTraversable(){
         return this.isTraversable;
@@ -110,7 +99,7 @@ public class BoardPos extends JComponent {
 
     /**
      * Method to see if the tile is occupuied or not
-     * @param o
+     * @param o : Boolean whether it is occupied dor not
      */
     public void setOccupied(boolean o){
         this.isOccupied = o;
@@ -118,7 +107,7 @@ public class BoardPos extends JComponent {
 
     /**
      * Method to return whether or not the tile is occupied
-     * @return
+     * @return : Returns whether or not it is occupied or not
      */
     public boolean isOccupied(){
         return this.isOccupied;
@@ -126,7 +115,7 @@ public class BoardPos extends JComponent {
 
     /**
      * Method to set the type of tile it is
-     * @param t
+     * @param t : Set the tile type to type t
      */
     public void setType(TileType t){
         this.type = t;
@@ -134,10 +123,18 @@ public class BoardPos extends JComponent {
 
     /**
      * Method to return what type of tile it is
-     * @return
+     * @return : Returns the type of tile it is
      */
     public TileType getType(){
         return this.type;
+    }
+
+    public void addNeighbour(BoardPos position){
+        this.neighbours.add(position);
+    }
+
+    public ArrayList<BoardPos> getNeighbours(){
+        return this.neighbours;
     }
 
     /**

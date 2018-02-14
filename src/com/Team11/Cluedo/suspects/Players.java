@@ -7,9 +7,10 @@
  */
 
 
-package com.Team11.Cluedo.Suspects;
+package com.Team11.Cluedo.suspects;
 
-import com.Team11.Cluedo.Assets.Assets;
+import com.Team11.Cluedo.assets.Assets;
+import com.Team11.Cluedo.board.Board;
 
 import javax.swing.*;
 import java.awt.*;
@@ -37,7 +38,7 @@ public class Players extends JComponent {
     private final Color[] PLAYER_COLORS = {Color.WHITE, Color.GREEN, Color.BLUE, new Color(168, 2, 221), Color.RED, Color.YELLOW};
     private Suspect[] players;
 
-    public Players(int numPlayers, Assets gameAssets){
+    public Players(int numPlayers, Assets gameAssets, Board gameBoard){
         this.numPlayers = numPlayers;
         this.remainingPlayers = numPlayers;
         this.players = new Suspect[this.numPlayers];

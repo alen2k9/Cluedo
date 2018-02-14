@@ -1,5 +1,5 @@
 /**
- * Code to handle the creation of the gamescreen and UI.
+ * Code to handle the creation of the gamescreen and ui.
  *
  * Authors :    Jack Geraghty - 16384181
  *              Conor Beenham - 16350851
@@ -7,19 +7,18 @@
  */
 
 
-package com.Team11.Cluedo.UI;
+package com.Team11.Cluedo.ui;
 
-import com.Team11.Cluedo.Assets.Assets;
-import com.Team11.Cluedo.Board.Board;
-import com.Team11.Cluedo.Suspects.Players;
-import com.Team11.Cluedo.UI.Panel.BackgroundPanel;
-import com.Team11.Cluedo.Weapons;
+import com.Team11.Cluedo.assets.Assets;
+import com.Team11.Cluedo.board.Board;
+import com.Team11.Cluedo.suspects.Players;
+import com.Team11.Cluedo.ui.Panel.BackgroundPanel;
+import com.Team11.Cluedo.weapons.Weapons;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.io.IOException;
-import java.net.URL;
 
 public class GameScreen implements Screen {
     private JFrame frame;
@@ -182,7 +181,7 @@ public class GameScreen implements Screen {
         Weapons gameWeapons;
         BoardComponent boardComponent;
 
-        public BoardUI(Players players, Board board, Weapons weapons, BoardComponent boardImage) {
+        private BoardUI(Players players, Board board, Weapons weapons, BoardComponent boardImage) {
             this.gamePlayers = players;
             this.gameBoard = board;
             this.gameWeapons = weapons;

@@ -1,7 +1,6 @@
-package com.Team11.Cluedo.Assets;
+package com.Team11.Cluedo.assets;
 
 import javax.swing.*;
-import javax.tools.Tool;
 import java.awt.*;
 
 public class Assets {
@@ -14,7 +13,7 @@ public class Assets {
     }
 
     public Image getBoardImage() {
-        this.boardImage = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("Board.png"));
+        this.boardImage = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("board.png"));
         return boardImage;
     }
 

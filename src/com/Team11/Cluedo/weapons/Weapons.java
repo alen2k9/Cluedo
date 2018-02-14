@@ -6,7 +6,7 @@
  *              Alen Thomas   -
  */
 
-package com.Team11.Cluedo;
+package com.Team11.Cluedo.weapons;
 
 
 import javax.swing.*;
@@ -17,7 +17,7 @@ import java.util.Random;
 
 public class Weapons extends JComponent{
 
-    public final int NUM_WEAPONS = 6;
+    private final int NUM_WEAPONS = 6;
 
     /**
      * NOTES on RoomID for moveWeaponToRoom Method
@@ -35,7 +35,6 @@ public class Weapons extends JComponent{
     /**
      * List of all of the names of the weapons
      */
-    private String[] weaponName = {"Candlestick", "Dagger", "Lead Pipe", "Revolver", "Rope", "Spanner"};
 
     /**
      * ArrayLists containing all of the spawn points in the for each of the rooms
@@ -224,7 +223,7 @@ public class Weapons extends JComponent{
      * Array of all of the weapons for the game
      */
     private Weapon[] weapons = new Weapon[NUM_WEAPONS];
-    private String[] weaponGraphics = {"C","D", "LP", "Re", "R", "S"};
+
 
     /**
      * Default Constructor
@@ -240,6 +239,9 @@ public class Weapons extends JComponent{
         fillHall();
         fillStudy();
         addAllRooms();
+
+        String[] weaponGraphics = {"C","D", "LP", "Re", "R", "S"};
+        String[] weaponName = {"Candlestick", "Dagger", "Lead Pipe", "Revolver", "Rope", "Spanner"};
 
         for (int i = 0; i < NUM_WEAPONS; i++){
             weapons[i] = new Weapon(i, weaponName[i],weaponGraphics[i]);
@@ -260,7 +262,6 @@ public class Weapons extends JComponent{
         ArrayList<Point> tmpList = this.spawnLists.get(randomInt);
 
         Point spawnPoint = getRandomPoint(tmpList);
-        //System.out.println(weapons[weaponID].getName() + " = " + spawnPoint.getLocation());
         weapons[weaponID].setLocation(spawnPoint);
         weapons[weaponID].setCurrentRoom(randomInt);
         tmpList.remove(spawnPoint);
@@ -282,7 +283,6 @@ public class Weapons extends JComponent{
         int randomInt = random.nextInt(pointList.size());
 
         Point retPoint = pointList.get(randomInt);
-        //System.out.println("Random Num" + randomInt + "Random Point: " + retPoint.getLocation());
         pointList.remove(randomInt);
         return retPoint;
     }
@@ -304,9 +304,9 @@ public class Weapons extends JComponent{
     /**
      * Method to get a weapon at a specific index in the weapons array
      * @param i : The index of the weapon
-     * @return
+     * @return : Reference to weapon at index i
      */
-    public Weapon getWeaponAtIndex(int i){
+    private Weapon getWeaponAtIndex(int i){
         return weapons[i];
     }
 

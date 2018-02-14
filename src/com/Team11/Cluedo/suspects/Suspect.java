@@ -6,7 +6,7 @@
  *              Alen Thomas   -
  */
 
-package com.Team11.Cluedo.Suspects;
+package com.Team11.Cluedo.suspects;
 
 import javax.swing.*;
 import java.awt.*;

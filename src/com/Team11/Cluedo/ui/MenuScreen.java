@@ -1,4 +1,4 @@
-package com.Team11.Cluedo.UI;
+package com.Team11.Cluedo.ui;
 
 import javax.swing.*;
 

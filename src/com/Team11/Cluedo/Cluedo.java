@@ -1,10 +1,11 @@
 package com.Team11.Cluedo;
 
-import com.Team11.Cluedo.Assets.Assets;
-import com.Team11.Cluedo.Board.Board;
-import com.Team11.Cluedo.Controls.CommandInput;
-import com.Team11.Cluedo.Suspects.Players;
-import com.Team11.Cluedo.UI.GameScreen;
+import com.Team11.Cluedo.assets.Assets;
+import com.Team11.Cluedo.board.Board;
+import com.Team11.Cluedo.controls.CommandInput;
+import com.Team11.Cluedo.suspects.Players;
+import com.Team11.Cluedo.ui.GameScreen;
+import com.Team11.Cluedo.weapons.Weapons;
 
 import java.io.IOException;
 

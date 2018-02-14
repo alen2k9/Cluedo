@@ -1,4 +1,4 @@
-package com.Team11.Cluedo.Controls;
+package com.Team11.Cluedo.controls;
 
 import java.util.Random;
 

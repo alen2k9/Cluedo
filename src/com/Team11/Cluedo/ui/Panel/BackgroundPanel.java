@@ -1,4 +1,4 @@
-package com.Team11.Cluedo.UI.Panel;
+package com.Team11.Cluedo.ui.Panel;
 
 import javax.swing.*;
 import java.awt.*;
