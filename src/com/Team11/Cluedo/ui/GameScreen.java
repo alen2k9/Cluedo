@@ -7,12 +7,12 @@
  */
 
 
-package com.Team11.Cluedo.ui;
+package com.team11.cluedo.ui;
 
-import com.Team11.Cluedo.assets.Assets;
-import com.Team11.Cluedo.suspects.Players;
-import com.Team11.Cluedo.ui.Panel.BackgroundPanel;
-import com.Team11.Cluedo.Weapons;
+import com.team11.cluedo.assets.Assets;
+import com.team11.cluedo.suspects.Players;
+import com.team11.cluedo.ui.Panel.BackgroundPanel;
+import com.team11.cluedo.weapons.Weapons;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;

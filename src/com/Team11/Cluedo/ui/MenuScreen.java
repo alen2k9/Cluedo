@@ -1,14 +1,15 @@
 
-package com.Team11.Cluedo.ui;
+package com.team11.cluedo.ui;
 
 
-import com.Team11.Cluedo.assets.Assets;
-import com.Team11.Cluedo.suspects.Players;
-import com.Team11.Cluedo.controls.*;
+import com.team11.cluedo.assets.Assets;
+import com.team11.cluedo.suspects.Players;
+import com.team11.cluedo.controls.*;
 import javax.swing.*;
 import java.awt.*;
 
-import com.Team11.Cluedo.ui.Panel.*;
+import com.team11.cluedo.ui.Panel.*;
+
 /**
  * The Menu Screen Class
  * Used to handle the title screen, selection of characters and passing through to the Game Screen

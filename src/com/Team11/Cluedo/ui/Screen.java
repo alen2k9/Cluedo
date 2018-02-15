@@ -6,7 +6,7 @@
  *                  Alen Thomas   - 16333003
  */
 
-package com.Team11.Cluedo.ui;
+package com.team11.cluedo.ui;
 
 public interface Screen {
     /**

@@ -6,7 +6,7 @@
  *                  Alen Thomas   - 16333003
  */
 
-package com.Team11.Cluedo.board;
+package com.team11.cluedo.board;
 
 public enum TileType {
     SPAWN, KITCHEN, BALLROOM, HALLWAY,LOUNGE, CONSERVATORY, DININGROOM, CELLAR, BILLIARDROOM,

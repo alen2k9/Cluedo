@@ -4,7 +4,7 @@
  *                  Conor Beenham - 16350851
  *                  Alen Thomas   - 16333003
  */
-package com.Team11.Cluedo.suspects;
+package com.team11.cluedo.suspects;
 
 public enum Direction {
     NORTH, SOUTH, EAST, WEST

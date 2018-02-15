@@ -7,9 +7,9 @@
  */
 
 
-package com.Team11.Cluedo.suspects;
+package com.team11.cluedo.suspects;
 
-import com.Team11.Cluedo.assets.Assets;
+import com.team11.cluedo.assets.Assets;
 
 import javax.swing.*;
 import java.awt.*;

@@ -6,7 +6,7 @@
  *              Alen Thomas   -
  */
 
-package com.Team11.Cluedo.weapons;
+package com.team11.cluedo.weapons;
 
 
 import javax.swing.*;

@@ -3,11 +3,12 @@
  * Authors Team11:  Jack Geraghty - 16384181
  *                  Conor Beenham - 16350851
  *                  Alen Thomas   - 16333003
- */package com.Team11.Cluedo.controls;
+ */
+package com.team11.cluedo.controls;
 
-import com.Team11.Cluedo.suspects.Direction;
-import com.Team11.Cluedo.ui.GameScreen;
-import com.Team11.Cluedo.Weapons;
+import com.team11.cluedo.suspects.Direction;
+import com.team11.cluedo.ui.GameScreen;
+import com.team11.cluedo.weapons.Weapons;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

@@ -6,13 +6,14 @@
  *                  Alen Thomas   - 16333003
  */
 
-package com.Team11.Cluedo;
+package com.team11.cluedo;
 
-import com.Team11.Cluedo.assets.Assets;
-import com.Team11.Cluedo.board.Board;
-import com.Team11.Cluedo.controls.CommandInput;
-import com.Team11.Cluedo.ui.GameScreen;
-import com.Team11.Cluedo.ui.MenuScreen;
+import com.team11.cluedo.assets.Assets;
+import com.team11.cluedo.board.Board;
+import com.team11.cluedo.controls.CommandInput;
+import com.team11.cluedo.ui.GameScreen;
+import com.team11.cluedo.ui.MenuScreen;
+import com.team11.cluedo.weapons.Weapons;
 
 import java.io.IOException;
 

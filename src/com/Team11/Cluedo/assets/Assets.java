@@ -6,7 +6,7 @@
  *                  Alen Thomas   - 16333003
  */
 
-package com.Team11.Cluedo.assets;
+package com.team11.cluedo.assets;
 
 import javax.swing.*;
 import javax.tools.Tool;
