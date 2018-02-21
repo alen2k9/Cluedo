@@ -32,5 +32,5 @@ public interface Screen {
     /**
      *  Method handled to re-draw the screen
      */
-    void reDraw();
+    void reDraw(int currentPlayer);
 }

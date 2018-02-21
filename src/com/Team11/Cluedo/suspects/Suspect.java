@@ -8,6 +8,8 @@
 
 package com.team11.cluedo.suspects;
 
+import com.team11.cluedo.ui.Resolution;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -16,8 +18,10 @@ public class Suspect extends JComponent {
     private String suspectName;
     private String playerName;
     private Point location;
-    private Image playerTokenImage;
-    private Image playerCardImage;
+    private Image tokenImage;
+    private Image cardImage;
+    private Image selectedCardImage;
+    private Resolution resolution;
 
     public final String[] PLAYER_NAMES = new String[] {"Player One", "Player Two", "Player Three",
             "Player Four", "Player Five", "Player Six"};
@@ -28,13 +32,15 @@ public class Suspect extends JComponent {
      * @param suspectName : The suspectName of the player
      * @param suspectID : The ID associated with the player
      */
-    public Suspect(int suspectID, String suspectName, String playerName, Point location, Image playerTokenImage, Image playerCardImage){
+    public Suspect(int suspectID, String suspectName, String playerName, Point location, Image tokenImage, Image cardImage, Image selectedCardImage, Resolution resolution){
         this.suspectID = suspectID;
         this.suspectName = suspectName;
         this.playerName = playerName;
         this.location = location;
-        this.playerTokenImage = playerTokenImage;
-        this.playerCardImage = playerCardImage;
+        this.tokenImage = tokenImage;
+        this.cardImage = cardImage;
+        this.selectedCardImage = selectedCardImage;
+        this.resolution = resolution;
     }
 
     /**
@@ -82,8 +88,16 @@ public class Suspect extends JComponent {
         this.suspectID = i;
     }
 
-    private Image getPlayerTokenImage() {
-        return this.playerTokenImage;
+    private Image getTokenImage() {
+        return this.tokenImage;
+    }
+
+    public Image getCardImage() {
+        return cardImage;
+    }
+
+    public Image getSelectedCardImage() {
+        return selectedCardImage;
     }
 
     /**
@@ -118,7 +132,9 @@ public class Suspect extends JComponent {
         /**
          * Draw the ellipse at an offset of the suspects location and the size of each tile
          */
-        g2.drawImage(this.playerTokenImage, (int)(this.location.getX() * 25), (int)(this.location.getY() * 25), 25, 25,null);
+        g2.drawImage(this.tokenImage, (int)(this.location.getX() * ((int)(30 * resolution.getScalePercentage()))),
+                (int)(this.location.getY() * ((int)(30 * resolution.getScalePercentage()))),
+                ((int)(30 * resolution.getScalePercentage())),  ((int)(30 * resolution.getScalePercentage())),null);
     }
 
     /**

@@ -6,7 +6,7 @@
  *                  Alen Thomas   - 16333003
  */
 
-package com.team11.cluedo.ui.Panel;
+package com.team11.cluedo.ui.panel;
 
 import javax.swing.*;
 import java.awt.*;

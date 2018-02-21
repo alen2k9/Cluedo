@@ -13,6 +13,7 @@ import com.team11.cluedo.board.Board;
 import com.team11.cluedo.controls.CommandInput;
 import com.team11.cluedo.ui.GameScreen;
 import com.team11.cluedo.ui.MenuScreen;
+import com.team11.cluedo.ui.Resolution;
 import com.team11.cluedo.weapons.Weapons;
 
 import java.io.IOException;
@@ -20,14 +21,19 @@ import java.io.IOException;
 public class Cluedo {
     public static void main(String[] args) throws IOException{
         {
+            //  Used to handle the assers
             Assets gameAssets = new Assets();
 
-            Board gameBoard = new Board();
-            Weapons gameWeapons = new Weapons();
+            //  Used to scale on resolutions lower than 1080p
+            Resolution resolution = new Resolution();
 
-            GameScreen gameScreen = new GameScreen(gameWeapons, gameAssets);
+            //  Game logic components
+            Board gameBoard = new Board(resolution);
+            Weapons gameWeapons = new Weapons(resolution);
+
+            GameScreen gameScreen = new GameScreen(gameWeapons, gameAssets, resolution);
             CommandInput gameInput = new CommandInput(gameScreen, gameWeapons);
-            new MenuScreen(gameAssets, gameScreen, gameInput);
+            new MenuScreen(gameAssets, gameScreen, gameInput, resolution);
         }
     }
 

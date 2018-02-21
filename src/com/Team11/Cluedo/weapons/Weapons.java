@@ -1,13 +1,15 @@
 /**
  * Code to handle the weapons of the cluedo game and where they should be placed on to the board and how they are drawn
  *
- * Authors :    Jack Geraghty - 16384181
- *              Conor Beenham -
- *              Alen Thomas   -
+ * Authors Team11:  Jack Geraghty - 16384181
+ *                  Conor Beenham - 16350851
+ *                  Alen Thomas   - 16333003
  */
 
 package com.team11.cluedo.weapons;
 
+
+import com.team11.cluedo.ui.Resolution;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,21 +21,21 @@ public class Weapons extends JComponent{
 
     private final int NUM_WEAPONS = 6;
 
-    /**
-     * NOTES on RoomID for moveWeaponToRoom Method
-     * RoomID 0 - kitchen
-     * RoomID 1 - ballroom
-     * RoomID 2 - dining room
-     * RoomID 3 - billiard room
-     * RoomID 4 - library
-     * RoomID 5 - lounge
-     * RoomID 6 - hall
-     * RoomID 7 - study
-     * RoomID 8 - Conservatory
+    /*
+      NOTES on RoomID for moveWeaponToRoom Method
+      RoomID 0 - kitchen
+      RoomID 1 - ballroom
+      RoomID 2 - dining room
+      RoomID 3 - billiard room
+      RoomID 4 - library
+      RoomID 5 - lounge
+      RoomID 6 - hall
+      RoomID 7 - study
+      RoomID 8 - Conservatory
      */
 
-    /**
-     * List of all of the names of the weapons
+    /*
+      List of all of the names of the weapons
      */
 
     /**
@@ -211,7 +213,7 @@ public class Weapons extends JComponent{
             Graphics2D g2 = (Graphics2D) g;
 
             g2.setColor(Color.BLACK);
-            g2.fill(new Ellipse2D.Double((int)this.getLocation().getX()*25, (int)this.getLocation().getY()*25, 20,20));
+            g2.fill(new Ellipse2D.Double((int)this.getLocation().getX()*((int)(30 * resolution.getScalePercentage())), (int)this.getLocation().getY()*((int)(30 * resolution.getScalePercentage())), 20,20));
             g2.setColor(Color.WHITE);
 
             g2.drawString(this.weaponGraphic,(int)this.getLocation().getX()*25 + 6, (int)this.getLocation().getY()*25 + 14);
@@ -223,12 +225,14 @@ public class Weapons extends JComponent{
      * Array of all of the weapons for the game
      */
     private Weapon[] weapons = new Weapon[NUM_WEAPONS];
-
+    private Resolution resolution;
 
     /**
      * Default Constructor
      */
-    public Weapons(){
+    public Weapons(Resolution resolution){
+        this.resolution = resolution;
+
         fillKitchen();
         fillBallroom();
         fillConservatory();
@@ -298,8 +302,6 @@ public class Weapons extends JComponent{
         this.spawnLists.add(studySpawns);
         this.spawnLists.add(conservatorySpawns);
     }
-
-
 
     /**
      * Method to get a weapon at a specific index in the weapons array

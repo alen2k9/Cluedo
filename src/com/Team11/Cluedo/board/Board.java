@@ -8,32 +8,37 @@
 
 package com.team11.cluedo.board;
 
+import com.team11.cluedo.ui.Resolution;
+
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
-import java.net.URL;
 
 public class Board extends JComponent {
 
     /**
      * Constants for the board width and height and the size of each tile
      */
-    public final int BOARD_WIDTH = 27;
-    public final int BOARD_HEIGHT = 26;
-    public final int TILE_SIZE = 25;
+    private final int BOARD_WIDTH = 27;
+    private final int BOARD_HEIGHT = 26;
+    private int tileSize;
 
     private BoardPos[][] board;
+
+    private Resolution resolution;
 
     /**
      * Default Constructor
      * @throws IOException : Reads board information from the BoardInfo.txt file
      */
-    public Board() throws IOException{
+    public Board(Resolution resolution) throws IOException{
         /**
          * Try and read the file and assign the return value to the board variable
          */
         try{
             board = parseBoardFile();
+            this.resolution = resolution;
+            this.tileSize = (int)(30 * this.resolution.getScalePercentage());
         }
         catch(IOException ex){
             ex.printStackTrace(System.out);
@@ -86,7 +91,7 @@ public class Board extends JComponent {
                  * Secrete Passage Tile
                  */
                 else if (line[j].matches("2")) {
-                    tmp = new BoardPos(new Point(i,j), true, false, false, TileType.SECRETPASSAGE, TILE_SIZE );
+                    tmp = new BoardPos(new Point(i,j), true, false, false, TileType.SECRETPASSAGE, tileSize);
                 }
 
                 /**
@@ -203,7 +208,7 @@ public class Board extends JComponent {
      * @return : The boardPos object created
      */
     public BoardPos createNonTraversal(Point p, TileType t){
-        return new BoardPos(p, false, false, false, t, TILE_SIZE);
+        return new BoardPos(p, false, false, false, t, tileSize);
     }
 
     /**
@@ -213,7 +218,7 @@ public class Board extends JComponent {
      * @return : The boardPos object created
      */
     public BoardPos createTraversal(Point p, TileType t){
-        return new BoardPos(p, false, true, false, t, TILE_SIZE);
+        return new BoardPos(p, false, true, false, t, tileSize);
     }
 
     /**
@@ -230,10 +235,10 @@ public class Board extends JComponent {
         for (int i = 0; i < BOARD_WIDTH; i++){
             for (int j = 0; j < BOARD_HEIGHT; j++){
                 board[i][j].draw(g, new Point(left, top));
-                left += TILE_SIZE;
+                left += tileSize;
             }
             left = 0;
-            top += TILE_SIZE;
+            top += tileSize;
         }
     }
 }

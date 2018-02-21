@@ -18,10 +18,12 @@ import java.awt.event.ActionListener;
 public class CommandInput {
     private GameScreen mainPanel;
     private Weapons weaponGame;
+    private int currentPlayer;
 
     public CommandInput(GameScreen mainPanel, Weapons weaponGame) {
         this.mainPanel = mainPanel;
         this.weaponGame = weaponGame;
+        currentPlayer = 0;
     }
 
     public void initialSetup()
@@ -34,12 +36,12 @@ public class CommandInput {
     {
         boolean doOnce = false;
 
-        mainPanel.getEnterButton().addActionListener(e -> {
+        mainPanel.getCommandInput().addActionListener(e -> {
             mainPanel.setInput(mainPanel.getCommandInput().getText() + '\n');
             //initialSetup();
 
                 if (mainPanel.getCommandInput().getText().equals("1")) {
-                    mainPanel.reDraw();
+                    mainPanel.reDraw(currentPlayer);
                     mainPanel.getInfoOutput().append(mainPanel.getInput());
                     //mainPanel.getInfoOutput().append("Welcome\n");
                     mainPanel.getInfoOutput().append("Please enter the following\n ");
@@ -48,7 +50,7 @@ public class CommandInput {
                     mainPanel.getCommandInput().setText("");
 
                 } else if (mainPanel.getCommandInput().getText().equals("2")) {
-                    mainPanel.reDraw();
+                    mainPanel.reDraw(currentPlayer);
                     mainPanel.getInfoOutput().append(mainPanel.getInput());
                     //mainPanel.getInfoOutput().append("Welcome\n");
                     mainPanel.getInfoOutput().append("Please enter the following\n ");
@@ -60,14 +62,14 @@ public class CommandInput {
                 }
 
                 else if(mainPanel.getCommandInput().getText().equals("")){
-                    mainPanel.reDraw();
+                    mainPanel.reDraw(currentPlayer);
                 }
 
                 mainPanel.getCommandInput().setText("");
         });
 
         if (!doOnce){
-            mainPanel.getEnterButton().doClick();
+            //mainPanel.getInfoOutput().act
             doOnce = true;
         }
 
@@ -84,7 +86,7 @@ public class CommandInput {
             TO DO command input, then push into each options below
              */
         }
-        this.mainPanel.reDraw();
+        this.mainPanel.reDraw(currentUser);
     }
 
     public /*int*/ void Diceroll(){
@@ -207,7 +209,7 @@ public class CommandInput {
 
             weaponGame.moveWeaponToRoom(weapon, room);
             mainPanel.getInfoOutput().append("\n\n" + choice.getWeapon() + " has been moved to " + choice.getRoom() + "\n\n");
-            mainPanel.reDraw();
+            mainPanel.reDraw(currentPlayer);
 
         }
 
@@ -223,57 +225,51 @@ public class CommandInput {
         /*
         Player movement function found in: this.mainPanel.getGamePlayers().playerMove(PLAYER, DIRECTION, AMUONT);
          */
-        mainPanel.getEnterButton().addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                    if(mainPanel.getCommandInput().getText().equals("u"))
-                    {
-                        mainPanel.getInfoOutput().append("\nUp");
-                        //playerMove character up
-                        mainPanel.getGamePlayers().playerMove(1, Direction.NORTH, 1);
-                        mainPanel.reDraw();
-                        mainPanel.getCommandInput().setText("");
-                        playerMovement();
-                    }
-                    else if(mainPanel.getCommandInput().getText().equals("d"))
-                    {
-                        mainPanel.getInfoOutput().append("\nDown");
-                        //playerMove character down
-                        mainPanel.getGamePlayers().playerMove(1, Direction.SOUTH, 1);
-                        mainPanel.reDraw();
-                        mainPanel.getCommandInput().setText("");
-                        playerMovement();
-                    }
-                    else if(mainPanel.getCommandInput().getText().equals("l"))
-                    {
-                        mainPanel.getInfoOutput().append("\nLeft");
-                        //playerMove character left
-                        mainPanel.getGamePlayers().playerMove(1, Direction.WEST, 1);
-                        mainPanel.reDraw();
-                        mainPanel.getCommandInput().setText("");
-                        playerMovement();
-                    }
-                    else if(mainPanel.getCommandInput().getText().equals("r"))
-                    {
-                        mainPanel.getInfoOutput().append("\nRight");
-                        //playerMove character right
-                        mainPanel.getGamePlayers().playerMove(1, Direction.EAST, 1);
-                        mainPanel.reDraw();
-                        mainPanel.getCommandInput().setText("");
-                        playerMovement();
-                    }
+        mainPanel.getCommandInput().addActionListener(e -> {
+                if(mainPanel.getCommandInput().getText().equals("u"))
+                {
+                    mainPanel.getInfoOutput().append("\nUp");
+                    //playerMove character up
+                    mainPanel.getGamePlayers().playerMove(1, Direction.NORTH, 1);
+                    mainPanel.reDraw(currentPlayer);
+                    mainPanel.getCommandInput().setText("");
+                    playerMovement();
+                }
+                else if(mainPanel.getCommandInput().getText().equals("d"))
+                {
+                    mainPanel.getInfoOutput().append("\nDown");
+                    //playerMove character down
+                    mainPanel.getGamePlayers().playerMove(1, Direction.SOUTH, 1);
+                    mainPanel.reDraw(currentPlayer);
+                    mainPanel.getCommandInput().setText("");
+                    playerMovement();
+                }
+                else if(mainPanel.getCommandInput().getText().equals("l"))
+                {
+                    mainPanel.getInfoOutput().append("\nLeft");
+                    //playerMove character left
+                    mainPanel.getGamePlayers().playerMove(1, Direction.WEST, 1);
+                    mainPanel.reDraw(currentPlayer);
+                    mainPanel.getCommandInput().setText("");
+                    playerMovement();
+                }
+                else if(mainPanel.getCommandInput().getText().equals("r"))
+                {
+                    mainPanel.getInfoOutput().append("\nRight");
+                    //playerMove character right
+                    mainPanel.getGamePlayers().playerMove(1, Direction.EAST, 1);
+                    mainPanel.reDraw(currentPlayer);
+                    mainPanel.getCommandInput().setText("");
+                    playerMovement();
+                }
 
-                    else if (mainPanel.getCommandInput().getText().equals("back")){
-                        mainPanel.getInfoOutput().append("\n\nReturning to Main Menu\nEnter 1 to Move\nEnter 2 to move a weapon\n");
-                        mainPanel.getCommandInput().setText("");
-                        System.out.println("Returning to main menu");
-                        introduction();
-                    }
-
-
-
-
-                mainPanel.getCommandInput().setText("");
-            }
+                else if (mainPanel.getCommandInput().getText().equals("back")){
+                    mainPanel.getInfoOutput().append("\n\nReturning to Main Menu\nEnter 1 to Move\nEnter 2 to move a weapon\n");
+                    mainPanel.getCommandInput().setText("");
+                    System.out.println("Returning to main menu");
+                    introduction();
+                }
+            mainPanel.getCommandInput().setText("");
         });
     }
 }

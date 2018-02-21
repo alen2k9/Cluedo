@@ -99,4 +99,8 @@ public class Assets {
     public Image getSplashImage() {
         return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("splashImage.png"));
     }
+
+    public Color getDarkerGrey() {
+        return new Color(46, 46, 46);
+    }
 }

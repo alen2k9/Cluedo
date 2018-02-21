@@ -10,6 +10,7 @@
 package com.team11.cluedo.suspects;
 
 import com.team11.cluedo.assets.Assets;
+import com.team11.cluedo.ui.Resolution;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,7 +24,8 @@ public class Players extends JComponent {
              new Point(24,20), new Point(8,25), new Point(1,18)};
     private final String[] SUSPECT_NAME = new String[] {
             "Miss White", "Mr. Green", "Ms. Peacock", "Mr. Plum", "Miss Scarlett", "Colonel Mustard"};
-    private Image[] playerTokens, playerCards;
+    private Image[] playerTokens, playerCards, selectedCards;
+    private Resolution resolution;
 
     /**
      * Player One - Miss White
@@ -36,10 +38,11 @@ public class Players extends JComponent {
      * */
     private Suspect[] players;
 
-    public Players(int numPlayers, Assets gameAssets){
+    public Players(int numPlayers, Assets gameAssets, Resolution resolution){
         this.numPlayers = numPlayers;
         this.remainingPlayers = numPlayers;
         this.players = new Suspect[this.numPlayers];
+        this.resolution = resolution;
 
         this.playerTokens = new Image[] {gameAssets.getWhiteToken(), gameAssets.getGreenToken(), gameAssets.getPeacockToken(),
         gameAssets.getPlumToken(), gameAssets.getScarletToken(), gameAssets.getMustardToken()};
@@ -47,8 +50,11 @@ public class Players extends JComponent {
         this.playerCards = new Image[] {gameAssets.getWhiteCard(), gameAssets.getGreenCard(), gameAssets.getPeacockCard(),
         gameAssets.getPlumCard(), gameAssets.getScarletCard(), gameAssets.getMustardCard()};
 
+        this.selectedCards = new Image[] {gameAssets.getSelectedWhiteCard(), gameAssets.getSelectedGreenCard(), gameAssets.getSelectedPeacockCard(),
+        gameAssets.getSelectedPlumCard(), gameAssets.getSelectedScarletCard(), gameAssets.getSelectedMustardCard()};
+
         for (int i = 0; i < this.numPlayers; i++){
-            players[i] = new Suspect(i, SUSPECT_NAME[i], SUSPECT_NAME[i], SUSPECT_SPAWN[i], playerTokens[i], playerCards[i]);
+            players[i] = new Suspect(i, SUSPECT_NAME[i], SUSPECT_NAME[i], SUSPECT_SPAWN[i], playerTokens[i], playerCards[i], selectedCards[i], this.resolution);
         }
     }
 
@@ -67,9 +73,13 @@ public class Players extends JComponent {
         return remainingPlayers;
     }
 
+    public int getNumPlayers() {
+        return numPlayers;
+    }
+
     public void setPlayer(int index, int selectedChar, String playerName) {
         players[index] = new Suspect(index, SUSPECT_NAME[selectedChar], playerName, SUSPECT_SPAWN[selectedChar],
-                playerTokens[selectedChar], playerCards[selectedChar]);
+                playerTokens[selectedChar], playerCards[selectedChar], selectedCards[selectedChar], resolution);
     }
 
     public Suspect getPlayer(int index) {

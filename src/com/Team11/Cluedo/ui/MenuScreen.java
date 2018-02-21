@@ -1,4 +1,3 @@
-
 package com.team11.cluedo.ui;
 
 
@@ -8,7 +7,7 @@ import com.team11.cluedo.controls.*;
 import javax.swing.*;
 import java.awt.*;
 
-import com.team11.cluedo.ui.Panel.*;
+import com.team11.cluedo.ui.panel.*;
 
 /**
  * The Menu Screen Class
@@ -29,17 +28,20 @@ public class MenuScreen implements Screen {
     private GameScreen gameScreen;
     private CommandInput gameInput;
 
+    private Resolution resolution;
+
     /**
      * Constructor for the Menu Screen
      * @param gameAssets Handles the importing and accessing of assets.
      * @param gameScreen Handles the creation of the Game Screen
      * @param gameInput Handles the user input for the Game Screen
      */
-    public MenuScreen(Assets gameAssets, GameScreen gameScreen, CommandInput gameInput){
+    public MenuScreen(Assets gameAssets, GameScreen gameScreen, CommandInput gameInput, Resolution resolution){
         //  Setting global variables
         this.gameAssets = gameAssets;
         this.gameScreen = gameScreen;
         this.gameInput = gameInput;
+        this.resolution = resolution;
 
         //  Calling functions to create screen
         this.setupScreen(0);
@@ -56,6 +58,7 @@ public class MenuScreen implements Screen {
         this.frame = new JFrame(name);
         this.frame.setResizable(false);
         this.frame.getContentPane().add(this.mainPanel);
+        this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.frame.pack();
     }
 
@@ -80,8 +83,7 @@ public class MenuScreen implements Screen {
      */
     @Override
     public void displayScreen() {
-        Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
-        this.frame.setLocation(dimension.width/2 - frame.getSize().width/2, dimension.height/2 - (frame.getSize().height/2));
+        this.frame.setLocation(resolution.getScreenSize().width/2 - frame.getSize().width/2, resolution.getScreenSize().height/2 - (frame.getSize().height/2));
         this.frame.setVisible(true);
     }
 
@@ -100,7 +102,7 @@ public class MenuScreen implements Screen {
      *  Method handled to re-draw the screen
      */
     @Override
-    public void reDraw() {
+    public void reDraw(int currentPlayer) {
 
     }
 
@@ -119,7 +121,8 @@ public class MenuScreen implements Screen {
         @Override
         public void paintComponent(Graphics g) {
             Image splashImage = gameAssets.getSplashImage();
-            g.drawImage(splashImage, 0, 0, this);
+            ImageIcon splash = new ImageIcon(splashImage);
+            g.drawImage(splashImage, 0, 0, (int)(splash.getIconWidth() * resolution.getScalePercentage()),(int)(splash.getIconHeight() * resolution.getScalePercentage()),this);
         }
     }
 
@@ -156,7 +159,7 @@ public class MenuScreen implements Screen {
             this.numPlayers = amountList.getSelectedIndex() + 2;
             this.currentPlayer = 0;
 
-            Players gamePlayers = new Players(numPlayers, this.gameAssets);
+            Players gamePlayers = new Players(numPlayers, this.gameAssets, resolution);
             gameScreen.setGamePlayers(gamePlayers);
             this.closeScreen();
 
@@ -165,7 +168,8 @@ public class MenuScreen implements Screen {
             this.displayScreen();
         });
 
-        Dimension imageSize = new Dimension(600, 400);
+        ImageIcon splash = new ImageIcon(gameAssets.getSplashImage());
+        Dimension imageSize = new Dimension((int)(splash.getIconWidth() * this.resolution.getScalePercentage()), (int)(splash.getIconHeight() * this.resolution.getScalePercentage()));
         menuPanel.setPreferredSize(imageSize);
         return menuPanel;
     }
@@ -277,12 +281,18 @@ public class MenuScreen implements Screen {
      * @param selectedIcon The ImageIcon used when button has been clicked
      */
     private void setButtonDisplay(int index, JButton[] button, ImageIcon selectedIcon) {
+        ImageIcon scaledDefaultIcon = new ImageIcon(((ImageIcon)button[index].getIcon()).getImage().getScaledInstance(
+                (int)(selectedIcon.getIconWidth()*resolution.getScalePercentage()),(int)(selectedIcon.getIconHeight()*resolution.getScalePercentage()), 0));
+        ImageIcon scaledSelectedIcon = new ImageIcon(selectedIcon.getImage().getScaledInstance(
+                (int)(selectedIcon.getIconWidth()*resolution.getScalePercentage()),(int)(selectedIcon.getIconHeight()*resolution.getScalePercentage()), 0));
+
         button[index].setBorderPainted(false);
         button[index].setContentAreaFilled(false);
         button[index].setFocusPainted(false);
         button[index].setOpaque(false);
-        button[index].setSelectedIcon(selectedIcon);
-        button[index].setDisabledIcon(selectedIcon);
+        button[index].setIcon(scaledDefaultIcon);
+        button[index].setSelectedIcon(scaledSelectedIcon);
+        button[index].setDisabledIcon(scaledSelectedIcon);
 
         button[index].addActionListener(e -> {
             if (button[index].isSelected()) {
