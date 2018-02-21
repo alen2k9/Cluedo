@@ -3,10 +3,12 @@ package com.team11.cluedo.ui;
 
 
 import com.team11.cluedo.assets.Assets;
+import com.team11.cluedo.board.Board;
 import com.team11.cluedo.suspects.Players;
 import com.team11.cluedo.controls.*;
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 
 import com.team11.cluedo.ui.Panel.*;
 
@@ -28,6 +30,7 @@ public class MenuScreen implements Screen {
     private Assets gameAssets;
     private GameScreen gameScreen;
     private CommandInput gameInput;
+    private Board gameBoard;
 
     /**
      * Constructor for the Menu Screen
@@ -35,15 +38,16 @@ public class MenuScreen implements Screen {
      * @param gameScreen Handles the creation of the Game Screen
      * @param gameInput Handles the user input for the Game Screen
      */
-    public MenuScreen(Assets gameAssets, GameScreen gameScreen, CommandInput gameInput){
+    public MenuScreen(Assets gameAssets, GameScreen gameScreen, CommandInput gameInput, Board board){
         //  Setting global variables
         this.gameAssets = gameAssets;
         this.gameScreen = gameScreen;
         this.gameInput = gameInput;
+        this.gameBoard = board;
 
         //  Calling functions to create screen
         this.setupScreen(0);
-        this.createScreen("Cluedo - Title Screen");
+        this.createScreen("cluedo - Title Screen");
         this.displayScreen();
     }
 
@@ -156,12 +160,12 @@ public class MenuScreen implements Screen {
             this.numPlayers = amountList.getSelectedIndex() + 2;
             this.currentPlayer = 0;
 
-            Players gamePlayers = new Players(numPlayers, this.gameAssets);
+            Players gamePlayers = new Players(numPlayers, this.gameAssets, this.gameBoard);
             gameScreen.setGamePlayers(gamePlayers);
             this.closeScreen();
 
             this.setupScreen(1);
-            this.createScreen("Cluedo - Character Selection");
+            this.createScreen("cluedo - Character Selection");
             this.displayScreen();
         });
 
@@ -305,9 +309,10 @@ public class MenuScreen implements Screen {
      * Method to launch game with current players
      */
     private void startGame() {
-        gameScreen.createScreen("Cluedo");
+        gameScreen.createScreen("cluedo");
         gameScreen.setupScreen(1);
         gameScreen.displayScreen();
+        gameScreen.getGamePlayers().setSpawnsOccupied(gameBoard);
         gameInput.initialSetup();
         gameInput.introduction();
     }

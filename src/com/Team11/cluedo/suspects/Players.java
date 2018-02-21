@@ -10,9 +10,12 @@
 package com.team11.cluedo.suspects;
 
 import com.team11.cluedo.assets.Assets;
+import com.team11.cluedo.board.Board;
 
 import javax.swing.*;
 import java.awt.*;
+
+import static sun.audio.AudioPlayer.player;
 
 public class Players extends JComponent {
     private int numPlayers;
@@ -35,11 +38,13 @@ public class Players extends JComponent {
      *
      * */
     private Suspect[] players;
+    private Board board;
 
-    public Players(int numPlayers, Assets gameAssets){
+    public Players(int numPlayers, Assets gameAssets, Board gameBoard){
         this.numPlayers = numPlayers;
         this.remainingPlayers = numPlayers;
         this.players = new Suspect[this.numPlayers];
+        this.board = gameBoard;
 
         this.playerTokens = new Image[] {gameAssets.getWhiteToken(), gameAssets.getGreenToken(), gameAssets.getPeacockToken(),
         gameAssets.getPlumToken(), gameAssets.getScarletToken(), gameAssets.getMustardToken()};
@@ -50,8 +55,17 @@ public class Players extends JComponent {
         for (int i = 0; i < this.numPlayers; i++){
             players[i] = new Suspect(i, SUSPECT_NAME[i], SUSPECT_NAME[i], SUSPECT_SPAWN[i], playerTokens[i], playerCards[i]);
         }
+
+
+
     }
 
+    public void setSpawnsOccupied(Board gameBoard){
+        for (int i = 0; i < players.length; i++){
+            gameBoard.getBoard((int)players[i].getLoc().getY(), (int)players[i].getLoc().getX()).setOccupied(true);
+            gameBoard.checkIsOccupied();
+        }
+    }
     @Override
     public void paintComponent(Graphics g){
         for (Suspect suspect : players) {
@@ -59,8 +73,8 @@ public class Players extends JComponent {
         }
     }
 
-    public void playerMove(int player, Direction dir, int space) {
-        players[player].move(dir,space);
+    public void playerMove(Board gameBoard, int player, Direction dir, int space) {
+        players[player].move(gameBoard,dir,space);
     }
 
     public int getRemainingPlayers() {
@@ -79,4 +93,5 @@ public class Players extends JComponent {
     public void setRemainingPlayers(int amount) {
         this.remainingPlayers = amount;
     }
+
 }

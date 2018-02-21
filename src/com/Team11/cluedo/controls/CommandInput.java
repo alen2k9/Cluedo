@@ -6,6 +6,7 @@
  */
 package com.team11.cluedo.controls;
 
+import com.team11.cluedo.board.Board;
 import com.team11.cluedo.suspects.Direction;
 import com.team11.cluedo.ui.GameScreen;
 import com.team11.cluedo.weapons.Weapons;
@@ -18,10 +19,11 @@ import java.awt.event.ActionListener;
 public class CommandInput {
     private GameScreen mainPanel;
     private Weapons weaponGame;
-
-    public CommandInput(GameScreen mainPanel, Weapons weaponGame) {
+    private Board board;
+    public CommandInput(GameScreen mainPanel, Weapons weaponGame, Board gameBoard) {
         this.mainPanel = mainPanel;
         this.weaponGame = weaponGame;
+        this.board = gameBoard;
     }
 
     public void initialSetup()
@@ -52,8 +54,8 @@ public class CommandInput {
                     mainPanel.getInfoOutput().append(mainPanel.getInput());
                     //mainPanel.getInfoOutput().append("Welcome\n");
                     mainPanel.getInfoOutput().append("Please enter the following\n ");
-                    mainPanel.getInfoOutput().append("Rooms to choose from:\n- Kitchen\n- Ballroom\n- Conservatory\n- Biliard Room\n- Library\n" +
-                            "- Study\n- Hall \n- Lounge\n- Dining Room \n- Cellar\n\n");
+                    mainPanel.getInfoOutput().append("Rooms to choose from:\n- Kitchen\n- Ballroom\n- Conservatory\n- Biliard WeaponPoints\n- Library\n" +
+                            "- Study\n- Hall \n- Lounge\n- Dining WeaponPoints \n- Cellar\n\n");
                     mainPanel.getInfoOutput().append("Weapons to choose from\n");
                     mainPanel.getInfoOutput().append("- Candlestick\n- Dagger\n- Lead Pipe\n- Revolver\n- Rope\n- Spanner");
                     weaponMovement();
@@ -105,14 +107,14 @@ public class CommandInput {
         private void makeChoice()
         {
             String[] weaponChoice = { "Candlestick", "Dagger", "Lead Pipe", "Revolver", "Rope", "Spanner" };
-            String[] roomChoice = { "Kitchen", "Ballroom", "Conservatory", "Billiard Room", "Library", "Study", "Hall", "Lounge", "Dining Room", "Cellar" };
+            String[] roomChoice = { "Kitchen", "Ballroom", "Conservatory", "Billiard", "Library", "Study", "Hall", "Lounge", "Dining WeaponPoints", "Cellar" };
 
             weapon = (String) JOptionPane.showInputDialog(null, "Choose the Weapon you want to move",
                     "Weapon Movement", JOptionPane.QUESTION_MESSAGE, null, weaponChoice, weaponChoice[0]);
 
 
             if (weapon != null){
-                room = (String) JOptionPane.showInputDialog(null, "Choose the Room you want to move it into",
+                room = (String) JOptionPane.showInputDialog(null, "Choose the WeaponPoints you want to move it into",
                         "Weapon Movement", JOptionPane.QUESTION_MESSAGE, null, roomChoice, roomChoice[0]);
             }
 
@@ -139,7 +141,7 @@ public class CommandInput {
         int room = 0;
 
         if (choice.getWeapon() != null){
-            /**
+            /*
              * Moving Weapon
              */
             if(choice.getRoom().equals("Kitchen"))      //move weapon based on user choice as chosen on joption Pane
@@ -154,7 +156,7 @@ public class CommandInput {
             {
                 room = 8;
             }
-            else if (choice.getRoom().equals("Billiard Room"))
+            else if (choice.getRoom().equals("Billiard"))
             {
                 room = 3;
             }
@@ -174,7 +176,7 @@ public class CommandInput {
             {
                 room = 5;
             }
-            else if (choice.getRoom().equals("Dining Room"))
+            else if (choice.getRoom().equals("Dining WeaponPoints"))
             {
                 room = 2;
             }
@@ -229,7 +231,7 @@ public class CommandInput {
                     {
                         mainPanel.getInfoOutput().append("\nUp");
                         //playerMove character up
-                        mainPanel.getGamePlayers().playerMove(1, Direction.NORTH, 1);
+                        mainPanel.getGamePlayers().playerMove(board,1, Direction.NORTH, 1);
                         mainPanel.reDraw();
                         mainPanel.getCommandInput().setText("");
                         playerMovement();
@@ -238,7 +240,7 @@ public class CommandInput {
                     {
                         mainPanel.getInfoOutput().append("\nDown");
                         //playerMove character down
-                        mainPanel.getGamePlayers().playerMove(1, Direction.SOUTH, 1);
+                        mainPanel.getGamePlayers().playerMove(board,1, Direction.SOUTH, 1);
                         mainPanel.reDraw();
                         mainPanel.getCommandInput().setText("");
                         playerMovement();
@@ -247,7 +249,7 @@ public class CommandInput {
                     {
                         mainPanel.getInfoOutput().append("\nLeft");
                         //playerMove character left
-                        mainPanel.getGamePlayers().playerMove(1, Direction.WEST, 1);
+                        mainPanel.getGamePlayers().playerMove(board,1, Direction.WEST, 1);
                         mainPanel.reDraw();
                         mainPanel.getCommandInput().setText("");
                         playerMovement();
@@ -256,7 +258,7 @@ public class CommandInput {
                     {
                         mainPanel.getInfoOutput().append("\nRight");
                         //playerMove character right
-                        mainPanel.getGamePlayers().playerMove(1, Direction.EAST, 1);
+                        mainPanel.getGamePlayers().playerMove(board,1, Direction.EAST, 1);
                         mainPanel.reDraw();
                         mainPanel.getCommandInput().setText("");
                         playerMovement();

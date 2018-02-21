@@ -23,11 +23,12 @@ public class Cluedo {
             Assets gameAssets = new Assets();
 
             Board gameBoard = new Board();
-            Weapons gameWeapons = new Weapons();
+            Weapons gameWeapons = new Weapons(gameBoard);
 
             GameScreen gameScreen = new GameScreen(gameWeapons, gameAssets);
-            CommandInput gameInput = new CommandInput(gameScreen, gameWeapons);
-            new MenuScreen(gameAssets, gameScreen, gameInput);
+            CommandInput gameInput = new CommandInput(gameScreen, gameWeapons, gameBoard);
+
+            new MenuScreen(gameAssets, gameScreen, gameInput, gameBoard);
         }
     }
 
