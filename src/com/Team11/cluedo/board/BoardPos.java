@@ -8,19 +8,21 @@
 
 package com.team11.cluedo.board;
 
+import com.team11.cluedo.suspects.Direction;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
 public class BoardPos extends JComponent {
     /**
-     * @Param location : The x,y location of the boardPos
-     * @Param isSecret : Boolean used to indicate whether or not the tile is a secrete passageway
-     * @Param isTraversable : Boolean used to indicate whether or not the suspects can playerMove on it
-     * @Param isOccupied : Boolean used to indicate whether or not there is a suspect on the tile or not
-     * @Param type : Enum used to identify what kind of tile the tile is
-     * @Param tileSize : Integer which contains the size of each tile
-     * @Param neighbours : An arrayList which will be used as part of the full suspect playerMovement
+     *  location : The x,y location of the boardPos
+     *  isSecret : Boolean used to indicate whether or not the tile is a secrete passageway
+     *  isTraversable : Boolean used to indicate whether or not the suspects can playerMove on it
+     *  isOccupied : Boolean used to indicate whether or not there is a suspect on the tile or not
+     *  type : Enum used to identify what kind of tile the tile is
+     *  tileSize : Integer which contains the size of each tile
+     *  neighbours : An arrayList which will be used as part of the full suspect playerMovement
      */
     private Point location;
     private boolean isSecret;
@@ -28,7 +30,29 @@ public class BoardPos extends JComponent {
     private boolean isOccupied;
     private TileType type;
     private int tileSize;
-    private ArrayList<BoardPos> neighbours = new ArrayList<>();
+    //private ArrayList<BoardPos> neighbours = new ArrayList<>();
+    private ArrayList<Neighbour> neighbours = new ArrayList<>();
+
+    private class Neighbour{
+        Point location;
+        Direction direction;
+        private Neighbour(Point point, Direction dir){
+            this.location = point;
+            this.direction = dir;
+        }
+        private void setLocation(Point point){
+            this.location = point;
+        }
+        private Point getLocation(){
+            return this.location;
+        }
+        private void setDirection(Direction dir){
+            this.direction = dir;
+        }
+        private Direction getDirection() {
+            return direction;
+        }
+    }
 
     /**
      * Default Constructor
@@ -44,12 +68,12 @@ public class BoardPos extends JComponent {
 
     /**
      * Parametrized Constructor
-     * @param loc : The x,y location of the tile
-     * @param secret : Is it a secret
-     * @param traverse : Is it traversable
-     * @param occ : Is it occupied
-     * @param t : What type of tile is it
-     * @param size : The size of the tile
+     *  loc : The x,y location of the tile
+     *  secret : Is it a secret
+     *  traverse : Is it traversable
+     *  occ : Is it occupied
+     *  t : What type of tile is it
+     *  size : The size of the tile
      */
     public BoardPos(Point loc, boolean secret, boolean traverse, boolean occ, TileType t, int size){
         this.location = loc;
@@ -62,7 +86,7 @@ public class BoardPos extends JComponent {
 
     /**
      * Method to set the location of the tile
-     * @param p
+     *  p
      */
     public void setLoc(Point p){
         this.location.setLocation(p);
@@ -78,7 +102,7 @@ public class BoardPos extends JComponent {
 
     /**
      * Method to set whether or not the tile is a secret passageway
-     * @param s
+     *  s
      */
     public void setSecret(boolean s){
         this.isSecret = s;
@@ -94,7 +118,7 @@ public class BoardPos extends JComponent {
 
     /**
      * Method to set whether or not the tile is traversable
-     * @param t
+     *  t
      */
     public void setTraversable(boolean t){
         this.isTraversable = t;
@@ -110,7 +134,7 @@ public class BoardPos extends JComponent {
 
     /**
      * Method to see if the tile is occupuied or not
-     * @param o
+     *  o
      */
     public void setOccupied(boolean o){
         this.isOccupied = o;
@@ -126,7 +150,7 @@ public class BoardPos extends JComponent {
 
     /**
      * Method to set the type of tile it is
-     * @param t
+     *  t
      */
     public void setType(TileType t){
         this.type = t;
@@ -140,38 +164,47 @@ public class BoardPos extends JComponent {
         return this.type;
     }
 
+    public void addNeighbour(Point position, Direction dir){
+        this.neighbours.add(new Neighbour(position, dir));
+    }
+
+    public ArrayList<Neighbour> getNeighbours(){
+        return this.neighbours;
+    }
+
+    public Neighbour getNeighbour(Direction dir){
+        int i = 0;
+        Neighbour tmp = this.neighbours.get(i);
+        while(tmp.getDirection() == dir){
+            tmp = this.neighbours.get(i);
+        }
+        return tmp;
+    }
+
     /**
      * Method to handle the drawing of boardPos object
-     * @param g : The graphic to draw
-     * @param p : Where to draw the boardPos
+     *  g : The graphic to draw
+     *  p : Where to draw the boardPos
      */
     public void draw(Graphics g, Point p){
         Graphics2D g2 = (Graphics2D) g;
-
-
-        /*switch (this.type) {
-            case BLANK:
-                g2.setColor(Color.BLACK);
-                break;
-            case HALLWAY:
-                g2.setColor(Color.GREEN);
-                break;
-            case DOOR:
-                g2.setColor(Color.cyan);
-                break;
-            case SPAWN:
-                g2.setColor(Color.RED);
-                break;
-            case SECRETPASSAGE:
-                g2.setColor(Color.blue);
-                break;
-            default:
-                g2.setColor(Color.gray);
-                break;
-        }*/
         g2.setColor(Color.BLACK);
         g2.fillRect((int)p.getX(), (int)p.getY(), this.tileSize, this.tileSize);
         g2.drawRect((int)p.getX(), (int)p.getY(), this.tileSize, this.tileSize);
     }
+
+    public String toString(){
+        StringBuilder s = new StringBuilder();
+        s.append("(");
+        s.append(this.getLocation().getX());
+        s.append(",");
+        s.append(this.getLocation().getY());
+        s.append(")");
+
+        s.append("\nIsTraverseable:" + this.isTraversable);
+        s.append("\nIsOccupied: " + this.isOccupied() + "\n");
+        return s.toString();
+    }
+
 
 }
