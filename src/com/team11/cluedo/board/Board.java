@@ -56,6 +56,7 @@ public class Board extends JComponent {
             addRooms();
             addRoomSecretPassages();
             addExitPoints();
+            addEntryPoints();
             addAllSpawns();
             this.resolution = resolution;
             this.tileSize = (int)(30 * this.resolution.getScalePercentage());
@@ -167,7 +168,7 @@ public class Board extends JComponent {
                 }
 
                 /*
-                 * Dining WeaponPoints Tile
+                 * Dining Tile
                  */
                 else if (line[j].matches("I")) {
                     tmp = createNonTraversal(new Point(i,j), TileType.DININGROOM);
@@ -232,7 +233,7 @@ public class Board extends JComponent {
                  */
                 else if (line[j].matches("D")) {
                     tmp = createTraversal(new Point(i,j), TileType.DOOR);
-                    //System.out.println("i :" + i + " j : " + j);
+                    //System.out.println("j : " + j + " i : " + i);
                 }
 
                 /*
@@ -319,6 +320,37 @@ public class Board extends JComponent {
         rooms.get(9).getExitPoints().add(new Point(13,18));
     }
 
+    private void addEntryPoints(){
+        //Kitchen
+        rooms.get(0).getEntryPoints().add(new Point(5,7));
+        //Ballroom
+        rooms.get(1).getEntryPoints().add(new Point(9,6));
+        rooms.get(1).getEntryPoints().add(new Point(16,6));
+        rooms.get(1).getEntryPoints().add(new Point(10,8));
+        rooms.get(1).getEntryPoints().add(new Point(15,8));
+        //Conservatory
+        rooms.get(2).getEntryPoints().add(new Point(5,19));
+        //Dining Room
+        rooms.get(3).getEntryPoints().add(new Point(6,13));
+        rooms.get(3).getEntryPoints().add(new Point(9,16));
+        //Billiard Room
+        rooms.get(4).getEntryPoints().add(new Point(11,18));
+        rooms.get(4).getEntryPoints().add(new Point(23,13));
+        //Library
+        rooms.get(5).getEntryPoints().add(new Point(20,15));
+        rooms.get(5).getEntryPoints().add(new Point(18,17));
+        //Lounge
+        rooms.get(6).getEntryPoints().add(new Point(7,16));
+        //Hall
+        rooms.get(7).getEntryPoints().add(new Point(12,17));
+        rooms.get(7).getEntryPoints().add(new Point(13,17));
+        rooms.get(7).getEntryPoints().add(new Point(15,21));
+        //Study
+        rooms.get(8).getEntryPoints().add(new Point(18,22));
+        //Cellar
+        rooms.get(9).getEntryPoints().add(new Point(13,17));
+    }
+
     private void addAllSpawns(){
         for (int i = 0; i < 9; i++){
             rooms.get(i).addPositions(rooms.get(i).getWeaponPositions(), weaponPoints.getWeaponSpawnList().get(i));
@@ -326,9 +358,6 @@ public class Board extends JComponent {
         }
     }
 
-    private void addEntryPoints(){
-        //
-    }
     public BoardPos getBoard(int x, int y){
         return this.board[x][y];
     }
@@ -430,10 +459,10 @@ public class Board extends JComponent {
         for (int i = 0; i < 27; i++){
             for (int j = 0; j < 26; j++){
                 if (board[i][j].isOccupied()){
-                    System.out.println(board[i][j].getLocation());
+                    //System.out.println(board[i][j].getLocation());
                 }
             }
         }
-    }
+}
 
 }

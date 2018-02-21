@@ -27,13 +27,13 @@ public class Weapons extends JComponent{
      * NOTES on RoomID for moveWeaponToRoom Method
      * RoomID 0 - kitchen
      * RoomID 1 - ballroom
-     * RoomID 2 - dining room
-     * RoomID 3 - billiard room
-     * RoomID 4 - library
-     * RoomID 5 - lounge
-     * RoomID 6 - hall
-     * RoomID 7 - study
-     * RoomID 8 - Conservatory
+     * RoomID 2 - Conservatory
+     * RoomID 3 - dining room
+     * RoomID 4 - billiard room
+     * RoomID 5 - library
+     * RoomID 6 - lounge
+     * RoomID 7 - hall
+     * RoomID 8 - study
      */
 
     /*
@@ -147,19 +147,19 @@ public class Weapons extends JComponent{
         Random random = new Random();
         int randomInt = random.nextInt(gameBoard.getRooms().size()-1);
 
-        ArrayList<Point> tmpList = gameBoard.getRoom(randomInt).getWeaponPositions();
+        //ArrayList<Point> tmpList = gameBoard.getRoom(randomInt).getWeaponPositions();
 
-        Point spawnPoint = getRandomPoint(tmpList);
+        Point spawnPoint = gameBoard.getRoom(randomInt).getRandomPoint(gameBoard.getRoom(randomInt).getWeaponPositions());
         weapons[weaponID].setLocation(spawnPoint);
         weapons[weaponID].setCurrentRoom(randomInt);
-        tmpList.remove(spawnPoint);
+        gameBoard.getRoom(randomInt).getWeaponPositions().remove(spawnPoint);
 
     }
 
     public void moveWeaponToRoom(int weaponID, int roomID){
         Point currentPoint = weapons[weaponID].getLocation();
         int currRoom = weapons[weaponID].getCurrentRoom();
-        Point nextPoint = getRandomPoint(gameBoard.getRoom(roomID).getWeaponPositions());
+        Point nextPoint = (gameBoard.getRoom(roomID).getRandomPoint(gameBoard.getRoom(roomID).getWeaponPositions()));
 
         gameBoard.getRoom(currRoom).getWeaponPositions().add(currentPoint);
 
@@ -167,14 +167,7 @@ public class Weapons extends JComponent{
         gameBoard.getRoom(roomID).getWeaponPositions().remove(nextPoint);
     }
 
-    public static Point getRandomPoint(ArrayList<Point> pointList) {
-        Random random = new Random();
-        int randomInt = random.nextInt(pointList.size());
 
-        Point retPoint = pointList.get(randomInt);
-        pointList.remove(randomInt);
-        return retPoint;
-    }
 
     /*
      * Method to get a weapon at a specific index in the weapons array

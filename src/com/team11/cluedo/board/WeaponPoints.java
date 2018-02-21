@@ -38,23 +38,23 @@ public class WeaponPoints {
 
         addPointToList(kitchenWeaponSpawns, kitchenPoints);
         addPointToList(ballroomWeaponSpawns, ballroomPoints);
+        addPointToList(conservatoryWeaponSpawns, conservatoryPoints);
         addPointToList(diningRoomWeaponSpawns, diningRoomPoints);
         addPointToList(billiardRoomWeaponSpawns, billiardRoomPoints);
         addPointToList(libraryWeaponSpawns, libraryPoints);
         addPointToList(loungeWeaponSpawns, loungePoints);
         addPointToList(hallWeaponSpawns, hallPoints);
         addPointToList(studyWeaponSpawns, studyPoints);
-        addPointToList(conservatoryWeaponSpawns, conservatoryPoints);
 
         weaponSpawnList.add(kitchenWeaponSpawns);
         weaponSpawnList.add(ballroomWeaponSpawns);
+        weaponSpawnList.add(conservatoryWeaponSpawns);
         weaponSpawnList.add(diningRoomWeaponSpawns);
         weaponSpawnList.add(billiardRoomWeaponSpawns);
         weaponSpawnList.add(libraryWeaponSpawns);
         weaponSpawnList.add(loungeWeaponSpawns);
         weaponSpawnList.add(hallWeaponSpawns);
         weaponSpawnList.add(studyWeaponSpawns);
-        weaponSpawnList.add(conservatoryWeaponSpawns);
 
     }
 

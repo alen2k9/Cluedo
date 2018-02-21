@@ -12,8 +12,7 @@ import com.team11.cluedo.ui.GameScreen;
 import com.team11.cluedo.weapons.Weapons;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 
 public class CommandInput {
@@ -43,7 +42,6 @@ public class CommandInput {
         mainPanel.getCommandInput().addActionListener(e -> {
             mainPanel.setInput(mainPanel.getCommandInput().getText() + '\n');
             //initialSetup();
-
                 if (mainPanel.getCommandInput().getText().equals("1")) {
                     mainPanel.reDraw(currentPlayer);
                     mainPanel.getInfoOutput().append(mainPanel.getInput());
@@ -63,6 +61,10 @@ public class CommandInput {
                     mainPanel.getInfoOutput().append("Weapons to choose from\n");
                     mainPanel.getInfoOutput().append("- Candlestick\n- Dagger\n- Lead Pipe\n- Revolver\n- Rope\n- Spanner");
                     weaponMovement();
+                } else if (mainPanel.getCommandInput().getText().equals("4")){
+                    mainPanel.reDraw(currentPlayer);
+                    mainPanel.getInfoOutput().append((mainPanel.getInput()));
+                    playerMovement();
                 }
 
                 else if(mainPanel.getCommandInput().getText().equals("")){
@@ -138,7 +140,7 @@ public class CommandInput {
 
     }
 
-    public void weaponMovement()
+    private void weaponMovement()
     {
         ChoiceOption choice = new ChoiceOption();
         int weapon = 0;
@@ -158,32 +160,33 @@ public class CommandInput {
             }
             else if (choice.getRoom().equals("Conservatory"))
             {
-                room = 8;
+                room = 2;
             }
-            else if (choice.getRoom().equals("Billiard"))
+            else if (choice.getRoom().equals("Dining"))
             {
                 room = 3;
             }
-            else if (choice.getRoom().equals("Library"))
+            else if (choice.getRoom().equals("Billiard"))
             {
                 room = 4;
             }
-            else if (choice.getRoom().equals("Study"))
-            {
-                room = 7;
-            }
-            else if (choice.getRoom().equals("Hall"))
-            {
-                room = 6;
-            }
-            else if (choice.getRoom().equals("Lounge"))
+            else if (choice.getRoom().equals("Library"))
             {
                 room = 5;
             }
-            else if (choice.getRoom().equals("Dining WeaponPoints"))
+            else if (choice.getRoom().equals("Lounge"))
             {
-                room = 2;
+                room = 6;
             }
+            else if (choice.getRoom().equals("Hall"))
+            {
+                room = 7;
+            }
+            else if (choice.getRoom().equals("Study"))
+            {
+                room = 8;
+            }
+
             //private String[] weaponName = {"Candlestick", "Dagger", "Lead Pipe", "Revolver", "Rope", "Spanner"};
 
             if (choice.getWeapon().equals("Candlestick"))
@@ -224,8 +227,18 @@ public class CommandInput {
 
     }
 
-    public void playerMovement()
+    private void playerMovement()
     {
+
+        ArrayList<Direction> list = new ArrayList<>();
+        list.add(Direction.NORTH);
+        list.add(Direction.NORTH);
+        list.add(Direction.NORTH);
+        list.add(Direction.NORTH);
+        list.add(Direction.NORTH);
+        list.add(Direction.NORTH);
+        list.add(Direction.WEST);
+        list.add(Direction.SOUTH);
         /*
         Player movement function found in: this.mainPanel.getGamePlayers().playerMove(PLAYER, DIRECTION, AMUONT);
          */
@@ -234,7 +247,7 @@ public class CommandInput {
                 {
                     mainPanel.getInfoOutput().append("\nUp");
                     //playerMove character up
-                    mainPanel.getGamePlayers().playerMove(gameBoard, currentPlayer, Direction.NORTH, 1);
+                    //mainPanel.getGamePlayers().playerMove(gameBoard, currentPlayer, Direction.NORTH);
                     mainPanel.reDraw(currentPlayer);
                     mainPanel.getCommandInput().setText("");
                     playerMovement();
@@ -243,7 +256,7 @@ public class CommandInput {
                 {
                     mainPanel.getInfoOutput().append("\nDown");
                     //playerMove character down
-                    mainPanel.getGamePlayers().playerMove(gameBoard,currentPlayer, Direction.SOUTH, 1);
+                    //mainPanel.getGamePlayers().playerMove(gameBoard,currentPlayer, Direction.SOUTH, 1);
                     mainPanel.reDraw(currentPlayer);
                     mainPanel.getCommandInput().setText("");
                     playerMovement();
@@ -252,7 +265,7 @@ public class CommandInput {
                 {
                     mainPanel.getInfoOutput().append("\nLeft");
                     //playerMove character left
-                    mainPanel.getGamePlayers().playerMove(gameBoard, currentPlayer, Direction.WEST, 1);
+                    //mainPanel.getGamePlayers().playerMove(gameBoard, currentPlayer, Direction.WEST);
                     mainPanel.reDraw(currentPlayer);
                     mainPanel.getCommandInput().setText("");
                     playerMovement();
@@ -261,7 +274,7 @@ public class CommandInput {
                 {
                     mainPanel.getInfoOutput().append("\nRight");
                     //playerMove character right
-                    mainPanel.getGamePlayers().playerMove(gameBoard, currentPlayer, Direction.EAST, 1);
+                    //mainPanel.getGamePlayers().playerMove(gameBoard, currentPlayer, Direction.EAST, 1);
                     mainPanel.reDraw(currentPlayer);
                     mainPanel.getCommandInput().setText("");
                     playerMovement();
@@ -271,6 +284,9 @@ public class CommandInput {
                     mainPanel.getCommandInput().setText("");
                     System.out.println("Returning to main menu");
                     introduction();
+                }
+                else if (mainPanel.getCommandInput().getText().equals("test")){
+                    mainPanel.getGamePlayers().playerMove(gameBoard, currentPlayer, list);
                 }
             mainPanel.getCommandInput().setText("");
         });

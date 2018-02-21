@@ -2,6 +2,7 @@ package com.team11.cluedo.board;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Room {
 
@@ -84,5 +85,14 @@ public class Room {
 
     public ArrayList<Point> getEntryPoints() {
         return entryPoints;
+    }
+
+    public Point getRandomPoint(ArrayList<Point> pointList) {
+        Random random = new Random();
+        int randomInt = random.nextInt(pointList.size());
+
+        Point retPoint = pointList.get(randomInt);
+        pointList.remove(randomInt);
+        return retPoint;
     }
 }

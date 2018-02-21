@@ -15,6 +15,7 @@ import com.team11.cluedo.board.Board;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 
 public class Players extends JComponent {
     private int numPlayers;
@@ -77,8 +78,9 @@ public class Players extends JComponent {
         }
     }
 
-    public void playerMove(Board gameBoard, int player, Direction dir, int space) {
-        players[player].move(gameBoard,dir,space);
+    public int playerMove(Board gameBoard, int player, ArrayList<Direction> dirList) {
+
+        return players[player].move(gameBoard,dirList);
     }
 
     public int getRemainingPlayers() {

@@ -11,14 +11,11 @@ package com.team11.cluedo.suspects;
 import com.team11.cluedo.board.Board;
 import com.team11.cluedo.board.TileType;
 import com.team11.cluedo.ui.Resolution;
-import com.team11.cluedo.weapons.Weapons;
-
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Random;
 
-public class Suspect extends JComponent {
+public class Suspect extends JComponent{
     private int suspectID;
     private String suspectName;
     private String playerName;
@@ -27,7 +24,7 @@ public class Suspect extends JComponent {
     private Image cardImage;
     private Image selectedCardImage;
     private Resolution resolution;
-    private PlayerPoints roomSpawnPoints = new PlayerPoints();
+    private int numMoves;
 
     public final String[] PLAYER_NAMES = new String[] {"Player One", "Player Two", "Player Three",
             "Player Four", "Player Five", "Player Six"};
@@ -46,20 +43,13 @@ public class Suspect extends JComponent {
         this.cardImage = cardImage;
         this.selectedCardImage = selectedCardImage;
         this.resolution = resolution;
+        this.numMoves = 0;
     }
 
-    /*
-     * Method to set the suspectName of the suspect
-     * @param n : The suspectName to give them
-     */
     public void setName(String n){
         this.suspectName = n;
     }
 
-    /*
-     * Accessor Method to return the suspectName of the suspect
-     * @return : The suspectName of the suspect
-     */
     @Override
     public String getName(){
         return this.suspectName;
@@ -69,10 +59,18 @@ public class Suspect extends JComponent {
         return this.playerName;
     }
 
+    public int getNumMoves() {
+        return numMoves;
+    }
+
+    public void setNumMoves(int num){
+        this.numMoves = num;
+    }
+
     /*
-     * Method to set the location of the player
-     * @param p : The point to assign the player to
-     */
+         * Method to set the location of the player
+         * @param p : The point to assign the player to
+         */
     public void setLoc(Point p){
         this.location = p;
     }
@@ -115,8 +113,7 @@ public class Suspect extends JComponent {
      */
     public void draw(Graphics g){
         Graphics2D g2 = (Graphics2D) g;
-
-        /**
+        /*
          * Draw the ellipse at an offset of the suspects location and the size of each tile
          */
         g2.drawImage(this.tokenImage, (int)(this.location.getX() * ((int)(30 * resolution.getScalePercentage()))),
@@ -124,184 +121,164 @@ public class Suspect extends JComponent {
                 ((int)(30 * resolution.getScalePercentage())),  ((int)(30 * resolution.getScalePercentage())),null);
     }
 
-    /*
-     * Method for handling the playerMovement of the suspects
-     * Very much in a test state for the first sprint of the assignment
-     * Only has very basic playerMovement with no restriction on where the suspect can playerMove to
-     * Returns 1 if the move can be performed. If not then zero
-     */
-    public void move(Board gameBoard, Direction dir, int numMove){
 
-        //Use arrayList of directions which will be passed in from the command input.
-        //Run a check move method to see if any of the moves will result in being invalid
-        //Check to see if the tile that we land on is a door, then see if they want to move to the room
-        //If there's a player on the desired path, check to see if the current player will have enough moves to move over them
-        //NumMoves will be equal to the length of the arrayList
+    private boolean checkMove(ArrayList<Direction> moveList, Board gameBoard) {
 
+        Point testerPoint = this.getLoc();
 
-
-        int doMoveToRoom = 0;
-
-        if (dir == Direction.NORTH){
-            if (gameBoard.getBoard((int)this.getLoc().getY()-1, (int)this.getLoc().getX()).isTraversable() &&
-                    !gameBoard.getBoard((int)this.getLoc().getY()-1, (int)this.getLoc().getX()).isOccupied()){
-
-
-
-
-                gameBoard.getBoard((int)this.getLoc().getY(), (int)this.getLoc().getX()).setOccupied(false);
-                this.location.setLocation((int)this.getLoc().getX(),(int)this.getLoc().getY()-1);
-                gameBoard.getBoard((int)this.getLoc().getY(), (int)this.getLoc().getX()).setOccupied(true);
-
-
-                System.out.println("Position : " + gameBoard.getBoard((int)this.getLoc().getY(), (int)this.getLoc().getX()) + " is now occupied");
-                System.out.println("Position : " + gameBoard.getBoard((int)this.getLoc().getY()+1, (int)this.getLoc().getX()) + " is now unoccupied");
-
-                doMoveToRoom = checkRoomMove(gameBoard);
-                //Player is moving to room
-                if (doMoveToRoom == 1){
-
-                }
-
-                //Player is not moving to the room so move them back one space to outside the room
-                else{
-
-                }
-
-            }
-            else{
-                if (!gameBoard.getBoard((int)this.getLoc().getY()-1, (int)this.getLoc().getX()).isTraversable()){
-                    System.out.println("Cannot move up tile is not traversable");
-                }
-
-                else if (gameBoard.getBoard((int)this.getLoc().getY()-1, (int)this.getLoc().getX()).isOccupied()){
-                    System.out.println("Cannot move up as the tile is occupied");
+        boolean isValid = false;
+        while(!moveList.isEmpty()){
+            if (moveList.get(0) == Direction.NORTH){
+                if (gameBoard.getBoard((int)testerPoint.getLocation().getY()-1, (int)testerPoint.getLocation().getX()).isTraversable()){
+                    testerPoint.setLocation((int)testerPoint.getLocation().getX(),(int)testerPoint.getLocation().getY()-1);
+                    isValid = true;
                 }
             }
+
+            else if (moveList.get(0) == Direction.EAST){
+                if (gameBoard.getBoard((int)testerPoint.getLocation().getY(), (int)testerPoint.getLocation().getX()+1).isTraversable()){
+                    testerPoint.setLocation((int)testerPoint.getLocation().getX()+1,(int)testerPoint.getLocation().getY());
+                    isValid = true;
+                }
+            }
+
+            else if (moveList.get(0) == Direction.SOUTH){
+                if (gameBoard.getBoard((int)testerPoint.getLocation().getY()+1, (int)testerPoint.getLocation().getX()).isTraversable()){
+                    testerPoint.setLocation((int)testerPoint.getLocation().getX(),(int)testerPoint.getLocation().getY()+1);
+                    isValid = true;
+                }
+            }
+
+            else if (moveList.get(0) == Direction.WEST){
+                if (gameBoard.getBoard((int)testerPoint.getLocation().getY(), (int)testerPoint.getLocation().getX()-1).isTraversable()){
+                    testerPoint.setLocation((int)testerPoint.getLocation().getX()-1,(int)testerPoint.getLocation().getY());
+                    isValid = true;
+                }
+            }
+            moveList.remove(0);
         }
 
-        //Moving Right
-        else if (dir == Direction.EAST){
-            if (gameBoard.getBoard((int)this.getLoc().getY(), (int)this.getLoc().getX()+1).isTraversable() &&
-                    !gameBoard.getBoard((int)this.getLoc().getY(), (int)this.getLoc().getX()+1).isOccupied()){
+        //Have checked all of the moves to see if they go to any non traversal
+        //Now check to see of testerPoint is on a tile that is already occupied
 
-                gameBoard.getBoard((int)this.getLoc().getY(), (int)this.getLoc().getX()).setOccupied(false);
-                this.location.setLocation((int)this.getLoc().getX()+1,(int)this.getLoc().getY());
-                gameBoard.getBoard((int)this.getLoc().getY(), (int)this.getLoc().getX()).setOccupied(true);
-
-                System.out.println("Position : " + gameBoard.getBoard((int)this.getLoc().getY(), (int)this.getLoc().getX()) + " is now occupied");
-                System.out.println("Position : " + gameBoard.getBoard((int)this.getLoc().getY()+1, (int)this.getLoc().getX()) + " is now unoccupied");
-
-                doMoveToRoom = checkRoomMove(gameBoard);
-                //Player is moving to room
-                if (doMoveToRoom == 1){
-
-                }
-
-                //Player is not moving to the room so move them back one space to outside the room
-                else{
-
-                }
-            }
-            else{
-                if (!gameBoard.getBoard((int)this.getLoc().getY()-1, (int)this.getLoc().getX()).isTraversable()){
-                    System.out.println("Cannot move right tile is not traversable");
-                }
-
-                else if (gameBoard.getBoard((int)this.getLoc().getY()-1, (int)this.getLoc().getX()).isOccupied()) {
-                    System.out.println("Cannot move right as the tile is occupied");
-                }
-            }
+        if (gameBoard.getBoard((int)testerPoint.getLocation().getY(), (int) testerPoint.getLocation().getX()).isOccupied()){
+            isValid = false;
+            System.out.println("Move will result in the current player landing on another player");
         }
-
-        //Moving down
-        else if (dir == Direction.SOUTH){
-            if (gameBoard.getBoard((int)this.getLoc().getY()+1, (int)this.getLoc().getX()).isTraversable() &&
-                    !gameBoard.getBoard((int)this.getLoc().getY()+1, (int)this.getLoc().getX()).isOccupied()){
-
-                gameBoard.getBoard((int)this.getLoc().getY(), (int)this.getLoc().getX()).setOccupied(false);
-                this.location.setLocation((int)this.getLoc().getX(),(int)this.getLoc().getY()+1);
-                gameBoard.getBoard((int)this.getLoc().getY(), (int)this.getLoc().getX()).setOccupied(true);
-
-                System.out.println("Position : " + gameBoard.getBoard((int)this.getLoc().getY(), (int)this.getLoc().getX()) + "is now occupied");
-                System.out.println("Position : " + gameBoard.getBoard((int)this.getLoc().getY()+1, (int)this.getLoc().getX()) + "is now unoccupied");
-
-                doMoveToRoom = checkRoomMove(gameBoard);
-                if (doMoveToRoom == 1){
-
-                }
-
-                //Player is not moving to the room so move them back one space to outside the room
-                else{
-
-                }
-            }
-
-            else{
-                if (!gameBoard.getBoard((int)this.getLoc().getY()+1, (int)this.getLoc().getX()).isTraversable()){
-                    System.out.println("Cannot move down tile is not traversable");
-                }
-
-                else if (gameBoard.getBoard((int)this.getLoc().getY()+1, (int)this.getLoc().getX()).isOccupied()){
-                    System.out.println("Cannot move down as the tile is occupied");
-                }
-            }
-        }
-
-        //Moving left
-        else if (dir == Direction.WEST){
-            if (gameBoard.getBoard((int)this.getLoc().getY(), (int)this.getLoc().getX()-1).isTraversable() &&
-                    !gameBoard.getBoard((int)this.getLoc().getY(), (int)this.getLoc().getX()-1).isOccupied()){
-
-                gameBoard.getBoard((int)this.getLoc().getY(), (int)this.getLoc().getX()).setOccupied(false);
-                this.location.setLocation((int)this.getLoc().getX()-1,(int)this.getLoc().getY());
-                gameBoard.getBoard((int)this.getLoc().getY(), (int)this.getLoc().getX()).setOccupied(true);
-
-
-                doMoveToRoom = checkRoomMove(gameBoard);
-                if (doMoveToRoom == 1){
-
-                }
-
-                //Player is not moving to the room so move them back one space to outside the room
-                else{
-
-                }
-            }
-
-            else{
-                if (!gameBoard.getBoard((int)this.getLoc().getY(), (int)this.getLoc().getX()-1).isTraversable()){
-                    System.out.println("Cannot move up tile is not traversable");
-                }
-
-                else if (gameBoard.getBoard((int)this.getLoc().getY(), (int)this.getLoc().getX()-1).isOccupied()){
-                    System.out.println("Cannot move up as the tile is occupied");
-                }
-            }
-        }
+        testerPoint = null;
+        return isValid;
     }
 
+    /*
+     * Method for handling the playerMovement of the suspects
+     */
+    public int move(Board gameBoard, ArrayList<Direction> dirList){
+        boolean isValid = checkMove(dirList, gameBoard);
+        if (isValid){
+            //Continue with move
+            System.out.println("Is valid");
+            while(!dirList.isEmpty()){
+                System.out.println("nadhol kew");
+                if (dirList.get(0) == Direction.NORTH){
+                    System.out.println("nadhol kew");
+                    gameBoard.getBoard((int)this.getLoc().getY(), (int)this.getLoc().getX()).setOccupied(false);
+                    this.getLoc().setLocation((int)this.getLoc().getX(), (int)this.getLoc().getY()-1);
+                    gameBoard.getBoard((int)this.getLoc().getY(), (int)this.getLoc().getX()).setOccupied(true);
+                    System.out.println("Current Pos = " + (this.getLoc()));
 
-    private int checkRoomMove(Board gameBoard){
-        int doMove;
-        if (gameBoard.getBoard((int)this.getLoc().getY(), (int)this.getLoc().getX()).getType() == TileType.DOOR){
-            doMove = JOptionPane.showConfirmDialog(null, "Do you want to move into this room?","Move to WeaponPoints", JOptionPane.YES_NO_OPTION);
-            //Yes
-            if (doMove == 0){
-                doMove = 1;
+                }
+                else if (dirList.get(0) == Direction.EAST){
+                    gameBoard.getBoard((int)this.getLoc().getY(), (int)this.getLoc().getX()).setOccupied(false);
+                    this.getLoc().setLocation((int)this.getLoc().getX()+1, (int)this.getLoc().getY());
+                    gameBoard.getBoard((int)this.getLoc().getY(), (int)this.getLoc().getX()).setOccupied(true);
+                    System.out.println("Current Pos = " + (this.getLoc()));
+
+                }
+                else if (dirList.get(0) == Direction.SOUTH){
+                    gameBoard.getBoard((int)this.getLoc().getY(), (int)this.getLoc().getX()).setOccupied(false);
+                    this.getLoc().setLocation((int)this.getLoc().getX(), (int)this.getLoc().getY()+1);
+                    gameBoard.getBoard((int)this.getLoc().getY(), (int)this.getLoc().getX()).setOccupied(true);
+                    System.out.println("Current Pos = " + (this.getLoc()));
+
+                }
+                else if (dirList.get(0) == Direction.WEST) {
+                    gameBoard.getBoard((int) this.getLoc().getY(), (int) this.getLoc().getX()).setOccupied(false);
+                    this.getLoc().setLocation((int) this.getLoc().getX() - 1, (int) this.getLoc().getY());
+                    gameBoard.getBoard((int) this.getLoc().getY(), (int) this.getLoc().getX()).setOccupied(true);
+                    System.out.println("Current Pos = " + (this.getLoc()));
+                }
+                dirList.remove(0);
             }
 
-            //No
-            else{
-                doMove = -1;
+            if (gameBoard.getBoard((int)this.getLoc().getY(), (int)this.getLoc().getX()).getType() == TileType.DOOR){
+                gameBoard.getBoard((int)this.getLoc().getY(), (int)this.getLoc().getX()).setOccupied(false);
+                moveToRoom(gameBoard);
             }
+
+            return 1;
         }
 
         else{
-            doMove = 0;
+            return -1;
         }
-        return doMove;
     }
 
 
+    private void moveToRoom(Board gameBoard){
+        System.out.println("Moving to room");
+        int currentRoom = findParentRoom(this.getLoc(), gameBoard);
+        System.out.println(currentRoom);
+        Point nextPoint = gameBoard.getRoom(currentRoom).getRandomPoint(gameBoard.getRoom(currentRoom).getPlayerPositions());
+
+        this.setLoc(nextPoint);
+        gameBoard.getRoom(currentRoom).getPlayerPositions().remove(nextPoint);
+    }
+
+
+    private void moveOutOfRoom(Board gameBoard, int exitNum){
+        Point currentPoint = this.getLoc();
+        int currentRoom = determineRoom(gameBoard);
+
+        gameBoard.getRoom(currentRoom).getPlayerPositions().add(currentPoint);
+
+        if (gameBoard.getRoom(currentRoom).getEntryPoints().size() == 1){
+            this.setLoc(gameBoard.getRoom(currentRoom).getEntryPoints().get(0));
+        }
+        else{
+            this.setLoc(gameBoard.getRoom(currentRoom).getEntryPoints().get(exitNum));
+        }
+
+    }
+    private int findParentRoom(Point point, Board gameBoard){
+        int parentRoom = 0;
+
+        return parentRoom;
+    }
+
+    private int determineRoom(Board gameBoard){
+        switch (gameBoard.getBoard((int)this.getLoc().getX(), (int)this.getLoc().getY()).getType()){
+            case KITCHEN:
+                return 0;
+            case BALLROOM:
+                return 1;
+            case CONSERVATORY:
+                return 2;
+            case DININGROOM:
+                return 3;
+            case BILLIARDROOM:
+                return 4;
+            case LIBRARY:
+                return 5;
+            case LOUNGE:
+                return 6;
+            case HALL:
+                return 7;
+            case STUDY:
+                return 8;
+            case CELLAR:
+                return 9;
+            default:
+                return -1;
+        }
+    }
 }
