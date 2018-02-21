@@ -1,7 +1,3 @@
 Manifest-Version: 1.0
-<<<<<<< HEAD
 Main-Class: com.team11.cluedo.Cluedo
-=======
-Main-Class: com.Team11.cluedo.Cluedo
->>>>>>> 44a80635fb0cdb0f581c7257d4c051e12c99de88
 
