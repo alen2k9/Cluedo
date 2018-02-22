@@ -84,8 +84,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void displayScreen() {
-        Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
-        this.frame.setLocation(dimension.width/2 - frame.getSize().width/2, dimension.height/2 - (frame.getSize().height/2));
+        this.frame.setLocation(resolution.getScreenSize().width/2 - frame.getSize().width/2, resolution.getScreenSize().height/2 - (frame.getSize().height/2));
         this.frame.setVisible(true);
     }
 
@@ -103,8 +102,8 @@ public class GameScreen implements Screen {
 
     private JPanel setupCommandPanel() {
         JPanel commandPanel = new JPanel(new BorderLayout());
-        commandInput = new JTextField(15);
         Font f = new Font("Calibri",Font.BOLD, (int)(30*resolution.getScalePercentage()));
+        commandInput = new JTextField(15);
         commandInput.setFont(f);
         commandInput.setBackground(Color.WHITE);
         commandInput.setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
@@ -136,8 +135,8 @@ public class GameScreen implements Screen {
         });
         infoPanel.setBackground(Color.BLACK);
         infoPanel.setForeground(Color.WHITE);
-        infoOutput = new JTextArea(28, 20);
         Font f = new Font("Calibri",Font.BOLD, (int)(20*resolution.getScalePercentage()));
+        infoOutput = new JTextArea(28, 20);
         infoOutput.setFont(f);
         infoOutput.setEditable(false); infoOutput.setLineWrap(true);
         infoOutput.setBackground(Color.DARK_GRAY);
@@ -175,7 +174,7 @@ public class GameScreen implements Screen {
     }
 
     private PlayerCardLayout setupPlayerPanel() {
-        PlayerCardLayout playerPanel = new PlayerCardLayout(gamePlayers.getPlayerCount(), gamePlayers, resolution);
+        PlayerCardLayout playerPanel = new PlayerCardLayout(gamePlayers, resolution);
         playerPanel.setOpaque(false);
         TitledBorder border = new TitledBorder(new LineBorder(Color.BLACK,3), "Players");
         border.setTitleFont(new Font("Calibri",Font.BOLD, (int)(20*resolution.getScalePercentage())));

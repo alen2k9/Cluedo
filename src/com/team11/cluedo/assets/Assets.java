@@ -57,15 +57,15 @@ public class Assets {
         return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("mustardToken.png"));
     }
 
-    public Image getWhiteCard() {
-        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("whiteCard.png"));
-    }
-
     ////////////////////////////////////////////
     //                                        //
     //             PLAYER CARDS               //
     //                                        //
     ////////////////////////////////////////////
+
+    public Image getWhiteCard() {
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("whiteCard.png"));
+    }
 
     public Image getGreenCard() {
         return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("greenCard.png"));

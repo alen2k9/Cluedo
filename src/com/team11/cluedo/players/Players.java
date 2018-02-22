@@ -20,7 +20,6 @@ public class Players {
     public void addPlayer(String playerName, Suspect suspectToken) {
         SuspectData data = new SuspectData();
         players.put(playerCount, new Player(playerName, suspectToken, data.getSuspectCard(suspectToken.getSuspectID()), data.getSelectedSuspectCard(suspectToken.getSuspectID())));
-        System.out.println("Player " + playerCount + " | " + playerName + " | " + suspectToken.getSuspectID() + " " + suspectToken.getSuspectName());
         playerCount++;
     }
 

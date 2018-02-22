@@ -82,7 +82,6 @@ public class Weapons extends JComponent implements Iterable<Weapon>, Iterator<We
     }
 
     public void moveWeaponToRoom(int weaponID, int roomID){
-        System.out.println("Moving weapon");
         Point currentPoint = this.getWeapon(weaponID).getLocation();
         int currRoom = this.getWeapon(weaponID).getCurrentRoom();
 

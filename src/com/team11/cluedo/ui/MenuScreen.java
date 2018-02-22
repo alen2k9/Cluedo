@@ -3,13 +3,16 @@ package com.team11.cluedo.ui;
 
 import com.team11.cluedo.assets.Assets;
 import com.team11.cluedo.board.Board;
+import com.team11.cluedo.players.Players;
 import com.team11.cluedo.suspects.PlayerPoints;
 import com.team11.cluedo.suspects.Suspects;
 import com.team11.cluedo.controls.*;
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 
 import com.team11.cluedo.ui.panel.*;
+import com.team11.cluedo.weapons.Weapons;
 
 /**
  * The Menu Screen Class
@@ -26,31 +29,32 @@ public class MenuScreen implements Screen {
     private JTextField nameInput;
     private JButton enterButton;
 
-    private Assets gameAssets;
+    private Resolution resolution;
     private GameScreen gameScreen;
     private CommandInput gameInput;
-    private Board gameBoard;
 
-    private Resolution resolution;
+    private Assets gameAssets;
 
-    /**
-     * Constructor for the Menu Screen
-     * @param gameAssets Handles the importing and accessing of assets.
-     * @param gameScreen Handles the creation of the Game Screen
-     * @param gameInput Handles the user input for the Game Screen
-     */
+    public MenuScreen() throws IOException{
 
-    public MenuScreen(Assets gameAssets, GameScreen gameScreen, CommandInput gameInput, Board gameBoard, Resolution resolution){
-        //  Setting global variables
-        this.gameAssets = gameAssets;
-        this.gameScreen = gameScreen;
-        this.gameInput = gameInput;
-        this.gameBoard = gameBoard;
-        this.resolution = resolution;
+        //  Used to handle the assets
+        this.gameAssets = new Assets();
+
+        //  Used to scale on resolutions lower than 1080p
+        this.resolution = new Resolution();
+
+        //  Game logic components
+        Board gameBoard = new Board(resolution);
+        Suspects gameSuspects = new Suspects(resolution);
+        Weapons gameWeapons = new Weapons(gameBoard, resolution);
+        Players gamePlayers = new Players();
+
+        this.gameScreen = new GameScreen(gameBoard, gameSuspects, gameWeapons, gamePlayers, gameAssets, resolution);
+        this.gameInput = new CommandInput(gameScreen);
 
         //  Calling functions to create screen
         this.setupScreen(0);
-        this.createScreen("cluedo - Title Screen");
+        this.createScreen("Cluedo - Title Screen");
         this.displayScreen();
     }
 
@@ -323,7 +327,7 @@ public class MenuScreen implements Screen {
         gameScreen.createScreen("cluedo");
         gameScreen.setupScreen(1);
         gameScreen.displayScreen();
-        gameScreen.getGameSuspects().setSpawnsOccupied(gameBoard);
+        gameScreen.getGameSuspects().setSpawnsOccupied(gameScreen.getGameBoard());
         gameInput.initialSetup();
         gameInput.introduction();
     }

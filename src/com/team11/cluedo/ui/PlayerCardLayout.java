@@ -9,44 +9,41 @@ import java.awt.*;
 public class PlayerCardLayout extends JPanel {
     private Players gamePlayers;
     private Resolution resolution;
-    private int numPlayers;
 
-    public PlayerCardLayout (int numPlayers, Players gamePlayers, Resolution resolution) {
-        System.out.println("Num players " + numPlayers);
-        this.numPlayers = numPlayers;
+    public PlayerCardLayout (Players gamePlayers, Resolution resolution) {
         this.gamePlayers = gamePlayers;
         this.resolution = resolution;
 
         this.setLayout(new GridBagLayout());
 
-        switch (numPlayers) {
+        switch (gamePlayers.getPlayerCount()) {
             case 2: {
-                getColumnCardsLayout(numPlayers);
+                getColumnCardsLayout();
                 break;
             }
             case 3: {
-                getColumnCardsLayout(numPlayers);
+                getColumnCardsLayout();
                 break;
             }
             case 4: {
-                getFourCardsLayout(numPlayers);
+                getFourCardsLayout();
                 break;
             }
             case 5: {
-                getFiveCardsLayout(numPlayers);
+                getFiveCardsLayout();
                 break;
             }
             case 6: {
-                getSixCardsLayout(numPlayers);
+                getSixCardsLayout();
                 break;
             }
         }
     }
 
-    private void getColumnCardsLayout(int numPlayers) {
+    private void getColumnCardsLayout() {
         GridBagConstraints gbc = new GridBagConstraints();
         ImageIcon card;
-        for(int i = 0  ; i < numPlayers ; i++) {
+        for(int i = 0  ; i < gamePlayers.getPlayerCount() ; i++) {
             System.out.println(i + " Players");
             card = new ImageIcon(gamePlayers.getPlayer(i).getSelectedCardImage().getScaledInstance(
                     (int)((new ImageIcon(gamePlayers.getPlayer(i).getSelectedCardImage()).getIconWidth() * resolution.getScalePercentage()) * .66),
@@ -61,11 +58,11 @@ public class PlayerCardLayout extends JPanel {
         }
     }
 
-    private void getFourCardsLayout(int numPlayers) {
+    private void getFourCardsLayout() {
         GridBagConstraints gbc = new GridBagConstraints();
 
         ImageIcon card;
-        for(int i = 0, x = 0, y = 0 ; i < numPlayers ; i++, x++) {
+        for(int i = 0, x = 0, y = 0 ; i < gamePlayers.getPlayerCount() ; i++, x++) {
             if (i == 0 || i == 3) {
                 x = 0;
                 y++;
@@ -90,11 +87,11 @@ public class PlayerCardLayout extends JPanel {
         }
     }
 
-    private void getFiveCardsLayout(int numPlayers) {
+    private void getFiveCardsLayout() {
         GridBagConstraints gbc = new GridBagConstraints();
 
         ImageIcon card;
-        for(int i = 0, x = 0, y = 0 ; i < numPlayers ; i++, x++) {
+        for(int i = 0, x = 0, y = 0 ; i < gamePlayers.getPlayerCount() ; i++, x++) {
             if (i == 2) {
                 x = 0;
                 y++;
@@ -119,10 +116,10 @@ public class PlayerCardLayout extends JPanel {
         }
     }
 
-    private void getSixCardsLayout(int numPlayers) {
+    private void getSixCardsLayout() {
         GridBagConstraints gbc = new GridBagConstraints();
         ImageIcon card;
-        for(int i = 0, x = 0, y = 0 ; i < numPlayers ; i++, x++) {
+        for(int i = 0, x = 0, y = 0 ; i < gamePlayers.getPlayerCount() ; i++, x++) {
             if (i % 2 == 0 && i > 0) {
                 x = 0;
                 y++;
