@@ -10,7 +10,9 @@
 package com.team11.cluedo.ui;
 
 import com.team11.cluedo.assets.Assets;
-import com.team11.cluedo.suspects.Players;
+import com.team11.cluedo.board.Board;
+import com.team11.cluedo.players.Players;
+import com.team11.cluedo.suspects.Suspects;
 import com.team11.cluedo.ui.panel.BackgroundPanel;
 import com.team11.cluedo.weapons.Weapons;
 
@@ -30,14 +32,19 @@ public class GameScreen implements Screen {
     private String input;
     private JTextField commandInput;
 
-    private Players gamePlayers;
+    private Board gameBoard;
+    private Suspects gameSuspects;
     private Weapons gameWeapons;
+    private Players gamePlayers;
     private Assets gameAssets;
 
     private Resolution resolution;
 
-    public GameScreen(Weapons gameWeapons, Assets gameAssets, Resolution resolution) throws IOException{
+    public GameScreen(Board gameBoard, Suspects gameSuspects, Weapons gameWeapons, Players gamePlayers, Assets gameAssets, Resolution resolution) throws IOException{
+        this.gameBoard = gameBoard;
+        this.gameSuspects = gameSuspects;
         this.gameWeapons = gameWeapons;
+        this.gamePlayers = gamePlayers;
         this.gameAssets = gameAssets;
         this.resolution = resolution;
     }
@@ -65,7 +72,7 @@ public class GameScreen implements Screen {
         JTabbedPane infoPanel = setupInfoPanel1();
         contentPanel.add(infoPanel, BorderLayout.EAST);
 
-        this.boardPanel = new BoardUI(this.gamePlayers, this.gameWeapons, new BoardComponent());
+        this.boardPanel = new BoardUI(this.gameSuspects, this.gameWeapons, new BoardComponent());
         contentPanel.add(boardPanel, BorderLayout.CENTER);
 
         backgroundPanel.add(contentPanel, BorderLayout.CENTER);
@@ -168,7 +175,7 @@ public class GameScreen implements Screen {
     }
 
     private PlayerCardLayout setupPlayerPanel() {
-        PlayerCardLayout playerPanel = new PlayerCardLayout(gamePlayers.getNumPlayers(), gamePlayers, resolution);
+        PlayerCardLayout playerPanel = new PlayerCardLayout(gamePlayers.getPlayerCount(), gamePlayers, resolution);
         playerPanel.setOpaque(false);
         TitledBorder border = new TitledBorder(new LineBorder(Color.BLACK,3), "Players");
         border.setTitleFont(new Font("Calibri",Font.BOLD, (int)(20*resolution.getScalePercentage())));
@@ -196,16 +203,24 @@ public class GameScreen implements Screen {
         this.input = input;
     }
 
-    public Players getGamePlayers() {
-        return gamePlayers;
+    public Board getGameBoard() {
+        return gameBoard;
+    }
+
+    public Suspects getGameSuspects() {
+        return gameSuspects;
     }
 
     public Weapons getGameWeapons() {
         return gameWeapons;
     }
 
-    public void setGamePlayers(Players gamePlayers) {
-        this.gamePlayers = gamePlayers;
+    public Players getGamePlayers() {
+        return gamePlayers;
+    }
+
+    public void setGameSuspects(Suspects gameSuspects) {
+        this.gameSuspects = gameSuspects;
     }
 
     public class BoardComponent extends JComponent {
@@ -219,11 +234,11 @@ public class GameScreen implements Screen {
     }
 
     public class BoardUI extends JLayeredPane {
-        Players gamePlayers;
+        Suspects gamePlayers;
         Weapons gameWeapons;
         BoardComponent boardComponent;
 
-        public BoardUI(Players players, Weapons weapons, BoardComponent boardImage) {
+        public BoardUI(Suspects players, Weapons weapons, BoardComponent boardImage) {
             this.gamePlayers = players;
             this.gameWeapons = weapons;
             this.boardComponent = boardImage;

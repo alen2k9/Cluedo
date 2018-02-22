@@ -1,4 +1,4 @@
-/**
+/*
  * Code to handle the import and distribution of assets.
  *
  * Authors Team11:  Jack Geraghty - 16384181
@@ -9,7 +9,6 @@
 package com.team11.cluedo.assets;
 
 import javax.swing.*;
-import javax.tools.Tool;
 import java.awt.*;
 
 public class Assets {
@@ -23,6 +22,16 @@ public class Assets {
     public ImageIcon getBackgroundTile() {
         return new ImageIcon(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("backgroundTile.png")));
     }
+
+    public Image getSplashImage() {
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("splashImage.png"));
+    }
+
+    ////////////////////////////////////////////
+    //                                        //
+    //             PLAYER TOKENS              //
+    //                                        //
+    ////////////////////////////////////////////
 
     public Image getWhiteToken() {
         return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("whiteToken.png"));
@@ -51,6 +60,12 @@ public class Assets {
     public Image getWhiteCard() {
         return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("whiteCard.png"));
     }
+
+    ////////////////////////////////////////////
+    //                                        //
+    //             PLAYER CARDS               //
+    //                                        //
+    ////////////////////////////////////////////
 
     public Image getGreenCard() {
         return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("greenCard.png"));
@@ -96,8 +111,34 @@ public class Assets {
         return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("mustardCard_Selected.png"));
     }
 
-    public Image getSplashImage() {
-        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("splashImage.png"));
+    ////////////////////////////////////////////
+    //                                        //
+    //             WEAPON TOKENS              //
+    //                                        //
+    ////////////////////////////////////////////
+
+    public Image getRevolverToken() {
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("revolverToken.png"));
+    }
+
+    public Image getWrenchToken() {
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("wrenchToken.png"));
+    }
+
+    public Image getDaggerToken() {
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("daggerToken.png"));
+    }
+
+    public Image getPoisonToken() {
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("poisonToken.png"));
+    }
+
+    public Image getHatchetToken() {
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("hatchetToken.png"));
+    }
+
+    public Image getRopeToken() {
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("revolverToken.png"));
     }
 
     public Color getDarkerGrey() {

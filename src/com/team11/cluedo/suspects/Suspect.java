@@ -18,45 +18,27 @@ import java.util.ArrayList;
 public class Suspect extends JComponent{
     private int suspectID;
     private String suspectName;
-    private String playerName;
     private Point location;
     private Image tokenImage;
-    private Image cardImage;
-    private Image selectedCardImage;
     private Resolution resolution;
     private int numMoves;
-
-    public final String[] PLAYER_NAMES = new String[] {"Player One", "Player Two", "Player Three",
-            "Player Four", "Player Five", "Player Six"};
 
     /*
      * @param location : The location of the player
      * @param suspectName : The suspectName of the player
      * @param suspectID : The ID associated with the player
      */
-    public Suspect(int suspectID, String suspectName, String playerName, Point location, Image tokenImage, Image cardImage, Image selectedCardImage, Resolution resolution){
+    public Suspect(int suspectID, String suspectName, Point location, Image tokenImage, Resolution resolution){
         this.suspectID = suspectID;
         this.suspectName = suspectName;
-        this.playerName = playerName;
         this.location = location;
         this.tokenImage = tokenImage;
-        this.cardImage = cardImage;
-        this.selectedCardImage = selectedCardImage;
         this.resolution = resolution;
         this.numMoves = 0;
     }
 
-    public void setName(String n){
-        this.suspectName = n;
-    }
-
-    @Override
-    public String getName(){
+    public String getSuspectName() {
         return this.suspectName;
-    }
-
-    public String getPlayerName() {
-        return this.playerName;
     }
 
     public int getNumMoves() {
@@ -83,6 +65,15 @@ public class Suspect extends JComponent{
         return this.location;
     }
 
+    @Override
+    public int getX() {
+        return (int)this.location.getX();
+    }
+    @Override
+    public int getY() {
+        return (int)this.location.getY();
+    }
+
     /*
      * Method to set the ID of the suspect
      * @param i : The id to assign to the suspect
@@ -90,15 +81,6 @@ public class Suspect extends JComponent{
     public void setSuspectID(int i){
         this.suspectID = i;
     }
-
-    public Image getCardImage() {
-        return this.cardImage;
-    }
-
-    public Image getSelectedCardImage() {
-        return this.selectedCardImage;
-    }
-
     /*
      * Accessor Method to return the id of the suspect
      * @return

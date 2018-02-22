@@ -1,6 +1,7 @@
 package com.team11.cluedo.ui;
 
-import com.team11.cluedo.suspects.Players;
+import com.team11.cluedo.players.Players;
+import com.team11.cluedo.suspects.Suspects;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,6 +12,7 @@ public class PlayerCardLayout extends JPanel {
     private int numPlayers;
 
     public PlayerCardLayout (int numPlayers, Players gamePlayers, Resolution resolution) {
+        System.out.println("Num players " + numPlayers);
         this.numPlayers = numPlayers;
         this.gamePlayers = gamePlayers;
         this.resolution = resolution;
@@ -45,9 +47,10 @@ public class PlayerCardLayout extends JPanel {
         GridBagConstraints gbc = new GridBagConstraints();
         ImageIcon card;
         for(int i = 0  ; i < numPlayers ; i++) {
+            System.out.println(i + " Players");
             card = new ImageIcon(gamePlayers.getPlayer(i).getSelectedCardImage().getScaledInstance(
-                    (int) ((gamePlayers.getPlayer(i).getCardImage().getWidth((img, infoflags, x1, y1, width, height) -> false) * resolution.getScalePercentage()) * .66),
-                    (int) ((gamePlayers.getPlayer(i).getCardImage().getHeight((img, infoflags, x1, y1, width, height) -> false) * resolution.getScalePercentage()) * .66),
+                    (int)((new ImageIcon(gamePlayers.getPlayer(i).getSelectedCardImage()).getIconWidth() * resolution.getScalePercentage()) * .66),
+                    (int)((new ImageIcon(gamePlayers.getPlayer(i).getSelectedCardImage()).getIconHeight() * resolution.getScalePercentage()) * .66),
                     0
             ));
 
@@ -74,8 +77,8 @@ public class PlayerCardLayout extends JPanel {
                 gbc.gridwidth = 1;
             }
             card = new ImageIcon(gamePlayers.getPlayer(i).getSelectedCardImage().getScaledInstance(
-                    (int) ((gamePlayers.getPlayer(i).getCardImage().getWidth((img, infoflags, x1, y1, width, height) -> false) * resolution.getScalePercentage()) * .66),
-                    (int) ((gamePlayers.getPlayer(i).getCardImage().getHeight((img, infoflags, x1, y1, width, height) -> false) * resolution.getScalePercentage()) * .66),
+                    (int)((new ImageIcon(gamePlayers.getPlayer(i).getSelectedCardImage()).getIconWidth() * resolution.getScalePercentage()) * .66),
+                    (int)((new ImageIcon(gamePlayers.getPlayer(i).getSelectedCardImage()).getIconHeight() * resolution.getScalePercentage()) * .66),
                     0
             ));
 
@@ -103,8 +106,8 @@ public class PlayerCardLayout extends JPanel {
                 gbc.gridwidth = 1;
             }
             card = new ImageIcon(gamePlayers.getPlayer(i).getSelectedCardImage().getScaledInstance(
-                    (int) ((gamePlayers.getPlayer(i).getCardImage().getWidth((img, infoflags, x1, y1, width, height) -> false) * resolution.getScalePercentage()) * .66),
-                    (int) ((gamePlayers.getPlayer(i).getCardImage().getHeight((img, infoflags, x1, y1, width, height) -> false) * resolution.getScalePercentage()) * .66),
+                    (int)((new ImageIcon(gamePlayers.getPlayer(i).getSelectedCardImage()).getIconWidth() * resolution.getScalePercentage()) * .66),
+                    (int)((new ImageIcon(gamePlayers.getPlayer(i).getSelectedCardImage()).getIconHeight() * resolution.getScalePercentage()) * .66),
                     0
             ));
 
@@ -125,8 +128,8 @@ public class PlayerCardLayout extends JPanel {
                 y++;
             }
             card = new ImageIcon(gamePlayers.getPlayer(i).getSelectedCardImage().getScaledInstance(
-                    (int) ((gamePlayers.getPlayer(i).getCardImage().getWidth((img, infoflags, x1, y1, width, height) -> false) * resolution.getScalePercentage()) * .66),
-                    (int) ((gamePlayers.getPlayer(i).getCardImage().getHeight((img, infoflags, x1, y1, width, height) -> false) * resolution.getScalePercentage()) * .66),
+                    (int)((new ImageIcon(gamePlayers.getPlayer(i).getSelectedCardImage()).getIconWidth() * resolution.getScalePercentage()) * .66),
+                    (int)((new ImageIcon(gamePlayers.getPlayer(i).getSelectedCardImage()).getIconHeight() * resolution.getScalePercentage()) * .66),
                     0
             ));
 

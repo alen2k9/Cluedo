@@ -2,6 +2,7 @@ package com.team11.cluedo.suspects;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class PlayerPoints {
     
@@ -16,6 +17,7 @@ public class PlayerPoints {
     ArrayList<Point> loungePlayerSpawns = new ArrayList<>();
     ArrayList<Point> hallPlayerSpawns = new ArrayList<>();
     ArrayList<Point> studyPlayerSpawns = new ArrayList<>();
+
     
     public PlayerPoints(){
         fillPlayerPoints();
@@ -52,8 +54,8 @@ public class PlayerPoints {
         playerSpawnLists.add(hallPlayerSpawns);
         playerSpawnLists.add(studyPlayerSpawns);
         playerSpawnLists.add(conservatoryPlayerSpawns);
-        
     }
+
     private void addPointToList(ArrayList<Point> roomList, Point[] p){
         for (Point point : p ){
             roomList.add(point);

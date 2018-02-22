@@ -3,11 +3,11 @@ package com.team11.cluedo.ui;
 
 import com.team11.cluedo.assets.Assets;
 import com.team11.cluedo.board.Board;
-import com.team11.cluedo.suspects.Players;
+import com.team11.cluedo.suspects.PlayerPoints;
+import com.team11.cluedo.suspects.Suspects;
 import com.team11.cluedo.controls.*;
 import javax.swing.*;
 import java.awt.*;
-import java.io.IOException;
 
 import com.team11.cluedo.ui.panel.*;
 
@@ -164,8 +164,6 @@ public class MenuScreen implements Screen {
             this.numPlayers = amountList.getSelectedIndex() + 2;
             this.currentPlayer = 0;
 
-            Players gamePlayers = new Players(numPlayers, this.gameAssets, this.gameBoard, resolution);
-            gameScreen.setGamePlayers(gamePlayers);
             this.closeScreen();
 
             this.setupScreen(1);
@@ -224,6 +222,7 @@ public class MenuScreen implements Screen {
         nameInput.setHorizontalAlignment(JTextField.CENTER);
         backgroundPanel.add(nameInput, gbc);
         this.enterButton = new JButton("Enter");
+        PlayerPoints point = new PlayerPoints();
 
         //  Action listener for players
         this.enterButton.addActionListener(e -> {
@@ -248,8 +247,9 @@ public class MenuScreen implements Screen {
                             }
                         }
                         if (doContinue) {
-                            gameScreen.getGamePlayers().setPlayer(currentPlayer++, index, playerName);
+                            gameScreen.getGamePlayers().addPlayer(playerName, gameScreen.getGameSuspects().getSuspect(index));
                             nameInput.setText("");
+                            currentPlayer++;
 
                             for (JButton charButton : characterButtons) {
                                 charButton.setSelected(false);
@@ -323,7 +323,7 @@ public class MenuScreen implements Screen {
         gameScreen.createScreen("cluedo");
         gameScreen.setupScreen(1);
         gameScreen.displayScreen();
-        gameScreen.getGamePlayers().setSpawnsOccupied(gameBoard);
+        gameScreen.getGameSuspects().setSpawnsOccupied(gameBoard);
         gameInput.initialSetup();
         gameInput.introduction();
     }

@@ -6,93 +6,89 @@
  */
 package com.team11.cluedo.controls;
 
-import com.team11.cluedo.board.Board;
 import com.team11.cluedo.suspects.Direction;
 import com.team11.cluedo.ui.GameScreen;
-import com.team11.cluedo.weapons.Weapons;
+import com.team11.cluedo.weapons.WeaponData;
 
 import javax.swing.*;
 import java.util.ArrayList;
 
 
 public class CommandInput {
-    private GameScreen mainPanel;
-    private Weapons gameWeapons;
-    private Board gameBoard;
+    private GameScreen gameScreen;
 
     private int currentPlayer;
 
-    public CommandInput(GameScreen mainPanel, Weapons gameWeapons, Board gameBoard) {
-        this.mainPanel = mainPanel;
-        this.gameWeapons = gameWeapons;
-        this.gameBoard = gameBoard;
+    public CommandInput(GameScreen gameScreen) {
+        this.gameScreen = gameScreen;
         currentPlayer = 0;
     }
 
     public void initialSetup()
     {
-        mainPanel.getInfoOutput().append("\nPlease enter 1 to move player\n");
-        mainPanel.getInfoOutput().append("Please enter 2 to move Weapons\n");
+        gameScreen.getInfoOutput().append("\nPlease enter 1 to move player\n");
+        gameScreen.getInfoOutput().append("Please enter 2 to move Weapons\n");
     }
 
     public void introduction()
     {
         boolean doOnce = false;
 
-        mainPanel.getCommandInput().addActionListener(e -> {
-            mainPanel.setInput(mainPanel.getCommandInput().getText() + '\n');
+        gameScreen.getCommandInput().addActionListener(e -> {
+            gameScreen.setInput(gameScreen.getCommandInput().getText() + '\n');
             //initialSetup();
-                if (mainPanel.getCommandInput().getText().equals("1")) {
-                    mainPanel.reDraw(currentPlayer);
-                    mainPanel.getInfoOutput().append(mainPanel.getInput());
-                    //mainPanel.getInfoOutput().append("Welcome\n");
-                    mainPanel.getInfoOutput().append("Please enter the following\n ");
-                    mainPanel.getInfoOutput().append("l - Left\n r - Right\n u - Up\n d - Down\n 'back' - Return to Options ");
+                if (gameScreen.getCommandInput().getText().equals("1")) {
+                    gameScreen.reDraw(currentPlayer);
+                    gameScreen.getInfoOutput().append(gameScreen.getInput());
+                    //gameScreen.getInfoOutput().append("Welcome\n");
+                    gameScreen.getInfoOutput().append("Please enter the following\n ");
+                    gameScreen.getInfoOutput().append("l - Left\n r - Right\n u - Up\n d - Down\n 'back' - Return to Options ");
                     playerMovement();
-                    mainPanel.getCommandInput().setText("");
+                    gameScreen.getCommandInput().setText("");
 
-                } else if (mainPanel.getCommandInput().getText().equals("2")) {
-                    mainPanel.reDraw(currentPlayer);
-                    mainPanel.getInfoOutput().append(mainPanel.getInput());
-                    //mainPanel.getInfoOutput().append("Welcome\n");
-                    mainPanel.getInfoOutput().append("Please enter the following\n ");
-                    mainPanel.getInfoOutput().append("Rooms to choose from:\n- Kitchen\n- Ballroom\n- Conservatory\n- Biliard WeaponPoints\n- Library\n" +
+                } else if (gameScreen.getCommandInput().getText().equals("2")) {
+                    gameScreen.reDraw(currentPlayer);
+                    gameScreen.getInfoOutput().append(gameScreen.getInput());
+                    //gameScreen.getInfoOutput().append("Welcome\n");
+                    gameScreen.getInfoOutput().append("Please enter the following\n ");
+                    gameScreen.getInfoOutput().append("Rooms to choose from:\n- Kitchen\n- Ballroom\n- Conservatory\n- Biliard WeaponPoints\n- Library\n" +
                             "- Study\n- Hall \n- Lounge\n- Dining WeaponPoints \n- Cellar\n\n");
-                    mainPanel.getInfoOutput().append("Weapons to choose from\n");
-                    mainPanel.getInfoOutput().append("- Candlestick\n- Dagger\n- Lead Pipe\n- Revolver\n- Rope\n- Spanner");
+                    gameScreen.getInfoOutput().append("Weapons to choose from\n");
+                    gameScreen.getInfoOutput().append("- Candlestick\n- Dagger\n- Lead Pipe\n- Revolver\n- Rope\n- Spanner");
                     weaponMovement();
-                } else if (mainPanel.getCommandInput().getText().equals("4")){
-                    mainPanel.reDraw(currentPlayer);
-                    mainPanel.getInfoOutput().append((mainPanel.getInput()));
+                } else if (gameScreen.getCommandInput().getText().equals("4")){
+                    gameScreen.reDraw(currentPlayer);
+                    gameScreen.getInfoOutput().append((gameScreen.getInput()));
                     playerMovement();
                 }
 
-                else if(mainPanel.getCommandInput().getText().equals("")){
-                    mainPanel.reDraw(currentPlayer);
+                else if(gameScreen.getCommandInput().getText().equals("")){
+                    gameScreen.reDraw(currentPlayer);
                 }
 
-                mainPanel.getCommandInput().setText("");
+                gameScreen.getCommandInput().setText("");
         });
 
         if (!doOnce){
-            //mainPanel.getInfoOutput().act
+            //gameScreen.getInfoOutput().act
             doOnce = true;
         }
 
     }
 
+
     public void playerTurn(int currentUser)
     {
         Boolean endTurn = false;
         while (!endTurn) {
-            if(/* SOME CONDITION FROM COMPLETING MOVE*/ this.mainPanel.getGamePlayers().getRemainingPlayers() < 2) {
+            if(/* SOME CONDITION FROM COMPLETING MOVE this.gameScreen.getGameSuspects().getRemainingPlayers() < 2 */true) {
                 endTurn = true;
             }
             /*
             TO DO command input, then push into each options below
              */
         }
-        this.mainPanel.reDraw(currentUser);
+        this.gameScreen.reDraw(currentUser);
     }
 
     public /*int*/ void Diceroll(){
@@ -112,12 +108,17 @@ public class CommandInput {
 
         private void makeChoice()
         {
-            String[] weaponChoice = { "Candlestick", "Dagger", "Lead Pipe", "Revolver", "Rope", "Spanner" };
+            WeaponData weaponData = new WeaponData();
+            String[] weaponChoice = new String[gameScreen.getGameWeapons().getNumWeapons()];
             String[] roomChoice = { "Kitchen", "Ballroom", "Conservatory", "Billiard", "Library", "Study", "Hall", "Lounge", "Dining WeaponPoints", "Cellar" };
+
+            for (int i = 0; i < gameScreen.getGameWeapons().getNumWeapons() ; i++) {
+                weaponChoice[i] = weaponData.getWeaponName(i);
+                System.out.print(weaponChoice[i]);
+            }
 
             weapon = (String) JOptionPane.showInputDialog(null, "Choose the Weapon you want to move",
                     "Weapon Movement", JOptionPane.QUESTION_MESSAGE, null, weaponChoice, weaponChoice[0]);
-
 
             if (weapon != null){
                 room = (String) JOptionPane.showInputDialog(null, "Choose the WeaponPoints you want to move it into",
@@ -188,40 +189,48 @@ public class CommandInput {
             }
 
             //private String[] weaponName = {"Candlestick", "Dagger", "Lead Pipe", "Revolver", "Rope", "Spanner"};
+            WeaponData weaponData = new WeaponData();
 
-            if (choice.getWeapon().equals("Candlestick"))
+            if (choice.getWeapon().equals(weaponData.getWeaponName(0)))
             {
+                System.out.println("Found " + choice.getWeapon());
                 weapon = 0;
             }
-            else if(choice.getWeapon().equals("Dagger"))
+            else if(choice.getWeapon().equals(weaponData.getWeaponName(1)))
             {
+                System.out.println("Found " + choice.getWeapon());
                 weapon = 1;
             }
-            else if(choice.getWeapon().equals("Lead Pipe"))
+            else if(choice.getWeapon().equals(weaponData.getWeaponName(2)))
             {
+                System.out.println("Found " + choice.getWeapon());
                 weapon = 2;
             }
-            else if(choice.getWeapon().equals("Revolver"))
+            else if(choice.getWeapon().equals(weaponData.getWeaponName(3)))
             {
+                System.out.println("Found " + choice.getWeapon());
                 weapon = 3;
             }
-            else if(choice.getWeapon().equals("Rope"))
+            else if(choice.getWeapon().equals(weaponData.getWeaponName(4)))
             {
+                System.out.println("Found " + choice.getWeapon());
                 weapon = 4;
             }
-            else if(choice.getWeapon().equals("Spanner"))
+            else if(choice.getWeapon().equals(weaponData.getWeaponName(5)))
             {
+                System.out.println("Found " + choice.getWeapon());
                 weapon = 5;
             }
 
-            gameWeapons.moveWeaponToRoom(weapon, room);
-            mainPanel.getInfoOutput().append("\n\n" + choice.getWeapon() + " has been moved to " + choice.getRoom() + "\n\n");
-            mainPanel.reDraw(currentPlayer);
+            System.out.println("Moving "+ weapon + choice.getWeapon() + " to " + room +choice.getRoom());
+            gameScreen.getGameWeapons().moveWeaponToRoom(weapon, room);
+            gameScreen.getInfoOutput().append("\n\n" + choice.getWeapon() + " has been moved to " + choice.getRoom() + "\n\n");
+            gameScreen.reDraw(currentPlayer);
 
         }
 
         else{
-            mainPanel.getInfoOutput().append("\nReturning to Main Menu\n");
+            gameScreen.getInfoOutput().append("\nReturning to Main Menu\n");
             initialSetup();
         }
 
@@ -240,55 +249,55 @@ public class CommandInput {
         list.add(Direction.WEST);
         list.add(Direction.SOUTH);
         /*
-        Player movement function found in: this.mainPanel.getGamePlayers().playerMove(PLAYER, DIRECTION, AMUONT);
+        Player movement function found in: this.gameScreen.getGameSuspects().playerMove(PLAYER, DIRECTION, AMUONT);
          */
-        mainPanel.getCommandInput().addActionListener(e -> {
-                if(mainPanel.getCommandInput().getText().equals("u"))
+        gameScreen.getCommandInput().addActionListener(e -> {
+                if(gameScreen.getCommandInput().getText().equals("u"))
                 {
-                    mainPanel.getInfoOutput().append("\nUp");
+                    gameScreen.getInfoOutput().append("\nUp");
                     //playerMove character up
-                    //mainPanel.getGamePlayers().playerMove(gameBoard, currentPlayer, Direction.NORTH);
-                    mainPanel.reDraw(currentPlayer);
-                    mainPanel.getCommandInput().setText("");
+                    //gameScreen.getGameSuspects().playerMove(gameBoard, currentPlayer, Direction.NORTH);
+                    gameScreen.reDraw(currentPlayer);
+                    gameScreen.getCommandInput().setText("");
                     playerMovement();
                 }
-                else if(mainPanel.getCommandInput().getText().equals("d"))
+                else if(gameScreen.getCommandInput().getText().equals("d"))
                 {
-                    mainPanel.getInfoOutput().append("\nDown");
+                    gameScreen.getInfoOutput().append("\nDown");
                     //playerMove character down
-                    //mainPanel.getGamePlayers().playerMove(gameBoard,currentPlayer, Direction.SOUTH, 1);
-                    mainPanel.reDraw(currentPlayer);
-                    mainPanel.getCommandInput().setText("");
+                    //gameScreen.getGameSuspects().playerMove(gameBoard,currentPlayer, Direction.SOUTH, 1);
+                    gameScreen.reDraw(currentPlayer);
+                    gameScreen.getCommandInput().setText("");
                     playerMovement();
                 }
-                else if(mainPanel.getCommandInput().getText().equals("l"))
+                else if(gameScreen.getCommandInput().getText().equals("l"))
                 {
-                    mainPanel.getInfoOutput().append("\nLeft");
+                    gameScreen.getInfoOutput().append("\nLeft");
                     //playerMove character left
-                    //mainPanel.getGamePlayers().playerMove(gameBoard, currentPlayer, Direction.WEST);
-                    mainPanel.reDraw(currentPlayer);
-                    mainPanel.getCommandInput().setText("");
+                    //gameScreen.getGameSuspects().playerMove(gameBoard, currentPlayer, Direction.WEST);
+                    gameScreen.reDraw(currentPlayer);
+                    gameScreen.getCommandInput().setText("");
                     playerMovement();
                 }
-                else if(mainPanel.getCommandInput().getText().equals("r"))
+                else if(gameScreen.getCommandInput().getText().equals("r"))
                 {
-                    mainPanel.getInfoOutput().append("\nRight");
+                    gameScreen.getInfoOutput().append("\nRight");
                     //playerMove character right
-                    //mainPanel.getGamePlayers().playerMove(gameBoard, currentPlayer, Direction.EAST, 1);
-                    mainPanel.reDraw(currentPlayer);
-                    mainPanel.getCommandInput().setText("");
+                    //gameScreen.getGameSuspects().playerMove(gameBoard, currentPlayer, Direction.EAST, 1);
+                    gameScreen.reDraw(currentPlayer);
+                    gameScreen.getCommandInput().setText("");
                     playerMovement();
                 }
-                else if (mainPanel.getCommandInput().getText().equals("back")){
-                    mainPanel.getInfoOutput().append("\n\nReturning to Main Menu\nEnter 1 to Move\nEnter 2 to move a weapon\n");
-                    mainPanel.getCommandInput().setText("");
+                else if (gameScreen.getCommandInput().getText().equals("back")){
+                    gameScreen.getInfoOutput().append("\n\nReturning to Main Menu\nEnter 1 to Move\nEnter 2 to move a weapon\n");
+                    gameScreen.getCommandInput().setText("");
                     System.out.println("Returning to main menu");
                     introduction();
                 }
-                else if (mainPanel.getCommandInput().getText().equals("test")){
-                    mainPanel.getGamePlayers().playerMove(gameBoard, currentPlayer, list);
+                else if (gameScreen.getCommandInput().getText().equals("test")){
+                    gameScreen.getGamePlayers().playerMove(gameScreen.getGameBoard(), currentPlayer, list);
                 }
-            mainPanel.getCommandInput().setText("");
+            gameScreen.getCommandInput().setText("");
         });
     }
 }
