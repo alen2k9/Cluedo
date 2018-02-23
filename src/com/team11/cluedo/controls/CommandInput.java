@@ -75,6 +75,10 @@ public class CommandInput {
                     diceRoll();
                     break;
 
+                case "exit":
+                    moveOut(inputs[1]);
+                    break;
+
                 case "done":
                     gameScreen.getInfoOutput().append("Done\n");
                     break;
@@ -99,7 +103,10 @@ public class CommandInput {
         });
     }
 
-
+    public void moveOut(String input)
+    {
+        gameScreen.getGamePlayers().moveOutOfRoom(gameScreen.getGameBoard(), currentPlayer, Integer.parseInt(input));
+    }
 
     private void diceRoll()
     {
