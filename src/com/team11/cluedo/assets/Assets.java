@@ -138,7 +138,7 @@ public class Assets {
     }
 
     public Image getRopeToken() {
-        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("revolverToken.png"));
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("ropeToken.png"));
     }
 
     public Color getDarkerGrey() {

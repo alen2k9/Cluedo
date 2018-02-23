@@ -29,7 +29,7 @@ public class GameScreen implements Screen {
     private PlayerCardLayout playerPanel;
 
     private JTextArea infoOutput, helpOutput;
-    private String input;
+    private JTabbedPane infoPanel;
     private JTextField commandInput;
 
     private Board gameBoard;
@@ -67,12 +67,11 @@ public class GameScreen implements Screen {
         BackgroundPanel backgroundPanel = new BackgroundPanel(backgroundImage, BackgroundPanel.TILED);
 
         this.playerPanel = setupPlayerPanel();
-        contentPanel.add(playerPanel, BorderLayout.WEST);
-
-        JTabbedPane infoPanel = setupInfoPanel1();
-        contentPanel.add(infoPanel, BorderLayout.EAST);
-
+        this.infoPanel = setupInfoPanel1();
         this.boardPanel = new BoardUI(this.gameSuspects, this.gameWeapons, new BoardComponent());
+
+        contentPanel.add(playerPanel, BorderLayout.WEST);
+        contentPanel.add(infoPanel, BorderLayout.EAST);
         contentPanel.add(boardPanel, BorderLayout.CENTER);
 
         backgroundPanel.add(contentPanel, BorderLayout.CENTER);
@@ -92,6 +91,7 @@ public class GameScreen implements Screen {
     public void closeScreen() {
         this.frame.removeAll();
         this.frame.dispose();
+        System.exit(0);
     }
 
     @Override
@@ -194,14 +194,6 @@ public class GameScreen implements Screen {
         return commandInput;
     }
 
-    public String getInput() {
-        return input;
-    }
-
-    public void setInput(String input) {
-        this.input = input;
-    }
-
     public Board getGameBoard() {
         return gameBoard;
     }
@@ -218,8 +210,8 @@ public class GameScreen implements Screen {
         return gamePlayers;
     }
 
-    public void setGameSuspects(Suspects gameSuspects) {
-        this.gameSuspects = gameSuspects;
+    public void setTab(int i) {
+        infoPanel.setSelectedIndex(i);
     }
 
     public class BoardComponent extends JComponent {
