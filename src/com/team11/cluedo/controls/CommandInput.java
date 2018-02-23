@@ -21,6 +21,7 @@ public class CommandInput {
     private int dice;
 
     private int currentPlayer;
+    private boolean canRoll;
 
     public CommandInput(GameScreen gameScreen) {
         this.gameScreen = gameScreen;
@@ -29,25 +30,16 @@ public class CommandInput {
 
     public void initialSetup()
     {
-        gameScreen.getInfoOutput().append("\nPlease enter 1 to move player\n");
-        gameScreen.getInfoOutput().append("Please enter 2 to move Weapons\n");
+        canRoll = true;
+        String playerName = gameScreen.getGamePlayers().getPlayer(currentPlayer).getPlayerName();
+        gameScreen.getInfoOutput().append("It is now Player :" + playerName + "turn\n");
     }
 
-    public void introduction()
-    {
-        boolean doOnce = false;
 
-
-        if (!doOnce){
-            //gameScreen.getInfoOutput().act
-            doOnce = true;
-        }
-
-    }
 
     public void playerTurn()
     {
-        gameScreen.getInfoOutput().append("Please enter 'roll' to roll dice\n ");
+
         runPlayer();
         Boolean endTurn = false;
         while (!endTurn) {
@@ -80,7 +72,7 @@ public class CommandInput {
                     break;
 
                 case "roll":
-                    Diceroll();
+                    diceRoll();
                     break;
 
                 case "done":
@@ -88,7 +80,7 @@ public class CommandInput {
                     break;
 
                 case "quit":
-                    gameScreen.getInfoOutput().append("Exit\n");
+                    quitGame();
                     break;
 
                 case "passage":
@@ -96,8 +88,7 @@ public class CommandInput {
                     break;
 
                 case "help":
-                    gameScreen.getInfoOutput().append("help\n");
-                    //put in help panel
+                    help();
                     break;
 
                 default:
@@ -110,13 +101,32 @@ public class CommandInput {
 
 
 
-
-    private void Diceroll(){
-        Dice die = new Dice();
-        dice = die.rolldice();
-        gameScreen.getInfoOutput().append("Player rolled : " + dice);
-
+    private void diceRoll()
+    {
+        if(canRoll) {
+            Dice die = new Dice();
+            dice = die.rolldice();
+            gameScreen.getInfoOutput().append("Player rolled : " + dice + "\n");
+            canRoll = false;
+        }
+        else {
+            gameScreen.getInfoOutput().append("Player already rolled a '" + dice + "'\n");
+        }
     }
+
+    private void help()
+    {
+        gameScreen.getInfoOutput().append("help\n");
+        gameScreen.setTab(1);
+    }
+
+    private void quitGame()
+    {
+        gameScreen.getInfoOutput().append("Exit\n");
+        gameScreen.closeScreen();
+    }
+
+
 
     private class ChoiceOption {
 
@@ -258,30 +268,19 @@ public class CommandInput {
 
     }
 
+
+
     private void playerMovement(String moves)
     {
         ArrayList<Direction> list = new ArrayList<>();
         for(int i = 0; i < moves.length(); i++) {
             if (moves.charAt(i) == 'u') {
-                gameScreen.getInfoOutput().append("\nUp");
-                //playerMove character up
                 list.add(Direction.NORTH);
-
-
             } else if (moves.charAt(i) == 'd') {
-                gameScreen.getInfoOutput().append("\nDown");
-                //playerMove character down
                 list.add(Direction.SOUTH);
-
             } else if (moves.charAt(i) == 'l') {
-                gameScreen.getInfoOutput().append("\nLeft");
-                //playerMove character left
                 list.add(Direction.WEST);
-
-
             } else if (moves.charAt(i) == 'r') {
-                gameScreen.getInfoOutput().append("\nRight");
-                //playerMove character right
                 list.add(Direction.EAST);
             }
         }
@@ -291,7 +290,7 @@ public class CommandInput {
             gameScreen.getInfoOutput().append("\nSuccess\n");
         }
         else{
-            gameScreen.getInfoOutput().append("error\n");
+            gameScreen.getInfoOutput().append("\nerror\n");
         }
         /*
 
