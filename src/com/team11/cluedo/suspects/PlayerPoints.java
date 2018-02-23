@@ -31,29 +31,31 @@ public class PlayerPoints {
         Point[] billiardRoomPoints = {new Point(19,12), new Point(20,12), new Point(21,12), new Point(22,12), new Point(23,12), new Point(24,12)};
         Point[] libraryPoints = {new Point(19,17), new Point(20,17), new Point(21,17), new Point(22,17), new Point(23,17), new Point(24,17)};
         Point[] loungePoints = {new Point(1,22), new Point(2,22), new Point(3,22), new Point(4,22), new Point(5,22), new Point(6,22)};
-        Point[] hallPoints = {new Point(10,25), new Point(11,25), new Point(12,25), new Point(13,25), new Point(14,25), new Point(15,25)};
+        Point[] hallPoints = {new Point(10,24), new Point(11,24), new Point(12,24), new Point(13,24), new Point(14,24), new Point(15,24)};
         Point[] studyPoints = {new Point(19,25), new Point(20,25), new Point(21,25), new Point(22,25), new Point(23,25), new Point(24,25)};
 
 
         addPointToList(kitchenPlayerSpawns, kitchenPoints);
         addPointToList(ballroomPlayerSpawns, ballroomPoints);
+        addPointToList(conservatoryPlayerSpawns, conservatoryPoints);
         addPointToList(diningRoomPlayerSpawns, diningRoomPoints);
         addPointToList(billiardRoomPlayerSpawns, billiardRoomPoints);
         addPointToList(libraryPlayerSpawns, libraryPoints);
         addPointToList(loungePlayerSpawns, loungePoints);
         addPointToList(hallPlayerSpawns, hallPoints);
         addPointToList(studyPlayerSpawns, studyPoints);
-        addPointToList(conservatoryPlayerSpawns, conservatoryPoints);
+
 
         playerSpawnLists.add(kitchenPlayerSpawns);
         playerSpawnLists.add(ballroomPlayerSpawns);
+        playerSpawnLists.add(conservatoryPlayerSpawns);
         playerSpawnLists.add(diningRoomPlayerSpawns);
         playerSpawnLists.add(billiardRoomPlayerSpawns);
         playerSpawnLists.add(libraryPlayerSpawns);
         playerSpawnLists.add(loungePlayerSpawns);
         playerSpawnLists.add(hallPlayerSpawns);
         playerSpawnLists.add(studyPlayerSpawns);
-        playerSpawnLists.add(conservatoryPlayerSpawns);
+
     }
 
     private void addPointToList(ArrayList<Point> roomList, Point[] p){

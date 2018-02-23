@@ -32,7 +32,7 @@ public class WeaponPoints {
         Point[] billiardRoomPoints = {new Point(19,11), new Point(20,11), new Point(21,11), new Point(22,11), new Point(23,11), new Point(24,11)};
         Point[] libraryPoints = {new Point(19,16), new Point(20,16), new Point(21,16), new Point(22,16), new Point(23,16), new Point(24,16)};
         Point[] loungePoints = {new Point(1,21), new Point(2,21), new Point(3,21), new Point(4,21), new Point(5,21), new Point(6,21)};
-        Point[] hallPoints = {new Point(10,24), new Point(11,24), new Point(12,24), new Point(13,24), new Point(14,24), new Point(15,24)};
+        Point[] hallPoints = {new Point(10,23), new Point(11,23), new Point(12,23), new Point(13,23), new Point(14,23), new Point(15,23)};
         Point[] studyPoints = {new Point(19,24), new Point(20,24), new Point(21,24), new Point(22,24), new Point(23,24), new Point(24,24)};
 
 

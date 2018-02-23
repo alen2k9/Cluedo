@@ -36,7 +36,7 @@ public class Suspects extends JComponent implements Iterable<Suspect>, Iterator<
 
     public void setSpawnsOccupied(Board gameBoard){
         for(Suspect suspect : suspects) {
-            gameBoard.getBoard(suspect.getY(), suspect.getX()).setOccupied(true);
+            gameBoard.getBoardPos(suspect.getY(), suspect.getX()).setOccupied(true);
         }
     }
 

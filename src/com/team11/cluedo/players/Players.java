@@ -7,6 +7,7 @@ import com.team11.cluedo.suspects.SuspectData;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Stack;
 
 public class Players {
     private HashMap<Integer, Player> players;
@@ -31,7 +32,21 @@ public class Players {
         return this.playerCount;
     }
 
-    public int playerMove(Board gameBoard, int player, ArrayList<Direction> directions) {
-        return getPlayer(player).getSuspectToken().move(gameBoard, directions);
+    public void playerMove(Board gameBoard, int player, ArrayList<Direction> directions) {
+         this.getPlayer(player).getSuspectToken().move(gameBoard, directions);
+    }
+
+    public void moveOutOfRoom(Board gameBoard,int player, int exitNum){
+        this.getPlayer(player).getSuspectToken().moveOutOfRoom(gameBoard, exitNum);
+    }
+
+    public boolean useSecretPassageWay(Board gameBoard, int player){
+        if (this.getPlayer(player).getSuspectToken().useSecretPassageWay(gameBoard)){
+            return true;
+        } else{return false;}
+    }
+    
+    public void reverseMoves(int player){
+       this.getPlayer(player).getSuspectToken().reverseMoves();
     }
 }
