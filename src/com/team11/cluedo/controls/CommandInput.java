@@ -16,6 +16,7 @@ import java.util.ArrayList;
 
 public class CommandInput {
     private GameScreen gameScreen;
+    private int dice;
 
     private int currentPlayer;
 
@@ -34,40 +35,6 @@ public class CommandInput {
     {
         boolean doOnce = false;
 
-        gameScreen.getCommandInput().addActionListener(e -> {
-            gameScreen.setInput(gameScreen.getCommandInput().getText() + '\n');
-            //initialSetup();
-                if (gameScreen.getCommandInput().getText().equals("1")) {
-                    gameScreen.reDraw(currentPlayer);
-                    gameScreen.getInfoOutput().append(gameScreen.getInput());
-                    //gameScreen.getInfoOutput().append("Welcome\n");
-                    gameScreen.getInfoOutput().append("Please enter the following\n ");
-                    gameScreen.getInfoOutput().append("l - Left\n r - Right\n u - Up\n d - Down\n 'back' - Return to Options ");
-                    playerMovement();
-                    gameScreen.getCommandInput().setText("");
-
-                } else if (gameScreen.getCommandInput().getText().equals("2")) {
-                    gameScreen.reDraw(currentPlayer);
-                    gameScreen.getInfoOutput().append(gameScreen.getInput());
-                    //gameScreen.getInfoOutput().append("Welcome\n");
-                    gameScreen.getInfoOutput().append("Please enter the following\n ");
-                    gameScreen.getInfoOutput().append("Rooms to choose from:\n- Kitchen\n- Ballroom\n- Conservatory\n- Biliard WeaponPoints\n- Library\n" +
-                            "- Study\n- Hall \n- Lounge\n- Dining WeaponPoints \n- Cellar\n\n");
-                    gameScreen.getInfoOutput().append("Weapons to choose from\n");
-                    gameScreen.getInfoOutput().append("- Candlestick\n- Dagger\n- Lead Pipe\n- Revolver\n- Rope\n- Spanner");
-                    weaponMovement();
-                } else if (gameScreen.getCommandInput().getText().equals("4")){
-                    gameScreen.reDraw(currentPlayer);
-                    gameScreen.getInfoOutput().append((gameScreen.getInput()));
-                    playerMovement();
-                }
-
-                else if(gameScreen.getCommandInput().getText().equals("")){
-                    gameScreen.reDraw(currentPlayer);
-                }
-
-                gameScreen.getCommandInput().setText("");
-        });
 
         if (!doOnce){
             //gameScreen.getInfoOutput().act
@@ -76,9 +43,10 @@ public class CommandInput {
 
     }
 
-
-    public void playerTurn(int currentUser)
+    public void playerTurn()
     {
+        gameScreen.getInfoOutput().append("Please enter 'roll' to roll dice\n ");
+        runPlayer();
         Boolean endTurn = false;
         while (!endTurn) {
             if(/* SOME CONDITION FROM COMPLETING MOVE this.gameScreen.getGameSuspects().getRemainingPlayers() < 2 */true) {
@@ -88,12 +56,64 @@ public class CommandInput {
             TO DO command input, then push into each options below
              */
         }
-        this.gameScreen.reDraw(currentUser);
+        this.gameScreen.reDraw(currentPlayer);
     }
 
-    public /*int*/ void Diceroll(){
-        //Roll dice and animate using Dice class
-        //return number of dice roll for playerMovement function
+    public void runPlayer()
+    {
+        gameScreen.getCommandInput().addActionListener(e -> {
+            String input = gameScreen.getCommandInput().getText().toLowerCase();
+            String[] inputs = input.split(" ");
+            String command = inputs[0];
+            gameScreen.getCommandInput().setText("");
+            gameScreen.getInfoOutput().append("> "+ input + '\n')  ;
+            switch (command){
+                case "move":
+                    StringBuilder moveParameters = new StringBuilder();
+                    for(int i = 1; i < inputs.length; i++)
+                    {
+                        moveParameters.append(inputs[i]);
+                    }
+                    playerMovement(moveParameters.toString());
+                    break;
+
+                case "roll":
+                    Diceroll();
+                    break;
+
+                case "done":
+                    gameScreen.getInfoOutput().append("Done\n");
+                    break;
+
+                case "quit":
+                    gameScreen.getInfoOutput().append("Exit\n");
+                    break;
+
+                case "passage":
+                    gameScreen.getInfoOutput().append("passage\n");
+                    break;
+
+                case "help":
+                    gameScreen.getInfoOutput().append("help\n");
+                    //put in help panel
+                    break;
+
+                default:
+                    gameScreen.getInfoOutput().append("Unknown command\nUse command 'help' for instructions\n");
+                    break;
+            }
+            gameScreen.reDraw(currentPlayer);
+        });
+    }
+
+
+
+
+    private void Diceroll(){
+        Dice die = new Dice();
+        dice = die.rolldice();
+        gameScreen.getInfoOutput().append("Player rolled : " + dice);
+
     }
 
     private class ChoiceOption {
@@ -236,68 +256,40 @@ public class CommandInput {
 
     }
 
-    private void playerMovement()
+    private void playerMovement(String moves)
     {
-
         ArrayList<Direction> list = new ArrayList<>();
-        list.add(Direction.NORTH);
-        list.add(Direction.NORTH);
-        list.add(Direction.NORTH);
-        list.add(Direction.NORTH);
-        list.add(Direction.NORTH);
-        list.add(Direction.NORTH);
-        list.add(Direction.WEST);
-        list.add(Direction.SOUTH);
-        /*
-        Player movement function found in: this.gameScreen.getGameSuspects().playerMove(PLAYER, DIRECTION, AMUONT);
-         */
-        gameScreen.getCommandInput().addActionListener(e -> {
-                if(gameScreen.getCommandInput().getText().equals("u"))
-                {
-                    gameScreen.getInfoOutput().append("\nUp");
-                    //playerMove character up
-                    //gameScreen.getGameSuspects().playerMove(gameBoard, currentPlayer, Direction.NORTH);
-                    gameScreen.reDraw(currentPlayer);
-                    gameScreen.getCommandInput().setText("");
-                    playerMovement();
-                }
-                else if(gameScreen.getCommandInput().getText().equals("d"))
-                {
-                    gameScreen.getInfoOutput().append("\nDown");
-                    //playerMove character down
-                    //gameScreen.getGameSuspects().playerMove(gameBoard,currentPlayer, Direction.SOUTH, 1);
-                    gameScreen.reDraw(currentPlayer);
-                    gameScreen.getCommandInput().setText("");
-                    playerMovement();
-                }
-                else if(gameScreen.getCommandInput().getText().equals("l"))
-                {
-                    gameScreen.getInfoOutput().append("\nLeft");
-                    //playerMove character left
-                    //gameScreen.getGameSuspects().playerMove(gameBoard, currentPlayer, Direction.WEST);
-                    gameScreen.reDraw(currentPlayer);
-                    gameScreen.getCommandInput().setText("");
-                    playerMovement();
-                }
-                else if(gameScreen.getCommandInput().getText().equals("r"))
-                {
-                    gameScreen.getInfoOutput().append("\nRight");
-                    //playerMove character right
-                    //gameScreen.getGameSuspects().playerMove(gameBoard, currentPlayer, Direction.EAST, 1);
-                    gameScreen.reDraw(currentPlayer);
-                    gameScreen.getCommandInput().setText("");
-                    playerMovement();
-                }
-                else if (gameScreen.getCommandInput().getText().equals("back")){
-                    gameScreen.getInfoOutput().append("\n\nReturning to Main Menu\nEnter 1 to Move\nEnter 2 to move a weapon\n");
-                    gameScreen.getCommandInput().setText("");
-                    System.out.println("Returning to main menu");
-                    introduction();
-                }
-                else if (gameScreen.getCommandInput().getText().equals("test")){
-                    gameScreen.getGamePlayers().playerMove(gameScreen.getGameBoard(), currentPlayer, list);
-                }
-            gameScreen.getCommandInput().setText("");
-        });
+        for(int i = 0; i < moves.length(); i++) {
+            if (moves.charAt(i) == 'u') {
+                gameScreen.getInfoOutput().append("\nUp");
+                //playerMove character up
+                list.add(Direction.NORTH);
+
+
+            } else if (moves.charAt(i) == 'd') {
+                gameScreen.getInfoOutput().append("\nDown");
+                //playerMove character down
+                list.add(Direction.SOUTH);
+
+            } else if (moves.charAt(i) == 'l') {
+                gameScreen.getInfoOutput().append("\nLeft");
+                //playerMove character left
+                list.add(Direction.WEST);
+
+
+            } else if (moves.charAt(i) == 'r') {
+                gameScreen.getInfoOutput().append("\nRight");
+                //playerMove character right
+                list.add(Direction.EAST);
+            }
+        }
+        int message = gameScreen.getGamePlayers().getPlayer(currentPlayer).getSuspectToken().move(gameScreen.getGameBoard(), list);
+        if(message == 1)
+        {
+            gameScreen.getInfoOutput().append("\nSuccess\n");
+        }
+        else{
+            gameScreen.getInfoOutput().append("error\n");
+        }
     }
 }

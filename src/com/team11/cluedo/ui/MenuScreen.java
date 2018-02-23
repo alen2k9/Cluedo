@@ -329,6 +329,6 @@ public class MenuScreen implements Screen {
         gameScreen.displayScreen();
         gameScreen.getGameSuspects().setSpawnsOccupied(gameScreen.getGameBoard());
         gameInput.initialSetup();
-        gameInput.introduction();
+        gameInput.playerTurn();
     }
 }
