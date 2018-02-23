@@ -198,9 +198,9 @@ public class Board extends JComponent {
                  * Library Tile
                  */
                 else if (line[j].matches("U")) {
-                    tmp = createNonTraversal(new Point(i,j), TileType.LIBRARY);
-                    library.setRoomType(TileType.LIBRARY);
-                    library.getRoomPoints().add(new Point(i,j));
+                    tmp = createNonTraversal(new Point(i,j), TileType.LOUNGE);
+                    lounge.setRoomType(TileType.LOUNGE);
+                    lounge.getRoomPoints().add(new Point(i,j));
                 }
 
                 /*
@@ -223,9 +223,9 @@ public class Board extends JComponent {
                  *  Lounge Tile
                  */
                 else if (line[j].matches("L")) {
-                    tmp = createNonTraversal(new Point(i,j), TileType.LOUNGE);
-                    lounge.setRoomType(TileType.LOUNGE);
-                    lounge.getRoomPoints().add(new Point(i,j));
+                    tmp = createNonTraversal(new Point(i,j), TileType.LIBRARY);
+                    library.setRoomType(TileType.LIBRARY);
+                    library.getRoomPoints().add(new Point(i,j));
                 }
 
                 /*
@@ -256,6 +256,17 @@ public class Board extends JComponent {
 
             }
         }
+
+        //////////////////////////////////////////////////////////////////////////
+        /*
+        Don't change this line line as otherwise the position is set to lounge for some reason annd
+        messes up movement
+        Will try to figure out why this is happening but for now tis grand
+        */
+        //Fix [15][20]
+        //tmpBoard[15][20] = createTraversal(new Point(15,20), TileType.DOOR);
+        //////////////////////////////////////////////////////////////////////////
+
         /*
          * Once all of the lines have been read in and all of the tiles created return the matrix
          */
@@ -267,26 +278,26 @@ public class Board extends JComponent {
         //Add kitchen passage ways
         //Kitchen goes to study
         rooms.get(0).setHasSecretPassage(true);
-        rooms.get(0).setsecretPassageIn(new Point(6,2));
-        rooms.get(0).setsecretPassageOut(new Point(24,22));
+        rooms.get(0).setSecretPassageIn(new Point(6,2));
+        rooms.get(0).setSecretPassageOut(new Point(24,22));
 
         //Add study passage ways
         //Study goes to kitchen
         rooms.get(8).setHasSecretPassage(true);
-        rooms.get(8).setsecretPassageOut(new Point(6,2));
-        rooms.get(8).setsecretPassageIn(new Point(24,22));
+        rooms.get(8).setSecretPassageOut(new Point(6,2));
+        rooms.get(8).setSecretPassageIn(new Point(24,22));
 
         //Add conservatory passage ways
         //Conservatory goes to lounge
         rooms.get(2).setHasSecretPassage(true);
-        rooms.get(2).setsecretPassageIn(new Point(23,6));
-        rooms.get(2).setsecretPassageOut(new Point(1,20));
+        rooms.get(2).setSecretPassageIn(new Point(23,6));
+        rooms.get(2).setSecretPassageOut(new Point(1,20));
 
         //Add lounge passage ways
         //Lounge goes to conservatory
         rooms.get(6).setHasSecretPassage(true);
-        rooms.get(6).setsecretPassageOut(new Point(23,6));
-        rooms.get(6).setsecretPassageIn(new Point(1,20));
+        rooms.get(6).setSecretPassageOut(new Point(23,6));
+        rooms.get(6).setSecretPassageIn(new Point(1,20));
     }
 
     private void addExitPoints(){
@@ -322,33 +333,33 @@ public class Board extends JComponent {
 
     private void addEntryPoints(){
         //Kitchen
-        rooms.get(0).getEntryPoints().add(new Point(5,7));
+        rooms.get(0).getEntryPoints().add(new Point(7,5));
         //Ballroom
-        rooms.get(1).getEntryPoints().add(new Point(9,6));
-        rooms.get(1).getEntryPoints().add(new Point(16,6));
-        rooms.get(1).getEntryPoints().add(new Point(10,8));
-        rooms.get(1).getEntryPoints().add(new Point(15,8));
+        rooms.get(1).getEntryPoints().add(new Point(6,9));
+        rooms.get(1).getEntryPoints().add(new Point(6,16));
+        rooms.get(1).getEntryPoints().add(new Point(8,10));
+        rooms.get(1).getEntryPoints().add(new Point(8,15));
         //Conservatory
         rooms.get(2).getEntryPoints().add(new Point(5,19));
         //Dining Room
-        rooms.get(3).getEntryPoints().add(new Point(6,13));
-        rooms.get(3).getEntryPoints().add(new Point(9,16));
+        rooms.get(3).getEntryPoints().add(new Point(13,8));
+        rooms.get(3).getEntryPoints().add(new Point(16,7));
         //Billiard Room
-        rooms.get(4).getEntryPoints().add(new Point(11,18));
-        rooms.get(4).getEntryPoints().add(new Point(23,13));
+        rooms.get(4).getEntryPoints().add(new Point(10,19));
+        rooms.get(4).getEntryPoints().add(new Point(13,23));
         //Library
-        rooms.get(5).getEntryPoints().add(new Point(20,15));
-        rooms.get(5).getEntryPoints().add(new Point(18,17));
+        rooms.get(5).getEntryPoints().add(new Point(15,20));
+        rooms.get(5).getEntryPoints().add(new Point(17,18));
         //Lounge
-        rooms.get(6).getEntryPoints().add(new Point(7,16));
+        rooms.get(6).getEntryPoints().add(new Point(20,7));
         //Hall
-        rooms.get(7).getEntryPoints().add(new Point(12,17));
-        rooms.get(7).getEntryPoints().add(new Point(13,17));
-        rooms.get(7).getEntryPoints().add(new Point(15,21));
+        rooms.get(7).getEntryPoints().add(new Point(19,13));
+        rooms.get(7).getEntryPoints().add(new Point(19,13));
+        rooms.get(7).getEntryPoints().add(new Point(21,15));
         //Study
-        rooms.get(8).getEntryPoints().add(new Point(18,22));
+        rooms.get(8).getEntryPoints().add(new Point(22,18));
         //Cellar
-        rooms.get(9).getEntryPoints().add(new Point(13,17));
+        rooms.get(9).getEntryPoints().add(new Point(17,13));
     }
 
     private void addAllSpawns(){
@@ -358,7 +369,7 @@ public class Board extends JComponent {
         }
     }
 
-    public BoardPos getBoard(int x, int y){
+    public BoardPos getBoardPos(int x, int y){
         return this.board[x][y];
     }
     /*

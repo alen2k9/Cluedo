@@ -39,19 +39,19 @@ public class Room {
         return this.roomType;
     }
 
-    public Point getsecretPassageOut() {
+    public Point getSecretPassageOut() {
         return this.secretPassageOut;
     }
 
-    public void setsecretPassageOut(Point point){
+    public void setSecretPassageOut(Point point){
         this.secretPassageOut = point;
     }
 
-    public Point getsecretPassageIn(){
+    public Point getSecretPassageIn(){
         return this.secretPassageIn;
     }
 
-    public void setsecretPassageIn(Point point){
+    public void setSecretPassageIn(Point point){
         this.secretPassageIn = point;
     }
 
@@ -75,7 +75,7 @@ public class Room {
         return weaponPositions;
     }
 
-    public boolean hassecretPassage(){
+    public boolean hasSecretPassage(){
         return this.hasSecretPassage;
     }
 
@@ -94,5 +94,9 @@ public class Room {
         Point retPoint = pointList.get(randomInt);
         pointList.remove(randomInt);
         return retPoint;
+    }
+
+    public String toString(){
+        return this.getRoomType().toString();
     }
 }

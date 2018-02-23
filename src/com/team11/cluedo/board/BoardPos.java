@@ -195,14 +195,11 @@ public class BoardPos extends JComponent {
 
     public String toString(){
         StringBuilder s = new StringBuilder();
-        s.append("(");
-        s.append(this.getLocation().getX());
-        s.append(",");
-        s.append(this.getLocation().getY());
-        s.append(")");
 
+        s.append("\nLocation: " + this.getLocation());
         s.append("\nIsTraverseable:" + this.isTraversable);
-        s.append("\nIsOccupied: " + this.isOccupied() + "\n");
+        s.append("\nIsOccupied: " + this.isOccupied());
+        s.append("\nTileType: " + this.getType() + "\n");
         return s.toString();
     }
 

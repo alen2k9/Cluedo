@@ -6,12 +6,14 @@
  */
 package com.team11.cluedo.controls;
 
+
 import com.team11.cluedo.suspects.Direction;
 import com.team11.cluedo.ui.GameScreen;
 import com.team11.cluedo.weapons.WeaponData;
 
 import javax.swing.*;
 import java.util.ArrayList;
+
 
 
 public class CommandInput {
@@ -240,14 +242,22 @@ public class CommandInput {
     {
 
         ArrayList<Direction> list = new ArrayList<>();
-        list.add(Direction.NORTH);
-        list.add(Direction.NORTH);
-        list.add(Direction.NORTH);
-        list.add(Direction.NORTH);
-        list.add(Direction.NORTH);
-        list.add(Direction.NORTH);
+        ArrayList<Direction> tList = new ArrayList<>();
+
+        list.add(Direction.WEST);
+        list.add(Direction.WEST);
+        list.add(Direction.WEST);
+        list.add(Direction.WEST);
+        list.add(Direction.WEST);
         list.add(Direction.WEST);
         list.add(Direction.SOUTH);
+        list.add(Direction.SOUTH);
+
+        tList.add(Direction.NORTH);
+
+
+
+
         /*
         Player movement function found in: this.gameScreen.getGameSuspects().playerMove(PLAYER, DIRECTION, AMUONT);
          */
@@ -296,6 +306,28 @@ public class CommandInput {
                 }
                 else if (gameScreen.getCommandInput().getText().equals("test")){
                     gameScreen.getGamePlayers().playerMove(gameScreen.getGameBoard(), currentPlayer, list);
+                }
+
+                else if (gameScreen.getCommandInput().getText().equals("room")){
+                    gameScreen.getGamePlayers().moveOutOfRoom(gameScreen.getGameBoard(), currentPlayer, 2);
+                }
+
+                else if (gameScreen.getCommandInput().getText().equals("secret")){
+                    if (gameScreen.getGamePlayers().useSecretPassageWay(gameScreen.getGameBoard(), currentPlayer)){
+                        gameScreen.getInfoOutput().append("Used secret passageway");
+                    }
+
+                    else{
+                        gameScreen.getInfoOutput().append("No secret passageway to use in this room");
+                    }
+
+                }
+                else if(gameScreen.getCommandInput().getText().equals("reverse")){
+                    gameScreen.getGamePlayers().getPlayer(currentPlayer).getSuspectToken().reverseMoves();
+                }
+
+                else if (gameScreen.getCommandInput().getText().equals("testtwo")){
+                    gameScreen.getGamePlayers().playerMove(gameScreen.getGameBoard(), currentPlayer, tList);
                 }
             gameScreen.getCommandInput().setText("");
         });
