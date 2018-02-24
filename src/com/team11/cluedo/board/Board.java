@@ -343,7 +343,7 @@ public class Board extends JComponent {
         rooms.get(2).addEntryPoint(new Point(5,19));
         //Dining Room
         rooms.get(3).addEntryPoint(new Point(13,8));
-        rooms.get(3).addEntryPoint(new Point(17,7));
+        rooms.get(3).addEntryPoint(new Point(16,7));
         //Billiard Room
         rooms.get(4).addEntryPoint(new Point(10,19));
         rooms.get(4).addEntryPoint(new Point(13,23));
