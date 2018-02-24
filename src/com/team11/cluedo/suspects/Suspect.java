@@ -59,6 +59,7 @@ public class Suspect extends JComponent{
 
     public void setLoc(Point p){
         this.location = p;
+        System.out.println("Location has been changed to ");
     }
 
     public Point getLoc(){
@@ -119,13 +120,17 @@ public class Suspect extends JComponent{
     //Method which checks the moves passed in to see if they are valid and then checks to see if the final position is occupied or not
     private boolean checkMove(ArrayList<Direction> moveList, Board gameBoard) {
         Point testerPoint = new Point(this.getLoc());
+        ArrayList<Direction> tmpList = new ArrayList<>(moveList);
+
         boolean isValid = true;
         HashSet<String> validitySet = new HashSet<>();  //Hashset used to hold true and false values. Values are inserted based on whether a move is valid or not
         int moveCounter = 0;
         boolean doOnce = true;
+        boolean hasDoor = false;
 
-        for (Direction dir : moveList){
-            switch (dir){
+        while (!tmpList.isEmpty() && !validitySet.contains("false") && !hasDoor ) {
+
+            switch (tmpList.get(0)){
                 //For each direction in the moveList try and move the testerPoint and if it can be moved add a true value the validity set, if not add a false value
                 case NORTH:
                     if (gameBoard.getBoardPos((int)testerPoint.getLocation().getY()-1, (int)testerPoint.getLocation().getX()).isTraversable()){
@@ -207,21 +212,24 @@ public class Suspect extends JComponent{
                     break;
 
             }
+            tmpList.remove(0);
             moveCounter++;
+            if (gameBoard.getBoardPos((int)testerPoint.getLocation().getY(), (int)testerPoint.getLocation().getX()).getType() == TileType.DOOR){
+                hasDoor = true;
+            }
         }
 
         //Have checked all of the moves to see if they go to any non traversal
         //Now check to see of testerPoint is on a tile that is already occupied
 
-        if (gameBoard.getBoardPos((int)testerPoint.getLocation().getY(), (int) testerPoint.getLocation().getX()).isOccupied()){
+        if ((gameBoard.getBoardPos((int)testerPoint.getLocation().getY(), (int) testerPoint.getLocation().getX()).isOccupied() && !(gameBoard.getBoardPos((int)testerPoint.getLocation().getY(), (int) testerPoint.getLocation().getX()).getType() == TileType.DOOR) || validitySet.contains("false"))){
             isValid = false;
             System.out.println("Move will result in the current player landing on another player");
         }
 
-        if (validitySet.contains("false")){
-            isValid = false;
+        if (hasDoor){
+            isValid = true;
         }
-
         return isValid;
     }
 
@@ -243,7 +251,7 @@ public class Suspect extends JComponent{
                         moveUp(gameBoard);
                         reverseStack.push(moveList.remove(0));
                         if (gameBoard.getBoardPos((int)this.getLoc().getY(), (int)this.getLoc().getX()).getType() == TileType.DOOR){
-                            moveToRoom(gameBoard);
+                            moveToRoom(gameBoard,gameBoard.getBoardPos((int)this.getLoc().getY(), (int)this.getLoc().getX()).getLocation());
                             doMoveToRoom = true;
                         }
                         break;
@@ -251,7 +259,7 @@ public class Suspect extends JComponent{
                         moveRight(gameBoard);
                         reverseStack.push(moveList.remove(0));
                         if (gameBoard.getBoardPos((int)this.getLoc().getY(), (int)this.getLoc().getX()).getType() == TileType.DOOR){
-                            moveToRoom(gameBoard);
+                            moveToRoom(gameBoard,gameBoard.getBoardPos((int)this.getLoc().getY(), (int)this.getLoc().getX()).getLocation());
                             doMoveToRoom = true;
                         }
                         break;
@@ -259,7 +267,7 @@ public class Suspect extends JComponent{
                         moveDown(gameBoard);
                         reverseStack.push(moveList.remove(0));
                         if (gameBoard.getBoardPos((int)this.getLoc().getY(), (int)this.getLoc().getX()).getType() == TileType.DOOR){
-                            moveToRoom(gameBoard);
+                            moveToRoom(gameBoard,gameBoard.getBoardPos((int)this.getLoc().getY(), (int)this.getLoc().getX()).getLocation());
                             doMoveToRoom = true;
                         }
                         break;
@@ -268,7 +276,7 @@ public class Suspect extends JComponent{
                         moveLeft(gameBoard);
                         reverseStack.push(moveList.remove(0));
                         if (gameBoard.getBoardPos((int)this.getLoc().getY(), (int)this.getLoc().getX()).getType() == TileType.DOOR){
-                            moveToRoom(gameBoard);
+                            moveToRoom(gameBoard,gameBoard.getBoardPos((int)this.getLoc().getY(), (int)this.getLoc().getX()).getLocation());
                             doMoveToRoom = true;
                         }
                         break;
@@ -277,6 +285,7 @@ public class Suspect extends JComponent{
                 }
                 //Ask to see if we can use thread.sleep here
             }
+            System.out.println(this.getLoc());
         }
 
         else{
@@ -315,33 +324,37 @@ public class Suspect extends JComponent{
     }
 
     //Method to move a player into a room when they land on a door tile
-    private void moveToRoom(Board gameBoard){
+    private void moveToRoom(Board gameBoard, Point prevPoint){
         System.out.println("Moving to room");
+        System.out.println("CurrentRoom = " + this.getCurrentRoom());
+        System.out.println(this.getLoc());
         int currRoom = findParentRoom(gameBoard.getBoardPos((int)this.getLoc().getY(), (int)this.getLoc().getX()).getLocation(), gameBoard);
         System.out.println("Current Room = " + currRoom);
-
+        //this.setPreviousLocation(new Point(prevPoint));
         Point nextPoint = gameBoard.getRoom(currRoom).getRandomPoint(gameBoard.getRoom(currRoom).getPlayerPositions());
         this.setLoc(nextPoint);
         this.setCurrentRoom(currRoom);
+        System.out.println("CurrentRoomNew= " + this.getCurrentRoom());
         gameBoard.getRoom(currRoom).getPlayerPositions().remove(nextPoint);
     }
 
     //Method to move the player out of the room
     public void moveOutOfRoom(Board gameBoard, int exitNum){
-        Point currentPoint = new Point(this.getLoc());
-        //int currRoom = determineRoom(gameBoard);
+        //Get the current point and add it back to the roomSpawn points
+        Point currPoint = new Point(this.getLoc());
+        Point nextPoint = new Point(gameBoard.getRoom(this.getCurrentRoom()).getExitPoints().get(exitNum));
 
-        gameBoard.getRoom(this.getCurrentRoom()).getPlayerPositions().add(currentPoint);
-        System.out.println(this.getCurrentRoom());
+        System.out.println("Current Point: " + currPoint);
+        System.out.println("Next Point: " + nextPoint);
 
-        if (gameBoard.getRoom(this.getCurrentRoom()).getEntryPoints().size() == 1){
-            this.setLoc(gameBoard.getRoom(this.getCurrentRoom()).getExitPoints().get(0));
-        }
-        else{
-            this.setLoc(gameBoard.getRoom(this.getCurrentRoom()).getExitPoints().get(exitNum));
-        }
+
+        gameBoard.getRoom(this.getCurrentRoom()).getPlayerPositions().add(currPoint);
+        System.out.println("Added " + gameBoard.getRoom(this.getCurrentRoom()).getPlayerPositions().get(gameBoard.getRoom(this.getCurrentRoom()).getPlayerPositions().size()-1) + " back to player positions");
+
+        this.setLoc(nextPoint);
+        System.out.println("Player moved to " + this.getLoc());
         this.setCurrentRoom(-1);
-        System.out.println(this.getLoc());
+
     }
 
     public boolean useSecretPassageWay(Board gameBoard){
@@ -379,7 +392,9 @@ public class Suspect extends JComponent{
     //Method which finds what room a suspect is in based on the door tile that they are on
     private int findParentRoom(Point point, Board gameBoard){
         int parentRoom = 0;
-
+        System.out.println(this.getCurrentRoom());
+        System.out.println(point);
+        System.out.println(gameBoard.getRoom(9).getEntryPoints().get(0));
         if (point.equals(gameBoard.getRoom(0).getEntryPoints().get(0))){
             return 0;
         } else if (point.equals(gameBoard.getRoom(1).getEntryPoints().get(0)) || point.equals(gameBoard.getRoom(1).getEntryPoints().get(1)) ||
