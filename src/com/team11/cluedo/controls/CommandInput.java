@@ -76,27 +76,11 @@ public class CommandInput {
                     break;
 
                 case "exit":
-                    if (gameScreen.getGamePlayers().getPlayer(currentPlayer).getSuspectToken().getCurrentRoom() != -1) {
+                    moveOut(inputs);
 
-                        if (inputs.length > 2){
-                            gameScreen.getInfoOutput().append("Too many arguments for leave: Expected 1, Got " + (inputs.length-1));
-                        }
-                        else if (inputs.length == 1) {
-                            gameScreen.getInfoOutput().append("Too few arguments: leave requires one argument, type number\n");
-                        }
-                        else{
-                            if (Integer.parseInt(inputs[1]) > gameScreen.getGameBoard().getRoom(gameScreen.getGamePlayers().getPlayer(currentPlayer).getSuspectToken().getCurrentRoom()).getExitPoints().size()-1 ||Integer.parseInt(inputs[1]) < 0 ){
-                                gameScreen.getInfoOutput().append("Exit number entered is too large or too small, please enter a valid exit number\n");
-                            }
-                            else{
-                                gameScreen.getGamePlayers().getPlayer(currentPlayer).getSuspectToken().moveOutOfRoom(gameScreen.getGameBoard(), Integer.parseInt(inputs[1]));
-                            }
-                        }
-
-                    } else {
-                        gameScreen.getInfoOutput().append("Cannot leave a room when you're not in a room");
-                    }
+                    //moveOut(inputs[1]);
                     break;
+
                 case "done":
                     gameScreen.getInfoOutput().append("Done\n");
                     break;
@@ -131,9 +115,29 @@ public class CommandInput {
         }
     }
 
-    private void moveOut(String input)
+    private void moveOut(String[] inputs)
     {
-        gameScreen.getGamePlayers().moveOutOfRoom(gameScreen.getGameBoard(), currentPlayer, Integer.parseInt(input));
+        if (gameScreen.getGamePlayers().getPlayer(currentPlayer).getSuspectToken().getCurrentRoom() != -1) {
+
+            if (inputs.length > 2){
+                gameScreen.getInfoOutput().append("Too many arguments for leave: Expected 1, Got " + (inputs.length-1));
+            }
+            else if (inputs.length == 1) {
+                gameScreen.getInfoOutput().append("Too few arguments: leave requires one argument, type number\n");
+            }
+            else{
+                if (Integer.parseInt(inputs[1]) > gameScreen.getGameBoard().getRoom(gameScreen.getGamePlayers().getPlayer(currentPlayer).getSuspectToken().getCurrentRoom()).getExitPoints().size()-1 ||Integer.parseInt(inputs[1]) < 0 ){
+                    gameScreen.getInfoOutput().append("Exit number entered is too large or too small, please enter a valid exit number\n");
+                }
+                else{
+                    gameScreen.getGamePlayers().getPlayer(currentPlayer).getSuspectToken().moveOutOfRoom(gameScreen.getGameBoard(), Integer.parseInt(inputs[1]));
+                }
+            }
+
+        } else {
+            gameScreen.getInfoOutput().append("Cannot leave a room when you're not in a room");
+        }
+        
     }
 
     private void diceRoll()
@@ -309,30 +313,16 @@ public class CommandInput {
     {
         ArrayList<Direction> list = new ArrayList<>();
         for(int i = 0; i < moves.length(); i++) {
-            if(dice == 0) {
-                if(gameScreen.getGamePlayers().getPlayer(currentPlayer).getSuspectToken().move(gameScreen.getGameBoard(), list))
-                {
-                    gameScreen.getInfoOutput().append("\nSuccess\n");
-                }
-                else{
-                    gameScreen.getInfoOutput().append("\nerror\n");
-                }
-                runPlayer();
-            }
-            else {
-                if (moves.charAt(i) == 'u') {
-                    list.add(Direction.NORTH);
-                } else if (moves.charAt(i) == 'd') {
-                    list.add(Direction.SOUTH);
-                } else if (moves.charAt(i) == 'l') {
-                    list.add(Direction.WEST);
-                } else if (moves.charAt(i) == 'r') {
-                    list.add(Direction.EAST);
-                }
-                dice--;
+            if (moves.charAt(i) == 'u') {
+                list.add(Direction.NORTH);
+            } else if (moves.charAt(i) == 'd') {
+                list.add(Direction.SOUTH);
+            } else if (moves.charAt(i) == 'l') {
+                list.add(Direction.WEST);
+            } else if (moves.charAt(i) == 'r') {
+                list.add(Direction.EAST);
             }
         }
-
 
         if(gameScreen.getGamePlayers().getPlayer(currentPlayer).getSuspectToken().move(gameScreen.getGameBoard(), list))
         {
