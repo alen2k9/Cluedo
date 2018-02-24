@@ -17,6 +17,7 @@ public class PlayerPoints {
     ArrayList<Point> loungePlayerSpawns = new ArrayList<>();
     ArrayList<Point> hallPlayerSpawns = new ArrayList<>();
     ArrayList<Point> studyPlayerSpawns = new ArrayList<>();
+    ArrayList<Point> cellarPlayerSpawns = new ArrayList<>();
 
     
     public PlayerPoints(){
@@ -33,6 +34,7 @@ public class PlayerPoints {
         Point[] loungePoints = {new Point(1,22), new Point(2,22), new Point(3,22), new Point(4,22), new Point(5,22), new Point(6,22)};
         Point[] hallPoints = {new Point(10,24), new Point(11,24), new Point(12,24), new Point(13,24), new Point(14,24), new Point(15,24)};
         Point[] studyPoints = {new Point(19,25), new Point(20,25), new Point(21,25), new Point(22,25), new Point(23,25), new Point(24,25)};
+        Point[] cellarPoints = {new Point(15,16), new Point(15,15), new Point(15,14), new Point(15,13), new Point(15,12), new Point(15, 11), new Point(14,11)};
 
 
         addPointToList(kitchenPlayerSpawns, kitchenPoints);
@@ -44,6 +46,7 @@ public class PlayerPoints {
         addPointToList(loungePlayerSpawns, loungePoints);
         addPointToList(hallPlayerSpawns, hallPoints);
         addPointToList(studyPlayerSpawns, studyPoints);
+        addPointToList(cellarPlayerSpawns, cellarPoints);
 
 
         playerSpawnLists.add(kitchenPlayerSpawns);
@@ -55,7 +58,7 @@ public class PlayerPoints {
         playerSpawnLists.add(loungePlayerSpawns);
         playerSpawnLists.add(hallPlayerSpawns);
         playerSpawnLists.add(studyPlayerSpawns);
-
+        playerSpawnLists.add(cellarPlayerSpawns);
     }
 
     private void addPointToList(ArrayList<Point> roomList, Point[] p){

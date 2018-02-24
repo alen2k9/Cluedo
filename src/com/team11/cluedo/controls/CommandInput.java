@@ -76,9 +76,27 @@ public class CommandInput {
                     break;
 
                 case "exit":
-                    moveOut(inputs[1]);
-                    break;
+                    if (gameScreen.getGamePlayers().getPlayer(currentPlayer).getSuspectToken().getCurrentRoom() != -1) {
 
+                        if (inputs.length > 2){
+                            gameScreen.getInfoOutput().append("Too many arguments for leave: Expected 1, Got " + (inputs.length-1));
+                        }
+                        else if (inputs.length == 1) {
+                            gameScreen.getInfoOutput().append("Too few arguments: leave requires one argument, type number\n");
+                        }
+                        else{
+                            if (Integer.parseInt(inputs[1]) > gameScreen.getGameBoard().getRoom(gameScreen.getGamePlayers().getPlayer(currentPlayer).getSuspectToken().getCurrentRoom()).getExitPoints().size()-1 ||Integer.parseInt(inputs[1]) < 0 ){
+                                gameScreen.getInfoOutput().append("Exit number entered is too large or too small, please enter a valid exit number\n");
+                            }
+                            else{
+                                gameScreen.getGamePlayers().getPlayer(currentPlayer).getSuspectToken().moveOutOfRoom(gameScreen.getGameBoard(), Integer.parseInt(inputs[1]));
+                            }
+                        }
+
+                    } else {
+                        gameScreen.getInfoOutput().append("Cannot leave a room when you're not in a room");
+                    }
+                    break;
                 case "done":
                     gameScreen.getInfoOutput().append("Done\n");
                     break;

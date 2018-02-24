@@ -302,69 +302,72 @@ public class Board extends JComponent {
 
     private void addExitPoints(){
         //Kitchen
-        rooms.get(0).getExitPoints().add(new Point(5, 8));
+        rooms.get(0).addExitPoint(new Point(5,8));
         //Ballroom
-        rooms.get(1).getExitPoints().add(new Point(8,6));
-        rooms.get(1).getExitPoints().add(new Point(17, 6));
-        rooms.get(1).getExitPoints().add(new Point(10,9));
-        rooms.get(1).getExitPoints().add(new Point(15, 9));
+        rooms.get(1).addExitPoint(new Point(8,6));
+        rooms.get(1).addExitPoint(new Point(17,6));
+        rooms.get(1).addExitPoint(new Point(10,9));
+        rooms.get(1).addExitPoint(new Point(15,9));
         //Conservatory
-        rooms.get(2).getExitPoints().add(new Point(19,6));
-        //DiningRoom
-        rooms.get(3).getExitPoints().add(new Point(7, 13));
-        rooms.get(3).getExitPoints().add(new Point(9, 17));
-        //BilliardRoom
-        rooms.get(4).getExitPoints().add(new Point(10, 18));
-        rooms.get(4).getExitPoints().add(new Point(23,14));
+        rooms.get(2).addExitPoint(new Point(19,6));
+        //Dining Room
+        rooms.get(3).addExitPoint(new Point(9,13));
+        rooms.get(3).addExitPoint(new Point(7,17));
+        //Billiard Room
+        rooms.get(4).addExitPoint(new Point(18,10));
+        rooms.get(4).addExitPoint(new Point(23,14));
         //Library
-        rooms.get(5).getExitPoints().add(new Point(20,14));
-        rooms.get(5).getExitPoints().add(new Point(17,17));
+        rooms.get(5).addExitPoint(new Point(20,14));
+        rooms.get(5).addExitPoint(new Point(17,17));
         //Lounge
-        rooms.get(6).getRoomPoints().add(new Point(7,15));
+        rooms.get(6).addExitPoint(new Point(7, 19));
         //Hall
-        rooms.get(7).getExitPoints().add(new Point(13,18));
-        rooms.get(7).getExitPoints().add(new Point(12,18));
-        rooms.get(7).getExitPoints().add(new Point(16,21));
+        rooms.get(7).addExitPoint(new Point(12,18));
+        rooms.get(7).addExitPoint(new Point(13,18));
+        rooms.get(7).addExitPoint(new Point(16,21));
         //Study
-        rooms.get(8).getExitPoints().add(new Point(18,21));
+        rooms.get(8).addExitPoint(new Point(18,21));
         //Cellar
-        rooms.get(9).getExitPoints().add(new Point(13,18));
+        rooms.get(9).addExitPoint(new Point(13,18));
     }
 
     private void addEntryPoints(){
         //Kitchen
-        rooms.get(0).getEntryPoints().add(new Point(7,5));
+        rooms.get(0).addEntryPoint(new Point(7,5));
         //Ballroom
-        rooms.get(1).getEntryPoints().add(new Point(6,9));
-        rooms.get(1).getEntryPoints().add(new Point(6,16));
-        rooms.get(1).getEntryPoints().add(new Point(8,10));
-        rooms.get(1).getEntryPoints().add(new Point(8,15));
+        rooms.get(1).addEntryPoint(new Point(6,9));
+        rooms.get(1).addEntryPoint(new Point(6,16));
+        rooms.get(1).addEntryPoint(new Point(8,10));
+        rooms.get(1).addEntryPoint(new Point(8,15));
         //Conservatory
-        rooms.get(2).getEntryPoints().add(new Point(5,19));
+        rooms.get(2).addEntryPoint(new Point(5,19));
         //Dining Room
-        rooms.get(3).getEntryPoints().add(new Point(13,8));
-        rooms.get(3).getEntryPoints().add(new Point(16,7));
+        rooms.get(3).addEntryPoint(new Point(13,8));
+        rooms.get(3).addEntryPoint(new Point(17,7));
         //Billiard Room
-        rooms.get(4).getEntryPoints().add(new Point(10,19));
-        rooms.get(4).getEntryPoints().add(new Point(13,23));
+        rooms.get(4).addEntryPoint(new Point(10,19));
+        rooms.get(4).addEntryPoint(new Point(13,23));
         //Library
-        rooms.get(5).getEntryPoints().add(new Point(15,20));
-        rooms.get(5).getEntryPoints().add(new Point(17,18));
+        rooms.get(5).addEntryPoint(new Point(15,20));
+        rooms.get(5).addEntryPoint(new Point(17,18));
         //Lounge
-        rooms.get(6).getEntryPoints().add(new Point(20,7));
+        rooms.get(6).addEntryPoint(new Point(20,7));
         //Hall
-        rooms.get(7).getEntryPoints().add(new Point(19,13));
-        rooms.get(7).getEntryPoints().add(new Point(19,13));
-        rooms.get(7).getEntryPoints().add(new Point(21,15));
+        rooms.get(7).addEntryPoint(new Point(19,12));
+        rooms.get(7).addEntryPoint(new Point(19,13));
+        rooms.get(7).addEntryPoint(new Point(21,15));
         //Study
-        rooms.get(8).getEntryPoints().add(new Point(22,18));
+        rooms.get(8).addEntryPoint(new Point(22,18));
         //Cellar
-        rooms.get(9).getEntryPoints().add(new Point(17,13));
+        rooms.get(9).addEntryPoint(new Point(17,13));
     }
 
     private void addAllSpawns(){
         for (int i = 0; i < 9; i++){
             rooms.get(i).addPositions(rooms.get(i).getWeaponPositions(), weaponPoints.getWeaponSpawnList().get(i));
+        }
+
+        for (int i = 0; i < 10; i++){
             rooms.get(i).addPositions(rooms.get(i).getPlayerPositions(), playerPoints.getPlayerSpawnList().get(i));
         }
     }

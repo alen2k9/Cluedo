@@ -2,6 +2,7 @@ package com.team11.cluedo.board;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
 
 public class Room {
@@ -31,60 +32,92 @@ public class Room {
         this.hasSecretPassage = false;
     }
 
-    public void setRoomType(TileType type){
-        this.roomType = type;
+    public void setRoomPoints(ArrayList<Point> pointList){
+        this.roomPoints.addAll(pointList);
     }
 
-    public TileType getRoomType(){
-        return this.roomType;
+    public ArrayList<Point> getRoomPoints() {
+        return this.roomPoints;
     }
 
-    public Point getSecretPassageOut() {
-        return this.secretPassageOut;
+    public void setWeaponPositions(ArrayList<Point> pointsList){
+        this.weaponPositions.addAll(pointsList);
     }
 
-    public void setSecretPassageOut(Point point){
-        this.secretPassageOut = point;
+    public ArrayList<Point> getWeaponPositions() {
+        return this.weaponPositions;
     }
 
-    public Point getSecretPassageIn(){
-        return this.secretPassageIn;
+    public void setPlayerPositions(ArrayList<Point> pointsList){
+        this.playerPositions.addAll(pointsList);
+    }
+
+    public ArrayList<Point> getPlayerPositions() {
+        return this.playerPositions;
+    }
+
+    public void setExitPoints(ArrayList<Point> pointsList){
+        this.exitPoints.addAll(pointsList);
+    }
+
+    public ArrayList<Point> getExitPoints(){
+        return this.exitPoints;
+    }
+
+    public void addExitPoint(Point point){
+        this.getExitPoints().add(point);
+    }
+
+    public void removeExitPoint(Point point){
+        this.getExitPoints().remove(point);
+    }
+
+    public void setEntryPoints(ArrayList<Point> pointList){
+        this.entryPoints.addAll(pointList);
+    }
+
+    public ArrayList<Point> getEntryPoints() {
+        return this.entryPoints;
+    }
+
+    public void addEntryPoint(Point point){
+        this.getEntryPoints().add(point);
+    }
+
+    public void removeEntryPoint(Point point){
+        this.getEntryPoints().remove(point);
     }
 
     public void setSecretPassageIn(Point point){
         this.secretPassageIn = point;
     }
 
-    public ArrayList<Point> getExitPoints() {
-        return exitPoints;
+    public Point getSecretPassageIn(){
+        return this.secretPassageIn;
     }
 
-    public ArrayList<Point> getPlayerPositions() {
-        return playerPositions;
+    public void setSecretPassageOut(Point point){
+        this.secretPassageOut = point;
     }
 
-    public ArrayList<Point> getRoomPoints() {
-        return roomPoints;
+    public Point getSecretPassageOut(){
+        return this.secretPassageOut;
     }
 
-    public void addPositions(ArrayList<Point> listToAddTo, ArrayList<Point> listToAddFrom){
-        listToAddTo.addAll(listToAddFrom);
+    public void setRoomType(TileType type){
+        this.roomType = type;
     }
 
-    public ArrayList<Point> getWeaponPositions() {
-        return weaponPositions;
+    public TileType getRoomType() {
+        return this.roomType;
+    }
+
+    public void setHasSecretPassage(boolean hasSecretPassage) {
+        this.hasSecretPassage = hasSecretPassage;
     }
 
     public boolean hasSecretPassage(){
         return this.hasSecretPassage;
-    }
-
-    public void setHasSecretPassage(boolean bool){
-        this.hasSecretPassage = bool;
-    }
-
-    public ArrayList<Point> getEntryPoints() {
-        return entryPoints;
     }
 
     public Point getRandomPoint(ArrayList<Point> pointList) {
@@ -96,6 +129,9 @@ public class Room {
         return retPoint;
     }
 
+    public void addPositions(ArrayList<Point> listToAddTo, ArrayList<Point> listToAddFrom){
+        listToAddTo.addAll(listToAddFrom);
+    }
     public String toString(){
         return this.getRoomType().toString();
     }
