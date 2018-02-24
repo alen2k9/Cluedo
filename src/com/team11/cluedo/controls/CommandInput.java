@@ -88,7 +88,7 @@ public class CommandInput {
                     break;
 
                 case "passage":
-                    gameScreen.getInfoOutput().append("passage\n");
+                    secretPassage();
                     break;
 
                 case "help":
@@ -103,7 +103,17 @@ public class CommandInput {
         });
     }
 
-    public void moveOut(String input)
+    private void secretPassage()
+    {
+        if (gameScreen.getGamePlayers().useSecretPassageWay(gameScreen.getGameBoard(), currentPlayer)){
+            gameScreen.getInfoOutput().append("Used secret passageway\n");
+        }
+        else{
+            gameScreen.getInfoOutput().append("No secret passageway to use in this room\n");
+        }
+    }
+
+    private void moveOut(String input)
     {
         gameScreen.getGamePlayers().moveOutOfRoom(gameScreen.getGameBoard(), currentPlayer, Integer.parseInt(input));
     }
@@ -281,16 +291,30 @@ public class CommandInput {
     {
         ArrayList<Direction> list = new ArrayList<>();
         for(int i = 0; i < moves.length(); i++) {
-            if (moves.charAt(i) == 'u') {
-                list.add(Direction.NORTH);
-            } else if (moves.charAt(i) == 'd') {
-                list.add(Direction.SOUTH);
-            } else if (moves.charAt(i) == 'l') {
-                list.add(Direction.WEST);
-            } else if (moves.charAt(i) == 'r') {
-                list.add(Direction.EAST);
+            if(dice == 0) {
+                if(gameScreen.getGamePlayers().getPlayer(currentPlayer).getSuspectToken().move(gameScreen.getGameBoard(), list))
+                {
+                    gameScreen.getInfoOutput().append("\nSuccess\n");
+                }
+                else{
+                    gameScreen.getInfoOutput().append("\nerror\n");
+                }
+                runPlayer();
+            }
+            else {
+                if (moves.charAt(i) == 'u') {
+                    list.add(Direction.NORTH);
+                } else if (moves.charAt(i) == 'd') {
+                    list.add(Direction.SOUTH);
+                } else if (moves.charAt(i) == 'l') {
+                    list.add(Direction.WEST);
+                } else if (moves.charAt(i) == 'r') {
+                    list.add(Direction.EAST);
+                }
+                dice--;
             }
         }
+
 
         if(gameScreen.getGamePlayers().getPlayer(currentPlayer).getSuspectToken().move(gameScreen.getGameBoard(), list))
         {
