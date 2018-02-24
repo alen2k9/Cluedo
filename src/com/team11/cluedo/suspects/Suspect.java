@@ -393,8 +393,8 @@ public class Suspect extends JComponent{
     private int findParentRoom(Point point, Board gameBoard){
         int parentRoom = 0;
         System.out.println(this.getCurrentRoom());
-        System.out.println(point);
-        System.out.println(gameBoard.getRoom(9).getEntryPoints().get(0));
+        System.out.println("Checking Point " + point);
+        System.out.println("Door location" + gameBoard.getRoom(3).getEntryPoints().get(1));
         if (point.equals(gameBoard.getRoom(0).getEntryPoints().get(0))){
             return 0;
         } else if (point.equals(gameBoard.getRoom(1).getEntryPoints().get(0)) || point.equals(gameBoard.getRoom(1).getEntryPoints().get(1)) ||
