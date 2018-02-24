@@ -32,7 +32,7 @@ public class CommandInput {
     {
         canRoll = true;
         String playerName = gameScreen.getGamePlayers().getPlayer(currentPlayer).getPlayerName();
-        gameScreen.getInfoOutput().append("It is now Player :" + playerName + "turn\n");
+        gameScreen.getInfoOutput().append("It is now Player : '" + playerName + "' turn\n");
     }
 
 
@@ -68,7 +68,13 @@ public class CommandInput {
                     {
                         moveParameters.append(inputs[i]);
                     }
-                    playerMovement(moveParameters.toString());
+                    if(dice == 0)
+                    {
+                        gameScreen.getInfoOutput().append("Too many moves, You only have '" + dice + "' moves left\n");
+                    }
+                    else if(dice > moveParameters.toString().length() - 1) {
+                        playerMovement(moveParameters.toString());
+                    }
                     break;
 
                 case "roll":
@@ -131,13 +137,14 @@ public class CommandInput {
                 }
                 else{
                     gameScreen.getGamePlayers().getPlayer(currentPlayer).getSuspectToken().moveOutOfRoom(gameScreen.getGameBoard(), Integer.parseInt(inputs[1]));
+                    dice--;
                 }
             }
 
         } else {
             gameScreen.getInfoOutput().append("Cannot leave a room when you're not in a room");
         }
-        
+
     }
 
     private void diceRoll()
@@ -322,6 +329,7 @@ public class CommandInput {
             } else if (moves.charAt(i) == 'r') {
                 list.add(Direction.EAST);
             }
+            dice--;
         }
 
         if(gameScreen.getGamePlayers().getPlayer(currentPlayer).getSuspectToken().move(gameScreen.getGameBoard(), list))
