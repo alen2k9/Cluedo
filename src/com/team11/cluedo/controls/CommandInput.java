@@ -26,25 +26,26 @@ public class CommandInput {
     }
 
     public void initialSetup() {
-        canRoll = true;
-        numPlayers = gameScreen.getGamePlayers().getPlayerCount();
-        gameScreen.reDraw(currentPlayer);
+        this.canRoll = true;
+        this.numPlayers = this.gameScreen.getGamePlayers().getPlayerCount();
+        this.gameScreen.reDraw(this.currentPlayer);
     }
 
     public void playerTurn() {
-        String playerName = gameScreen.getGamePlayers().getPlayer(currentPlayer).getPlayerName();
-        gameScreen.getInfoOutput().append("It is now player '" + playerName + "'s turn.\n");
+        String playerName = this.gameScreen.getGamePlayers().getPlayer(this.currentPlayer).getPlayerName();
+        this.gameScreen.getInfoOutput().append("It is now player " + playerName + "'s turn.\n");
         runPlayer();
     }
 
-    private void runPlayer() {
-        gameScreen.getCommandInput().addActionListener(e -> {
-            String input = gameScreen.getCommandInput().getText();
+    public void runPlayer() {
+        this.gameScreen.getCommandInput().addActionListener(e -> {
+            String input = this.gameScreen.getCommandInput().getText();
             String[] inputs = input.toLowerCase().split(" ");
             String command = inputs[0];
 
-            gameScreen.getCommandInput().setText("");
-            gameScreen.getInfoOutput().append("> "+ input + '\n');
+            this.gameScreen.getCommandInput().setText("");
+            this.gameScreen.getInfoOutput().append("> "+ input + '\n');
+
             switch (command){
                 case "move":
                     StringBuilder moveParameters = new StringBuilder();
@@ -52,9 +53,8 @@ public class CommandInput {
                         moveParameters.append(inputs[i]);
                     }
                     if(this.remainingMoves == 0) {
-                        gameScreen.getInfoOutput().append("You have '" + this.remainingMoves + "' moves remaining.\n");
-                    }
-                    else if(this.remainingMoves > moveParameters.toString().length() - 1) {
+                        this.gameScreen.getInfoOutput().append("You have '" + this.remainingMoves + "' moves remaining.\n");
+                    } else if(this.remainingMoves > moveParameters.toString().length() - 1) {
                         playerMovement(moveParameters.toString());
                     }
                     break;
@@ -96,67 +96,69 @@ public class CommandInput {
     }
 
     private void nextPlayer() {
-        canRoll = true;
-        dice = 0; remainingMoves = 0;
-        currentPlayer++;
-        if(currentPlayer == numPlayers)
-            currentPlayer = 0;
-        String playerName = gameScreen.getGamePlayers().getPlayer(currentPlayer).getPlayerName();
-        gameScreen.getInfoOutput().append("\nIt is now player '" + playerName + "'s turn.\n");
+        this.canRoll = true;
+        this.dice = 0; this.remainingMoves = 0;
+        this.currentPlayer++;
+        if(this.currentPlayer == this.numPlayers)
+            this.currentPlayer = 0;
+        String playerName = this.gameScreen.getGamePlayers().getPlayer(currentPlayer).getPlayerName();
+        this.gameScreen.getInfoOutput().append("\nIt is now player " + playerName + "'s turn.\n");
     }
 
     private void secretPassage() {
-        if (gameScreen.getGamePlayers().useSecretPassageWay(gameScreen.getGameBoard(), currentPlayer)){
-            gameScreen.getInfoOutput().append("Used secret passageway.\n");
+        String roomName = this.gameScreen.getGamePlayers().getPlayer(this.currentPlayer).getSuspectToken().getCurrentRoomName();
+        String playerName = this.gameScreen.getGamePlayers().getPlayer(this.currentPlayer).getPlayerName();
+        if (this.gameScreen.getGamePlayers().useSecretPassageWay(this.gameScreen.getGameBoard(), this.currentPlayer)){
+            this.gameScreen.getInfoOutput().append(playerName + " used secret passageway.\n" + playerName + " is now in the " + roomName + ".\n");
         } else {
-            gameScreen.getInfoOutput().append("There are no secret passageways to use in this room!\n");
+            this.gameScreen.getInfoOutput().append("There are no secret passageways to use in this room!\n");
         }
     }
 
     private void moveOut(String[] inputs) {
-        String roomName = gameScreen.getGamePlayers().getPlayer(currentPlayer).getSuspectToken().getCurrentRoomName();
-        String playerName = gameScreen.getGamePlayers().getPlayer(currentPlayer).getPlayerName();
-        if (gameScreen.getGamePlayers().getPlayer(currentPlayer).getSuspectToken().getCurrentRoom() != -1) {
-            if (inputs.length > 2){
-                gameScreen.getInfoOutput().append("Too many arguments for 'Exit'.\nExpected 1, Got " + (inputs.length-1));
+        String roomName = this.gameScreen.getGamePlayers().getPlayer(this.currentPlayer).getSuspectToken().getCurrentRoomName();
+        String playerName = this.gameScreen.getGamePlayers().getPlayer(this.currentPlayer).getPlayerName();
+        if (this.gameScreen.getGamePlayers().getPlayer(this.currentPlayer).getSuspectToken().getCurrentRoom() != -1) {
+            if (inputs.length > 2) {
+                this.gameScreen.getInfoOutput().append("Too many arguments for 'Exit'.\nExpected 1, Got " + (inputs.length - 1));
             } else if (inputs.length == 1) {
-                gameScreen.getGamePlayers().getPlayer(currentPlayer).getSuspectToken().moveOutOfRoom(gameScreen.getGameBoard(), 0);
-                gameScreen.getInfoOutput().append(playerName + " left the " + roomName + ".\n");
-                remainingMoves--;
+                this.gameScreen.getGamePlayers().getPlayer(this.currentPlayer).getSuspectToken().moveOutOfRoom(this.gameScreen.getGameBoard(), 0);
+                this.gameScreen.getInfoOutput().append(playerName + " left the " + roomName + ".\n");
+                this.remainingMoves--;
             } else {
-                if (Integer.parseInt(inputs[1]) > gameScreen.getGameBoard().getRoom(gameScreen.getGamePlayers().getPlayer(currentPlayer).getSuspectToken().getCurrentRoom()).getExitPoints().size() ||Integer.parseInt(inputs[1]) < 0 ){
-                    gameScreen.getInfoOutput().append("Exit number entered is invalid.\nPlease enter a valid exit number. (1 - " + gameScreen.getGameBoard().getRoom(gameScreen.getGamePlayers().getPlayer(currentPlayer).getSuspectToken().getCurrentRoom()).getExitPoints().size() + ")\n");
+                if (Integer.parseInt(inputs[1]) > gameScreen.getGameBoard().getRoom(gameScreen.getGamePlayers().getPlayer(currentPlayer).getSuspectToken().getCurrentRoom()).getExitPoints().size() || Integer.parseInt(inputs[1]) < 0) {
+                    this.gameScreen.getInfoOutput().append("Exit number entered is invalid.\nPlease enter a valid exit number. (1 - " + gameScreen.getGameBoard().getRoom(gameScreen.getGamePlayers().getPlayer(currentPlayer).getSuspectToken().getCurrentRoom()).getExitPoints().size() + ")\n");
                 } else {
-                    gameScreen.getGamePlayers().getPlayer(currentPlayer).getSuspectToken().moveOutOfRoom(gameScreen.getGameBoard(), Integer.parseInt(inputs[1])-1);
-                    gameScreen.getInfoOutput().append(playerName + " left the " + roomName + ".\n");
-                    remainingMoves--;
+                    this.gameScreen.getGamePlayers().getPlayer(currentPlayer).getSuspectToken().moveOutOfRoom(gameScreen.getGameBoard(), Integer.parseInt(inputs[1]) - 1);
+                    this.gameScreen.getInfoOutput().append(playerName + " left the " + roomName + ".\n");
+                    this.remainingMoves--;
                 }
             }
         } else {
-            gameScreen.getInfoOutput().append("Cannot leave a room when you're not in a room!");
+            this.gameScreen.getInfoOutput().append("Cannot leave a room when you're not in a room!");
         }
     }
 
     private void diceRoll() {
-        if(canRoll) {
+        if(this.canRoll) {
             Dice die = new Dice();
-            dice = die.rolldice();
-            remainingMoves = dice;
-            gameScreen.getInfoOutput().append(gameScreen.getGamePlayers().getPlayer(currentPlayer).getPlayerName() + " rolled a " + dice + ".\n");
-            canRoll = false;
+            this.dice = die.rolldice();
+            this.remainingMoves = this.dice;
+            this.gameScreen.getInfoOutput().append(this.gameScreen.getGamePlayers().getPlayer(this.currentPlayer).getPlayerName() + " rolled a " + this.dice + ".\n");
+            this.canRoll = false;
         } else {
-            gameScreen.getInfoOutput().append(gameScreen.getGamePlayers().getPlayer(currentPlayer).getPlayerName() + " already rolled a " + dice + ".\n");
+            this.gameScreen.getInfoOutput().append(this.gameScreen.getGamePlayers().getPlayer(this.currentPlayer).getPlayerName() + " already rolled a " + this.dice + ".\n");
         }
     }
 
     private void help() {
-        gameScreen.getInfoOutput().append("Help\n");
-        gameScreen.setTab(1);
+        this.gameScreen.getInfoOutput().append("help\n");
+        this.gameScreen.setTab(1);
     }
 
     private void quitGame() {
-        gameScreen.getInfoOutput().append("Exiting Game.\n");
-        gameScreen.closeScreen();
+        this.gameScreen.getInfoOutput().append("Exit\n");
+        this.gameScreen.closeScreen();
     }
 
     private void weaponMovement() {
@@ -168,73 +170,45 @@ public class CommandInput {
             /*
              * Moving Weapon
              */
-            if(choice.getRoom().equals("Kitchen"))      //move weapon based on user choice as chosen on joption Pane
-            {
+            if(choice.getRoom().equals("Kitchen")) {
                 room = 0;
-            }
-            else if (choice.getRoom().equals("Ballroom"))
-            {
+            } else if (choice.getRoom().equals("Ballroom")) {
                 room = 1;
-            }
-            else if (choice.getRoom().equals("Conservatory"))
-            {
+            } else if (choice.getRoom().equals("Conservatory")) {
                 room = 2;
-            }
-            else if (choice.getRoom().equals("Dining"))
-            {
+            } else if (choice.getRoom().equals("Dining")) {
                 room = 3;
-            }
-            else if (choice.getRoom().equals("Billiard"))
-            {
+            } else if (choice.getRoom().equals("Billiard")) {
                 room = 4;
-            }
-            else if (choice.getRoom().equals("Library"))
-            {
+            } else if (choice.getRoom().equals("Library")) {
                 room = 5;
-            }
-            else if (choice.getRoom().equals("Lounge"))
-            {
+            } else if (choice.getRoom().equals("Lounge")) {
                 room = 6;
-            }
-            else if (choice.getRoom().equals("Hall"))
-            {
+            } else if (choice.getRoom().equals("Hall")) {
                 room = 7;
-            }
-            else if (choice.getRoom().equals("Study"))
-            {
+            } else if (choice.getRoom().equals("Study")) {
                 room = 8;
             }
 
             //private String[] weaponName = {"Candlestick", "Dagger", "Lead Pipe", "Revolver", "Rope", "Spanner"};
             WeaponData weaponData = new WeaponData();
 
-            if (choice.getWeapon().equals(weaponData.getWeaponName(0)))
-            {
+            if (choice.getWeapon().equals(weaponData.getWeaponName(0))) {
                 System.out.println("Found " + choice.getWeapon());
                 weapon = 0;
-            }
-            else if(choice.getWeapon().equals(weaponData.getWeaponName(1)))
-            {
+            } else if(choice.getWeapon().equals(weaponData.getWeaponName(1))) {
                 System.out.println("Found " + choice.getWeapon());
                 weapon = 1;
-            }
-            else if(choice.getWeapon().equals(weaponData.getWeaponName(2)))
-            {
+            } else if(choice.getWeapon().equals(weaponData.getWeaponName(2))) {
                 System.out.println("Found " + choice.getWeapon());
                 weapon = 2;
-            }
-            else if(choice.getWeapon().equals(weaponData.getWeaponName(3)))
-            {
+            } else if(choice.getWeapon().equals(weaponData.getWeaponName(3))) {
                 System.out.println("Found " + choice.getWeapon());
                 weapon = 3;
-            }
-            else if(choice.getWeapon().equals(weaponData.getWeaponName(4)))
-            {
+            } else if(choice.getWeapon().equals(weaponData.getWeaponName(4))) {
                 System.out.println("Found " + choice.getWeapon());
                 weapon = 4;
-            }
-            else if(choice.getWeapon().equals(weaponData.getWeaponName(5)))
-            {
+            } else if(choice.getWeapon().equals(weaponData.getWeaponName(5))) {
                 System.out.println("Found " + choice.getWeapon());
                 weapon = 5;
             }
@@ -258,30 +232,30 @@ public class CommandInput {
         for(int i = 0; i < moves.length(); i++) {
             if (moves.charAt(i) == 'u') {
                 list.add(Direction.NORTH);
-                remainingMoves--;
+                this.remainingMoves--;
                 steps++;
             } else if (moves.charAt(i) == 'd') {
                 list.add(Direction.SOUTH);
-                remainingMoves--;
+                this.remainingMoves--;
                 steps++;
             } else if (moves.charAt(i) == 'l') {
                 list.add(Direction.WEST);
-                remainingMoves--;
+                this.remainingMoves--;
                 steps++;
             } else if (moves.charAt(i) == 'r') {
                 list.add(Direction.EAST);
-                remainingMoves--;
+                this.remainingMoves--;
                 steps++;
             }
         }
 
-        if(gameScreen.getGamePlayers().getPlayer(currentPlayer).getSuspectToken().move(gameScreen.getGameBoard(), list)) {
+        if(this.gameScreen.getGamePlayers().getPlayer(this.currentPlayer).getSuspectToken().move(this.gameScreen.getGameBoard(), list)) {
             if (steps == 1)
-                gameScreen.getInfoOutput().append("You have moved " + steps + " space.\nYou have " + remainingMoves + " moves remaining.\n");
+                this.gameScreen.getInfoOutput().append("You have moved " + steps + " space.\nYou have " + this.remainingMoves + " moves remaining.\n");
             else
-                gameScreen.getInfoOutput().append("You have moved " + steps + " spaces.\nYou have " + remainingMoves + " moves remaining.\n");
+                this.gameScreen.getInfoOutput().append("You have moved " + steps + " spaces.\nYou have " + this.remainingMoves + " moves remaining.\n");
         } else {
-            gameScreen.getInfoOutput().append("This path isn't valid.\nYou have " + remainingMoves + " moves remaining.\n");
+            this.gameScreen.getInfoOutput().append("This path isn't valid.\nYou have " + this.remainingMoves + " moves remaining.\n");
         }
     }
 
@@ -303,11 +277,11 @@ public class CommandInput {
                 System.out.print(weaponChoice[i]);
             }
 
-            weapon = (String) JOptionPane.showInputDialog(null, "Choose the Weapon you want to move",
+            this.weapon = (String) JOptionPane.showInputDialog(null, "Choose the Weapon you want to move",
                     "Weapon Movement", JOptionPane.QUESTION_MESSAGE, null, weaponChoice, weaponChoice[0]);
 
-            if (weapon != null) {
-                room = (String) JOptionPane.showInputDialog(null, "Choose the WeaponPoints you want to move it into",
+            if (this.weapon != null) {
+                this.room = (String) JOptionPane.showInputDialog(null, "Choose the WeaponPoints you want to move it into",
                         "Weapon Movement", JOptionPane.QUESTION_MESSAGE, null, roomChoice, roomChoice[0]);
             } else {
                 System.out.println("Cancelling weapon movement");
@@ -315,11 +289,11 @@ public class CommandInput {
         }
 
         private String getRoom() {
-            return room;
+            return this.room;
         }
 
         private String getWeapon() {
-            return weapon;
+            return this.weapon;
         }
     }
 }
