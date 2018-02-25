@@ -9,13 +9,17 @@ import java.awt.*;
 public class PlayerCardLayout extends JPanel {
     private Players gamePlayers;
     private Resolution resolution;
+    private int currentPlayer;
 
-    public PlayerCardLayout (Players gamePlayers, Resolution resolution) {
+    public PlayerCardLayout (Players gamePlayers, Resolution resolution, int currentPlayer) {
         this.gamePlayers = gamePlayers;
         this.resolution = resolution;
+        this.currentPlayer = currentPlayer;
+        getCardLayout();
+    }
 
+    private void getCardLayout() {
         this.setLayout(new GridBagLayout());
-
         switch (gamePlayers.getPlayerCount()) {
             case 2: {
                 getColumnCardsLayout();
@@ -44,12 +48,17 @@ public class PlayerCardLayout extends JPanel {
         GridBagConstraints gbc = new GridBagConstraints();
         ImageIcon card;
         for(int i = 0  ; i < gamePlayers.getPlayerCount() ; i++) {
-            System.out.println(i + " Players");
-            card = new ImageIcon(gamePlayers.getPlayer(i).getCardImage().getScaledInstance(
-                    (int)((new ImageIcon(gamePlayers.getPlayer(i).getCardImage()).getIconWidth() * resolution.getScalePercentage()) * .66),
-                    (int)((new ImageIcon(gamePlayers.getPlayer(i).getCardImage()).getIconHeight() * resolution.getScalePercentage()) * .66),
-                    0
-            ));
+            if (i == currentPlayer) {
+                card = new ImageIcon(gamePlayers.getPlayer(i).getCardImage().getScaledInstance(
+                        (int) ((new ImageIcon(gamePlayers.getPlayer(i).getCardImage()).getIconWidth() * resolution.getScalePercentage()) * .66),
+                        (int) ((new ImageIcon(gamePlayers.getPlayer(i).getCardImage()).getIconHeight() * resolution.getScalePercentage()) * .66),
+                        0));
+            } else {
+                card = new ImageIcon(gamePlayers.getPlayer(i).getSelectedCardImage().getScaledInstance(
+                        (int) ((new ImageIcon(gamePlayers.getPlayer(i).getCardImage()).getIconWidth() * resolution.getScalePercentage()) * .66),
+                        (int) ((new ImageIcon(gamePlayers.getPlayer(i).getCardImage()).getIconHeight() * resolution.getScalePercentage()) * .66),
+                        0));
+            }
 
             JLabel playerCard = new JLabel(card);
             gbc.insets = new Insets(5,5,5,5);
@@ -73,11 +82,17 @@ public class PlayerCardLayout extends JPanel {
                 y++;
                 gbc.gridwidth = 1;
             }
-            card = new ImageIcon(gamePlayers.getPlayer(i).getCardImage().getScaledInstance(
-                    (int)((new ImageIcon(gamePlayers.getPlayer(i).getCardImage()).getIconWidth() * resolution.getScalePercentage()) * .66),
-                    (int)((new ImageIcon(gamePlayers.getPlayer(i).getCardImage()).getIconHeight() * resolution.getScalePercentage()) * .66),
-                    0
-            ));
+            if (i == currentPlayer) {
+                card = new ImageIcon(gamePlayers.getPlayer(i).getCardImage().getScaledInstance(
+                        (int) ((new ImageIcon(gamePlayers.getPlayer(i).getCardImage()).getIconWidth() * resolution.getScalePercentage()) * .66),
+                        (int) ((new ImageIcon(gamePlayers.getPlayer(i).getCardImage()).getIconHeight() * resolution.getScalePercentage()) * .66),
+                        0));
+            } else {
+                card = new ImageIcon(gamePlayers.getPlayer(i).getSelectedCardImage().getScaledInstance(
+                        (int) ((new ImageIcon(gamePlayers.getPlayer(i).getCardImage()).getIconWidth() * resolution.getScalePercentage()) * .66),
+                        (int) ((new ImageIcon(gamePlayers.getPlayer(i).getCardImage()).getIconHeight() * resolution.getScalePercentage()) * .66),
+                        0));
+            }
 
             JLabel playerCard = new JLabel(card);
             gbc.insets = new Insets(5,5,5,5);
@@ -102,11 +117,17 @@ public class PlayerCardLayout extends JPanel {
                 y++;
                 gbc.gridwidth = 1;
             }
-            card = new ImageIcon(gamePlayers.getPlayer(i).getCardImage().getScaledInstance(
-                    (int)((new ImageIcon(gamePlayers.getPlayer(i).getCardImage()).getIconWidth() * resolution.getScalePercentage()) * .66),
-                    (int)((new ImageIcon(gamePlayers.getPlayer(i).getCardImage()).getIconHeight() * resolution.getScalePercentage()) * .66),
-                    0
-            ));
+            if (i == currentPlayer) {
+                card = new ImageIcon(gamePlayers.getPlayer(i).getCardImage().getScaledInstance(
+                        (int) ((new ImageIcon(gamePlayers.getPlayer(i).getCardImage()).getIconWidth() * resolution.getScalePercentage()) * .66),
+                        (int) ((new ImageIcon(gamePlayers.getPlayer(i).getCardImage()).getIconHeight() * resolution.getScalePercentage()) * .66),
+                        0));
+            } else {
+                card = new ImageIcon(gamePlayers.getPlayer(i).getSelectedCardImage().getScaledInstance(
+                        (int) ((new ImageIcon(gamePlayers.getPlayer(i).getCardImage()).getIconWidth() * resolution.getScalePercentage()) * .66),
+                        (int) ((new ImageIcon(gamePlayers.getPlayer(i).getCardImage()).getIconHeight() * resolution.getScalePercentage()) * .66),
+                        0));
+            }
 
             JLabel playerCard = new JLabel(card);
             gbc.insets = new Insets(5,5,5,5);
@@ -124,21 +145,31 @@ public class PlayerCardLayout extends JPanel {
                 x = 0;
                 y++;
             }
-            card = new ImageIcon(gamePlayers.getPlayer(i).getCardImage().getScaledInstance(
-                    (int)((new ImageIcon(gamePlayers.getPlayer(i).getCardImage()).getIconWidth() * resolution.getScalePercentage()) * .66),
-                    (int)((new ImageIcon(gamePlayers.getPlayer(i).getCardImage()).getIconHeight() * resolution.getScalePercentage()) * .66),
-                    0
-            ));
+            if (i == currentPlayer) {
+                card = new ImageIcon(gamePlayers.getPlayer(i).getCardImage().getScaledInstance(
+                        (int) ((new ImageIcon(gamePlayers.getPlayer(i).getCardImage()).getIconWidth() * resolution.getScalePercentage()) * .66),
+                        (int) ((new ImageIcon(gamePlayers.getPlayer(i).getCardImage()).getIconHeight() * resolution.getScalePercentage()) * .66),
+                        0));
+            } else {
+                card = new ImageIcon(gamePlayers.getPlayer(i).getSelectedCardImage().getScaledInstance(
+                        (int) ((new ImageIcon(gamePlayers.getPlayer(i).getCardImage()).getIconWidth() * resolution.getScalePercentage()) * .66),
+                        (int) ((new ImageIcon(gamePlayers.getPlayer(i).getCardImage()).getIconHeight() * resolution.getScalePercentage()) * .66),
+                        0));
+            }
 
             JLabel playerCard = new JLabel(card);
             gbc.insets = new Insets(5,5,5,5);
             gbc.gridx = x; gbc.gridy = y;
             gbc.ipady = 5;
-            this.add(playerCard, gbc);
+            this.add(playerCard, gbc, i);
         }
     }
 
-    @Override
-    public void paintComponent(Graphics g) {
+    public void reDraw(int currentPlayer) {
+        this.currentPlayer = currentPlayer;
+        this.removeAll();
+        getCardLayout();
+        this.revalidate();
+        this.repaint();
     }
 }

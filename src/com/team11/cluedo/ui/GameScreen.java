@@ -66,7 +66,7 @@ public class GameScreen implements Screen {
         Image backgroundImage = backgroundTile.getImage();
         BackgroundPanel backgroundPanel = new BackgroundPanel(backgroundImage, BackgroundPanel.TILED);
 
-        this.playerPanel = setupPlayerPanel();
+        this.playerPanel = setupPlayerPanel(0);
         this.infoPanel = setupInfoPanel1();
         this.boardPanel = new BoardUI(this.gameSuspects, this.gameWeapons, new BoardComponent());
 
@@ -96,8 +96,9 @@ public class GameScreen implements Screen {
 
     @Override
     public void reDraw(int currentPlayer) {
-        this.playerPanel.repaint();
+        this.playerPanel.reDraw(currentPlayer);
         this.boardPanel.repaint();
+        this.frame.repaint();
     }
 
     private JPanel setupCommandPanel() {
@@ -173,8 +174,8 @@ public class GameScreen implements Screen {
         return cardPanel;
     }
 
-    private PlayerCardLayout setupPlayerPanel() {
-        PlayerCardLayout playerPanel = new PlayerCardLayout(gamePlayers, resolution);
+    private PlayerCardLayout setupPlayerPanel(int currentPlayer) {
+        PlayerCardLayout playerPanel = new PlayerCardLayout(gamePlayers, resolution, currentPlayer);
         playerPanel.setOpaque(false);
         TitledBorder border = new TitledBorder(new LineBorder(Color.BLACK,3), "Players");
         border.setTitleFont(new Font("Calibri",Font.BOLD, (int)(20*resolution.getScalePercentage())));
