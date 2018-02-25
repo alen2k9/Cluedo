@@ -142,7 +142,7 @@ public class GameScreen implements Screen {
         infoOutput.setFont(f);
         infoOutput.setEditable(false); infoOutput.setLineWrap(true);
         infoOutput.setBackground(Color.DARK_GRAY);
-        infoOutput.setForeground(Color.YELLOW);
+        infoOutput.setForeground(Color.WHITE);
         infoOutput.setBorder(null);
 
         JTextArea helpOutput = new JTextArea(28, 25);
