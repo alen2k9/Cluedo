@@ -29,7 +29,8 @@ public class GameScreen implements Screen {
     private PlayerCardLayout playerPanel;
 
     private JTextArea infoOutput, helpOutput;
-    private JTabbedPane infoPanel;
+    private JPanel infoPanel;
+    private JTabbedPane infoTabs;
     private JTextField commandInput;
 
     private Board gameBoard;
@@ -116,13 +117,14 @@ public class GameScreen implements Screen {
         return commandPanel;
     }
 
-    private JTabbedPane setupInfoPanel1() {
+    private JPanel setupInfoPanel1() {
         UIManager.put("TabbedPane.selected", gameAssets.getDarkerGrey());
         UIManager.put("TabbedPane.contentAreaColor", gameAssets.getDarkerGrey());
 
-        JTabbedPane infoPanel = new JTabbedPane();
+        JPanel infoPanel = new JPanel(new BorderLayout());
+        this.infoTabs = new JTabbedPane();
 
-        infoPanel.setUI(new BasicTabbedPaneUI(){
+        infoTabs.setUI(new BasicTabbedPaneUI(){
             @Override
             protected void installDefaults() {
                 super.installDefaults();
@@ -134,8 +136,8 @@ public class GameScreen implements Screen {
                 focus = alpha;
             }
         });
-        infoPanel.setBackground(Color.BLACK);
-        infoPanel.setForeground(Color.WHITE);
+        infoTabs.setBackground(Color.BLACK);
+        infoTabs.setForeground(Color.WHITE);
         Font f = new Font("Calibri",Font.BOLD, (int)(20*resolution.getScalePercentage()));
         infoOutput = new JTextArea(28, 20);
         infoOutput.setFont(f);
@@ -174,18 +176,16 @@ public class GameScreen implements Screen {
 
         JScrollPane[] scrollPane = new JScrollPane[] {new JScrollPane(infoOutput), new JScrollPane(helpOutput),
         new JScrollPane(setupCardPanel()), new JScrollPane()};
-
-        JPanel panel = new JPanel(new BorderLayout());
-        panel.add(scrollPane[0], BorderLayout.CENTER);
-        panel.add(setupCommandPanel(), BorderLayout.SOUTH);
-
         for (JScrollPane pane : scrollPane) {
             pane.setBorder(null);
         }
-        infoPanel.addTab("Game Log", null, panel, "Game Log - Forget what's happened so far?");
-        infoPanel.addTab("Help Panel", null, scrollPane[1], "Help Panel - List of all commands");
-        infoPanel.addTab("Current Cards", null, scrollPane[2], "The Current Cards you're holding");
-        infoPanel.addTab("Check List", null, scrollPane[3], "Check List for who has what cards");
+        infoTabs.addTab("Game Log", null, scrollPane[0], "Game Log - Forget what's happened so far?");
+        infoTabs.addTab("Help Panel", null, scrollPane[1], "Help Panel - List of all commands");
+        infoTabs.addTab("Current Cards", null, scrollPane[2], "The Current Cards you're holding");
+        infoTabs.addTab("Check List", null, scrollPane[3], "Check List for who has what cards");
+
+        infoPanel.add(infoTabs, BorderLayout.CENTER);
+        infoPanel.add(setupCommandPanel(), BorderLayout.SOUTH);
         return infoPanel;
 
 
@@ -235,7 +235,7 @@ public class GameScreen implements Screen {
     }
 
     public void setTab(int i) {
-        infoPanel.setSelectedIndex(i);
+        infoTabs.setSelectedIndex(i);
     }
 
     public class BoardComponent extends JComponent {
