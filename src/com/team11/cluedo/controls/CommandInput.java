@@ -38,15 +38,15 @@ public class CommandInput {
 
     public void initialSetup()
     {
-        canRoll = true;
-        numPlayers = gameScreen.getGamePlayers().getPlayerCount();
-        this.gameScreen.reDraw(currentPlayer);
+        this.canRoll = true;
+        this.numPlayers = this.gameScreen.getGamePlayers().getPlayerCount();
+        this.gameScreen.reDraw(this.currentPlayer);
     }
 
     public void playerTurn()
     {
-        String playerName = gameScreen.getGamePlayers().getPlayer(currentPlayer).getPlayerName();
-        gameScreen.getInfoOutput().append("It is now Player : '" + playerName + "' turn\n");
+        String playerName = this.gameScreen.getGamePlayers().getPlayer(this.currentPlayer).getPlayerName();
+        this.gameScreen.getInfoOutput().append("It is now Player : '" + playerName + "' turn\n");
         runPlayer();
         Boolean endTurn = false;
         while (!endTurn) {
@@ -57,17 +57,17 @@ public class CommandInput {
             TO DO command input, then push into each options below
              */
         }
-        this.gameScreen.reDraw(currentPlayer);
+        this.gameScreen.reDraw(this.currentPlayer);
     }
 
     public void runPlayer()
     {
-        gameScreen.getCommandInput().addActionListener(e -> {
-            String input = gameScreen.getCommandInput().getText().toLowerCase();
+        this.gameScreen.getCommandInput().addActionListener(e -> {
+            String input = this.gameScreen.getCommandInput().getText().toLowerCase();
             String[] inputs = input.split(" ");
             String command = inputs[0];
-            gameScreen.getCommandInput().setText("");
-            gameScreen.getInfoOutput().append("> "+ input + '\n')  ;
+            this.gameScreen.getCommandInput().setText("");
+            this.gameScreen.getInfoOutput().append("> "+ input + '\n')  ;
             switch (command){
                 case "move":
                     StringBuilder moveParameters = new StringBuilder();
@@ -77,7 +77,7 @@ public class CommandInput {
                     }
                     if(this.getDice() == 0)
                     {
-                        gameScreen.getInfoOutput().append("Too many moves, You only have '" + this.getDice() + "' moves left\n");
+                        this.gameScreen.getInfoOutput().append("Too many moves, You only have '" + this.getDice() + "' moves left\n");
                     }
                     else if(this.getDice() > moveParameters.toString().length() - 1) {
                         playerMovement(moveParameters.toString());
@@ -111,64 +111,64 @@ public class CommandInput {
                     break;
 
                 default:
-                    gameScreen.getInfoOutput().append("Unknown command\nUse command 'help' for instructions\n");
+                    this.gameScreen.getInfoOutput().append("Unknown command\nUse command 'help' for instructions\n");
                     break;
             }
-            gameScreen.reDraw(currentPlayer);
+            this.gameScreen.reDraw(this.currentPlayer);
         });
     }
 
     private void nextPlayer()
     {
-        currentPlayer++;
-        canRoll = true;
+        this.currentPlayer++;
+        this.canRoll = true;
         this.setDice(0);
-         if(currentPlayer == numPlayers)
+        if(this.currentPlayer == this.numPlayers)
         {
-            currentPlayer = 0;
+            this.currentPlayer = 0;
         }
-        String playerName = gameScreen.getGamePlayers().getPlayer(currentPlayer).getPlayerName();
-        gameScreen.getInfoOutput().append("It is now Player : '" + playerName + "' turn\n");
+        String playerName = this.gameScreen.getGamePlayers().getPlayer(this.currentPlayer).getPlayerName();
+        this.gameScreen.getInfoOutput().append("It is now Player : '" + playerName + "' turn\n");
 
 
     }
 
     private void secretPassage()
     {
-        if (gameScreen.getGamePlayers().useSecretPassageWay(gameScreen.getGameBoard(), currentPlayer)){
-            gameScreen.getInfoOutput().append("Used secret passageway\n");
+        if (this.gameScreen.getGamePlayers().useSecretPassageWay(this.gameScreen.getGameBoard(), this.currentPlayer)){
+            this.gameScreen.getInfoOutput().append("Used secret passageway\n");
         }
         else{
-            gameScreen.getInfoOutput().append("No secret passageway to use in this room\n");
+            this.gameScreen.getInfoOutput().append("No secret passageway to use in this room\n");
         }
     }
 
     private void moveOut(String[] inputs)
     {
-        if (gameScreen.getGamePlayers().getPlayer(currentPlayer).getSuspectToken().getCurrentRoom() != -1) {
+        if (this.gameScreen.getGamePlayers().getPlayer(this.currentPlayer).getSuspectToken().getCurrentRoom() != -1) {
 
             if (inputs.length > 2){
-                gameScreen.getInfoOutput().append("Too many arguments for leave: Expected 1, Got " + (inputs.length-1));
+                this.gameScreen.getInfoOutput().append("Too many arguments for leave: Expected 1, Got " + (inputs.length-1));
             }
             else if (inputs.length == 1) {
-                gameScreen.getInfoOutput().append("Too few arguments: leave requires one argument, type number\n");
+                this.gameScreen.getInfoOutput().append("Too few arguments: leave requires one argument, type number\n");
             }
 
             else if (Integer.parseInt(inputs[1]) == 0){
-                gameScreen.getInfoOutput().append("Exits start at one");
+                this.gameScreen.getInfoOutput().append("Exits start at one");
             }
             else{
                 if (Integer.parseInt(inputs[1]) > gameScreen.getGameBoard().getRoom(gameScreen.getGamePlayers().getPlayer(currentPlayer).getSuspectToken().getCurrentRoom()).getExitPoints().size() ||Integer.parseInt(inputs[1]) < 0 ){
-                    gameScreen.getInfoOutput().append("Exit number entered is too large or too small, please enter a valid exit number\n");
+                    this.gameScreen.getInfoOutput().append("Exit number entered is too large or too small, please enter a valid exit number\n");
                 }
                 else{
-                      gameScreen.getGamePlayers().getPlayer(currentPlayer).getSuspectToken().moveOutOfRoom(gameScreen.getGameBoard(), Integer.parseInt(inputs[1])-1);
+                    this.gameScreen.getGamePlayers().getPlayer(this.currentPlayer).getSuspectToken().moveOutOfRoom(this.gameScreen.getGameBoard(), Integer.parseInt(inputs[1])-1);
                     this.setDice(this.getDice()-1);
                 }
             }
 
         } else {
-            gameScreen.getInfoOutput().append("Cannot leave a room when you're not in a room");
+            this.gameScreen.getInfoOutput().append("Cannot leave a room when you're not in a room");
         }
 
 
@@ -176,27 +176,27 @@ public class CommandInput {
 
     private void diceRoll()
     {
-        if(canRoll) {
+        if(this.canRoll) {
             Dice die = new Dice();
             this.setDice(die.rolldice());
-            gameScreen.getInfoOutput().append("Player rolled : " + dice + "\n");
-            canRoll = false;
+            this.gameScreen.getInfoOutput().append("Player rolled : " + this.dice + "\n");
+            this.canRoll = false;
         }
         else {
-            gameScreen.getInfoOutput().append("Player already rolled a '" + dice + "'\n");
+            this.gameScreen.getInfoOutput().append("Player already rolled a '" + this.dice + "'\n");
         }
     }
 
     private void help()
     {
-        gameScreen.getInfoOutput().append("help\n");
-        gameScreen.setTab(1);
+        this.gameScreen.getInfoOutput().append("help\n");
+        this.gameScreen.setTab(1);
     }
 
     private void quitGame()
     {
-        gameScreen.getInfoOutput().append("Exit\n");
-        gameScreen.closeScreen();
+        this.gameScreen.getInfoOutput().append("Exit\n");
+        this.gameScreen.closeScreen();
     }
 
 
@@ -359,12 +359,12 @@ public class CommandInput {
             dice--;
         }
 
-        if(gameScreen.getGamePlayers().getPlayer(currentPlayer).getSuspectToken().move(gameScreen.getGameBoard(), list))
+        if(this.gameScreen.getGamePlayers().getPlayer(this.currentPlayer).getSuspectToken().move(this.gameScreen.getGameBoard(), list))
         {
-            gameScreen.getInfoOutput().append("\nSuccess\n");
+            this.gameScreen.getInfoOutput().append("\nSuccess\n");
         }
         else{
-            gameScreen.getInfoOutput().append("\nerror\n");
+            this.gameScreen.getInfoOutput().append("\nerror\n");
         }
         /*
 
