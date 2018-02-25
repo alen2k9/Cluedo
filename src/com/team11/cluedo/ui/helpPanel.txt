@@ -1,0 +1,18 @@
+List Of Commands
+----------------------------------------------------------------------------------------------------------------
+- 'move': move player in desired direction 
+             l = Left	
+             r = Right
+             u = Up
+             d = Down
+             Example 'move llddru' = move left 2 spaces, move down 2 spaces, move 
+             right once and move up once
+- 'roll': dice would roll giving you the number of movements you are allowed to move
+- 'exit': user can exit a room with this command. Exit depends on number of door's in room.
+             Doors to choose from are ranged 1-4 i.e. 1 is leftmost door, 4 is rightmost door
+             Example 'exit 2' : player will exit through second door.
+- 'done': Player will end their turn, Next Player's turn will start.
+- 'quit': Player can quit/stop entire game.
+- 'passage': If player is in a room with secret passage this command will let them use the 
+                    secret passage
+

@@ -21,7 +21,7 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
 import java.awt.*;
-import java.io.IOException;
+import java.io.*;
 
 public class GameScreen implements Screen {
     private JFrame frame;
@@ -144,12 +144,33 @@ public class GameScreen implements Screen {
         infoOutput.setForeground(Color.WHITE);
         infoOutput.setBorder(null);
 
-        helpOutput = new JTextArea(28, 20);
+        helpOutput = new JTextArea(28, 40);
         helpOutput.setFont(f);
         helpOutput.setEditable(false); infoOutput.setLineWrap(true);
         helpOutput.setBackground(Color.DARK_GRAY);
         helpOutput.setForeground(Color.WHITE);
         helpOutput.setBorder(null);
+
+        try {
+            FileInputStream inMessage = new FileInputStream("src/com/team11/cluedo/ui/helpPanel.txt");
+            DataInputStream in = new DataInputStream(inMessage);
+            BufferedReader br = new BufferedReader(new InputStreamReader(in));
+            String strLine;
+            StringBuilder sb = new StringBuilder();
+
+            while ((strLine = br.readLine()) != null)   {
+                // Print the content on the console
+                System.out.println (strLine);
+                helpOutput.append(strLine + "\n");
+            }
+            in.close();
+
+        }catch (Exception e){//Catch exception if any
+            System.err.println("Error: " + e.getMessage());
+        }
+
+
+
 
         JScrollPane[] scrollPane = new JScrollPane[] {new JScrollPane(infoOutput), new JScrollPane(helpOutput),
         new JScrollPane(setupCardPanel()), new JScrollPane()};
@@ -166,6 +187,8 @@ public class GameScreen implements Screen {
         infoPanel.addTab("Current Cards", null, scrollPane[2], "The Current Cards you're holding");
         infoPanel.addTab("Check List", null, scrollPane[3], "Check List for who has what cards");
         return infoPanel;
+
+
     }
 
     private JPanel setupCardPanel() {
@@ -250,5 +273,7 @@ public class GameScreen implements Screen {
             gamePlayers.paintComponent(g);
             gameWeapons.paintComponent(g);
         }
+
+
     }
 }
