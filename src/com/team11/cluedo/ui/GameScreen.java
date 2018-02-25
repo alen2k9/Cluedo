@@ -28,8 +28,7 @@ public class GameScreen implements Screen {
     private BoardUI boardPanel;
     private PlayerCardLayout playerPanel;
 
-    private JTextArea infoOutput, helpOutput;
-    private JPanel infoPanel;
+    private JTextArea infoOutput;
     private JTabbedPane infoTabs;
     private JTextField commandInput;
 
@@ -68,7 +67,7 @@ public class GameScreen implements Screen {
         BackgroundPanel backgroundPanel = new BackgroundPanel(backgroundImage, BackgroundPanel.TILED);
 
         this.playerPanel = setupPlayerPanel(0);
-        this.infoPanel = setupInfoPanel1();
+        JPanel infoPanel = setupInfoPanel1();
         this.boardPanel = new BoardUI(this.gameSuspects, this.gameWeapons, new BoardComponent());
 
         contentPanel.add(playerPanel, BorderLayout.WEST);
@@ -139,14 +138,15 @@ public class GameScreen implements Screen {
         infoTabs.setBackground(Color.BLACK);
         infoTabs.setForeground(Color.WHITE);
         Font f = new Font("Calibri",Font.BOLD, (int)(20*resolution.getScalePercentage()));
-        infoOutput = new JTextArea(28, 20);
+        infoOutput = new JTextArea(28, 25);
         infoOutput.setFont(f);
         infoOutput.setEditable(false); infoOutput.setLineWrap(true);
         infoOutput.setBackground(Color.DARK_GRAY);
-        infoOutput.setForeground(Color.WHITE);
+        infoOutput.setForeground(Color.YELLOW);
         infoOutput.setBorder(null);
 
-        helpOutput = new JTextArea(28, 40);
+        JTextArea helpOutput = new JTextArea(28, 25);
+        f = new Font("Calibri",Font.BOLD, (int)(17*resolution.getScalePercentage()));
         helpOutput.setFont(f);
         helpOutput.setEditable(false); infoOutput.setLineWrap(true);
         helpOutput.setBackground(Color.DARK_GRAY);
@@ -154,11 +154,12 @@ public class GameScreen implements Screen {
         helpOutput.setBorder(null);
 
         try {
-            FileInputStream inMessage = new FileInputStream("src/com/team11/cluedo/ui/helpPanel.txt");
-            DataInputStream in = new DataInputStream(inMessage);
+            //Find the boardInfo.txt and open it
+            InputStream in = getClass().getResourceAsStream("helpPanel.txt");
+
+            //Open a buffered reader to read each line
             BufferedReader br = new BufferedReader(new InputStreamReader(in));
             String strLine;
-            StringBuilder sb = new StringBuilder();
 
             while ((strLine = br.readLine()) != null)   {
                 // Print the content on the console
@@ -170,9 +171,6 @@ public class GameScreen implements Screen {
         }catch (Exception e){//Catch exception if any
             System.err.println("Error: " + e.getMessage());
         }
-
-
-
 
         JScrollPane[] scrollPane = new JScrollPane[] {new JScrollPane(infoOutput), new JScrollPane(helpOutput),
         new JScrollPane(setupCardPanel()), new JScrollPane()};

@@ -114,7 +114,7 @@ public class Suspect extends JComponent{
     }
 
     public boolean isInRoom(){
-        return this.isInRoom;
+        return currentRoom >= 0;
     }
 
     public void setPreviousLocation(Point point){
