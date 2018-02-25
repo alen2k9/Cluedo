@@ -66,15 +66,6 @@ public class Suspect extends JComponent{
         return this.location;
     }
 
-    @Override
-    public int getX() {
-        return (int)this.location.getX();
-    }
-    @Override
-    public int getY() {
-        return (int)this.location.getY();
-    }
-
     public void setSuspectID(int i){
         this.suspectID = i;
     }
@@ -89,6 +80,33 @@ public class Suspect extends JComponent{
 
     public int getCurrentRoom(){
         return this.currentRoom;
+    }
+
+    public String getCurrentRoomName() {
+        switch (currentRoom) {
+            case 0:
+                return "Kitchen";
+            case 1:
+                return "Ballroom";
+            case 2:
+                return "Conservatory";
+            case 3:
+                return "Dining Room";
+            case 4:
+                return "Billiard Room";
+            case 5:
+                return "Library";
+            case 6:
+                return "Lounge";
+            case 7:
+                return "Hall";
+            case 8:
+                return "Study";
+            case 9:
+                return "Cellar";
+            default:
+                return "";
+        }
     }
 
     public void setInRoom(boolean b){
