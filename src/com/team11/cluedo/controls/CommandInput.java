@@ -28,6 +28,14 @@ public class CommandInput {
         currentPlayer = 0;
     }
 
+    private int getDice(){
+        return this.dice;
+    }
+
+    private void setDice(int d){
+        this.dice = d;
+    }
+
     public void initialSetup()
     {
         canRoll = true;
@@ -67,11 +75,11 @@ public class CommandInput {
                     {
                         moveParameters.append(inputs[i]);
                     }
-                    if(dice == 0)
+                    if(this.getDice() == 0)
                     {
-                        gameScreen.getInfoOutput().append("Too many moves, You only have '" + dice + "' moves left\n");
+                        gameScreen.getInfoOutput().append("Too many moves, You only have '" + this.getDice() + "' moves left\n");
                     }
-                    else if(dice > moveParameters.toString().length() - 1) {
+                    else if(this.getDice() > moveParameters.toString().length() - 1) {
                         playerMovement(moveParameters.toString());
                     }
                     break;
@@ -114,7 +122,7 @@ public class CommandInput {
     {
         currentPlayer++;
         canRoll = true;
-        dice = 0;
+        this.setDice(0);
          if(currentPlayer == numPlayers)
         {
             currentPlayer = 0;
@@ -155,7 +163,7 @@ public class CommandInput {
                 }
                 else{
                       gameScreen.getGamePlayers().getPlayer(currentPlayer).getSuspectToken().moveOutOfRoom(gameScreen.getGameBoard(), Integer.parseInt(inputs[1])-1);
-                    dice--;
+                    this.setDice(this.getDice()-1);
                 }
             }
 
@@ -170,7 +178,7 @@ public class CommandInput {
     {
         if(canRoll) {
             Dice die = new Dice();
-            dice = die.rolldice();
+            this.setDice(die.rolldice());
             gameScreen.getInfoOutput().append("Player rolled : " + dice + "\n");
             canRoll = false;
         }

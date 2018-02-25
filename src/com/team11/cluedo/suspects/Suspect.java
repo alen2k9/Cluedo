@@ -26,8 +26,8 @@ public class Suspect extends JComponent{
     private int numMoves;
     private int currentRoom;    //By default and when in hallways current room is -1
     private boolean isInRoom;
-    private Point previousLocation;
-
+    private Point previousLocation; //Point before the player has moved
+    private Point lastPoint;     //Previous location during each move
     /*
      * @param location : The location of the player
      * @param suspectName : The suspectName of the player
@@ -107,6 +107,13 @@ public class Suspect extends JComponent{
         return this.previousLocation;
     }
 
+    public void setLastPoint(Point point){
+        this.lastPoint = point;
+    }
+
+    public Point getLastPoint(){
+        return this.lastPoint;
+    }
     public void draw(Graphics g){
         Graphics2D g2 = (Graphics2D) g;
         /*
@@ -127,13 +134,20 @@ public class Suspect extends JComponent{
         int moveCounter = 0;
         boolean doOnce = true;
         boolean hasDoor = false;
-
+        Point lastLoc;
         while (!tmpList.isEmpty() && !validitySet.contains("false") && !hasDoor ) {
-
+            lastLoc = testerPoint.getLocation();
+            System.out.println("Last Loc: " + lastLoc);
             switch (tmpList.get(0)){
                 //For each direction in the moveList try and move the testerPoint and if it can be moved add a true value the validity set, if not add a false value
                 case NORTH:
                     if (gameBoard.getBoardPos((int)testerPoint.getLocation().getY()-1, (int)testerPoint.getLocation().getX()).isTraversable()){
+
+                        if (gameBoard.getBoardPos((int)testerPoint.getLocation().getY()-1, (int)testerPoint.getLocation().getX()).getType() == TileType.DOOR && !(gameBoard.getBoardPos((int)lastLoc.getY(), (int)lastLoc.getX()).getType() == TileType.DOORMAT)){
+                            System.out.println("Cannot move into room from this side of tile");
+                            validitySet.add("false");
+                        }
+
                         testerPoint.setLocation((int)testerPoint.getLocation().getX(), (int)testerPoint.getLocation().getY()-1);
                         validitySet.add("true");
                     }
@@ -153,6 +167,12 @@ public class Suspect extends JComponent{
                     break;
                 case EAST:
                     if (gameBoard.getBoardPos((int)testerPoint.getLocation().getY(), (int)testerPoint.getLocation().getX()+1).isTraversable()){
+
+                        if (gameBoard.getBoardPos((int)testerPoint.getLocation().getY(), (int)testerPoint.getLocation().getX()+1).getType() == TileType.DOOR && !(gameBoard.getBoardPos((int)lastLoc.getY(), (int)lastLoc.getX()).getType() == TileType.DOORMAT)){
+                            System.out.println("Cannot move into room from this side of tile");
+                            validitySet.add("false");
+                        }
+
                         testerPoint.setLocation((int)testerPoint.getLocation().getX()+1, (int)testerPoint.getLocation().getY());
                         validitySet.add("true");
                     }
@@ -172,6 +192,12 @@ public class Suspect extends JComponent{
                     break;
                 case SOUTH:
                     if (gameBoard.getBoardPos((int)testerPoint.getLocation().getY()+1, (int)testerPoint.getLocation().getX()).isTraversable()){
+
+                        if (gameBoard.getBoardPos((int)testerPoint.getLocation().getY()+1, (int)testerPoint.getLocation().getX()).getType() == TileType.DOOR && !(gameBoard.getBoardPos((int)lastLoc.getY(), (int)lastLoc.getX()).getType() == TileType.DOORMAT)){
+                            System.out.println("Cannot move into room from this side of tile");
+                            validitySet.add("false");
+                        }
+
                         testerPoint.setLocation((int)testerPoint.getLocation().getX(), (int)testerPoint.getLocation().getY()+1);
                         validitySet.add("true");
                     }
@@ -191,6 +217,12 @@ public class Suspect extends JComponent{
                     break;
                 case WEST:
                     if (gameBoard.getBoardPos((int)testerPoint.getLocation().getY(), (int)testerPoint.getLocation().getX()-1).isTraversable()){
+
+                        if (gameBoard.getBoardPos((int)testerPoint.getLocation().getY(), (int)testerPoint.getLocation().getX()-1).getType() == TileType.DOOR && !(gameBoard.getBoardPos((int)lastLoc.getY(), (int)lastLoc.getX()).getType() == TileType.DOORMAT)){
+                            System.out.println("Cannot move into room from this side of tile");
+                            validitySet.add("false");
+                        }
+
                         testerPoint.setLocation((int)testerPoint.getLocation().getX()-1, (int)testerPoint.getLocation().getY());
                         validitySet.add("true");
                     }
@@ -214,7 +246,7 @@ public class Suspect extends JComponent{
             }
             tmpList.remove(0);
             moveCounter++;
-            if (gameBoard.getBoardPos((int)testerPoint.getLocation().getY(), (int)testerPoint.getLocation().getX()).getType() == TileType.DOOR){
+            if (gameBoard.getBoardPos((int)testerPoint.getLocation().getY(), (int)testerPoint.getLocation().getX()).getType() == TileType.DOOR && gameBoard.getBoardPos((int)lastLoc.getY(), (int)lastLoc.getX()).getType() == TileType.DOORMAT){
                 hasDoor = true;
             }
         }
@@ -224,7 +256,13 @@ public class Suspect extends JComponent{
 
         if ((gameBoard.getBoardPos((int)testerPoint.getLocation().getY(), (int) testerPoint.getLocation().getX()).isOccupied() && !(gameBoard.getBoardPos((int)testerPoint.getLocation().getY(), (int) testerPoint.getLocation().getX()).getType() == TileType.DOOR) || validitySet.contains("false"))){
             isValid = false;
-            System.out.println("Move will result in the current player landing on another player");
+            if ((gameBoard.getBoardPos((int)testerPoint.getLocation().getY(), (int) testerPoint.getLocation().getX()).isOccupied())){
+                System.out.println("Move will result in the current player landing on another player");
+            } else
+            {
+                System.out.println("Moves entered are invalid");
+            }
+
         }
 
         if (hasDoor){
@@ -246,6 +284,8 @@ public class Suspect extends JComponent{
             System.out.println("Moving");
             this.setPreviousLocation(this.getLoc());
             while(!moveList.isEmpty() && !doMoveToRoom){
+                this.setLastPoint(this.getLoc());
+                System.out.println("Last Point: " + this.getLastPoint());
                 switch (moveList.get(0)){
                     case NORTH:
                         moveUp(gameBoard);

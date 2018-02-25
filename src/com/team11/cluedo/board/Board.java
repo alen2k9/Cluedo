@@ -243,6 +243,9 @@ public class Board extends JComponent {
                     tmp = createTraversal(new Point(i,j), TileType.HALLWAY);
                 }
 
+                else if (line[j].matches("M")){
+                    tmp = createTraversal(new Point (i,j), TileType.DOORMAT);
+                }
                 /*
                  * Error
                  */

@@ -10,7 +10,7 @@ package com.team11.cluedo.board;
 
 public enum TileType {
     SPAWN, KITCHEN, BALLROOM, HALLWAY,LOUNGE, CONSERVATORY, DININGROOM, CELLAR, BILLIARDROOM,
-    LIBRARY, HALL,STUDY, SECRETPASSAGE,DOOR, BLANK;
+    LIBRARY, HALL,STUDY, SECRETPASSAGE,DOOR, BLANK, DOORMAT;
 
     @Override
     public String toString(){
@@ -45,6 +45,8 @@ public enum TileType {
                 return "Blank";
             case DOOR:
                 return "Door";
+            case DOORMAT:
+                return  "Doormat";
             default:
                 return "";
         }
