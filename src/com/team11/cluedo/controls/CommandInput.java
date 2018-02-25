@@ -19,7 +19,7 @@ import java.util.ArrayList;
 public class CommandInput {
     private GameScreen gameScreen;
     private int dice;
-
+    private int numPlayers;
     private int currentPlayer;
     private boolean canRoll;
 
@@ -31,15 +31,14 @@ public class CommandInput {
     public void initialSetup()
     {
         canRoll = true;
-        String playerName = gameScreen.getGamePlayers().getPlayer(currentPlayer).getPlayerName();
-        gameScreen.getInfoOutput().append("It is now Player : '" + playerName + "' turn\n");
+        numPlayers = gameScreen.getGamePlayers().getPlayerCount();
+        this.gameScreen.reDraw(currentPlayer);
     }
-
-
 
     public void playerTurn()
     {
-
+        String playerName = gameScreen.getGamePlayers().getPlayer(currentPlayer).getPlayerName();
+        gameScreen.getInfoOutput().append("It is now Player : '" + playerName + "' turn\n");
         runPlayer();
         Boolean endTurn = false;
         while (!endTurn) {
@@ -88,7 +87,7 @@ public class CommandInput {
                     break;
 
                 case "done":
-                    gameScreen.getInfoOutput().append("Done\n");
+                    nextPlayer();
                     break;
 
                 case "quit":
@@ -109,6 +108,21 @@ public class CommandInput {
             }
             gameScreen.reDraw(currentPlayer);
         });
+    }
+
+    private void nextPlayer()
+    {
+        currentPlayer++;
+        canRoll = true;
+        dice = 0;
+         if(currentPlayer == numPlayers)
+        {
+            currentPlayer = 0;
+        }
+        String playerName = gameScreen.getGamePlayers().getPlayer(currentPlayer).getPlayerName();
+        gameScreen.getInfoOutput().append("It is now Player : '" + playerName + "' turn\n");
+
+
     }
 
     private void secretPassage()
@@ -140,11 +154,8 @@ public class CommandInput {
                     gameScreen.getInfoOutput().append("Exit number entered is too large or too small, please enter a valid exit number\n");
                 }
                 else{
-
-                   dice--;
-
-                    gameScreen.getGamePlayers().getPlayer(currentPlayer).getSuspectToken().moveOutOfRoom(gameScreen.getGameBoard(), Integer.parseInt(inputs[1])-1);
-
+                      gameScreen.getGamePlayers().getPlayer(currentPlayer).getSuspectToken().moveOutOfRoom(gameScreen.getGameBoard(), Integer.parseInt(inputs[1])-1);
+                    dice--;
                 }
             }
 
