@@ -162,7 +162,7 @@ public class GameScreen implements Screen {
             String strLine;
 
             while ((strLine = br.readLine()) != null)   {
-                    
+
                 helpOutput.append(strLine + "\n");
             }
             in.close();
