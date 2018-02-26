@@ -101,6 +101,9 @@ public class CommandInput {
                     help();
                     break;
 
+                case "weapon":
+                    weaponMovement();
+                    break;
                 default:
                     gameScreen.getInfoOutput().append("Unknown command\nUse command 'help' for instructions.\n");
                     break;
