@@ -75,7 +75,12 @@ public class CommandInput {
                     break;
 
                 case "exit":
-                    moveOut(inputs);
+                    if (this.remainingMoves > 0) {
+                        moveOut(inputs);
+                    } else{
+                      this.gameScreen.getInfoOutput().append("Cannot move out of room\n");
+                      printRemainingMoves();
+                    }
 
                     //moveOut(inputs[1]);
                     break;
@@ -128,6 +133,7 @@ public class CommandInput {
 
     private void moveOut(String[] inputs) {
         String roomName = this.gameScreen.getGamePlayers().getPlayer(this.currentPlayer).getSuspectToken().getCurrentRoomName();
+
         if (this.gameScreen.getGamePlayers().getPlayer(this.currentPlayer).getSuspectToken().getCurrentRoom() != -1) {
             if (inputs.length > 2) {
                 this.gameScreen.getInfoOutput().append("Too many arguments for 'Exit'.\nExpected 1, Got " + (inputs.length - 1));
