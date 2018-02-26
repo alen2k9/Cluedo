@@ -94,7 +94,12 @@ public class CommandInput {
                     break;
 
                 case "passage":
-                    secretPassage();
+                    if (!(this.gameScreen.getGamePlayers().getPlayer(this.currentPlayer).getSuspectToken().getCurrentRoom() == -1) && this.gameScreen.getGameBoard().getRoom(this.gameScreen.getGamePlayers().getPlayer(currentPlayer).getSuspectToken().getCurrentRoom()).hasSecretPassage() ) {
+                        secretPassage();
+                    }
+                    else{
+                        this.gameScreen.getInfoOutput().append("No secret passage to use");
+                    }
                     break;
 
                 case "help":
