@@ -308,9 +308,9 @@ public class Board extends JComponent {
         rooms.get(0).addExitPoint(new Point(5,8));
         //Ballroom
         rooms.get(1).addExitPoint(new Point(8,6));
-        rooms.get(1).addExitPoint(new Point(17,6));
         rooms.get(1).addExitPoint(new Point(10,9));
         rooms.get(1).addExitPoint(new Point(15,9));
+        rooms.get(1).addExitPoint(new Point(17,6));
         //Conservatory
         rooms.get(2).addExitPoint(new Point(19,6));
         //Dining Room
@@ -339,9 +339,9 @@ public class Board extends JComponent {
         rooms.get(0).addEntryPoint(new Point(7,5));
         //Ballroom
         rooms.get(1).addEntryPoint(new Point(6,9));
-        rooms.get(1).addEntryPoint(new Point(6,16));
         rooms.get(1).addEntryPoint(new Point(8,10));
         rooms.get(1).addEntryPoint(new Point(8,15));
+        rooms.get(1).addEntryPoint(new Point(6,16));
         //Conservatory
         rooms.get(2).addEntryPoint(new Point(5,19));
         //Dining Room
