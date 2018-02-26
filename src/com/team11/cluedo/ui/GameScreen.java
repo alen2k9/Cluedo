@@ -162,8 +162,7 @@ public class GameScreen implements Screen {
             String strLine;
 
             while ((strLine = br.readLine()) != null)   {
-                // Print the content on the console
-                System.out.println (strLine);
+
                 helpOutput.append(strLine + "\n");
             }
             in.close();

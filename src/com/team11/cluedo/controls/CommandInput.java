@@ -40,11 +40,13 @@ public class CommandInput {
     public void playerTurn() {
         this.playerName = this.gameScreen.getGamePlayers().getPlayer(this.currentPlayer).getPlayerName();
         this.gameScreen.getInfoOutput().append("It is now player " + this.playerName + "'s turn.\n");
+        gameScreen.getInfoOutput().append("Please enter 'roll'  to start\n");
         runPlayer();
     }
 
     public void runPlayer() {
         this.gameScreen.getCommandInput().addActionListener(e -> {
+
             String input = this.gameScreen.getCommandInput().getText();
             String[] inputs = input.toLowerCase().split(" ");
             String command = inputs[0];
@@ -112,6 +114,7 @@ public class CommandInput {
             this.currentPlayer = 0;
         this.playerName = this.gameScreen.getGamePlayers().getPlayer(this.currentPlayer).getPlayerName();
         this.gameScreen.getInfoOutput().append("\nIt is now player " + this.playerName + "'s turn.\n");
+        gameScreen.getInfoOutput().append("Please enter 'roll'  to start\n");
     }
 
     private void secretPassage() {
