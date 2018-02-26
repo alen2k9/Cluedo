@@ -293,6 +293,7 @@ public class Suspect extends JComponent{
         if (isValid){
             System.out.println("Moving");
             this.setPreviousLocation(this.getLoc());
+            gameBoard.getBoardPos((int)this.getLoc().getY(), (int)this.getLoc().getX()).setOccupied(false);
             while(!moveList.isEmpty() && !doMoveToRoom){
                 this.setLastPoint(this.getLoc());
                 switch (moveList.get(0)){
@@ -335,6 +336,7 @@ public class Suspect extends JComponent{
                 //Ask to see if we can use thread.sleep here
             }
             System.out.println(this.getLoc());
+            gameBoard.getBoardPos((int)this.getLoc().getY(), (int)this.getLoc().getX()).setOccupied(true);
         }
 
         else{
@@ -346,30 +348,30 @@ public class Suspect extends JComponent{
     //Method to move up
     private void moveUp(Board gameBoard){
         //System.out.println("Moving Up");
-        gameBoard.getBoardPos((int)this.getLoc().getY(), (int)this.getLoc().getX()).setOccupied(false);
+        //gameBoard.getBoardPos((int)this.getLoc().getY(), (int)this.getLoc().getX()).setOccupied(false);
         this.getLoc().setLocation((int)this.getLoc().getX(), (int)this.getLoc().getY()-1);
-        gameBoard.getBoardPos((int)this.getLoc().getY(), (int)this.getLoc().getX()).setOccupied(true);
+        //gameBoard.getBoardPos((int)this.getLoc().getY(), (int)this.getLoc().getX()).setOccupied(true);
     }
     //Method to move down
     private void moveDown(Board gameBoard){
         //System.out.println("Moving Down");
-        gameBoard.getBoardPos((int)this.getLoc().getY(), (int)this.getLoc().getX()).setOccupied(false);
+        //gameBoard.getBoardPos((int)this.getLoc().getY(), (int)this.getLoc().getX()).setOccupied(false);
         this.getLoc().setLocation((int)this.getLoc().getX(), (int)this.getLoc().getY()+1);
-        gameBoard.getBoardPos((int)this.getLoc().getY(), (int)this.getLoc().getX()).setOccupied(true);
+        //gameBoard.getBoardPos((int)this.getLoc().getY(), (int)this.getLoc().getX()).setOccupied(true);
     }
     //Method to move right
     private void moveRight(Board gameBoard){
         //System.out.println("Moving Right");
-        gameBoard.getBoardPos((int)this.getLoc().getY(), (int)this.getLoc().getX()).setOccupied(false);
+        //gameBoard.getBoardPos((int)this.getLoc().getY(), (int)this.getLoc().getX()).setOccupied(false);
         this.getLoc().setLocation((int)this.getLoc().getX()+1, (int)this.getLoc().getY());
-        gameBoard.getBoardPos((int)this.getLoc().getY(), (int)this.getLoc().getX()).setOccupied(true);
+        //gameBoard.getBoardPos((int)this.getLoc().getY(), (int)this.getLoc().getX()).setOccupied(true);
     }
     //Method to move left
     private void moveLeft(Board gameBoard){
         //System.out.println("Moving Left");
-        gameBoard.getBoardPos((int) this.getLoc().getY(), (int) this.getLoc().getX()).setOccupied(false);
+        //gameBoard.getBoardPos((int) this.getLoc().getY(), (int) this.getLoc().getX()).setOccupied(false);
         this.getLoc().setLocation((int) this.getLoc().getX() - 1, (int) this.getLoc().getY());
-        gameBoard.getBoardPos((int) this.getLoc().getY(), (int) this.getLoc().getX()).setOccupied(true);
+        //gameBoard.getBoardPos((int) this.getLoc().getY(), (int) this.getLoc().getX()).setOccupied(true);
     }
 
     //Method to move a player into a room when they land on a door tile

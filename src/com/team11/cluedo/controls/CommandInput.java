@@ -141,9 +141,16 @@ public class CommandInput {
                     this.remainingMoves--;
                 }
             }
+
+            printRemainingMoves();
+
         } else {
             this.gameScreen.getInfoOutput().append("Cannot leave a room when you're not in a room!");
         }
+    }
+
+    private void printRemainingMoves(){
+        this.gameScreen.getInfoOutput().append("You have " + this.remainingMoves + " moves remaining.\n");
     }
 
     private void diceRoll() {
@@ -252,10 +259,15 @@ public class CommandInput {
 
         if(this.gameScreen.getGamePlayers().getPlayer(this.currentPlayer).getSuspectToken().move(this.gameScreen.getGameBoard(), list)) {
             this.remainingMoves -= steps;
-            if (steps == 1)
-                this.gameScreen.getInfoOutput().append("You have moved " + steps + " space.\nYou have " + this.remainingMoves + " moves remaining.\n");
-            else
-                this.gameScreen.getInfoOutput().append("You have moved " + steps + " spaces.\nYou have " + this.remainingMoves + " moves remaining.\n");
+            if (steps == 1) {
+                this.gameScreen.getInfoOutput().append("You have moved " + steps + " space.\n");
+                printRemainingMoves();
+            }
+            else{
+                this.gameScreen.getInfoOutput().append("You have moved " + steps + " spaces.\n");
+                printRemainingMoves();
+            }
+
             if(this.gameScreen.getGamePlayers().getPlayer(this.currentPlayer).getSuspectToken().isInRoom()) {
                 String roomName = this.gameScreen.getGamePlayers().getPlayer(this.currentPlayer).getSuspectToken().getCurrentRoomName();
                 this.gameScreen.getInfoOutput().append(this.playerName + " is now in the " + roomName + ".\n");
