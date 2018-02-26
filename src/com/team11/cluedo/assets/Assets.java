@@ -141,6 +141,138 @@ public class Assets {
         return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("ropeToken.png"));
     }
 
+    ////////////////////////////////////////////
+    //                                        //
+    //             WEAPON CARDS               //
+    //                                        //
+    ////////////////////////////////////////////
+
+    public Image getRevolverCard() {
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("revolverCard.png"));
+    }
+
+    public Image getWrenchCard() {
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("wrenchCard.png"));
+    }
+
+    public Image getDaggerCard() {
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("daggerCard.png"));
+    }
+
+    public Image getPoisonCard() {
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("poisonCard.png"));
+    }
+
+    public Image getHatchetCard() {
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("hatchetCard.png"));
+    }
+
+    public Image getRopeCard() {
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("ropeCard.png"));
+    }
+
+    public Image getSelectedRevolverCard() {
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("revolverCard.png"));
+    }
+
+    public Image getSelectedWrenchCard() {
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("wrenchCard.png"));
+    }
+
+    public Image getSelectedDaggerCard() {
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("daggerCard.png"));
+    }
+
+    public Image getSelectedPoisonCard() {
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("poisonCard.png"));
+    }
+
+    public Image getSelectedHatchetCard() {
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("hatchetCard.png"));
+    }
+
+    public Image getSelectedRopeCard() {
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("ropeCard.png"));
+    }
+
+    ////////////////////////////////////////////
+    //                                        //
+    //             ROOM CARDS                 //
+    //                                        //
+    ////////////////////////////////////////////
+
+    public Image getKitchenCard() {
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("revolverCard.png"));
+    }
+
+    public Image getBallroomCard() {
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("wrenchCard.png"));
+    }
+
+    public Image getConservatoryCard() {
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("daggerCard.png"));
+    }
+
+    public Image getDiningCard() {
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("poisonCard.png"));
+    }
+
+    public Image getBilliardCard() {
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("hatchetCard.png"));
+    }
+
+    public Image getLibraryCard() {
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("ropeCard.png"));
+    }
+
+    public Image getLoungeCard() {
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("ropeCard.png"));
+    }
+
+    public Image getHallCard() {
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("ropeCard.png"));
+    }
+
+    public Image getStudyCard() {
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("ropeCard.png"));
+    }
+
+    public Image getSelectedKitchenCard() {
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("revolverCard.png"));
+    }
+
+    public Image getSelectedBallroomCard() {
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("wrenchCard.png"));
+    }
+
+    public Image getSelectedConservatoryCard() {
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("daggerCard.png"));
+    }
+
+    public Image getSelectedDiningCard() {
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("poisonCard.png"));
+    }
+
+    public Image getSelectedBilliardCard() {
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("hatchetCard.png"));
+    }
+
+    public Image getSelectedLibraryCard() {
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("ropeCard.png"));
+    }
+
+    public Image getSelectedLoungeCard() {
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("ropeCard.png"));
+    }
+
+    public Image getSelectedHallCard() {
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("ropeCard.png"));
+    }
+
+    public Image getSelectedStudyCard() {
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("ropeCard.png"));
+    }
+
     public Color getDarkerGrey() {
         return new Color(46, 46, 46);
     }

@@ -11,6 +11,7 @@ public class SuspectData {
     private HashMap<Integer, Image> suspectToken = new HashMap<>();
     private HashMap<Integer, Image> suspectCard = new HashMap<>();
     private HashMap<Integer, Image> suspectSelectedCard = new HashMap<>();
+    private final int suspectAmount = 6;
 
     public SuspectData() {
         setSuspectName();
@@ -86,5 +87,9 @@ public class SuspectData {
 
     public Image getSelectedSuspectCard(int index) {
         return suspectSelectedCard.getOrDefault(index, null);
+    }
+
+    public int getSuspectAmount() {
+        return this.suspectAmount;
     }
 }

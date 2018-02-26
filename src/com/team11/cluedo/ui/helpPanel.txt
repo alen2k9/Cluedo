@@ -30,4 +30,5 @@ Next Player's turn will start.
 
 - 'passage': If player is in a room with secret passage,
 this command will let them use the secret passage.
+
 - 'weapon': Move desired weapon to desired room.

@@ -11,6 +11,7 @@ package com.team11.cluedo.ui;
 
 import com.team11.cluedo.assets.Assets;
 import com.team11.cluedo.board.Board;
+import com.team11.cluedo.cards.Cards;
 import com.team11.cluedo.players.Players;
 import com.team11.cluedo.suspects.Suspects;
 import com.team11.cluedo.ui.panel.BackgroundPanel;
@@ -37,6 +38,7 @@ public class GameScreen implements Screen {
     private Weapons gameWeapons;
     private Players gamePlayers;
     private Assets gameAssets;
+    private Cards gameCards;
 
     private Resolution resolution;
 
@@ -47,6 +49,7 @@ public class GameScreen implements Screen {
         this.gamePlayers = gamePlayers;
         this.gameAssets = gameAssets;
         this.resolution = resolution;
+        this.gameCards = new Cards();
     }
 
     @Override
@@ -121,6 +124,7 @@ public class GameScreen implements Screen {
         UIManager.put("TabbedPane.contentAreaColor", gameAssets.getDarkerGrey());
 
         JPanel infoPanel = new JPanel(new BorderLayout());
+        infoPanel.setOpaque(false);
         this.infoTabs = new JTabbedPane();
 
         infoTabs.setUI(new BasicTabbedPaneUI(){
@@ -229,6 +233,10 @@ public class GameScreen implements Screen {
 
     public Players getGamePlayers() {
         return gamePlayers;
+    }
+
+    public Cards getGameCards() {
+        return gameCards;
     }
 
     public void setTab(int i) {

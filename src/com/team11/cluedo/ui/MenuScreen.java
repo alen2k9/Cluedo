@@ -3,6 +3,9 @@ package com.team11.cluedo.ui;
 
 import com.team11.cluedo.assets.Assets;
 import com.team11.cluedo.board.Board;
+import com.team11.cluedo.cards.Card;
+import com.team11.cluedo.players.Player;
+import com.team11.cluedo.players.PlayerHand;
 import com.team11.cluedo.players.Players;
 import com.team11.cluedo.suspects.PlayerPoints;
 import com.team11.cluedo.suspects.Suspects;
@@ -226,7 +229,6 @@ public class MenuScreen implements Screen {
         nameInput.setHorizontalAlignment(JTextField.CENTER);
         backgroundPanel.add(nameInput, gbc);
         this.enterButton = new JButton("Enter");
-        PlayerPoints point = new PlayerPoints();
 
         //  Action listener for players
         this.enterButton.addActionListener(e -> {
@@ -264,8 +266,7 @@ public class MenuScreen implements Screen {
                                 closeScreen();
                                 startGame();
                             }
-                        }
-                        else {
+                        } else {
                         JOptionPane.showMessageDialog(null,"No character selected. Please select a character.");
                         }
                     } else {
@@ -324,9 +325,10 @@ public class MenuScreen implements Screen {
      * Method to launch game with current players
      */
     private void startGame() {
-        gameScreen.createScreen("cluedo");
+        gameScreen.createScreen("Cluedo");
         gameScreen.setupScreen(1);
         gameScreen.displayScreen();
+        gameScreen.getGameCards().dealCards(gameScreen.getGamePlayers());
         gameScreen.getGameSuspects().setSpawnsOccupied(gameScreen.getGameBoard());
         gameInput.initialSetup();
         gameInput.playerTurn();

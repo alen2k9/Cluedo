@@ -139,7 +139,7 @@ public class CommandInput {
 
         if (this.gameScreen.getGamePlayers().getPlayer(this.currentPlayer).getSuspectToken().getCurrentRoom() != -1) {
             if (inputs.length > 2) {
-                this.gameScreen.getInfoOutput().append("Too many arguments for 'Exit'.\nExpected 1, Got " + (inputs.length - 1));
+                this.gameScreen.getInfoOutput().append("Too many arguments for 'Exit'.\nExpected 1, Got " + (inputs.length - 1) + ".\n");
             } else if (inputs.length == 1) {
                 this.gameScreen.getGamePlayers().getPlayer(this.currentPlayer).getSuspectToken().moveOutOfRoom(this.gameScreen.getGameBoard(), 0);
                 this.gameScreen.getInfoOutput().append(this.playerName + " left the " + roomName + ".\n");
