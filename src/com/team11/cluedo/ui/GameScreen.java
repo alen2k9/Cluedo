@@ -11,6 +11,8 @@ package com.team11.cluedo.ui;
 
 import com.team11.cluedo.assets.Assets;
 import com.team11.cluedo.board.Board;
+import com.team11.cluedo.controls.Autocomplete;
+import com.team11.cluedo.controls.InputData;
 import com.team11.cluedo.players.Players;
 import com.team11.cluedo.suspects.Suspects;
 import com.team11.cluedo.ui.panel.BackgroundPanel;
@@ -22,8 +24,11 @@ import javax.swing.border.TitledBorder;
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
 import java.awt.*;
 import java.io.*;
+import java.util.ArrayList;
 
 public class GameScreen implements Screen {
+    private static final String COMMIT_ACTION = "commit";
+
     private JFrame frame;
     private BoardUI boardPanel;
     private PlayerCardLayout playerPanel;
@@ -105,6 +110,18 @@ public class GameScreen implements Screen {
         JPanel commandPanel = new JPanel(new BorderLayout());
         Font f = new Font("Calibri",Font.BOLD, (int)(30*resolution.getScalePercentage()));
         commandInput = new JTextField(15);
+
+        //Code for autocompleting commands
+        //Only add or remove commands to the commandData arrayList in InputData class
+        //Don't change any other code in this section
+        commandInput.setFocusTraversalKeysEnabled(false);
+        InputData inputData = new InputData();
+        Autocomplete autoComplete = new Autocomplete(commandInput, inputData.getCommandData());
+        commandInput.getDocument().addDocumentListener(autoComplete);
+        commandInput.getInputMap().put(KeyStroke.getKeyStroke("TAB"), COMMIT_ACTION);
+        commandInput.getActionMap().put(COMMIT_ACTION, autoComplete.new CommitAction());
+        ////////////////////////////////////////////////////////////////////////////////
+
         commandInput.setFont(f);
         commandInput.setBackground(Color.WHITE);
         commandInput.setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
