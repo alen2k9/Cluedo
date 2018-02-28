@@ -3,13 +3,9 @@ package com.team11.cluedo.ui;
 
 import com.team11.cluedo.assets.Assets;
 import com.team11.cluedo.board.Board;
-import com.team11.cluedo.cards.Card;
-import com.team11.cluedo.players.Player;
-import com.team11.cluedo.players.PlayerHand;
 import com.team11.cluedo.players.Players;
-import com.team11.cluedo.suspects.PlayerPoints;
 import com.team11.cluedo.suspects.Suspects;
-import com.team11.cluedo.controls.*;
+import com.team11.cluedo.components.*;
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
@@ -253,7 +249,7 @@ public class MenuScreen implements Screen {
                             }
                         }
                         if (doContinue) {
-                            gameScreen.getGamePlayers().addPlayer(playerName, gameScreen.getGameSuspects().getSuspect(index));
+                            gameScreen.getGamePlayers().addPlayer(playerName, gameScreen.getGameSuspects().getSuspect(index), this.resolution);
                             nameInput.setText("");
                             currentPlayer++;
 

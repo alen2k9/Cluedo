@@ -10,8 +10,8 @@
 package com.team11.cluedo.ui;
 
 import com.team11.cluedo.assets.Assets;
-import com.team11.cluedo.controls.Autocomplete;
-import com.team11.cluedo.controls.InputData;
+import com.team11.cluedo.components.Autocomplete;
+import com.team11.cluedo.components.InputData;
 
 import com.team11.cluedo.board.Board;
 import com.team11.cluedo.players.Players;
@@ -26,6 +26,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
 import java.awt.*;
 import java.io.*;
+import java.util.ArrayList;
 
 public class GameScreen implements Screen {
     private static final String COMMIT_ACTION = "commit";
@@ -33,6 +34,8 @@ public class GameScreen implements Screen {
     private JFrame frame;
     private BoardUI boardPanel;
     private PlayerCardLayout playerPanel;
+
+    private MoveOverlay moveOverlay;
 
     private JTextArea infoOutput;
     private JTabbedPane infoTabs;
@@ -64,6 +67,18 @@ public class GameScreen implements Screen {
         this.frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
 
+    public void testFrame(MoveOverlay test){
+        JFrame testFrame = new JFrame();
+        JPanel testPanel = new JPanel(new BorderLayout());
+        testFrame.setSize(500,500);
+        testPanel.setSize(400,400);
+        System.out.println(test.getValidMoves());
+
+        testPanel.add(test, BorderLayout.CENTER);
+        testFrame.add(testPanel);
+        testFrame.setVisible(true);
+    }
+
     @Override
     public void setupScreen(int state) {
         JPanel mainPanel = new JPanel(new BorderLayout());
@@ -76,7 +91,7 @@ public class GameScreen implements Screen {
 
         this.playerPanel = setupPlayerPanel(0);
         JPanel infoPanel = setupInfoPanel1();
-        this.boardPanel = new BoardUI(this.gameSuspects, this.gameWeapons, new BoardComponent());
+        this.boardPanel = new BoardUI(this.gameSuspects, this.gameWeapons, new BoardComponent(), new MoveOverlay(new ArrayList<>(0)));
 
         contentPanel.add(playerPanel, BorderLayout.WEST);
         contentPanel.add(infoPanel, BorderLayout.EAST);
@@ -88,7 +103,6 @@ public class GameScreen implements Screen {
 
         this.frame.pack();
     }
-
     @Override
     public void displayScreen() {
         this.frame.setLocation(resolution.getScreenSize().width/2 - frame.getSize().width/2, resolution.getScreenSize().height/2 - (frame.getSize().height/2));
@@ -101,7 +115,6 @@ public class GameScreen implements Screen {
         this.frame.dispose();
         System.exit(0);
     }
-
     @Override
     public void reDraw(int currentPlayer) {
         this.playerPanel.reDraw(currentPlayer);
@@ -193,7 +206,7 @@ public class GameScreen implements Screen {
         }
 
         JScrollPane[] scrollPane = new JScrollPane[] {new JScrollPane(infoOutput), new JScrollPane(helpOutput),
-        new JScrollPane(setupCardPanel()), new JScrollPane()};
+        new JScrollPane(setupCardPanel()), new JScrollPane(new Notes(resolution).getNotesPanel())};
         for (JScrollPane pane : scrollPane) {
             pane.setBorder(null);
         }
@@ -274,15 +287,18 @@ public class GameScreen implements Screen {
         Suspects gamePlayers;
         Weapons gameWeapons;
         BoardComponent boardComponent;
+        MoveOverlay moveOverlay;
 
-        public BoardUI(Suspects players, Weapons weapons, BoardComponent boardImage) {
+        public BoardUI(Suspects players, Weapons weapons, BoardComponent boardImage, MoveOverlay moveOverlay) {
             this.gamePlayers = players;
             this.gameWeapons = weapons;
             this.boardComponent = boardImage;
+            this.moveOverlay = moveOverlay;
 
             this.add(this.boardComponent, new Integer(1));
             this.add(this.gamePlayers, new Integer(2));
             this.add(this.gameWeapons, new Integer(3));
+            this.add(this.moveOverlay, new Integer(4));
 
             ImageIcon board = new ImageIcon(gameAssets.getBoardImage());
             Dimension imageSize = new Dimension((int)(board.getIconWidth()*resolution.getScalePercentage()), (int)(board.getIconHeight()*resolution.getScalePercentage()));
@@ -294,6 +310,7 @@ public class GameScreen implements Screen {
             boardComponent.paintComponent(g);
             gamePlayers.paintComponent(g);
             gameWeapons.paintComponent(g);
+            moveOverlay.paintComponents(g);
         }
 
 

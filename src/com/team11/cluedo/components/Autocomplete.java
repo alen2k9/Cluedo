@@ -1,4 +1,4 @@
-package com.team11.cluedo.controls;
+package com.team11.cluedo.components;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;

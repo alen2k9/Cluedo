@@ -11,12 +11,14 @@ public class RoomData {
     private HashMap<Integer, String> roomName = new HashMap<>();
     private HashMap<Integer, Image> roomCard = new HashMap<>();
     private HashMap<Integer, Image> roomSelectedCard = new HashMap<>();
+    private HashMap<Integer, String> roomID = new HashMap<>();
     private final int roomAmount = 9;
 
     public RoomData() {
         setRoomName();
         setRoomCard();
         setRoomSelectedCard();
+        setRoomID();
     }
 
     private void setRoomName() {
@@ -29,6 +31,18 @@ public class RoomData {
         roomName.put(6, "Lounge");
         roomName.put(7, "Hall");
         roomName.put(8, "Study");
+    }
+
+    private void setRoomID() {
+        roomID.put(0, "kitchen");
+        roomID.put(1, "ballroom");
+        roomID.put(2, "conservatory");
+        roomID.put(3, "dining");
+        roomID.put(4, "billiard ");
+        roomID.put(5, "library");
+        roomID.put(6, "lounge");
+        roomID.put(7, "hall");
+        roomID.put(8, "study");
     }
 
     private void setRoomCard() {
@@ -71,4 +85,8 @@ public class RoomData {
     public int getRoomAmount() {
             return this.roomAmount;
         }
+
+    public String getRoomID(int index){
+        return roomID.getOrDefault(index, null);
+    }
 }

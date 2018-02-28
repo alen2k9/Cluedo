@@ -1,6 +1,8 @@
 package com.team11.cluedo.suspects;
 
 import com.team11.cluedo.assets.Assets;
+import com.team11.cluedo.ui.Notes;
+import com.team11.cluedo.ui.Resolution;
 
 import java.awt.*;
 import java.util.HashMap;
@@ -11,6 +13,7 @@ public class SuspectData {
     private HashMap<Integer, Image> suspectToken = new HashMap<>();
     private HashMap<Integer, Image> suspectCard = new HashMap<>();
     private HashMap<Integer, Image> suspectSelectedCard = new HashMap<>();
+    private HashMap<Integer, String> suspectID = new HashMap<>();
     private final int suspectAmount = 6;
 
     public SuspectData() {
@@ -19,6 +22,7 @@ public class SuspectData {
         setSuspectToken();
         setSuspectCard();
         setSuspectSelectedCard();
+        setSuspectID();
     }
 
     private void setSuspectName() {
@@ -28,6 +32,15 @@ public class SuspectData {
         suspectName.put(3, "Mr. Plum");
         suspectName.put(4, "Miss Scarlet");
         suspectName.put(5, "Colonel Mustard");
+    }
+
+    private void setSuspectID(){
+        suspectID.put(0, "white");
+        suspectID.put(1, "green");
+        suspectID.put(2, "peacock");
+        suspectID.put(3, "plum");
+        suspectID.put(4, "scarlet");
+        suspectID.put(5, "mustard");
     }
 
     private void setSuspectSpawn() {
@@ -92,4 +105,10 @@ public class SuspectData {
     public int getSuspectAmount() {
         return this.suspectAmount;
     }
+
+    public String getSuspectID(int index){
+        return suspectID.getOrDefault(index, null);
+    }
+
+
 }

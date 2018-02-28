@@ -135,6 +135,7 @@ public class Suspect extends JComponent{
 
     public void draw(Graphics g){
         Graphics2D g2 = (Graphics2D) g;
+
         /*
          * Draw the ellipse at an offset of the suspects location and the size of each tile
          */
@@ -298,35 +299,35 @@ public class Suspect extends JComponent{
                 this.setLastPoint(this.getLoc());
                 switch (moveList.get(0)){
                     case NORTH:
-                        moveUp(gameBoard);
+                        moveUp();
                         reverseStack.push(moveList.remove(0));
                         if (gameBoard.getBoardPos((int)this.getLoc().getY(), (int)this.getLoc().getX()).getType() == TileType.DOOR){
-                            moveToRoom(gameBoard,gameBoard.getBoardPos((int)this.getLoc().getY(), (int)this.getLoc().getX()).getLocation());
+                            moveToRoom(gameBoard);
                             doMoveToRoom = true;
                         }
                         break;
                     case EAST:
-                        moveRight(gameBoard);
+                        moveRight();
                         reverseStack.push(moveList.remove(0));
                         if (gameBoard.getBoardPos((int)this.getLoc().getY(), (int)this.getLoc().getX()).getType() == TileType.DOOR){
-                            moveToRoom(gameBoard,gameBoard.getBoardPos((int)this.getLoc().getY(), (int)this.getLoc().getX()).getLocation());
+                            moveToRoom(gameBoard);
                             doMoveToRoom = true;
                         }
                         break;
                     case SOUTH:
-                        moveDown(gameBoard);
+                        moveDown();
                         reverseStack.push(moveList.remove(0));
                         if (gameBoard.getBoardPos((int)this.getLoc().getY(), (int)this.getLoc().getX()).getType() == TileType.DOOR){
-                            moveToRoom(gameBoard,gameBoard.getBoardPos((int)this.getLoc().getY(), (int)this.getLoc().getX()).getLocation());
+                            moveToRoom(gameBoard);
                             doMoveToRoom = true;
                         }
                         break;
 
                     case WEST:
-                        moveLeft(gameBoard);
+                        moveLeft();
                         reverseStack.push(moveList.remove(0));
                         if (gameBoard.getBoardPos((int)this.getLoc().getY(), (int)this.getLoc().getX()).getType() == TileType.DOOR){
-                            moveToRoom(gameBoard,gameBoard.getBoardPos((int)this.getLoc().getY(), (int)this.getLoc().getX()).getLocation());
+                            moveToRoom(gameBoard);
                             doMoveToRoom = true;
                         }
                         break;
@@ -346,42 +347,30 @@ public class Suspect extends JComponent{
     }
 
     //Method to move up
-    private void moveUp(Board gameBoard){
-        //System.out.println("Moving Up");
-        //gameBoard.getBoardPos((int)this.getLoc().getY(), (int)this.getLoc().getX()).setOccupied(false);
+    private void moveUp(){
         this.getLoc().setLocation((int)this.getLoc().getX(), (int)this.getLoc().getY()-1);
-        //gameBoard.getBoardPos((int)this.getLoc().getY(), (int)this.getLoc().getX()).setOccupied(true);
+
     }
     //Method to move down
-    private void moveDown(Board gameBoard){
-        //System.out.println("Moving Down");
-        //gameBoard.getBoardPos((int)this.getLoc().getY(), (int)this.getLoc().getX()).setOccupied(false);
+    private void moveDown(){
         this.getLoc().setLocation((int)this.getLoc().getX(), (int)this.getLoc().getY()+1);
-        //gameBoard.getBoardPos((int)this.getLoc().getY(), (int)this.getLoc().getX()).setOccupied(true);
     }
     //Method to move right
-    private void moveRight(Board gameBoard){
-        //System.out.println("Moving Right");
-        //gameBoard.getBoardPos((int)this.getLoc().getY(), (int)this.getLoc().getX()).setOccupied(false);
+    private void moveRight(){
         this.getLoc().setLocation((int)this.getLoc().getX()+1, (int)this.getLoc().getY());
-        //gameBoard.getBoardPos((int)this.getLoc().getY(), (int)this.getLoc().getX()).setOccupied(true);
     }
     //Method to move left
-    private void moveLeft(Board gameBoard){
-        //System.out.println("Moving Left");
-        //gameBoard.getBoardPos((int) this.getLoc().getY(), (int) this.getLoc().getX()).setOccupied(false);
+    private void moveLeft(){
         this.getLoc().setLocation((int) this.getLoc().getX() - 1, (int) this.getLoc().getY());
-        //gameBoard.getBoardPos((int) this.getLoc().getY(), (int) this.getLoc().getX()).setOccupied(true);
     }
 
     //Method to move a player into a room when they land on a door tile
-    private void moveToRoom(Board gameBoard, Point prevPoint){
+    private void moveToRoom(Board gameBoard){
         int currRoom = findParentRoom(gameBoard.getBoardPos((int)this.getLoc().getY(), (int)this.getLoc().getX()).getLocation(), gameBoard);
-
+        this.isInRoom = true;
         Point nextPoint = gameBoard.getRoom(currRoom).getRandomPoint(gameBoard.getRoom(currRoom).getPlayerPositions());
         this.setLoc(nextPoint);
         this.setCurrentRoom(currRoom);
-
         gameBoard.getRoom(currRoom).getPlayerPositions().remove(nextPoint);
     }
 
@@ -391,6 +380,7 @@ public class Suspect extends JComponent{
         Point currPoint = new Point(this.getLoc());
         Point nextPoint = new Point(gameBoard.getRoom(this.getCurrentRoom()).getExitPoints().get(exitNum));
         gameBoard.getRoom(this.getCurrentRoom()).getPlayerPositions().add(currPoint);
+        this.isInRoom = false;
         this.setLoc(nextPoint);
         this.setCurrentRoom(-1);
 

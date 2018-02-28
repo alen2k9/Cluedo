@@ -5,17 +5,14 @@
  *                  Alen Thomas   - 16333003
  */
 
-package com.team11.cluedo.controls;
+package com.team11.cluedo.components;
 
 import com.team11.cluedo.suspects.Direction;
 import com.team11.cluedo.ui.GameScreen;
+import com.team11.cluedo.ui.MoveOverlay;
 import com.team11.cluedo.weapons.WeaponData;
 
 import javax.swing.*;
-import javax.swing.text.AttributeSet;
-import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.StyleConstants;
-import javax.swing.text.StyleContext;
 import java.awt.*;
 import java.util.ArrayList;
 
@@ -25,6 +22,7 @@ public class CommandInput {
     private int numPlayers, currentPlayer;
     private String playerName;
     private boolean canRoll;
+    private ArrayList<Point> validMoves = new ArrayList<>();
 
     public CommandInput(GameScreen gameScreen) {
         this.gameScreen = gameScreen;
@@ -177,6 +175,12 @@ public class CommandInput {
             this.remainingMoves = this.dice;
             this.gameScreen.getInfoOutput().append(this.playerName + " rolled a " + this.dice + ".\n");
             this.canRoll = false;
+
+            validMoves = findValidMoves();
+            System.out.println("Valid Moves: " + validMoves.size());
+            this.gameScreen.reDraw(currentPlayer);
+            System.out.println("Got Valid Moves");
+            
         } else {
             this.gameScreen.getInfoOutput().append(this.playerName + " already rolled a " + this.dice + ".\n");
         }
@@ -292,6 +296,65 @@ public class CommandInput {
         } else {
             this.gameScreen.getInfoOutput().append("This path isn't valid.\nYou have " + this.remainingMoves + " moves remaining.\n");
         }
+    }
+
+    private ArrayList<Point> findValidMoves(){
+        ArrayList<Point> validMoves = new ArrayList<>();
+
+        Point currentPosition = new Point(this.gameScreen.getGamePlayers().getPlayer(currentPlayer).getSuspectToken().getLoc());
+        Point startPoint;
+        Point endPoint;
+
+        if (!this.gameScreen.getGamePlayers().getPlayer(currentPlayer).getSuspectToken().isInRoom()) {
+            startPoint = new Point((int) this.gameScreen.getGamePlayers().getPlayer(currentPlayer).getSuspectToken().getLoc().getX() - remainingMoves,
+                    (int) this.gameScreen.getGamePlayers().getPlayer(currentPlayer).getSuspectToken().getLoc().getY() - remainingMoves);
+
+            if (startPoint.getX() < 1) {
+                startPoint.setLocation(1, startPoint.getY());
+            } else if (startPoint.getX() > 25) {
+                startPoint.setLocation(25, startPoint.getY());
+            }
+
+            if (startPoint.getY() < 1) {
+                startPoint.setLocation(startPoint.getX(), 1);
+            } else if (startPoint.getY() > 25) {
+                startPoint.setLocation(startPoint.getX(), 25);
+            }
+
+            endPoint = new Point((int) this.gameScreen.getGamePlayers().getPlayer(currentPlayer).getSuspectToken().getLoc().getX() + remainingMoves,
+                    (int) this.gameScreen.getGamePlayers().getPlayer(currentPlayer).getSuspectToken().getLoc().getY() + remainingMoves);
+
+            if (endPoint.getX() < 1) {
+                endPoint.setLocation(1, endPoint.getY());
+            } else if (endPoint.getX() > 25) {
+                endPoint.setLocation(25, endPoint.getY());
+            }
+
+            if (endPoint.getY() < 1) {
+                endPoint.setLocation(endPoint.getX(), 1);
+            } else if (endPoint.getY() > 25) {
+                endPoint.setLocation(endPoint.getX(), 25);
+            }
+
+            int reqDis;
+            Point tmpPoint;
+            //Have start and exit points now so search through and add the valid points to the return list
+            for (int i = (int) startPoint.getY(); i < (int) endPoint.getY(); i++) {
+
+                for (int j = (int) startPoint.getX(); j < (int) endPoint.getX(); j++) {
+                    tmpPoint = new Point(j, i);
+                    reqDis = (int) (Math.abs(currentPosition.getX() - tmpPoint.getX()) + Math.abs(currentPosition.getY() - tmpPoint.getY()));
+                    if (this.gameScreen.getGameBoard().getBoardPos((int)tmpPoint.getY(), (int)tmpPoint.getX()).isTraversable() && reqDis <= remainingMoves) {
+                        validMoves.add(tmpPoint);
+                    }
+                }
+            }
+        }
+        else{
+
+        }
+        //System.out.println("Valid Moves\n"+validMoves);
+        return validMoves;
     }
 
     private class ChoiceOption {

@@ -12,6 +12,7 @@ public class WeaponData {
     private HashMap<Integer, Image> weaponToken = new HashMap<>();
     private HashMap<Integer, Image> weaponCard = new HashMap<>();
     private HashMap<Integer, Image> selectedWeaponCard = new HashMap<>();
+    private HashMap<Integer, String> weaponID = new HashMap<>();
 
     private final int weaponAmount = 6;
 
@@ -21,6 +22,7 @@ public class WeaponData {
         setWeaponToken();
         setWeaponCard();
         setSelectedWeaponCard();
+        setWeaponID();
     }
 
     private void setWeaponName() {
@@ -30,6 +32,15 @@ public class WeaponData {
         weaponName.put(3, "Revolver");
         weaponName.put(4, "Rope");
         weaponName.put(5, "Wrench");
+    }
+
+    private void setWeaponID(){
+        weaponID.put(0, "hatchet");
+        weaponID.put(1, "dagger");
+        weaponID.put(2, "poison");
+        weaponID.put(3, "revolver");
+        weaponID.put(4, "rope");
+        weaponID.put(5, "wrench");
     }
 
     private void setWeaponToken() {
@@ -77,5 +88,9 @@ public class WeaponData {
 
     public int getWeaponAmount() {
         return weaponAmount;
+    }
+
+    public String getWeaponID(int index){
+        return weaponID.getOrDefault(index,null);
     }
 }
