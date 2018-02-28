@@ -36,6 +36,7 @@ public class CommandInput {
     }
 
     public void playerTurn() {
+        rollStart();
         this.playerName = this.gameScreen.getGamePlayers().getPlayer(this.currentPlayer).getPlayerName();
         this.gameScreen.getInfoOutput().append("It is now player " + this.playerName + "'s turn.\n");
         gameScreen.getInfoOutput().append("Please enter 'roll'  to start\n");
@@ -298,7 +299,7 @@ public class CommandInput {
         }
     }
 
-    private ArrayList<Point> findValidMoves(){
+    private ArrayList<Point> findValidMoves() {
         ArrayList<Point> validMoves = new ArrayList<>();
 
         Point currentPosition = new Point(this.gameScreen.getGamePlayers().getPlayer(currentPlayer).getSuspectToken().getLoc());
@@ -344,20 +345,43 @@ public class CommandInput {
                 for (int j = (int) startPoint.getX(); j < (int) endPoint.getX(); j++) {
                     tmpPoint = new Point(j, i);
                     reqDis = (int) (Math.abs(currentPosition.getX() - tmpPoint.getX()) + Math.abs(currentPosition.getY() - tmpPoint.getY()));
-                    if (this.gameScreen.getGameBoard().getBoardPos((int)tmpPoint.getY(), (int)tmpPoint.getX()).isTraversable() && reqDis <= remainingMoves) {
+                    if (this.gameScreen.getGameBoard().getBoardPos((int) tmpPoint.getY(), (int) tmpPoint.getX()).isTraversable() && reqDis <= remainingMoves) {
                         validMoves.add(tmpPoint);
                     }
                 }
             }
-        }
-        else{
+        } else {
 
         }
         //System.out.println("Valid Moves\n"+validMoves);
         return validMoves;
     }
 
-    private class ChoiceOption {
+    public void rollStart() {
+        Dice die = new Dice();
+        int diceNumber, highRoller = 0;
+        ArrayList<Integer> dice = new ArrayList<>();
+        for(int  i = 0; i < numPlayers; i++) {
+            diceNumber = die.rolldice();
+            currentPlayer = i;
+            gameScreen.getInfoOutput().append(gameScreen.getGamePlayers().getPlayer(currentPlayer).getPlayerName() + " rolled a " + diceNumber + ".\n");
+            dice.add(diceNumber);
+        }
+
+        for(int j = 0; j < numPlayers - 1; j++) {
+            if(dice.get(j) > dice.get(j+1)){
+                highRoller = j;
+            }
+            else{
+                highRoller = j + 1;
+            }
+        }
+        currentPlayer = highRoller;
+        gameScreen.getInfoOutput().append(gameScreen.getGamePlayers().getPlayer(currentPlayer).getPlayerName() + " rolled the highest number\n");
+
+    }
+
+    public class ChoiceOption {
         private String weapon;
         private String room;
 
@@ -393,5 +417,8 @@ public class CommandInput {
         private String getWeapon() {
             return this.weapon;
         }
+
+
+
     }
 }
