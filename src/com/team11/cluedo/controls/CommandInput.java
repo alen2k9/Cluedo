@@ -38,6 +38,7 @@ public class CommandInput {
     }
 
     public void playerTurn() {
+        rollStart();
         this.playerName = this.gameScreen.getGamePlayers().getPlayer(this.currentPlayer).getPlayerName();
         this.gameScreen.getInfoOutput().append("It is now player " + this.playerName + "'s turn.\n");
         gameScreen.getInfoOutput().append("Please enter 'roll'  to start\n");
@@ -294,6 +295,32 @@ public class CommandInput {
         }
     }
 
+    public void rollStart() {
+        Dice die = new Dice();
+        int diceNumber, highRoller = 0;
+        ArrayList<Integer> dice = new ArrayList<>();
+        for(int  i = 0; i < numPlayers; i++) {
+            diceNumber = die.rolldice();
+            currentPlayer = i;
+            gameScreen.getInfoOutput().append(gameScreen.getGamePlayers().getPlayer(currentPlayer).getPlayerName() + " rolled a " + diceNumber + ".\n");
+            dice.add(diceNumber);
+        }
+
+        for(int j = 0; j < numPlayers - 1; j++) {
+            if(dice.get(j) > dice.get(j+1)){
+                highRoller = j;
+            }
+            else{
+                highRoller = j + 1;
+            }
+        }
+        currentPlayer = highRoller;
+        gameScreen.getInfoOutput().append(gameScreen.getGamePlayers().getPlayer(currentPlayer).getPlayerName() + " rolled the highest number\n");
+
+
+
+    }
+
     private class ChoiceOption {
         private String weapon;
         private String room;
@@ -330,5 +357,8 @@ public class CommandInput {
         private String getWeapon() {
             return this.weapon;
         }
+
+
+
     }
 }
