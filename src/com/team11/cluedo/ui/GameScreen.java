@@ -91,7 +91,7 @@ public class GameScreen implements Screen {
 
         this.playerPanel = setupPlayerPanel(0);
         JPanel infoPanel = setupInfoPanel1();
-        this.boardPanel = new BoardUI(this.gameSuspects, this.gameWeapons, new BoardComponent(), new MoveOverlay(new ArrayList<>(0)));
+        this.boardPanel = new BoardUI(this.gameSuspects, this.gameWeapons, new BoardComponent());
 
         contentPanel.add(playerPanel, BorderLayout.WEST);
         contentPanel.add(infoPanel, BorderLayout.EAST);
@@ -287,18 +287,18 @@ public class GameScreen implements Screen {
         Suspects gamePlayers;
         Weapons gameWeapons;
         BoardComponent boardComponent;
-        MoveOverlay moveOverlay;
+        //MoveOverlay moveOverlay;
 
-        public BoardUI(Suspects players, Weapons weapons, BoardComponent boardImage, MoveOverlay moveOverlay) {
+        public BoardUI(Suspects players, Weapons weapons, BoardComponent boardImage) {
             this.gamePlayers = players;
             this.gameWeapons = weapons;
             this.boardComponent = boardImage;
-            this.moveOverlay = moveOverlay;
+            //this.moveOverlay = moveOverlay;
 
             this.add(this.boardComponent, new Integer(1));
             this.add(this.gamePlayers, new Integer(2));
             this.add(this.gameWeapons, new Integer(3));
-            this.add(this.moveOverlay, new Integer(4));
+            //this.add(this.moveOverlay, new Integer(4));
 
             ImageIcon board = new ImageIcon(gameAssets.getBoardImage());
             Dimension imageSize = new Dimension((int)(board.getIconWidth()*resolution.getScalePercentage()), (int)(board.getIconHeight()*resolution.getScalePercentage()));
@@ -310,7 +310,7 @@ public class GameScreen implements Screen {
             boardComponent.paintComponent(g);
             gamePlayers.paintComponent(g);
             gameWeapons.paintComponent(g);
-            moveOverlay.paintComponents(g);
+            //moveOverlay.paintComponents(g);
         }
 
 

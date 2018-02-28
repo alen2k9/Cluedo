@@ -16,7 +16,7 @@ public class MoveOverlay extends JComponent{
         return validMoves;
     }
     @Override
-    public void paintComponents(Graphics g){
+    public void paintComponent(Graphics g){
         System.out.println("Valid Moves: " + validMoves.size());
         for (Point point : validMoves){
             this.draw(g, point);

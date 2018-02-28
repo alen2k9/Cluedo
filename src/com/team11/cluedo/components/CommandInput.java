@@ -178,9 +178,10 @@ public class CommandInput {
             this.canRoll = false;
 
             validMoves = findValidMoves();
-            System.out.println("Valid Moves: " + validMoves.size());
+            this.gameScreen.testFrame(new MoveOverlay(validMoves));
+            //System.out.println("Valid Moves: " + validMoves.size());
             this.gameScreen.reDraw(currentPlayer);
-            System.out.println("Got Valid Moves");
+            //System.out.println("Got Valid Moves");
             
         } else {
             this.gameScreen.getInfoOutput().append(this.playerName + " already rolled a " + this.dice + ".\n");
