@@ -368,12 +368,12 @@ public class CommandInput {
             dice.add(diceNumber);
         }
 
-        for(int j = 0; j < numPlayers - 1; j++) {
+        for(int j = 0; j < numPlayers; j++) {
             if(dice.get(highRoller) < dice.get(j)){
                 highRoller = j;
             }
         }
-        
+
         currentPlayer = highRoller;
         gameScreen.getInfoOutput().append(gameScreen.getGamePlayers().getPlayer(currentPlayer).getPlayerName() + " rolled the highest number\n");
     }
