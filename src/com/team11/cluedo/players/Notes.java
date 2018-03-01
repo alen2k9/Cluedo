@@ -67,10 +67,11 @@ public class Notes extends JTable {
 
         this.setGridColor((Color.BLACK));
         this.setFont(new Font("Calibri", Font.BOLD, (int)(14*resolution.getScalePercentage())));
-        this.setRowHeight((int)27.5);
+        this.setRowHeight((int)(27.5 * resolution.getScalePercentage()));
 
         //Set the preferred with and make all the columns non resizable
-        int dataColumnWidth = 120, headerColumnWidth = 40;
+        int dataColumnWidth = (int)(120 * resolution.getScalePercentage());
+        int headerColumnWidth = (int)(40 * resolution.getScalePercentage());
         for (int i = 0; i < this.getColumnCount(); i++){
             if (i == 0) {
                 this.getColumnModel().getColumn(i).setWidth(dataColumnWidth);
