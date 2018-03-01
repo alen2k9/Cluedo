@@ -16,6 +16,10 @@ import com.team11.cluedo.components.InputData;
 import com.team11.cluedo.board.Board;
 import com.team11.cluedo.players.Players;
 import com.team11.cluedo.suspects.Suspects;
+import com.team11.cluedo.ui.components.MoveOverlay;
+import com.team11.cluedo.ui.components.NotesPanel;
+import com.team11.cluedo.ui.components.PlayerHandLayout;
+import com.team11.cluedo.ui.components.PlayerLayout;
 import com.team11.cluedo.ui.panel.BackgroundPanel;
 import com.team11.cluedo.weapons.Weapons;
 import com.team11.cluedo.cards.Cards;
@@ -26,14 +30,15 @@ import javax.swing.border.TitledBorder;
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
 import java.awt.*;
 import java.io.*;
-import java.util.ArrayList;
 
 public class GameScreen implements Screen {
     private static final String COMMIT_ACTION = "commit";
 
     private JFrame frame;
     private BoardUI boardPanel;
-    private PlayerCardLayout playerPanel;
+    private PlayerLayout playerPanel;
+    private PlayerHandLayout playerHandPanel;
+    private NotesPanel notesPanel;
 
     private MoveOverlay moveOverlay;
 
@@ -58,6 +63,7 @@ public class GameScreen implements Screen {
         this.gameAssets = gameAssets;
         this.resolution = resolution;
         this.gameCards = new Cards();
+        this.moveOverlay = new MoveOverlay();
     }
 
     @Override
@@ -65,18 +71,6 @@ public class GameScreen implements Screen {
         this.frame = new JFrame(name);
         this.frame.setResizable(false);
         this.frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-    }
-
-    public void testFrame(MoveOverlay test){
-        JFrame testFrame = new JFrame();
-        JPanel testPanel = new JPanel(new BorderLayout());
-        testFrame.setSize(500,500);
-        testPanel.setSize(400,400);
-        System.out.println(test.getValidMoves());
-
-        testPanel.add(test, BorderLayout.CENTER);
-        testFrame.add(testPanel);
-        testFrame.setVisible(true);
     }
 
     @Override
@@ -89,9 +83,12 @@ public class GameScreen implements Screen {
         Image backgroundImage = backgroundTile.getImage();
         BackgroundPanel backgroundPanel = new BackgroundPanel(backgroundImage, BackgroundPanel.TILED);
 
-        this.playerPanel = setupPlayerPanel(0);
+        this.playerPanel = setupPlayerPanel();
+        this.playerHandPanel = setupCardPanel();
+        this.notesPanel = new NotesPanel(gamePlayers);
+
         JPanel infoPanel = setupInfoPanel1();
-        this.boardPanel = new BoardUI(this.gameSuspects, this.gameWeapons, new BoardComponent());
+        this.boardPanel = new BoardUI(this.gameSuspects, this.gameWeapons, new BoardComponent(), this.moveOverlay);
 
         contentPanel.add(playerPanel, BorderLayout.WEST);
         contentPanel.add(infoPanel, BorderLayout.EAST);
@@ -118,6 +115,8 @@ public class GameScreen implements Screen {
     @Override
     public void reDraw(int currentPlayer) {
         this.playerPanel.reDraw(currentPlayer);
+        this.playerHandPanel.reDraw(currentPlayer);
+        this.notesPanel.reDraw(currentPlayer);
         this.boardPanel.repaint();
         this.frame.repaint();
     }
@@ -206,7 +205,7 @@ public class GameScreen implements Screen {
         }
 
         JScrollPane[] scrollPane = new JScrollPane[] {new JScrollPane(infoOutput), new JScrollPane(helpOutput),
-        new JScrollPane(setupCardPanel()), new JScrollPane(new Notes(resolution).getNotesPanel())};
+                new JScrollPane(playerHandPanel), new JScrollPane(notesPanel)};
         for (JScrollPane pane : scrollPane) {
             pane.setBorder(null);
         }
@@ -222,18 +221,16 @@ public class GameScreen implements Screen {
 
     }
 
-    private JPanel setupCardPanel() {
-        JPanel cardPanel = new JPanel(new BorderLayout());
-        cardPanel.setBackground(Color.DARK_GRAY);
-        return cardPanel;
+    private PlayerHandLayout setupCardPanel() {
+        return new PlayerHandLayout(gameCards, gamePlayers, resolution);
     }
 
-    private PlayerCardLayout setupPlayerPanel(int currentPlayer) {
-        PlayerCardLayout playerPanel = new PlayerCardLayout(gamePlayers, resolution, currentPlayer);
+    private PlayerLayout setupPlayerPanel() {
+        PlayerLayout playerPanel = new PlayerLayout(gamePlayers, resolution, 0);
         playerPanel.setOpaque(false);
         TitledBorder border = new TitledBorder(new LineBorder(Color.BLACK,3), "Players");
         border.setTitleFont(new Font("Calibri",Font.BOLD, (int)(20*resolution.getScalePercentage())));
-        border.setTitleColor(Color.BLACK);
+        border.setTitleColor(Color.WHITE);
         playerPanel.setBorder(border);
 
         return playerPanel;
@@ -273,6 +270,10 @@ public class GameScreen implements Screen {
         infoTabs.setSelectedIndex(i);
     }
 
+    public MoveOverlay getMoveOverlay() {
+        return this.moveOverlay;
+    }
+
     public class BoardComponent extends JComponent {
         @Override
         public void paintComponent(Graphics g) {
@@ -284,21 +285,21 @@ public class GameScreen implements Screen {
     }
 
     public class BoardUI extends JLayeredPane {
-        Suspects gamePlayers;
+        Suspects gameSuspects;
         Weapons gameWeapons;
         BoardComponent boardComponent;
-        //MoveOverlay moveOverlay;
+        MoveOverlay moveOverlay;
 
-        public BoardUI(Suspects players, Weapons weapons, BoardComponent boardImage) {
-            this.gamePlayers = players;
+        public BoardUI(Suspects suspects, Weapons weapons, BoardComponent boardImage, MoveOverlay moveOverlay) {
+            this.gameSuspects = suspects;
             this.gameWeapons = weapons;
             this.boardComponent = boardImage;
-            //this.moveOverlay = moveOverlay;
+            this.moveOverlay = moveOverlay;
 
             this.add(this.boardComponent, new Integer(1));
-            this.add(this.gamePlayers, new Integer(2));
+            this.add(this.gameSuspects, new Integer(2));
             this.add(this.gameWeapons, new Integer(3));
-            //this.add(this.moveOverlay, new Integer(4));
+            this.add(this.moveOverlay, new Integer(4));
 
             ImageIcon board = new ImageIcon(gameAssets.getBoardImage());
             Dimension imageSize = new Dimension((int)(board.getIconWidth()*resolution.getScalePercentage()), (int)(board.getIconHeight()*resolution.getScalePercentage()));
@@ -308,11 +309,9 @@ public class GameScreen implements Screen {
         @Override
         public void paint(Graphics g) {
             boardComponent.paintComponent(g);
-            gamePlayers.paintComponent(g);
+            gameSuspects.paintComponent(g);
             gameWeapons.paintComponent(g);
-            //moveOverlay.paintComponents(g);
+            moveOverlay.paintComponent(g);
         }
-
-
     }
 }

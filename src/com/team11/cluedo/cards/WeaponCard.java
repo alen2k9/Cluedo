@@ -23,4 +23,6 @@ public class WeaponCard extends Card {
     public String getName() {
         return super.getName();
     }
+
+
 }

@@ -1,8 +1,6 @@
 package com.team11.cluedo.suspects;
 
 import com.team11.cluedo.assets.Assets;
-import com.team11.cluedo.ui.Notes;
-import com.team11.cluedo.ui.Resolution;
 
 import java.awt.*;
 import java.util.HashMap;

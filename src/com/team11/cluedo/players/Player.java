@@ -2,7 +2,6 @@ package com.team11.cluedo.players;
 
 
 import com.team11.cluedo.suspects.Suspect;
-import com.team11.cluedo.ui.Notes;
 import com.team11.cluedo.ui.Resolution;
 
 import java.awt.*;
@@ -13,6 +12,7 @@ public class Player {
     private Image cardImage, selectedCardImage;
     private PlayerHand playerHand;
     private Notes playerNotes;
+
     public Player(String playerName, Suspect suspectToken, Image cardImage, Image selectedCardImage, Resolution resolution) {
         this.playerName = playerName;
         this.suspectToken = suspectToken;

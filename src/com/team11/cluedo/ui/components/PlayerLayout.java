@@ -1,17 +1,18 @@
-package com.team11.cluedo.ui;
+package com.team11.cluedo.ui.components;
 
 import com.team11.cluedo.players.Players;
 import com.team11.cluedo.suspects.Suspects;
+import com.team11.cluedo.ui.Resolution;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class PlayerCardLayout extends JPanel {
+public class PlayerLayout extends JPanel {
     private Players gamePlayers;
     private Resolution resolution;
     private int currentPlayer;
 
-    public PlayerCardLayout (Players gamePlayers, Resolution resolution, int currentPlayer) {
+    public PlayerLayout(Players gamePlayers, Resolution resolution, int currentPlayer) {
         this.gamePlayers = gamePlayers;
         this.resolution = resolution;
         this.currentPlayer = currentPlayer;

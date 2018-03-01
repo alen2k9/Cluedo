@@ -9,7 +9,6 @@ package com.team11.cluedo.components;
 
 import com.team11.cluedo.suspects.Direction;
 import com.team11.cluedo.ui.GameScreen;
-import com.team11.cluedo.ui.MoveOverlay;
 import com.team11.cluedo.weapons.WeaponData;
 
 import javax.swing.*;
@@ -37,6 +36,7 @@ public class CommandInput {
 
     public void playerTurn() {
         rollStart();
+        gameScreen.reDraw(currentPlayer);
         this.playerName = this.gameScreen.getGamePlayers().getPlayer(this.currentPlayer).getPlayerName();
         this.gameScreen.getInfoOutput().append("It is now player " + this.playerName + "'s turn.\n");
         gameScreen.getInfoOutput().append("Please enter 'roll'  to start\n");
@@ -108,6 +108,11 @@ public class CommandInput {
                 case "weapon":
                     weaponMovement();
                     break;
+
+                case "cheat":
+                    gameScreen.getGameCards().getMurderEnvelope().displayMurderEnvelope();
+                    break;
+
                 default:
                     gameScreen.getInfoOutput().append("Unknown command\nUse command 'help' for instructions.\n");
                     break;
@@ -176,13 +181,7 @@ public class CommandInput {
             this.remainingMoves = this.dice;
             this.gameScreen.getInfoOutput().append(this.playerName + " rolled a " + this.dice + ".\n");
             this.canRoll = false;
-
-            validMoves = findValidMoves();
-            this.gameScreen.testFrame(new MoveOverlay(validMoves));
-            //System.out.println("Valid Moves: " + validMoves.size());
             this.gameScreen.reDraw(currentPlayer);
-            //System.out.println("Got Valid Moves");
-            
         } else {
             this.gameScreen.getInfoOutput().append(this.playerName + " already rolled a " + this.dice + ".\n");
         }
@@ -379,7 +378,6 @@ public class CommandInput {
         }
         currentPlayer = highRoller;
         gameScreen.getInfoOutput().append(gameScreen.getGamePlayers().getPlayer(currentPlayer).getPlayerName() + " rolled the highest number\n");
-
     }
 
     public class ChoiceOption {
