@@ -1,3 +1,11 @@
+/*
+ * Code to handle the autocomplete of commands in command input.
+ *
+ * Authors Team11:  Jack Geraghty - 16384181
+ *                  Conor Beenham - 16350851
+ *                  Alen Thomas   - 16333003
+ */
+
 package com.team11.cluedo.components;
 
 import javax.swing.*;
@@ -10,9 +18,9 @@ import java.util.List;
 
 public class Autocomplete implements DocumentListener {
 
-    private static enum Mode{
+    private enum Mode{
         INSERT,
-        COMPLETION;
+        COMPLETION
     }
 
     private JTextField textField;
@@ -64,8 +72,7 @@ public class Autocomplete implements DocumentListener {
             if (match.startsWith(prefix)){
                 String completion = match.substring(pos - w);
                 SwingUtilities.invokeLater(new CompletionTask(completion, pos + 1));
-            }
-            else{
+            } else{
                 mode = Mode.INSERT;
             }
         }
@@ -83,8 +90,7 @@ public class Autocomplete implements DocumentListener {
                 textField.setText(sb.toString());
                 textField.setCaretPosition(pos + 1);
                 mode = Mode.INSERT;
-            }
-            else{
+            } else{
                 textField.replaceSelection("\t");
             }
         }

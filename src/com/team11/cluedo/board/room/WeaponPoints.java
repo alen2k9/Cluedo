@@ -1,10 +1,17 @@
-package com.team11.cluedo.board;
+/*
+  Code to handle the points of the weapons.
+
+  Authors Team11:  Jack Geraghty - 16384181
+                   Conor Beenham - 16350851
+                   Alen Thomas   - 16333003
+ */
+
+package com.team11.cluedo.board.room;
 
 
 import java.awt.*;
 import java.util.ArrayList;
 
-//Class to handle adding both players and weapons to rooms
 public class WeaponPoints {
 
     private ArrayList<ArrayList<Point>> weaponSpawnList = new ArrayList<>();

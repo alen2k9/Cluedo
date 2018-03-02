@@ -1,3 +1,11 @@
+/*
+  Code to handle the suspects data.
+
+  Authors Team11:  Jack Geraghty - 16384181
+                   Conor Beenham - 16350851
+                   Alen Thomas   - 16333003
+ */
+
 package com.team11.cluedo.suspects;
 
 import com.team11.cluedo.assets.Assets;
@@ -12,7 +20,7 @@ public class SuspectData {
     private HashMap<Integer, Image> suspectCard = new HashMap<>();
     private HashMap<Integer, Image> suspectSelectedCard = new HashMap<>();
     private HashMap<Integer, String> suspectID = new HashMap<>();
-    private final int suspectAmount = 6;
+    private HashMap<Integer, Color> suspectColor = new HashMap<>();
 
     public SuspectData() {
         setSuspectName();
@@ -21,6 +29,7 @@ public class SuspectData {
         setSuspectCard();
         setSuspectSelectedCard();
         setSuspectID();
+        setSuspectColor();
     }
 
     private void setSuspectName() {
@@ -80,6 +89,15 @@ public class SuspectData {
         suspectSelectedCard.put(5, gameAssets.getSelectedMustardCard());
     }
 
+    private void setSuspectColor() {
+        suspectColor.put(0, Color.LIGHT_GRAY);
+        suspectColor.put(1, new Color(60,150,60));
+        suspectColor.put(2, Color.BLUE);
+        suspectColor.put(3, new Color(130,0,150));
+        suspectColor.put(4, Color.RED);
+        suspectColor.put(5, Color.ORANGE);
+    }
+
     public Point getSuspectSpawn(int index) {
         return suspectSpawn.getOrDefault(index, null);
     }
@@ -101,11 +119,15 @@ public class SuspectData {
     }
 
     public int getSuspectAmount() {
-        return this.suspectAmount;
+        return 6;
     }
 
     public String getSuspectID(int index){
         return suspectID.getOrDefault(index, null);
+    }
+
+    public Color getSuspectColor(int index) {
+        return suspectColor.getOrDefault(index, null);
     }
 
 

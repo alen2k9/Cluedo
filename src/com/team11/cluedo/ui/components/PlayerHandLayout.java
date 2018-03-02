@@ -1,5 +1,14 @@
+/*
+  Code to handle the display of player cards.
+
+  Authors Team11:  Jack Geraghty - 16384181
+                   Conor Beenham - 16350851
+                   Alen Thomas   - 16333003
+ */
+
 package com.team11.cluedo.ui.components;
 
+import com.team11.cluedo.assets.Assets;
 import com.team11.cluedo.cards.Cards;
 import com.team11.cluedo.players.PlayerHand;
 import com.team11.cluedo.players.Players;
@@ -16,6 +25,8 @@ public class PlayerHandLayout extends JPanel {
     private PlayerHand playerHand;
     private Resolution resolution;
 
+    private Assets gameAssets;
+
     private final double scalar = .6;
 
     public PlayerHandLayout (Cards gameCards, Players gamePlayers, Resolution resolution) {
@@ -23,6 +34,7 @@ public class PlayerHandLayout extends JPanel {
         this.gamePlayers = gamePlayers;
         this.playerHand = gamePlayers.getPlayer(0).getPlayerHand();
         this.resolution = resolution;
+        this.gameAssets = new Assets();
         this.setBackground(Color.DARK_GRAY);
         setupLayout();
     }
@@ -44,6 +56,9 @@ public class PlayerHandLayout extends JPanel {
             if (i > 0 && x % 2 == 0) {
                 x = 0;
                 y++;
+                if (i == playerHand.getCardAmount()-1) {
+                    gbc.gridwidth = 2;
+                }
             }
             gbc.gridx = x; gbc.gridy = y;
             card = new ImageIcon(playerHand.getCard(i).getCardImage().getScaledInstance(
@@ -53,7 +68,7 @@ public class PlayerHandLayout extends JPanel {
             playerCards.add(new JLabel(card), gbc);
         }
         TitledBorder border = new TitledBorder(new LineBorder(Color.BLACK,3), "Player Hand");
-        border.setTitleFont(new Font("Calibri",Font.BOLD, (int)(20*resolution.getScalePercentage())));
+        border.setTitleFont(new Font("Orange Kid",Font.BOLD, (int)(20*resolution.getScalePercentage())));
         border.setTitleColor(Color.WHITE);
         playerCards.setBorder(border);
         this.add(playerCards, BorderLayout.CENTER);
@@ -82,8 +97,8 @@ public class PlayerHandLayout extends JPanel {
             publicCards.add(new JLabel(card), gbc);
         }
 
-        TitledBorder border = new TitledBorder(new LineBorder(Color.BLACK,3), "Public Cards");
-        border.setTitleFont(new Font("Calibri",Font.BOLD, (int)(20*resolution.getScalePercentage())));
+        TitledBorder border = new TitledBorder(new LineBorder(Color.BLACK,3), "PUBLIC CARDS");
+        border.setTitleFont(new Font("Orange Kid", Font.BOLD, (int)(15*resolution.getScalePercentage())));
         border.setTitleColor(Color.WHITE);
         publicCards.setBorder(border);
         return publicCards;

@@ -1,14 +1,14 @@
 /*
-    Main Author : Jack Geraghty : 16384181
-    Team11 : Jack Geraghty : 16384181
-             Conor Beenham :
-             Alen Thomas   :
+  Code to handle the notes sheet.
 
+  Authors Team11:  Jack Geraghty - 16384181
+                   Conor Beenham - 16350851
+                   Alen Thomas   - 16333003
  */
 
 package com.team11.cluedo.players;
 
-import com.team11.cluedo.board.RoomData;
+import com.team11.cluedo.board.room.RoomData;
 import com.team11.cluedo.suspects.SuspectData;
 import com.team11.cluedo.ui.Resolution;
 import com.team11.cluedo.weapons.WeaponData;
@@ -62,11 +62,11 @@ public class Notes extends JTable {
         this.getTableHeader().setForeground(Color.WHITE);
         this.getTableHeader().setDefaultRenderer(new NotesHeadRenderer());
         this.getTableHeader().setReorderingAllowed(false);
-        this.getTableHeader().setFont(new Font("Calibri", Font.BOLD, (int)(14*resolution.getScalePercentage())));
+        this.getTableHeader().setFont(new Font("Orange Kid", Font.BOLD, (int)(18*resolution.getScalePercentage())));
 
 
         this.setGridColor((Color.BLACK));
-        this.setFont(new Font("Calibri", Font.BOLD, (int)(14*resolution.getScalePercentage())));
+        this.setFont(new Font("Orange Kid", Font.BOLD, (int)(18*resolution.getScalePercentage())));
         this.setRowHeight((int)(27.5 * resolution.getScalePercentage()));
 
         //Set the preferred with and make all the columns non resizable

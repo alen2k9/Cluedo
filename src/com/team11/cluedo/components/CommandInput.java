@@ -1,4 +1,5 @@
 /*
+ * Code to handle the input of user commands.
  *
  * Authors Team11:  Jack Geraghty - 16384181
  *                  Conor Beenham - 16350851

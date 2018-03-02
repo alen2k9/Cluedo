@@ -1,26 +1,32 @@
-package com.team11.cluedo.suspects;
+/*
+  Code to handle the player points of the rooms.
+
+  Authors Team11:  Jack Geraghty - 16384181
+                   Conor Beenham - 16350851
+                   Alen Thomas   - 16333003
+ */
+
+package com.team11.cluedo.board.room;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 
-public class PlayerPoints {
+public class SuspectPoints {
     
-    ArrayList<ArrayList<Point>> playerSpawnLists = new ArrayList<>();
-    
-    ArrayList<Point> kitchenPlayerSpawns = new ArrayList<>();
-    ArrayList<Point> ballroomPlayerSpawns = new ArrayList<>();
-    ArrayList<Point> conservatoryPlayerSpawns = new ArrayList<>();
-    ArrayList<Point> diningRoomPlayerSpawns = new ArrayList<>();
-    ArrayList<Point> billiardRoomPlayerSpawns = new ArrayList<>();
-    ArrayList<Point> libraryPlayerSpawns = new ArrayList<>();
-    ArrayList<Point> loungePlayerSpawns = new ArrayList<>();
-    ArrayList<Point> hallPlayerSpawns = new ArrayList<>();
-    ArrayList<Point> studyPlayerSpawns = new ArrayList<>();
-    ArrayList<Point> cellarPlayerSpawns = new ArrayList<>();
+    private ArrayList<ArrayList<Point>> playerSpawnLists = new ArrayList<>();
 
+    private ArrayList<Point> kitchenPlayerSpawns = new ArrayList<>();
+    private ArrayList<Point> ballroomPlayerSpawns = new ArrayList<>();
+    private ArrayList<Point> conservatoryPlayerSpawns = new ArrayList<>();
+    private ArrayList<Point> diningRoomPlayerSpawns = new ArrayList<>();
+    private ArrayList<Point> billiardRoomPlayerSpawns = new ArrayList<>();
+    private ArrayList<Point> libraryPlayerSpawns = new ArrayList<>();
+    private ArrayList<Point> loungePlayerSpawns = new ArrayList<>();
+    private ArrayList<Point> hallPlayerSpawns = new ArrayList<>();
+    private ArrayList<Point> studyPlayerSpawns = new ArrayList<>();
+    private ArrayList<Point> cellarPlayerSpawns = new ArrayList<>();
     
-    public PlayerPoints(){
+    public SuspectPoints(){
         fillPlayerPoints();
     }
     

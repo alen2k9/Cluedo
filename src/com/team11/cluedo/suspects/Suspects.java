@@ -1,5 +1,5 @@
-/**
- * Code to handle the players in the game.
+/*
+ * Code to handle the suspects in the game.
  *
  * Authors Team11:  Jack Geraghty - 16384181
  *                  Conor Beenham - 16350851

@@ -1,24 +1,28 @@
-package com.team11.cluedo.ui;
+/*
+  Code to handle the creation of the Menu screen, character selection and UI.
 
+  Authors Team11:  Jack Geraghty - 16384181
+                   Conor Beenham - 16350851
+                   Alen Thomas   - 16333003
+ */
+
+package com.team11.cluedo.ui;
 
 import com.team11.cluedo.assets.Assets;
 import com.team11.cluedo.board.Board;
 import com.team11.cluedo.players.Players;
+import com.team11.cluedo.suspects.SuspectData;
 import com.team11.cluedo.suspects.Suspects;
 import com.team11.cluedo.components.*;
 import javax.swing.*;
+import javax.swing.border.LineBorder;
+import javax.swing.plaf.basic.BasicComboBoxUI;
 import java.awt.*;
 import java.io.IOException;
 
 import com.team11.cluedo.ui.panel.*;
 import com.team11.cluedo.weapons.Weapons;
 
-/**
- * The Menu Screen Class
- * Used to handle the title screen, selection of characters and passing through to the Game Screen
- *
- * Main author: Conor Beenham - 16350851
- */
 public class MenuScreen implements Screen {
     private JFrame frame;
     private JPanel mainPanel;
@@ -57,23 +61,15 @@ public class MenuScreen implements Screen {
         this.displayScreen();
     }
 
-    /**
-     *  Method handled to create the screen
-     *  @param name Used for the naming of the JPanel
-     */
     @Override
     public void createScreen(String name) {
         this.frame = new JFrame(name);
         this.frame.setResizable(false);
         this.frame.getContentPane().add(this.mainPanel);
-        this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.frame.pack();
     }
 
-    /**
-     *  Method handled to set up the screen
-     *  @param state Used for the setup of which screen state
-     */
     @Override
     public void setupScreen(int state) {
         if (state == 0) {
@@ -86,19 +82,12 @@ public class MenuScreen implements Screen {
         }
     }
 
-    /**
-     *  Method handled to display the screen
-     */
     @Override
     public void displayScreen() {
         this.frame.setLocation(resolution.getScreenSize().width/2 - frame.getSize().width/2, resolution.getScreenSize().height/2 - (frame.getSize().height/2));
         this.frame.setVisible(true);
     }
 
-    /**
-     *  Method handled to close the screen
-     *  Removes everything from the frame closes Frame
-     */
     @Override
     public void closeScreen() {
         this.mainPanel.removeAll();
@@ -106,22 +95,13 @@ public class MenuScreen implements Screen {
         this.frame.dispose();
     }
 
-    /**
-     *  Method handled to re-draw the screen
-     */
     @Override
     public void reDraw(int currentPlayer) {
 
     }
 
-    /**
-     *  Custom JPanel used to draw image on the background of the panel
-     */
     public class MenuPanel extends JPanel {
-        /**
-         * Constructor for the object MenuPanel
-         * @param layout Used to set the layout manager for the Panel.
-         */
+
         MenuPanel(LayoutManager layout) {
             super.setLayout(layout);
         }
@@ -134,34 +114,36 @@ public class MenuScreen implements Screen {
         }
     }
 
-    /**
-     * Setting up and laying out the content of the screen using custom JPanel object.
-     * @return MenuPanel to be used in the JFrame
-     */
     private MenuPanel getMenuContent() {
         MenuPanel menuPanel = new MenuPanel(new GridBagLayout());
 
         GridBagConstraints gbc = new GridBagConstraints();
 
-        JLabel playerAmount = new JLabel("Select amount of players: ");
+        JLabel playerAmount = new JLabel("SELECT AMOUNT OF PLAYERS: ");
+        playerAmount.setFont(new Font("Bulky Pixels", Font.BOLD, (int)(20 * resolution.getScalePercentage())));
         playerAmount.setForeground(Color.WHITE);
         playerAmount.setBackground(Color.BLACK);
 
-        String[] amountChoice = new String[] {"Two", "Three", "Four", "Five", "Six"};
-        JComboBox amountList = new JComboBox(amountChoice);
-        amountList.setSelectedIndex(0);
+        JButton playButton = new JButton("PLAY");
+        playButton.setFont(new Font("Bulky Pixels", Font.BOLD, (int)(30 * resolution.getScalePercentage())));
+        playButton.setBorderPainted(false);
+        playButton.setContentAreaFilled(false);
+        playButton.setFocusPainted(false);
+        playButton.setOpaque(false);
+        playButton.setForeground(Color.WHITE);
 
-        JButton playButton = new JButton("Play");
         gbc.gridx = 0; gbc.gridy = 0;
         gbc.gridwidth = 2;
         gbc.insets = new Insets(5,5, 5, 5);
         menuPanel.add(playerAmount, gbc);
         gbc.gridwidth = 1;
         gbc.gridx = 2;
+        JComboBox amountList = setupComboBox();
         menuPanel.add(amountList, gbc);
         gbc.gridwidth = 3;
         gbc.gridx = 0; gbc.gridy = 1;
         menuPanel.add(playButton, gbc);
+
 
         playButton.addActionListener(e -> {
             this.numPlayers = amountList.getSelectedIndex() + 2;
@@ -174,16 +156,22 @@ public class MenuScreen implements Screen {
             this.displayScreen();
         });
 
+        playButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                playButton.setForeground(Color.RED);
+            }
+
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                playButton.setForeground(Color.WHITE);
+            }
+        });
+
         ImageIcon splash = new ImageIcon(gameAssets.getSplashImage());
         Dimension imageSize = new Dimension((int)(splash.getIconWidth() * this.resolution.getScalePercentage()), (int)(splash.getIconHeight() * this.resolution.getScalePercentage()));
         menuPanel.setPreferredSize(imageSize);
         return menuPanel;
     }
 
-    /**
-     * Setting up and laying out the content of the screen using custom JPanel object.
-     * @return BackgroundPanel to be used in the JFrame
-     */
     private BackgroundPanel getPlayerSelection() {
         ImageIcon backgroundTile = this.gameAssets.getBackgroundTile();
         Image backgroundImage = backgroundTile.getImage();
@@ -222,9 +210,24 @@ public class MenuScreen implements Screen {
 
         gbc.gridx = 1; gbc.gridy = 3;
         this.nameInput = new JTextField(20);
+
+        Font f = new Font("Orange Kid",Font.BOLD, (int)(25*resolution.getScalePercentage()));
+
+        nameInput.setFont(f);
+        nameInput.setBackground(Color.WHITE);
+        nameInput.setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
+        nameInput.setForeground(gameAssets.getDarkerGrey());
+        nameInput.setBorder(new LineBorder(Color.DARK_GRAY, 5));
         nameInput.setHorizontalAlignment(JTextField.CENTER);
         backgroundPanel.add(nameInput, gbc);
-        this.enterButton = new JButton("Enter");
+        this.enterButton = new JButton("ENTER");
+
+        enterButton.setFont(new Font("Orange Kid", Font.BOLD, (int)(35 * resolution.getScalePercentage())));
+        enterButton.setBorderPainted(false);
+        enterButton.setContentAreaFilled(false);
+        enterButton.setFocusPainted(false);
+        enterButton.setOpaque(false);
+        enterButton.setForeground(Color.WHITE);
 
         //  Action listener for players
         this.enterButton.addActionListener(e -> {
@@ -275,22 +278,30 @@ public class MenuScreen implements Screen {
             }
         });
 
+        enterButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                enterButton.setForeground(Color.RED);
+            }
+
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                enterButton.setForeground(Color.WHITE);
+            }
+        });
+
         gbc.gridy += 1;
         backgroundPanel.add(this.enterButton, gbc);
         return backgroundPanel;
     }
 
-    /**
-     * Method to add actionlistener to all character buttons
-     * @param index Current button being used
-     * @param button JButton array of character buttons
-     * @param selectedIcon The ImageIcon used when button has been clicked
-     */
     private void setButtonDisplay(int index, JButton[] button, ImageIcon selectedIcon) {
         ImageIcon scaledDefaultIcon = new ImageIcon(((ImageIcon)button[index].getIcon()).getImage().getScaledInstance(
                 (int)(selectedIcon.getIconWidth()*resolution.getScalePercentage()),(int)(selectedIcon.getIconHeight()*resolution.getScalePercentage()), 0));
         ImageIcon scaledSelectedIcon = new ImageIcon(selectedIcon.getImage().getScaledInstance(
                 (int)(selectedIcon.getIconWidth()*resolution.getScalePercentage()),(int)(selectedIcon.getIconHeight()*resolution.getScalePercentage()), 0));
+
+        int borderThickness = 8;
+        SuspectData data = new SuspectData();
+        button[index].setBorder(BorderFactory.createLineBorder(data.getSuspectColor(index), borderThickness));
 
         button[index].setBorderPainted(false);
         button[index].setContentAreaFilled(false);
@@ -315,11 +326,44 @@ public class MenuScreen implements Screen {
             nameInput.requestFocus();
             frame.getRootPane().setDefaultButton(enterButton);
         });
+
+        button[index].addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                if (button[index].isEnabled())
+                    button[index].setBorderPainted(true);
+            }
+
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                if (!button[index].isSelected())
+                    button[index].setBorderPainted(false);
+            }
+        });
     }
 
-    /**
-     * Method to launch game with current players
-     */
+    private JComboBox setupComboBox() {
+        UIManager.put("ComboBox.background", Color.LIGHT_GRAY);
+        UIManager.put("ComboBox.foreground", gameAssets.getDarkerGrey());
+        UIManager.put("ComboBox.buttonBackground", gameAssets.getDarkerGrey());
+        UIManager.put("ComboBox.buttonDarkShadow", Color.LIGHT_GRAY);
+        UIManager.put("ComboBox.buttonHighlight", gameAssets.getDarkerGrey());
+        UIManager.put("ComboBox.buttonShadow", gameAssets.getDarkerGrey());
+        UIManager.put("ComboBox.selectionBackground", gameAssets.getDarkerGrey());
+        UIManager.put("ComboBox.selectionForeground", Color.WHITE);
+        UIManager.put("ComboBox.border", BorderFactory.createEmptyBorder());
+
+        String[] amountChoice = new String[] {"TWO", "THREE", "FOUR", "FIVE", "SIX"};
+        JComboBox amountList = new JComboBox<>(amountChoice);
+        amountList.setUI(new BasicComboBoxUI(){
+            @Override
+            protected void installDefaults() {
+                super.installDefaults();
+            }
+        });
+        amountList.setFont(new Font("Bulky Pixels", Font.BOLD, (int)(20 * resolution.getScalePercentage())));
+        amountList.setSelectedIndex(0);
+        return amountList;
+    }
+
     private void startGame() {
         gameScreen.createScreen("Cluedo");
         gameScreen.setupScreen(1);

@@ -1,3 +1,11 @@
+/*
+ * Code to handle the superClass card.
+ *
+ * Authors Team11:  Jack Geraghty - 16384181
+ *                  Conor Beenham - 16350851
+ *                  Alen Thomas   - 16333003
+ */
+
 package com.team11.cluedo.cards;
 
 import java.awt.*;
@@ -8,12 +16,6 @@ public class Card {
 
     public Card() {
 
-    }
-
-    public Card(Image cardImage, Image selectedCardImage, String name) {
-        this.cardImage = cardImage;
-        this.selectedCardImage = selectedCardImage;
-        this.name = name;
     }
 
     public void setCardImage(Image cardImage) {

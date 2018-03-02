@@ -10,9 +10,13 @@ package com.team11.cluedo.assets;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
+import java.io.InputStream;
 
 public class Assets {
     public Assets() {
+        setupTitleFont();
+        setupPixelFont();
     }
 
     public Image getBoardImage() {
@@ -271,6 +275,48 @@ public class Assets {
 
     public Image getSelectedStudyCard() {
         return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("roomCard.png"));
+    }
+
+    ////////////////////////////////////////////
+    //                                        //
+    //             CUSTOM FONTS               //
+    //                                        //
+    ////////////////////////////////////////////
+
+    private void setupTitleFont() {
+        InputStream fontIn = getClass().getResourceAsStream("BulkyPixel.TTF");
+        try {
+            GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(
+                    Font.createFont(Font.TRUETYPE_FONT, fontIn));
+        } catch (FontFormatException f) {
+            System.out.println("Looks like I can't make your font.");
+        } catch (IOException e) {
+            System.out.println("Can't find font file.");
+        }
+    }
+
+    private void setupManaspaceFont() {
+        InputStream fontIn = getClass().getResourceAsStream("manaspc.TTF");
+        try {
+            GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(
+                    Font.createFont(Font.TRUETYPE_FONT, fontIn));
+        } catch (FontFormatException f) {
+            System.out.println("Looks like I can't make your font.");
+        } catch (IOException e) {
+            System.out.println("Can't find font file.");
+        }
+    }
+
+    private void setupPixelFont() {
+        InputStream fontIn = getClass().getResourceAsStream("orange kid.TTF");
+        try {
+            GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(
+                    Font.createFont(Font.TRUETYPE_FONT, fontIn));
+        } catch (FontFormatException f) {
+            System.out.println("Looks like I can't make your font.");
+        } catch (IOException e) {
+            System.out.println("Can't find font file.");
+        }
     }
 
     public Color getDarkerGrey() {

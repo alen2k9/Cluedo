@@ -1,6 +1,14 @@
+/*
+ * Code to handle the creation of the cluedo cards.
+ *
+ * Authors Team11:  Jack Geraghty - 16384181
+ *                  Conor Beenham - 16350851
+ *                  Alen Thomas   - 16333003
+ */
+
 package com.team11.cluedo.cards;
 
-import com.team11.cluedo.board.RoomData;
+import com.team11.cluedo.board.room.RoomData;
 import com.team11.cluedo.players.Players;
 import com.team11.cluedo.suspects.SuspectData;
 import com.team11.cluedo.weapons.WeaponData;

@@ -9,7 +9,7 @@
 package com.team11.cluedo.suspects;
 
 import com.team11.cluedo.board.Board;
-import com.team11.cluedo.board.TileType;
+import com.team11.cluedo.board.room.TileType;
 import com.team11.cluedo.ui.Resolution;
 import javax.swing.*;
 import java.awt.*;
@@ -23,128 +23,20 @@ public class Suspect extends JComponent{
     private Point location;
     private Image tokenImage;
     private Resolution resolution;
-    private int numMoves;
-    private int currentRoom;    //By default and when in hallways current room is -1
-    private boolean isInRoom;
-    private Point previousLocation; //Point before the player has moved
-    private Point lastPoint;     //Previous location during each move
-    /*
-     * @param location : The location of the player
-     * @param suspectName : The suspectName of the player
-     * @param suspectID : The ID associated with the player
-     */
+    private int currentRoom;
+    private Point previousLocation;
+    private Point lastPoint;
+
     public Suspect(int suspectID, String suspectName, Point location, Image tokenImage, Resolution resolution){
         this.suspectID = suspectID;
         this.suspectName = suspectName;
         this.location = location;
         this.tokenImage = tokenImage;
         this.resolution = resolution;
-        this.numMoves = 0;
         this.currentRoom = -1;
-        this.isInRoom = false;
         this.previousLocation = null;
     }
 
-    public String getSuspectName() {
-        return this.suspectName;
-    }
-
-    public int getNumMoves() {
-        return numMoves;
-    }
-
-    public void setNumMoves(int num){
-        this.numMoves = num;
-    }
-
-    public void setLoc(Point p){
-        this.location = p;
-        System.out.println("Location has been changed to ");
-    }
-
-    public Point getLoc(){
-        return this.location;
-    }
-
-    public void setSuspectID(int i){
-        this.suspectID = i;
-    }
-
-    public int getSuspectID(){
-        return this.suspectID;
-    }
-
-    public void setCurrentRoom(int currRoom){
-        this.currentRoom = currRoom;
-    }
-
-    public int getCurrentRoom(){
-        return this.currentRoom;
-    }
-
-    public String getCurrentRoomName() {
-        switch (currentRoom) {
-            case 0:
-                return "Kitchen";
-            case 1:
-                return "Ballroom";
-            case 2:
-                return "Conservatory";
-            case 3:
-                return "Dining Room";
-            case 4:
-                return "Billiard Room";
-            case 5:
-                return "Library";
-            case 6:
-                return "Lounge";
-            case 7:
-                return "Hall";
-            case 8:
-                return "Study";
-            case 9:
-                return "Cellar";
-            default:
-                return "";
-        }
-    }
-
-    public void setInRoom(boolean b){
-        this.isInRoom = b;
-    }
-
-    public boolean isInRoom(){
-        return currentRoom >= 0;
-    }
-
-    public void setPreviousLocation(Point point){
-        this.previousLocation = point;
-    }
-
-    public Point getPreviousLocation(){
-        return this.previousLocation;
-    }
-
-    public void setLastPoint(Point point){
-        this.lastPoint = point;
-    }
-
-    public Point getLastPoint(){
-        return this.lastPoint;
-    }
-
-    public void draw(Graphics g){
-        Graphics2D g2 = (Graphics2D) g;
-
-        /*
-         * Draw the ellipse at an offset of the suspects location and the size of each tile
-         */
-        g2.drawImage(this.tokenImage, (int)(this.location.getX() * ((int)(30 * this.resolution.getScalePercentage()))),
-                (int)(this.location.getY() * ((int)(30 * this.resolution.getScalePercentage()))),
-                ((int)(30 * this.resolution.getScalePercentage())),  ((int)(30 * this.resolution.getScalePercentage())),null);
-    }
-
-    //Method which checks the moves passed in to see if they are valid and then checks to see if the final position is occupied or not
     private boolean checkMove(ArrayList<Direction> moveList, Board gameBoard) {
         Point testerPoint = new Point(this.getLoc());
         ArrayList<Direction> tmpList = new ArrayList<>(moveList);
@@ -367,7 +259,6 @@ public class Suspect extends JComponent{
     //Method to move a player into a room when they land on a door tile
     private void moveToRoom(Board gameBoard){
         int currRoom = findParentRoom(gameBoard.getBoardPos((int)this.getLoc().getY(), (int)this.getLoc().getX()).getLocation(), gameBoard);
-        this.isInRoom = true;
         Point nextPoint = gameBoard.getRoom(currRoom).getRandomPoint(gameBoard.getRoom(currRoom).getPlayerPositions());
         this.setLoc(nextPoint);
         this.setCurrentRoom(currRoom);
@@ -380,7 +271,6 @@ public class Suspect extends JComponent{
         Point currPoint = new Point(this.getLoc());
         Point nextPoint = new Point(gameBoard.getRoom(this.getCurrentRoom()).getExitPoints().get(exitNum));
         gameBoard.getRoom(this.getCurrentRoom()).getPlayerPositions().add(currPoint);
-        this.isInRoom = false;
         this.setLoc(nextPoint);
         this.setCurrentRoom(-1);
 
@@ -471,5 +361,93 @@ public class Suspect extends JComponent{
             default:
                 return dir;
         }
+    }
+
+    //  Setters
+
+    private void setPreviousLocation(Point point){
+        this.previousLocation = point;
+    }
+
+    private void setLastPoint(Point point){
+        this.lastPoint = point;
+    }
+
+    private void setLoc(Point p){
+        this.location = p;
+        System.out.println("Location has been changed to ");
+    }
+
+    public void setSuspectID(int i){
+        this.suspectID = i;
+    }
+
+    private void setCurrentRoom(int currRoom){
+        this.currentRoom = currRoom;
+    }
+
+    //  Getters
+
+    private Point getPreviousLocation(){
+        return this.previousLocation;
+    }
+
+    public String getCurrentRoomName() {
+        switch (currentRoom) {
+            case 0:
+                return "Kitchen";
+            case 1:
+                return "Ballroom";
+            case 2:
+                return "Conservatory";
+            case 3:
+                return "Dining Room";
+            case 4:
+                return "Billiard Room";
+            case 5:
+                return "Library";
+            case 6:
+                return "Lounge";
+            case 7:
+                return "Hall";
+            case 8:
+                return "Study";
+            case 9:
+                return "Cellar";
+            default:
+                return "";
+        }
+    }
+
+    public boolean isInRoom(){
+        return currentRoom >= 0;
+    }
+
+    public Point getLastPoint(){
+        return this.lastPoint;
+    }
+
+    public String getSuspectName() {
+        return this.suspectName;
+    }
+
+    public Point getLoc(){
+        return this.location;
+    }
+
+    public int getSuspectID(){
+        return this.suspectID;
+    }
+
+    public int getCurrentRoom(){
+        return this.currentRoom;
+    }
+
+    public void draw(Graphics g){
+        Graphics2D g2 = (Graphics2D) g;
+
+        g2.drawImage(this.tokenImage, (int)(this.location.getX() * ((int)(30 * this.resolution.getScalePercentage()))),
+                (int)(this.location.getY() * ((int)(30 * this.resolution.getScalePercentage()))),
+                ((int)(30 * this.resolution.getScalePercentage())),  ((int)(30 * this.resolution.getScalePercentage())),null);
     }
 }
