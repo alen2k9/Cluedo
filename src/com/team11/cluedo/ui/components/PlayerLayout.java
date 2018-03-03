@@ -1,17 +1,26 @@
-package com.team11.cluedo.ui;
+/*
+ * Code to handle the display of players and current player
+ *
+ * Authors Team11:  Jack Geraghty - 16384181
+ *                  Conor Beenham - 16350851
+ *                  Alen Thomas   - 16333003
+ */
+
+package com.team11.cluedo.ui.components;
 
 import com.team11.cluedo.players.Players;
 import com.team11.cluedo.suspects.Suspects;
+import com.team11.cluedo.ui.Resolution;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class PlayerCardLayout extends JPanel {
+public class PlayerLayout extends JPanel {
     private Players gamePlayers;
     private Resolution resolution;
     private int currentPlayer;
 
-    public PlayerCardLayout (Players gamePlayers, Resolution resolution, int currentPlayer) {
+    public PlayerLayout(Players gamePlayers, Resolution resolution, int currentPlayer) {
         this.gamePlayers = gamePlayers;
         this.resolution = resolution;
         this.currentPlayer = currentPlayer;

@@ -10,9 +10,13 @@ package com.team11.cluedo.assets;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
+import java.io.InputStream;
 
 public class Assets {
     public Assets() {
+        setupTitleFont();
+        setupPixelFont();
     }
 
     public Image getBoardImage() {
@@ -202,75 +206,117 @@ public class Assets {
     ////////////////////////////////////////////
 
     public Image getKitchenCard() {
-        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("revolverCard.png"));
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("roomCard.png"));
     }
 
     public Image getBallroomCard() {
-        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("wrenchCard.png"));
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("roomCard.png"));
     }
 
     public Image getConservatoryCard() {
-        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("daggerCard.png"));
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("roomCard.png"));
     }
 
     public Image getDiningCard() {
-        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("poisonCard.png"));
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("roomCard.png"));
     }
 
     public Image getBilliardCard() {
-        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("hatchetCard.png"));
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("roomCard.png"));
     }
 
     public Image getLibraryCard() {
-        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("ropeCard.png"));
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("roomCard.png"));
     }
 
     public Image getLoungeCard() {
-        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("ropeCard.png"));
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("roomCard.png"));
     }
 
     public Image getHallCard() {
-        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("ropeCard.png"));
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("roomCard.png"));
     }
 
     public Image getStudyCard() {
-        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("ropeCard.png"));
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("roomCard.png"));
     }
 
     public Image getSelectedKitchenCard() {
-        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("revolverCard.png"));
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("roomCard.png"));
     }
 
     public Image getSelectedBallroomCard() {
-        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("wrenchCard.png"));
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("roomCard.png"));
     }
 
     public Image getSelectedConservatoryCard() {
-        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("daggerCard.png"));
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("roomCard.png"));
     }
 
     public Image getSelectedDiningCard() {
-        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("poisonCard.png"));
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("roomCard.png"));
     }
 
     public Image getSelectedBilliardCard() {
-        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("hatchetCard.png"));
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("roomCard.png"));
     }
 
     public Image getSelectedLibraryCard() {
-        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("ropeCard.png"));
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("roomCard.png"));
     }
 
     public Image getSelectedLoungeCard() {
-        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("ropeCard.png"));
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("roomCard.png"));
     }
 
     public Image getSelectedHallCard() {
-        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("ropeCard.png"));
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("roomCard.png"));
     }
 
     public Image getSelectedStudyCard() {
-        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("ropeCard.png"));
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("roomCard.png"));
+    }
+
+    ////////////////////////////////////////////
+    //                                        //
+    //             CUSTOM FONTS               //
+    //                                        //
+    ////////////////////////////////////////////
+
+    private void setupTitleFont() {
+        InputStream fontIn = getClass().getResourceAsStream("BulkyPixel.TTF");
+        try {
+            GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(
+                    Font.createFont(Font.TRUETYPE_FONT, fontIn));
+        } catch (FontFormatException f) {
+            System.out.println("Looks like I can't make your font.");
+        } catch (IOException e) {
+            System.out.println("Can't find font file.");
+        }
+    }
+
+    private void setupManaspaceFont() {
+        InputStream fontIn = getClass().getResourceAsStream("manaspc.TTF");
+        try {
+            GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(
+                    Font.createFont(Font.TRUETYPE_FONT, fontIn));
+        } catch (FontFormatException f) {
+            System.out.println("Looks like I can't make your font.");
+        } catch (IOException e) {
+            System.out.println("Can't find font file.");
+        }
+    }
+
+    private void setupPixelFont() {
+        InputStream fontIn = getClass().getResourceAsStream("orange kid.TTF");
+        try {
+            GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(
+                    Font.createFont(Font.TRUETYPE_FONT, fontIn));
+        } catch (FontFormatException f) {
+            System.out.println("Looks like I can't make your font.");
+        } catch (IOException e) {
+            System.out.println("Can't find font file.");
+        }
     }
 
     public Color getDarkerGrey() {

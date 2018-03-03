@@ -1,4 +1,5 @@
 /*
+<<<<<<< HEAD:src/com/team11/cluedo/ui/MoveOverlay.java
     Code to handle the overlaying of possible moves
 
     Authors Team11:    Jack Geraghty - 16384181
@@ -6,7 +7,16 @@
                        Alen Thomas   - 16333003
 */
 
-package com.team11.cluedo.ui;
+package com.team11.cluedo.ui.components;
+
+/*
+ * Code to handle the overlay of possible moves.
+ *
+ * Authors Team11:  Jack Geraghty - 16384181
+ *                  Conor Beenham - 16350851
+ *                  Alen Thomas   - 16333003
+ */
+
 
 import javax.swing.*;
 import java.awt.*;
@@ -27,7 +37,7 @@ public class MoveOverlay extends JComponent{
         return validMoves;
     }
 
-    public void setValidMoves(ArrayList<OverlayTile> validMoves){
+    public void setValidMoves(ArrayList<OverlayTile> validMoves) {
         this.validMoves = validMoves;
     }
 
@@ -63,15 +73,16 @@ public class MoveOverlay extends JComponent{
     }
 
     @Override
-    public void paintComponent(Graphics g){
+    public void paintComponent(Graphics g) {
         //System.out.println("Valid Moves: " + validMoves.size());
-        for (OverlayTile overlayTile : validMoves){
+        for (OverlayTile overlayTile : validMoves) {
             this.draw(g, overlayTile);
         }
     }
 
     public void draw(Graphics g, OverlayTile overlayTile){
         Graphics2D g2 = (Graphics2D) g;
+
         int alpha = 90;
 
         if (doorSet.contains(new Point(overlayTile.getLocation()))){

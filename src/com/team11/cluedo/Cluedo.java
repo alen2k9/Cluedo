@@ -1,4 +1,4 @@
-/**
+/*
  * The Main Class of the game.
  *
  * Authors Team11:  Jack Geraghty - 16384181

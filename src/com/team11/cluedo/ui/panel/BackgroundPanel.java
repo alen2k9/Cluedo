@@ -1,4 +1,4 @@
-/**
+/*
  * Custom panel class to draw image to background of panel
  *
  * Authors Team11:  Jack Geraghty - 16384181
@@ -42,9 +42,8 @@ public class BackgroundPanel extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        if(image == null) {
+        if(image == null)
             return;
-        }
 
         switch (style) {
             case SCALED: {

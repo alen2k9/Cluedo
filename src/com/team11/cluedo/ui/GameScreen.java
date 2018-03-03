@@ -6,7 +6,6 @@
                    Alen Thomas   - 16333003
  */
 
-
 package com.team11.cluedo.ui;
 
 import com.team11.cluedo.assets.Assets;
@@ -16,6 +15,10 @@ import com.team11.cluedo.components.InputData;
 import com.team11.cluedo.board.Board;
 import com.team11.cluedo.players.Players;
 import com.team11.cluedo.suspects.Suspects;
+import com.team11.cluedo.ui.components.MoveOverlay;
+import com.team11.cluedo.ui.components.NotesPanel;
+import com.team11.cluedo.ui.components.PlayerHandLayout;
+import com.team11.cluedo.ui.components.PlayerLayout;
 import com.team11.cluedo.ui.panel.BackgroundPanel;
 import com.team11.cluedo.weapons.Weapons;
 import com.team11.cluedo.cards.Cards;
@@ -32,7 +35,9 @@ public class GameScreen implements Screen {
 
     private JFrame frame;
     private BoardUI boardPanel;
-    private PlayerCardLayout playerPanel;
+    private PlayerLayout playerPanel;
+    private PlayerHandLayout playerHandPanel;
+    private NotesPanel notesPanel;
 
     private MoveOverlay moveOverlay;
 
@@ -67,18 +72,6 @@ public class GameScreen implements Screen {
         this.frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
 
-    public void testFrame(MoveOverlay test){
-        JFrame testFrame = new JFrame();
-        JPanel testPanel = new JPanel(new BorderLayout());
-        testFrame.setSize(500,500);
-        testPanel.setSize(400,400);
-        //System.out.println(test.getValidMoves());
-
-        testPanel.add(test, BorderLayout.CENTER);
-        testFrame.add(testPanel);
-        testFrame.setVisible(true);
-    }
-
     @Override
     public void setupScreen(int state) {
         JPanel mainPanel = new JPanel(new BorderLayout());
@@ -89,9 +82,17 @@ public class GameScreen implements Screen {
         Image backgroundImage = backgroundTile.getImage();
         BackgroundPanel backgroundPanel = new BackgroundPanel(backgroundImage, BackgroundPanel.TILED);
 
-        this.playerPanel = setupPlayerPanel(0);
-        JPanel infoPanel = setupInfoPanel1();
+        this.playerPanel = setupPlayerPanel();
+
         this.boardPanel = new BoardUI(this.gameSuspects, this.gameWeapons, new BoardComponent(),  moveOverlay);
+
+        this.playerPanel = setupPlayerPanel();
+        this.playerHandPanel = setupCardPanel();
+        this.notesPanel = new NotesPanel(gamePlayers);
+
+        JPanel infoPanel = setupInfoPanel();
+        this.boardPanel = new BoardUI(this.gameSuspects, this.gameWeapons, new BoardComponent(), this.moveOverlay);
+
 
         contentPanel.add(playerPanel, BorderLayout.WEST);
         contentPanel.add(infoPanel, BorderLayout.EAST);
@@ -118,18 +119,28 @@ public class GameScreen implements Screen {
     @Override
     public void reDraw(int currentPlayer) {
         this.playerPanel.reDraw(currentPlayer);
+        this.playerHandPanel.reDraw(currentPlayer);
+        this.notesPanel.reDraw(currentPlayer);
         this.boardPanel.repaint();
         this.frame.repaint();
     }
 
     private JPanel setupCommandPanel() {
         JPanel commandPanel = new JPanel(new BorderLayout());
-        Font f = new Font("Calibri",Font.BOLD, (int)(30*resolution.getScalePercentage()));
-        commandInput = new JTextField(15);
+        Font f = new Font("Orange Kid",Font.BOLD, (int)(25*resolution.getScalePercentage()));
 
-        //Code for autocompleting commands
-        //Only add or remove commands to the commandData arrayList in InputData class
-        //Don't change any other code in this section
+        commandInput = new JTextField(15);
+        commandInput.setFont(f);
+        commandInput.setBackground(Color.WHITE);
+        commandInput.setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
+        commandInput.setForeground(Color.DARK_GRAY);
+
+        ////////////////////////////////////////////////////////////////////////////
+        /*
+        Code for auto-completing commands
+        Only add or remove commands to the commandData arrayList in InputData class
+        Don't change any other code in this section
+        */
         commandInput.setFocusTraversalKeysEnabled(false);
         InputData inputData = new InputData();
         Autocomplete autoComplete = new Autocomplete(commandInput, inputData.getCommandData());
@@ -138,25 +149,47 @@ public class GameScreen implements Screen {
         commandInput.getActionMap().put(COMMIT_ACTION, autoComplete.new CommitAction());
         ////////////////////////////////////////////////////////////////////////////////
 
-        commandInput.setFont(f);
-        commandInput.setBackground(Color.WHITE);
-        commandInput.setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
-        commandInput.setForeground(Color.DARK_GRAY);
-
         commandPanel.add(commandInput, BorderLayout.CENTER);
         commandPanel.setOpaque(false);
 
         return commandPanel;
     }
 
-    private JPanel setupInfoPanel1() {
+    private JTextArea setupHelpPanel() {
+        JTextArea helpOutput = new JTextArea(28, 25);
+        int fontSize = (int)(18 * resolution.getScalePercentage());
+        helpOutput.setFont(new Font("Orange Kid",Font.BOLD, fontSize));
+        helpOutput.setEditable(false); infoOutput.setLineWrap(true);
+        helpOutput.setBackground(Color.DARK_GRAY);
+        helpOutput.setForeground(Color.WHITE);
+        helpOutput.setBorder(null);
+
+        try {
+            InputStream in = getClass().getResourceAsStream("helpPanel.txt");
+            BufferedReader br = new BufferedReader(new InputStreamReader(in));
+            String strLine;
+
+            while ((strLine = br.readLine()) != null)   {
+
+                helpOutput.append(strLine + "\n");
+            }
+            in.close();
+
+        }catch (Exception e){
+            System.err.println("Error: " + e.getMessage());
+        }
+
+        return helpOutput;
+    }
+
+    private JPanel setupInfoPanel() {
         UIManager.put("TabbedPane.selected", gameAssets.getDarkerGrey());
         UIManager.put("TabbedPane.contentAreaColor", gameAssets.getDarkerGrey());
 
-        JPanel infoPanel = new JPanel(new BorderLayout());
-        infoPanel.setOpaque(false);
-        this.infoTabs = new JTabbedPane();
+        int fontSize = (int)(25 * resolution.getScalePercentage());
+        Font f = new Font("Orange Kid", Font.BOLD, fontSize);
 
+        this.infoTabs = new JTabbedPane();
         infoTabs.setUI(new BasicTabbedPaneUI(){
             @Override
             protected void installDefaults() {
@@ -171,50 +204,27 @@ public class GameScreen implements Screen {
         });
         infoTabs.setBackground(Color.BLACK);
         infoTabs.setForeground(Color.WHITE);
-        Font f = new Font("Calibri",Font.BOLD, (int)(20*resolution.getScalePercentage()));
-        infoOutput = new JTextArea(28, 25);
+        infoOutput = new JTextArea(22, 25);
         infoOutput.setFont(f);
         infoOutput.setEditable(false); infoOutput.setLineWrap(true);
         infoOutput.setBackground(Color.DARK_GRAY);
         infoOutput.setForeground(Color.WHITE);
         infoOutput.setBorder(null);
 
-        JTextArea helpOutput = new JTextArea(28, 25);
-        f = new Font("Calibri",Font.BOLD, (int)(17*resolution.getScalePercentage()));
-        helpOutput.setFont(f);
-        helpOutput.setEditable(false); infoOutput.setLineWrap(true);
-        helpOutput.setBackground(Color.DARK_GRAY);
-        helpOutput.setForeground(Color.WHITE);
-        helpOutput.setBorder(null);
+        JScrollPane[] scrollPane = new JScrollPane[] {new JScrollPane(infoOutput), new JScrollPane(setupHelpPanel()),
+                new JScrollPane(playerHandPanel), new JScrollPane(notesPanel)};
 
-        try {
-            //Find the boardInfo.txt and open it
-            InputStream in = getClass().getResourceAsStream("helpPanel.txt");
-
-            //Open a buffered reader to read each line
-            BufferedReader br = new BufferedReader(new InputStreamReader(in));
-            String strLine;
-
-            while ((strLine = br.readLine()) != null)   {
-
-                helpOutput.append(strLine + "\n");
-            }
-            in.close();
-
-        }catch (Exception e){//Catch exception if any
-            System.err.println("Error: " + e.getMessage());
-        }
-
-        JScrollPane[] scrollPane = new JScrollPane[] {new JScrollPane(infoOutput), new JScrollPane(helpOutput),
-        new JScrollPane(setupCardPanel()), new JScrollPane(new Notes(resolution).getNotesPanel())};
         for (JScrollPane pane : scrollPane) {
             pane.setBorder(null);
         }
+
         infoTabs.addTab("Game Log", null, scrollPane[0], "Game Log - Forget what's happened so far?");
         infoTabs.addTab("Help Panel", null, scrollPane[1], "Help Panel - List of all commands");
         infoTabs.addTab("Current Cards", null, scrollPane[2], "The Current Cards you're holding");
         infoTabs.addTab("Check List", null, scrollPane[3], "Check List for who has what cards");
 
+        JPanel infoPanel = new JPanel(new BorderLayout());
+        infoPanel.setOpaque(false);
         infoPanel.add(infoTabs, BorderLayout.CENTER);
         infoPanel.add(setupCommandPanel(), BorderLayout.SOUTH);
         return infoPanel;
@@ -222,18 +232,16 @@ public class GameScreen implements Screen {
 
     }
 
-    private JPanel setupCardPanel() {
-        JPanel cardPanel = new JPanel(new BorderLayout());
-        cardPanel.setBackground(Color.DARK_GRAY);
-        return cardPanel;
+    private PlayerHandLayout setupCardPanel() {
+        return new PlayerHandLayout(gameCards, gamePlayers, resolution);
     }
 
-    private PlayerCardLayout setupPlayerPanel(int currentPlayer) {
-        PlayerCardLayout playerPanel = new PlayerCardLayout(gamePlayers, resolution, currentPlayer);
+    private PlayerLayout setupPlayerPanel() {
+        PlayerLayout playerPanel = new PlayerLayout(gamePlayers, resolution, 0);
         playerPanel.setOpaque(false);
         TitledBorder border = new TitledBorder(new LineBorder(Color.BLACK,3), "Players");
-        border.setTitleFont(new Font("Calibri",Font.BOLD, (int)(20*resolution.getScalePercentage())));
-        border.setTitleColor(Color.BLACK);
+        border.setTitleFont(new Font("Orange Kid",Font.BOLD, (int)(20*resolution.getScalePercentage())));
+        border.setTitleColor(Color.WHITE);
         playerPanel.setBorder(border);
 
         return playerPanel;
@@ -292,19 +300,20 @@ public class GameScreen implements Screen {
     }
 
     public class BoardUI extends JLayeredPane {
-        Suspects gamePlayers;
+        Suspects gameSuspects;
         Weapons gameWeapons;
         BoardComponent boardComponent;
         MoveOverlay moveOverlay;
 
         public BoardUI(Suspects players, Weapons weapons, BoardComponent boardImage, MoveOverlay moveOverlay ) {
-            this.gamePlayers = players;
+            this.gameSuspects = players;
+
             this.gameWeapons = weapons;
             this.boardComponent = boardImage;
             this.moveOverlay = moveOverlay;
 
             this.add(this.boardComponent, new Integer(1));
-            this.add(this.gamePlayers, new Integer(2));
+            this.add(this.gameSuspects, new Integer(2));
             this.add(this.gameWeapons, new Integer(3));
             this.add(this.moveOverlay, new Integer(4));
 
@@ -316,7 +325,7 @@ public class GameScreen implements Screen {
         @Override
         public void paint(Graphics g) {
             boardComponent.paintComponent(g);
-            gamePlayers.paintComponent(g);
+            gameSuspects.paintComponent(g);
             gameWeapons.paintComponent(g);
             moveOverlay.paintComponent(g);
         }

@@ -1,4 +1,5 @@
 /*
+ * Code to handle the input of user commands.
  *
  * Authors Team11:  Jack Geraghty - 16384181
  *                  Conor Beenham - 16350851
@@ -11,7 +12,8 @@ import com.team11.cluedo.Pathfinder.AStarFinder;
 import com.team11.cluedo.Pathfinder.Path;
 import com.team11.cluedo.suspects.Direction;
 import com.team11.cluedo.ui.GameScreen;
-import com.team11.cluedo.ui.OverlayTile;
+
+import com.team11.cluedo.ui.components.OverlayTile;
 import com.team11.cluedo.weapons.WeaponData;
 
 import javax.swing.*;
@@ -40,6 +42,7 @@ public class CommandInput {
 
     public void playerTurn() {
         rollStart();
+        gameScreen.reDraw(currentPlayer);
         this.playerName = this.gameScreen.getGamePlayers().getPlayer(this.currentPlayer).getPlayerName();
         this.gameScreen.getInfoOutput().append("It is now player " + this.playerName + "'s turn.\n");
         gameScreen.getInfoOutput().append("Please enter 'roll'  to start\n");
@@ -115,6 +118,11 @@ public class CommandInput {
                 case "pathfind":
                     testFinder();
                     break;
+
+                case "cheat":
+                    gameScreen.getGameCards().getMurderEnvelope().displayMurderEnvelope();
+                    break;
+
                 default:
                     gameScreen.getInfoOutput().append("Unknown command\nUse command 'help' for instructions.\n");
                     break;
@@ -197,7 +205,9 @@ public class CommandInput {
             }
 
             this.gameScreen.reDraw(currentPlayer);
-            
+
+            this.gameScreen.reDraw(currentPlayer);
+
         } else {
             this.gameScreen.getInfoOutput().append(this.playerName + " already rolled a " + this.dice + ".\n");
         }
@@ -421,17 +431,14 @@ public class CommandInput {
             dice.add(diceNumber);
         }
 
-        for(int j = 0; j < numPlayers - 1; j++) {
-            if(dice.get(j) > dice.get(j+1)){
+        for(int j = 0; j < numPlayers; j++) {
+            if(dice.get(highRoller) < dice.get(j)){
                 highRoller = j;
             }
-            else{
-                highRoller = j + 1;
-            }
         }
+
         currentPlayer = highRoller;
         gameScreen.getInfoOutput().append(gameScreen.getGamePlayers().getPlayer(currentPlayer).getPlayerName() + " rolled the highest number\n");
-
     }
 
     public class ChoiceOption {
