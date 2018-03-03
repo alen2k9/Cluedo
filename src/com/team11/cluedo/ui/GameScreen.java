@@ -62,7 +62,7 @@ public class GameScreen implements Screen {
         this.gameAssets = gameAssets;
         this.resolution = resolution;
         this.gameCards = new Cards();
-        this.moveOverlay = new MoveOverlay();
+        this.moveOverlay = new MoveOverlay(this);
     }
 
     @Override

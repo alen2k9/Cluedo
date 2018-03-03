@@ -18,6 +18,8 @@ package com.team11.cluedo.ui.components;
  */
 
 
+import com.team11.cluedo.ui.GameScreen;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
@@ -27,18 +29,23 @@ import java.util.Set;
 public class MoveOverlay extends JComponent{
 
     private ArrayList<OverlayTile> validMoves = new ArrayList<>();
+    private GameScreen gameScreen;
+    private int currentPlayer;
     private Set<Point> doorSet = new HashSet<>();
 
-    public MoveOverlay() {
+    public MoveOverlay(GameScreen gameScreen) {
         this.validMoves = new ArrayList<>();
+        this.gameScreen = gameScreen;
         fillDoorSet();
     }
     public ArrayList<OverlayTile> getValidMoves() {
         return validMoves;
     }
 
-    public void setValidMoves(ArrayList<OverlayTile> validMoves) {
+    public void setValidMoves(ArrayList<OverlayTile> validMoves, GameScreen gameScreen, int currentPlayer) {
         this.validMoves = validMoves;
+        this.gameScreen = gameScreen;
+        this.currentPlayer = currentPlayer;
     }
 
     private void fillDoorSet(){
@@ -86,11 +93,41 @@ public class MoveOverlay extends JComponent{
         int alpha = 90;
 
         if (doorSet.contains(new Point(overlayTile.getLocation()))){
-            g2.setColor(new Color(243, 247, 2, alpha));
+            g2.setColor(new Color(25, 255, 43, alpha));
         }
 
         else {
-            g2.setColor(new Color(255, 25, 17, alpha));
+
+            switch (this.gameScreen.getGamePlayers().getPlayer(currentPlayer).getSuspectToken().getSuspectID()){
+                //White
+                case (0):
+                    g2.setColor(new Color(255,255,255, 90));
+                    break;
+                //Green
+                case (1):
+                    g2.setColor(new Color(0,128,0, 90));
+                    break;
+                //Peacock
+                case (2):
+                    g2.setColor(new Color(0, 0, 255, 90));
+                    break;
+                //Plum
+                case (3):
+                    g2.setColor(new Color(128,0,128, 90));
+                    break;
+                //Scarlet
+                case (4):
+                    g2.setColor(new Color(255, 0, 0, 90));
+                    break;
+                //Mustard
+                case (5):
+                    g2.setColor(new Color(204,204,0, 90));
+                    break;
+                default :
+                    g2.setColor(new Color(0, 0, 0, 90));
+
+            }
+            //g2.setColor(new Color(183, 16, 255, alpha));
         }
 
         g2.fillRect((int)overlayTile.getLocation().getX()*30, (int)overlayTile.getLocation().getY()*30, 30, 30);

@@ -93,7 +93,7 @@ public class CommandInput {
 
                 case "done":
                     nextPlayer();
-                    this.gameScreen.getMoveOverlay().setValidMoves(new ArrayList<>());
+                    this.gameScreen.getMoveOverlay().setValidMoves(new ArrayList<>(), this.gameScreen, currentPlayer);
                     break;
 
                 case "quit":
@@ -173,7 +173,7 @@ public class CommandInput {
                     this.remainingMoves--;
                 }
             }
-            this.gameScreen.getMoveOverlay().setValidMoves(findValidMoves());
+            this.gameScreen.getMoveOverlay().setValidMoves(findValidMoves(), this.gameScreen, currentPlayer);
             printRemainingMoves();
 
         } else {
@@ -202,7 +202,7 @@ public class CommandInput {
                 System.out.println("Valid Moves" + this.gameScreen.getMoveOverlay().getValidMoves());
             }
             else{
-                this.gameScreen.getMoveOverlay().setValidMoves(findValidMoves());
+                this.gameScreen.getMoveOverlay().setValidMoves(findValidMoves(), this.gameScreen, currentPlayer);
             }
 
             this.gameScreen.reDraw(currentPlayer);
@@ -322,7 +322,7 @@ public class CommandInput {
                 this.gameScreen.getInfoOutput().append(this.playerName + " is now in the " + roomName + ".\n");
             }
 
-            this.gameScreen.getMoveOverlay().setValidMoves(findValidMoves());
+            this.gameScreen.getMoveOverlay().setValidMoves(findValidMoves(), this.gameScreen, currentPlayer);
 
         } else {
             this.gameScreen.getInfoOutput().append("This path isn't valid.\nYou have " + this.remainingMoves + " moves remaining.\n");
@@ -383,7 +383,7 @@ public class CommandInput {
                             (int)this.gameScreen.getGamePlayers().getPlayer(currentPlayer).getSuspectToken().getLoc().getY(),
                             (int)this.gameScreen.getGamePlayers().getPlayer(currentPlayer).getSuspectToken().getLoc().getX(),
                             (int)tmpPoint.getY(), (int)tmpPoint.getX());
-                    
+
 
                     if (path != null && path.getLength() <= remainingMoves){
                         validMoves.add(new OverlayTile(tmpPoint));
@@ -486,8 +486,5 @@ public class CommandInput {
         private String getWeapon() {
             return this.weapon;
         }
-
-
-
     }
 }
