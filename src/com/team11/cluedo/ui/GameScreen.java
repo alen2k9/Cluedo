@@ -26,7 +26,6 @@ import javax.swing.border.TitledBorder;
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
 import java.awt.*;
 import java.io.*;
-import java.util.ArrayList;
 
 public class GameScreen implements Screen {
     private static final String COMMIT_ACTION = "commit";
@@ -58,6 +57,7 @@ public class GameScreen implements Screen {
         this.gameAssets = gameAssets;
         this.resolution = resolution;
         this.gameCards = new Cards();
+        this.moveOverlay = new MoveOverlay();
     }
 
     @Override
@@ -72,7 +72,7 @@ public class GameScreen implements Screen {
         JPanel testPanel = new JPanel(new BorderLayout());
         testFrame.setSize(500,500);
         testPanel.setSize(400,400);
-        System.out.println(test.getValidMoves());
+        //System.out.println(test.getValidMoves());
 
         testPanel.add(test, BorderLayout.CENTER);
         testFrame.add(testPanel);
@@ -91,7 +91,7 @@ public class GameScreen implements Screen {
 
         this.playerPanel = setupPlayerPanel(0);
         JPanel infoPanel = setupInfoPanel1();
-        this.boardPanel = new BoardUI(this.gameSuspects, this.gameWeapons, new BoardComponent());
+        this.boardPanel = new BoardUI(this.gameSuspects, this.gameWeapons, new BoardComponent(),  moveOverlay);
 
         contentPanel.add(playerPanel, BorderLayout.WEST);
         contentPanel.add(infoPanel, BorderLayout.EAST);
@@ -269,6 +269,14 @@ public class GameScreen implements Screen {
         return gameCards;
     }
 
+    public void setMoveOverlay(MoveOverlay moveOverlay){
+        this.moveOverlay = moveOverlay;
+    }
+
+    public MoveOverlay getMoveOverlay() {
+        return this.moveOverlay;
+    }
+
     public void setTab(int i) {
         infoTabs.setSelectedIndex(i);
     }
@@ -287,18 +295,18 @@ public class GameScreen implements Screen {
         Suspects gamePlayers;
         Weapons gameWeapons;
         BoardComponent boardComponent;
-        //MoveOverlay moveOverlay;
+        MoveOverlay moveOverlay;
 
-        public BoardUI(Suspects players, Weapons weapons, BoardComponent boardImage) {
+        public BoardUI(Suspects players, Weapons weapons, BoardComponent boardImage, MoveOverlay moveOverlay ) {
             this.gamePlayers = players;
             this.gameWeapons = weapons;
             this.boardComponent = boardImage;
-            //this.moveOverlay = moveOverlay;
+            this.moveOverlay = moveOverlay;
 
             this.add(this.boardComponent, new Integer(1));
             this.add(this.gamePlayers, new Integer(2));
             this.add(this.gameWeapons, new Integer(3));
-            //this.add(this.moveOverlay, new Integer(4));
+            this.add(this.moveOverlay, new Integer(4));
 
             ImageIcon board = new ImageIcon(gameAssets.getBoardImage());
             Dimension imageSize = new Dimension((int)(board.getIconWidth()*resolution.getScalePercentage()), (int)(board.getIconHeight()*resolution.getScalePercentage()));
@@ -310,9 +318,7 @@ public class GameScreen implements Screen {
             boardComponent.paintComponent(g);
             gamePlayers.paintComponent(g);
             gameWeapons.paintComponent(g);
-            //moveOverlay.paintComponents(g);
+            moveOverlay.paintComponent(g);
         }
-
-
     }
 }

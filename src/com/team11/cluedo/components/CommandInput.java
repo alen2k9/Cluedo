@@ -7,13 +7,16 @@
 
 package com.team11.cluedo.components;
 
+import com.team11.cluedo.Pathfinder.AStarFinder;
+import com.team11.cluedo.Pathfinder.Path;
 import com.team11.cluedo.suspects.Direction;
 import com.team11.cluedo.ui.GameScreen;
-import com.team11.cluedo.ui.MoveOverlay;
+import com.team11.cluedo.ui.OverlayTile;
 import com.team11.cluedo.weapons.WeaponData;
 
 import javax.swing.*;
 import java.awt.*;
+
 import java.util.ArrayList;
 
 public class CommandInput {
@@ -22,7 +25,7 @@ public class CommandInput {
     private int numPlayers, currentPlayer;
     private String playerName;
     private boolean canRoll;
-    private ArrayList<Point> validMoves = new ArrayList<>();
+    private AStarFinder finder;
 
     public CommandInput(GameScreen gameScreen) {
         this.gameScreen = gameScreen;
@@ -86,6 +89,7 @@ public class CommandInput {
 
                 case "done":
                     nextPlayer();
+                    this.gameScreen.getMoveOverlay().setValidMoves(new ArrayList<>());
                     break;
 
                 case "quit":
@@ -107,6 +111,9 @@ public class CommandInput {
 
                 case "weapon":
                     weaponMovement();
+                    break;
+                case "pathfind":
+                    testFinder();
                     break;
                 default:
                     gameScreen.getInfoOutput().append("Unknown command\nUse command 'help' for instructions.\n");
@@ -157,7 +164,7 @@ public class CommandInput {
                     this.remainingMoves--;
                 }
             }
-
+            this.gameScreen.getMoveOverlay().setValidMoves(findValidMoves());
             printRemainingMoves();
 
         } else {
@@ -171,17 +178,25 @@ public class CommandInput {
 
     private void diceRoll() {
         if(this.canRoll) {
+            ArrayList<OverlayTile> overlayTiles = new ArrayList<>();
             Dice die = new Dice();
             this.dice = die.rolldice();
             this.remainingMoves = this.dice;
             this.gameScreen.getInfoOutput().append(this.playerName + " rolled a " + this.dice + ".\n");
             this.canRoll = false;
 
-            validMoves = findValidMoves();
-            this.gameScreen.testFrame(new MoveOverlay(validMoves));
-            //System.out.println("Valid Moves: " + validMoves.size());
+            if (this.gameScreen.getGamePlayers().getPlayer(currentPlayer).getSuspectToken().isInRoom()){
+                System.out.println("Is in room");
+                for (Point point : this.gameScreen.getGameBoard().getRoom(this.gameScreen.getGamePlayers().getPlayer(currentPlayer).getSuspectToken().getCurrentRoom()).getEntryPoints()){
+                    overlayTiles.add(new OverlayTile(point));
+                }
+                System.out.println("Valid Moves" + this.gameScreen.getMoveOverlay().getValidMoves());
+            }
+            else{
+                this.gameScreen.getMoveOverlay().setValidMoves(findValidMoves());
+            }
+
             this.gameScreen.reDraw(currentPlayer);
-            //System.out.println("Got Valid Moves");
             
         } else {
             this.gameScreen.getInfoOutput().append(this.playerName + " already rolled a " + this.dice + ".\n");
@@ -295,13 +310,16 @@ public class CommandInput {
                 String roomName = this.gameScreen.getGamePlayers().getPlayer(this.currentPlayer).getSuspectToken().getCurrentRoomName();
                 this.gameScreen.getInfoOutput().append(this.playerName + " is now in the " + roomName + ".\n");
             }
+
+            this.gameScreen.getMoveOverlay().setValidMoves(findValidMoves());
+
         } else {
             this.gameScreen.getInfoOutput().append("This path isn't valid.\nYou have " + this.remainingMoves + " moves remaining.\n");
         }
     }
 
-    private ArrayList<Point> findValidMoves() {
-        ArrayList<Point> validMoves = new ArrayList<>();
+    private ArrayList<OverlayTile> findValidMoves() {
+        ArrayList<OverlayTile> validMoves = new ArrayList<>();
 
         Point currentPosition = new Point(this.gameScreen.getGamePlayers().getPlayer(currentPlayer).getSuspectToken().getLoc());
         Point startPoint;
@@ -326,6 +344,7 @@ public class CommandInput {
             endPoint = new Point((int) this.gameScreen.getGamePlayers().getPlayer(currentPlayer).getSuspectToken().getLoc().getX() + remainingMoves,
                     (int) this.gameScreen.getGamePlayers().getPlayer(currentPlayer).getSuspectToken().getLoc().getY() + remainingMoves);
 
+
             if (endPoint.getX() < 1) {
                 endPoint.setLocation(1, endPoint.getY());
             } else if (endPoint.getX() > 25) {
@@ -338,24 +357,57 @@ public class CommandInput {
                 endPoint.setLocation(endPoint.getX(), 25);
             }
 
-            int reqDis;
             Point tmpPoint;
+            this.gameScreen.getGameBoard().clearVisited();
+            AStarFinder finder = new AStarFinder(this.gameScreen.getGameBoard(), 500, false);
+            Path path;
             //Have start and exit points now so search through and add the valid points to the return list
-            for (int i = (int) startPoint.getY(); i < (int) endPoint.getY(); i++) {
+            for (int i = (int) startPoint.getY(); i <= (int) endPoint.getY(); i++) {
 
-                for (int j = (int) startPoint.getX(); j < (int) endPoint.getX(); j++) {
+                for (int j = (int) startPoint.getX(); j <= (int) endPoint.getX(); j++) {
+
                     tmpPoint = new Point(j, i);
-                    reqDis = (int) (Math.abs(currentPosition.getX() - tmpPoint.getX()) + Math.abs(currentPosition.getY() - tmpPoint.getY()));
-                    if (this.gameScreen.getGameBoard().getBoardPos((int) tmpPoint.getY(), (int) tmpPoint.getX()).isTraversable() && reqDis <= remainingMoves) {
-                        validMoves.add(tmpPoint);
+
+                    path = finder.findPath(this.gameScreen.getGamePlayers().getPlayer(currentPlayer).getSuspectToken(),
+                            (int)this.gameScreen.getGamePlayers().getPlayer(currentPlayer).getSuspectToken().getLoc().getY(),
+                            (int)this.gameScreen.getGamePlayers().getPlayer(currentPlayer).getSuspectToken().getLoc().getX(),
+                            (int)tmpPoint.getY(), (int)tmpPoint.getX());
+
+
+                    if (path != null && path.getLength() <= remainingMoves){
+                        validMoves.add(new OverlayTile(tmpPoint));
                     }
                 }
             }
-        } else {
-
         }
-        //System.out.println("Valid Moves\n"+validMoves);
+        validMoves.remove(new OverlayTile(currentPosition));
+
         return validMoves;
+    }
+
+
+    public void testFinder(){
+        finder = new AStarFinder(this.gameScreen.getGameBoard(), 100, false);
+        System.out.println("Info: " + this.gameScreen.getGameBoard().getBoardPos(23,8));
+
+        System.out.println("Current Loc: " + this.gameScreen.getGamePlayers().getPlayer(currentPlayer).getSuspectToken().getLoc());
+
+        Path path = finder.findPath(this.gameScreen.getGamePlayers().getPlayer(currentPlayer).getSuspectToken(),
+                (int)this.gameScreen.getGamePlayers().getPlayer(currentPlayer).getSuspectToken().getLoc().getY(),
+                (int)this.gameScreen.getGamePlayers().getPlayer(currentPlayer).getSuspectToken().getLoc().getX(),
+                23,8);
+
+        //System.out.println("Path length: " + path.getLength());
+        if (path == null){
+            System.out.println("null");
+        }
+
+        else{
+            System.out.println("Not null");
+            for (Object o : path.getSteps()){
+                System.out.println(o);
+            }
+        }
     }
 
     public void rollStart() {

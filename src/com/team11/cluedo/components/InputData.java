@@ -23,6 +23,7 @@ public class InputData {
         addElement("weapon", this.commandData);
         addElement("move", this.commandData);
         addElement("cheat", this.commandData);
+        addElement("pathfind", this.commandData);
 
         for (int i = 0; i < suspectData.getSuspectAmount(); i++){
             addElement(suspectData.getSuspectID(i), this.commandData);

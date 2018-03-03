@@ -8,6 +8,7 @@
 
 package com.team11.cluedo.suspects;
 
+import com.team11.cluedo.Pathfinder.Mover;
 import com.team11.cluedo.board.Board;
 import com.team11.cluedo.board.TileType;
 import com.team11.cluedo.ui.Resolution;
@@ -17,7 +18,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Stack;
 
-public class Suspect extends JComponent{
+public class Suspect extends JComponent implements Mover {
     private int suspectID;
     private String suspectName;
     private Point location;
@@ -114,7 +115,7 @@ public class Suspect extends JComponent{
     }
 
     public boolean isInRoom(){
-        return currentRoom >= 0;
+        return isInRoom;
     }
 
     public void setPreviousLocation(Point point){
@@ -343,6 +344,8 @@ public class Suspect extends JComponent{
         else{
             System.out.println("Moves desired are invalid");
         }
+
+        System.out.println("Current Location: "+ this.location);
         return isValid;
     }
 

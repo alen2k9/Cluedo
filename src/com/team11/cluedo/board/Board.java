@@ -8,6 +8,8 @@
 
 package com.team11.cluedo.board;
 
+import com.team11.cluedo.Pathfinder.Mover;
+import com.team11.cluedo.Pathfinder.TileBasedMap;
 import com.team11.cluedo.suspects.Direction;
 import com.team11.cluedo.suspects.PlayerPoints;
 import com.team11.cluedo.ui.Resolution;
@@ -17,7 +19,7 @@ import java.awt.*;
 import java.io.*;
 import java.util.ArrayList;
 
-public class Board extends JComponent {
+public class Board extends JComponent implements TileBasedMap {
 
     /*
      * Constants for the board width and height and the size of each tile
@@ -27,6 +29,9 @@ public class Board extends JComponent {
     private int tileSize;
 
     private BoardPos[][] board;
+
+    private boolean[][] visited = new boolean[BOARD_WIDTH][BOARD_HEIGHT];
+
     private ArrayList<Room> rooms = new ArrayList<>();
     private Room kitchen = new Room();
     private Room ballroom = new Room();
@@ -480,6 +485,42 @@ public class Board extends JComponent {
                 }
             }
         }
-}
+    }
+
+    public int getWidthInTiles(){
+        return BOARD_WIDTH;
+    }
+
+    public int getHeightInTiles(){
+        return BOARD_HEIGHT;
+    }
+
+    //Determine whether we can move on the tile or not
+    public boolean blocked(Mover mover, int x, int y){
+        if (board[x][y].isTraversable() && !board[x][y].isOccupied()){
+            return false;
+        }
+
+        return true;
+    }
+
+    //Get the cost of moving
+    public float getCost(Mover mover, int sx, int sy, int tx, int ty){
+        return 1;
+    }
+
+    //Set a tile to have been visited
+    public void pathFinderVisited(int x, int y){
+        visited[x][y] = true;
+    }
+
+    //Clear that all of the tiles have been visited
+    public void clearVisited() {
+        for (int x=0;x<getWidthInTiles();x++) {
+            for (int y=0;y<getHeightInTiles();y++) {
+                visited[x][y] = false;
+            }
+        }
+    }
 
 }
