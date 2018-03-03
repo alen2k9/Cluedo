@@ -297,7 +297,7 @@ public class Board extends JComponent implements TileBasedMap {
 
     //Determine whether we can move on the tile or not
     public boolean blocked(Mover mover, int x, int y){
-        if (board[x][y].isTraversable() && !board[x][y].isOccupied()){
+        if (board[x][y].isTraversable()){
             return false;
         }
 

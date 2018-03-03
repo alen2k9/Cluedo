@@ -20,6 +20,7 @@ import javax.swing.*;
 import java.awt.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class CommandInput {
     private GameScreen gameScreen;
@@ -382,7 +383,7 @@ public class CommandInput {
                             (int)this.gameScreen.getGamePlayers().getPlayer(currentPlayer).getSuspectToken().getLoc().getY(),
                             (int)this.gameScreen.getGamePlayers().getPlayer(currentPlayer).getSuspectToken().getLoc().getX(),
                             (int)tmpPoint.getY(), (int)tmpPoint.getX());
-
+                    
 
                     if (path != null && path.getLength() <= remainingMoves){
                         validMoves.add(new OverlayTile(tmpPoint));
@@ -390,8 +391,16 @@ public class CommandInput {
                 }
             }
         }
-        validMoves.remove(new OverlayTile(currentPosition));
+        ArrayList<OverlayTile> found = new ArrayList<>();
 
+        for (OverlayTile ov : validMoves){
+            if (this.gameScreen.getGameBoard().getBoardPos((int)ov.getLocation().getY(), (int)ov.getLocation().getX()).isOccupied()){
+                System.out.println("Found a tile with someone on it");
+                found.add(ov);
+            }
+        }
+
+        validMoves.removeAll(found);
         return validMoves;
     }
 
