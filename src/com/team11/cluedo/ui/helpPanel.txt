@@ -5,6 +5,7 @@ List Of Commands
         r = Right
         u = Up
         d = Down
+        You can also use arrow keys to move
 Example
     'move llddru' : 
          move left 2 spaces, move down 2 spaces,

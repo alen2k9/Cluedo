@@ -19,6 +19,9 @@ import com.team11.cluedo.weapons.WeaponData;
 import javax.swing.*;
 import java.awt.*;
 
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -134,6 +137,34 @@ public class CommandInput {
 
             gameScreen.reDraw(currentPlayer);
         });
+        gameScreen.getCommandInput().addKeyListener(new KeyAdapter()
+        {
+            public void keyPressed(KeyEvent key)
+            {
+                if(key.getKeyCode() == KeyEvent.VK_DOWN)
+                {
+                    playerMovement("d");
+                    gameScreen.reDraw(currentPlayer);
+                }
+                else if(key.getKeyCode() == KeyEvent.VK_UP)
+                {
+                    playerMovement("u");
+                    gameScreen.reDraw(currentPlayer);
+                }
+                else if(key.getKeyCode() == KeyEvent.VK_LEFT)
+                {
+                    playerMovement("l");
+                    gameScreen.reDraw(currentPlayer);
+                }
+                else if(key.getKeyCode() == KeyEvent.VK_RIGHT)
+                {
+                    playerMovement("r");
+                    gameScreen.reDraw(currentPlayer);
+
+                }
+            }
+        });
+
     }
 
     private void nextPlayer() {
