@@ -28,7 +28,7 @@ public class InputData {
         addElement("weapon", this.commandData);
         addElement("move", this.commandData);
         addElement("cheat", this.commandData);
-        addElement("pathfind", this.commandData);
+        addElement("notes", this.commandData);
 
 
         SuspectData suspectData = new SuspectData();

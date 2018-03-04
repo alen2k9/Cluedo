@@ -116,8 +116,8 @@ public class CommandInput {
                 case "weapon":
                     weaponMovement();
                     break;
-                case "pathfind":
-                    testFinder();
+                case "notes":
+                    notes();
                     break;
 
                 case "cheat":
@@ -128,8 +128,10 @@ public class CommandInput {
                     gameScreen.getInfoOutput().append("Unknown command\nUse command 'help' for instructions.\n");
                     break;
             }
-            if (!command.equals("help"))
+            if (!(command.equals("help")||command.equals("notes"))){
                 gameScreen.setTab(0);
+            }
+
             gameScreen.reDraw(currentPlayer);
         });
     }
@@ -189,7 +191,7 @@ public class CommandInput {
         if(this.canRoll) {
             ArrayList<OverlayTile> overlayTiles = new ArrayList<>();
             Dice die = new Dice();
-            this.dice = die.rolldice();
+            this.dice = 11;//die.rolldice();
             this.remainingMoves = this.dice;
             this.gameScreen.getInfoOutput().append(this.playerName + " rolled a " + this.dice + ".\n");
             this.canRoll = false;
@@ -217,6 +219,11 @@ public class CommandInput {
     private void help() {
         this.gameScreen.getInfoOutput().append("help\n");
         this.gameScreen.setTab(1);
+    }
+
+    private void notes(){
+        this.gameScreen.getInfoOutput().append("notes\n");
+        this.gameScreen.setTab(3);
     }
 
     private void quitGame() {

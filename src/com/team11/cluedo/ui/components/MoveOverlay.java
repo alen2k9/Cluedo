@@ -130,8 +130,8 @@ public class MoveOverlay extends JComponent{
             //g2.setColor(new Color(183, 16, 255, alpha));
         }
 
-        g2.fillRect((int)overlayTile.getLocation().getX()*30, (int)overlayTile.getLocation().getY()*30, 30, 30);
-        g2.drawRect((int)overlayTile.getLocation().getX()*30, (int)overlayTile.getLocation().getY()*30, 30,30);
+        g2.fillRect((int)(int)(overlayTile.getLocation().getX() * ((int)(30 * this.gameScreen.getResolution().getScalePercentage()))), (int)overlayTile.getLocation().getY()* ((int)(30 * this.gameScreen.getResolution().getScalePercentage())), 30, 30);
+        g2.drawRect((int)overlayTile.getLocation().getX()* ((int)(30 * this.gameScreen.getResolution().getScalePercentage())), (int)overlayTile.getLocation().getY()* ((int)(30 * this.gameScreen.getResolution().getScalePercentage())), 30,30);
     }
 
     @Override

@@ -289,6 +289,10 @@ public class GameScreen implements Screen {
         infoTabs.setSelectedIndex(i);
     }
 
+    public Resolution getResolution(){
+        return this.resolution;
+    }
+
     public class BoardComponent extends JComponent {
         @Override
         public void paintComponent(Graphics g) {

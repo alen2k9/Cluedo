@@ -156,7 +156,7 @@ public class Notes extends JTable {
                 label.setBorder(BorderFactory.createMatteBorder(0,2,0,1,Color.black));
             }
             if (cellToPaint.contains(new Point(row, column))){
-                c = Color.GREEN;
+                c = Color.ORANGE;
             }
 
             label.setBackground(c);
