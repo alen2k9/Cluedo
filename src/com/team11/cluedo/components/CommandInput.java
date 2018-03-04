@@ -191,7 +191,7 @@ public class CommandInput {
         if(this.canRoll) {
             ArrayList<OverlayTile> overlayTiles = new ArrayList<>();
             Dice die = new Dice();
-            this.dice = 11;//die.rolldice();
+            this.dice = die.rolldice();
             this.remainingMoves = this.dice;
             this.gameScreen.getInfoOutput().append(this.playerName + " rolled a " + this.dice + ".\n");
             this.canRoll = false;
