@@ -18,6 +18,7 @@ package com.team11.cluedo.ui.components;
  */
 
 
+import com.team11.cluedo.board.room.DoorData;
 import com.team11.cluedo.ui.GameScreen;
 
 import javax.swing.*;
@@ -28,14 +29,23 @@ import java.util.Set;
 
 public class MoveOverlay extends JComponent{
 
+    final private int TILESIZE = 30;
+
     private ArrayList<OverlayTile> validMoves = new ArrayList<>();
+
     private GameScreen gameScreen;
     private int currentPlayer;
-    private Set<Point> doorSet = new HashSet<>();
+
+    private DoorData doorData = new DoorData();
+
+    private ArrayList<Point> doorList = new ArrayList<>();
+
+    private int resolutionScaler;
 
     public MoveOverlay(GameScreen gameScreen) {
         this.validMoves = new ArrayList<>();
         this.gameScreen = gameScreen;
+        this.resolutionScaler = (int)(TILESIZE*gameScreen.getResolution().getScalePercentage());
         fillDoorSet();
     }
     public ArrayList<OverlayTile> getValidMoves() {
@@ -49,6 +59,12 @@ public class MoveOverlay extends JComponent{
     }
 
     private void fillDoorSet(){
+
+        for (int i = 0; i < doorData.getAllEntryData().size(); i++){
+            doorList.addAll(doorData.getEntryData(i));
+        }
+
+        /*
         //Kitchen
         this.doorSet.add(new Point(5, 7));
         //Ballroom
@@ -77,6 +93,7 @@ public class MoveOverlay extends JComponent{
         this.doorSet.add(new Point(18,22));
         //Cellar
         this.doorSet.add(new Point(13,17));
+       */
     }
 
     @Override
@@ -91,7 +108,7 @@ public class MoveOverlay extends JComponent{
         Graphics2D g2 = (Graphics2D) g;
 
         if (!this.gameScreen.getGamePlayers().getPlayer(currentPlayer).getSuspectToken().isInRoom()){
-            if (doorSet.contains(new Point(overlayTile.getLocation()))){
+            if (doorList.contains(new Point((int)overlayTile.getLocation().getY(), (int)overlayTile.getLocation().getX()))){
                 g2.setColor(new Color(25, 255, 43, 90));
             }
 
@@ -128,10 +145,10 @@ public class MoveOverlay extends JComponent{
                 }
             }
 
-            g2.fillRect((int)(overlayTile.getLocation().getX() * ((int)(30 * this.gameScreen.getResolution().getScalePercentage()))), (int)overlayTile.getLocation().getY()* ((int)(30 * this.gameScreen.getResolution().getScalePercentage())),
-                    (int)(30 * this.gameScreen.getResolution().getScalePercentage()), (int)(30 * this.gameScreen.getResolution().getScalePercentage()));
-            g2.drawRect((int)overlayTile.getLocation().getX()* ((int)(30 * this.gameScreen.getResolution().getScalePercentage())), (int)overlayTile.getLocation().getY()* ((int)(30 * this.gameScreen.getResolution().getScalePercentage())),
-                    (int)(30 * this.gameScreen.getResolution().getScalePercentage()), (int)(30 * this.gameScreen.getResolution().getScalePercentage()));
+            g2.fillRect((int)(overlayTile.getLocation().getX() * (this.resolutionScaler)), (int)overlayTile.getLocation().getY() * (this.resolutionScaler),
+                    this.resolutionScaler, this.resolutionScaler);
+            g2.drawRect((int)(overlayTile.getLocation().getX() * (this.resolutionScaler)), (int)overlayTile.getLocation().getY() * (this.resolutionScaler),
+                    this.resolutionScaler, this.resolutionScaler);
         }
 
 

@@ -7,6 +7,6 @@
                        Alen Thomas   - 16333003
 */
 
-package com.team11.cluedo.Pathfinder;
+package com.team11.cluedo.pathfinder;
 
 public interface Mover {}

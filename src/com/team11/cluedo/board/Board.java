@@ -9,13 +9,10 @@
 package com.team11.cluedo.board;
 
 
-import com.team11.cluedo.Pathfinder.Mover;
-import com.team11.cluedo.Pathfinder.TileBasedMap;
+import com.team11.cluedo.pathfinder.Mover;
+import com.team11.cluedo.pathfinder.TileBasedMap;
 
-import com.team11.cluedo.board.room.Room;
-import com.team11.cluedo.board.room.TileType;
-import com.team11.cluedo.board.room.WeaponPoints;
-import com.team11.cluedo.board.room.SuspectPoints;
+import com.team11.cluedo.board.room.*;
 
 import com.team11.cluedo.ui.Resolution;
 
@@ -36,7 +33,11 @@ public class Board extends JComponent implements TileBasedMap {
 
     private BoardPos[][] board;
 
+    //Used for pathfinding
     private boolean[][] visited = new boolean[BOARD_WIDTH][BOARD_HEIGHT];
+
+    //Used for general movement
+    private boolean[][] hasVisited = new boolean[BOARD_WIDTH][BOARD_HEIGHT];
 
     private ArrayList<Room> rooms = new ArrayList<>();
     private Room kitchen = new Room();
@@ -53,13 +54,14 @@ public class Board extends JComponent implements TileBasedMap {
     private WeaponPoints weaponPoints = new WeaponPoints();
     private SuspectPoints suspectPoints = new SuspectPoints();
 
+    private DoorData doorData = new DoorData();
+
     public Board(Resolution resolution) throws IOException{
         try{
             board = parseBoardFile();
             addRooms();
             addRoomSecretPassages();
-            addExitPoints();
-            addEntryPoints();
+            addDoorPoints();
             addAllSpawns();
             this.tileSize = (int)(30 * resolution.getScalePercentage());
         }
@@ -190,66 +192,14 @@ public class Board extends JComponent implements TileBasedMap {
         rooms.get(6).setHasSecretPassage(true);
     }
 
-    private void addExitPoints(){
-        //  Kitchen
-        rooms.get(0).addExitPoint(new Point(5,8));
-        //  Ballroom
-        rooms.get(1).addExitPoint(new Point(8,6));
-        rooms.get(1).addExitPoint(new Point(10,9));
-        rooms.get(1).addExitPoint(new Point(15,9));
-        rooms.get(1).addExitPoint(new Point(17,6));
-        //  Conservatory
-        rooms.get(2).addExitPoint(new Point(19,6));
-        //  Dining Room
-        rooms.get(3).addExitPoint(new Point(9,13));
-        rooms.get(3).addExitPoint(new Point(7,17));
-        //  Billiard Room
-        rooms.get(4).addExitPoint(new Point(18,10));
-        rooms.get(4).addExitPoint(new Point(23,14));
-        //  Library
-        rooms.get(5).addExitPoint(new Point(20,14));
-        rooms.get(5).addExitPoint(new Point(17,17));
-        //  Lounge
-        rooms.get(6).addExitPoint(new Point(7, 19));
-        //  Hall
-        rooms.get(7).addExitPoint(new Point(12,18));
-        rooms.get(7).addExitPoint(new Point(13,18));
-        rooms.get(7).addExitPoint(new Point(16,21));
-        //  Study
-        rooms.get(8).addExitPoint(new Point(18,21));
-        //  Cellar
-        rooms.get(9).addExitPoint(new Point(13,18));
-    }
+    private void addDoorPoints(){
+        for (int i = 0; i < rooms.size(); i++){
+            rooms.get(i).setEntryPoints(doorData.getEntryData(i));
+        }
 
-    private void addEntryPoints(){
-        //  Kitchen
-        rooms.get(0).addEntryPoint(new Point(7,5));
-        //  Ballroom
-        rooms.get(1).addEntryPoint(new Point(6,9));
-        rooms.get(1).addEntryPoint(new Point(8,10));
-        rooms.get(1).addEntryPoint(new Point(8,15));
-        rooms.get(1).addEntryPoint(new Point(6,16));
-        //  Conservatory
-        rooms.get(2).addEntryPoint(new Point(5,19));
-        //  Dining Room
-        rooms.get(3).addEntryPoint(new Point(13,8));
-        rooms.get(3).addEntryPoint(new Point(16,7));
-        //  Billiard Room
-        rooms.get(4).addEntryPoint(new Point(10,19));
-        rooms.get(4).addEntryPoint(new Point(13,23));
-        //  Library
-        rooms.get(5).addEntryPoint(new Point(15,20));
-        rooms.get(5).addEntryPoint(new Point(17,18));
-        //  Lounge
-        rooms.get(6).addEntryPoint(new Point(20,7));
-        //  Hall
-        rooms.get(7).addEntryPoint(new Point(19,12));
-        rooms.get(7).addEntryPoint(new Point(19,13));
-        rooms.get(7).addEntryPoint(new Point(21,15));
-        //  Study
-        rooms.get(8).addEntryPoint(new Point(22,18));
-        //  Cellar
-        rooms.get(9).addEntryPoint(new Point(17,13));
+        for (int i = 0; i < rooms.size(); i++){
+            rooms.get(i).setExitPoints(doorData.getExitData(i));
+        }
     }
 
     private void addAllSpawns(){
@@ -297,7 +247,7 @@ public class Board extends JComponent implements TileBasedMap {
 
     //Determine whether we can move on the tile or not
     public boolean blocked(Mover mover, int x, int y){
-        if (board[x][y].isTraversable()){
+        if (board[x][y].isTraversable() && !board[x][y].isOccupied() && !hasVisited[x][y]){
             return false;
         }
 
@@ -316,10 +266,30 @@ public class Board extends JComponent implements TileBasedMap {
 
     //Clear that all of the tiles have been visited
     public void clearVisited() {
-        for (int x=0;x<getWidthInTiles();x++) {
-            for (int y=0;y<getHeightInTiles();y++) {
+        for (int x = 0; x < getWidthInTiles(); x++) {
+            for (int y = 0; y < getHeightInTiles(); y++) {
                 visited[x][y] = false;
             }
         }
+    }
+
+    public void clearPlayerVisited() {
+        for (int x = 0; x < getWidthInTiles(); x++) {
+            for (int y = 0; y < getHeightInTiles(); y++) {
+                hasVisited[x][y] = false;
+            }
+        }
+    }
+
+    public boolean[][] getHasVisited() {
+        return hasVisited;
+    }
+
+    public boolean getPositionVisited(int x, int y){
+        return  hasVisited[x][y];
+    }
+
+    public void setPositionVisited(int x, int y){
+        hasVisited[x][y] = true;
     }
 }
