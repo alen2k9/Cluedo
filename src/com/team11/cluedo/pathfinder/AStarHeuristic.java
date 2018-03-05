@@ -6,7 +6,7 @@
                        Alen Thomas   - 16333003
 */
 
-package com.team11.cluedo.Pathfinder;
+package com.team11.cluedo.pathfinder;
 
 public interface AStarHeuristic {
        float getCost(TileBasedMap map, Mover mover, int x, int y, int tx, int ty);

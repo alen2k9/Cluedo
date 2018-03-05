@@ -16,8 +16,10 @@ public class Room {
     private ArrayList<Point> roomPoints = new ArrayList<>();
     private ArrayList<Point> weaponPositions = new ArrayList<>();
     private ArrayList<Point> playerPositions = new ArrayList<>();
+
     private ArrayList<Point> exitPoints = new ArrayList<>();
     private ArrayList<Point> entryPoints = new ArrayList<>();
+
     private TileType roomType;
     private boolean hasSecretPassage;
 
@@ -39,12 +41,12 @@ public class Room {
     }
 
     // Setters
-    public void addExitPoint(Point point){
-        this.getExitPoints().add(point);
+    public void setExitPoints(ArrayList<Point> exits){
+        this.exitPoints = exits;
     }
 
-    public void addEntryPoint(Point point){
-        this.getEntryPoints().add(point);
+    public void setEntryPoints(ArrayList<Point> entries){
+        this.entryPoints = entries;
     }
 
     public void setRoomType(TileType type){

@@ -8,9 +8,9 @@
 
 package com.team11.cluedo.components;
 
-import com.team11.cluedo.Pathfinder.AStarFinder;
-import com.team11.cluedo.Pathfinder.Path;
 import com.team11.cluedo.players.Player;
+import com.team11.cluedo.pathfinder.AStarFinder;
+import com.team11.cluedo.pathfinder.Path;
 import com.team11.cluedo.suspects.Direction;
 import com.team11.cluedo.ui.GameScreen;
 
@@ -190,25 +190,31 @@ public class CommandInput {
     }
 
     private void moveOut(String[] inputs) {
+        int returnValue = 2 ; // 1 for success, 0 for blocked, 2 is default
         String roomName = currentPlayer.getSuspectToken().getCurrentRoomName();
 
         if (currentPlayer.getSuspectToken().getCurrentRoom() != -1) {
             if (inputs.length > 2) {
                 infoOutput.append("Too many arguments for 'Exit'.\nExpected 1, Got " + (inputs.length - 1) + ".\n");
             } else if (inputs.length == 1) {
-                currentPlayer.getSuspectToken().moveOutOfRoom(this.gameScreen.getGameBoard(), 0);
+                returnValue = currentPlayer.getSuspectToken().moveOutOfRoom(this.gameScreen.getGameBoard(), 0);
                 infoOutput.append(this.playerName + " left the " + roomName + ".\n");
                 this.remainingMoves--;
             } else {
                 if (Integer.parseInt(inputs[1]) > gameScreen.getGameBoard().getRoom(currentPlayer.getSuspectToken().getCurrentRoom()).getExitPoints().size() || Integer.parseInt(inputs[1]) < 0) {
                     infoOutput.append("Exit number entered is invalid.\nPlease enter a valid exit number. (1 - " +gameScreen.getGameBoard().getRoom(currentPlayer.getSuspectToken().getCurrentRoom()).getExitPoints().size() + ")\n");
                 } else {
-                    currentPlayer.getSuspectToken().moveOutOfRoom(gameScreen.getGameBoard(), Integer.parseInt(inputs[1]) - 1);
+                    returnValue = currentPlayer.getSuspectToken().moveOutOfRoom(gameScreen.getGameBoard(), Integer.parseInt(inputs[1]) - 1);
                     infoOutput.append(this.playerName + " left the " + roomName + ".\n");
                     this.remainingMoves--;
                 }
             }
-            this.gameScreen.getMoveOverlay().setValidMoves(findValidMoves(), this.gameScreen, currentPlayerID);
+
+            if (returnValue == 1){
+                this.gameScreen.getMoveOverlay().setValidMoves(findValidMoves(), this.gameScreen, currentPlayerID);
+            } else if (returnValue == 0){
+                this.gameScreen.getInfoOutput().append("Exit " + (Integer.parseInt(inputs[1]) ) + " is blocked by another player");
+            }
             printRemainingMoves();
 
         } else {
@@ -222,6 +228,7 @@ public class CommandInput {
 
     private void diceRoll() {
         if(this.canRoll) {
+            this.gameScreen.getGameBoard().clearPlayerVisited();
             ArrayList<OverlayTile> overlayTiles = new ArrayList<>();
             Dice die = new Dice();
             this.dice = die.rolldice();
@@ -345,7 +352,7 @@ public class CommandInput {
     private void playerMovement(String moves) {
         ArrayList<Direction> list = new ArrayList<>();
         int steps = 0;
-        for(int i = 0; i < moves.length() && (remainingMoves-steps > 0) ; i++) {
+        for (int i = 0; i < moves.length() && (remainingMoves - steps > 0); i++) {
             if (moves.charAt(i) == 'u') {
                 list.add(Direction.NORTH);
                 steps++;
@@ -361,7 +368,7 @@ public class CommandInput {
             }
         }
 
-        if(currentPlayer.getSuspectToken().move(this.gameScreen.getGameBoard(), list)) {
+        if (currentPlayer.getSuspectToken().move(this.gameScreen.getGameBoard(), list)) {
             this.remainingMoves -= steps;
             if (steps == 1) {
                 infoOutput.append("You have moved " + steps + " space.\n");
@@ -370,14 +377,15 @@ public class CommandInput {
                 infoOutput.append("You have moved " + steps + " spaces.\n");
                 printRemainingMoves();
             }
-            if(currentPlayer.getSuspectToken().isInRoom()) {
+            if (currentPlayer.getSuspectToken().isInRoom()) {
                 String roomName = currentPlayer.getSuspectToken().getCurrentRoomName();
                 infoOutput.append(this.playerName + " is now in the " + roomName + ".\n");
-            }
-            this.gameScreen.getMoveOverlay().setValidMoves(findValidMoves(), this.gameScreen, currentPlayerID);
+                this.remainingMoves = 0;
+                this.gameScreen.getMoveOverlay().setValidMoves(findValidMoves(), this.gameScreen, currentPlayerID);
 
-        } else {
-            infoOutput.append("This path isn't valid.\nYou have " + this.remainingMoves + " moves remaining.\n");
+            } else {
+                infoOutput.append("This path isn't valid.\nYou have " + this.remainingMoves + " moves remaining.\n");
+            }
         }
     }
 
