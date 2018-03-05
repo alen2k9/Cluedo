@@ -67,8 +67,8 @@ public class PlayerHandLayout extends JPanel {
                     0));
             playerCards.add(new JLabel(card), gbc);
         }
-        TitledBorder border = new TitledBorder(new LineBorder(Color.BLACK,3), "Player Hand");
-        border.setTitleFont(new Font("Orange Kid",Font.BOLD, (int)(20*resolution.getScalePercentage())));
+        TitledBorder border = new TitledBorder(new LineBorder(Color.BLACK,3), "PLAYER HAND");
+        border.setTitleFont(new Font("Orange Kid",Font.BOLD, (int)(15*resolution.getScalePercentage())));
         border.setTitleColor(Color.WHITE);
         playerCards.setBorder(border);
         this.add(playerCards, BorderLayout.CENTER);

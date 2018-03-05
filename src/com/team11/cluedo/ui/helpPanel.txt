@@ -1,5 +1,8 @@
 List Of Commands
 --------------------------------------------------------------
+- 'roll' : Dice would roll giving you the number
+of movements you are allowed to move
+
 - 'move' : Move player in desired direction 
         l = Left	
         r = Right
@@ -11,10 +14,7 @@ Example
          move left 2 spaces, move down 2 spaces,
          move right once and move up once
 
-- 'roll': Dice would roll giving you the number
-of movements you are allowed to move
-
-- 'exit': user can exit a room with this command.
+- 'exit' : user can exit a room with this command.
         Exit depends on number of door's in room.
         Doors to choose from are ranged 1-4
         i.e. 1 is leftmost door, 4 is rightmost door
@@ -23,13 +23,18 @@ Example
         Player will exit through second door.
     'exit' :
         Player will exit through first door by default.
-			 
-- 'done': Current player will end their turn.
-Next Player's turn will start.
 
-- 'quit': Player can quit/stop entire game.
-
-- 'passage': If player is in a room with secret passage,
+- 'passage' : If player is in a room with secret passage,
 this command will let them use the secret passage.
 
-- 'weapon': Move desired weapon to desired room.
+- 'notes' : Opens the users notes page.
+        You can click on any cell to highlight
+        what cards you know are not part of the
+        murder.
+			 
+- 'done' : Current player will end their turn.
+Next Player's turn will start.
+
+- 'back' : Brings you back to the game log.
+
+- 'quit' : Player can quit/stop entire game.

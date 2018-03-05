@@ -176,27 +176,27 @@ public class Assets {
     }
 
     public Image getSelectedRevolverCard() {
-        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("revolverCard.png"));
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("revolverCard_Selected.png"));
     }
 
     public Image getSelectedWrenchCard() {
-        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("wrenchCard.png"));
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("wrenchCard_Selected.png"));
     }
 
     public Image getSelectedDaggerCard() {
-        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("daggerCard.png"));
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("daggerCard_Selected.png"));
     }
 
     public Image getSelectedPoisonCard() {
-        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("poisonCard.png"));
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("poisonCard_Selected.png"));
     }
 
     public Image getSelectedHatchetCard() {
-        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("hatchetCard.png"));
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("hatchetCard_Selected.png"));
     }
 
     public Image getSelectedRopeCard() {
-        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("ropeCard.png"));
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("ropeCard_Selected.png"));
     }
 
     ////////////////////////////////////////////
@@ -206,11 +206,11 @@ public class Assets {
     ////////////////////////////////////////////
 
     public Image getKitchenCard() {
-        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("roomCard.png"));
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("kitchenCard.png"));
     }
 
     public Image getBallroomCard() {
-        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("roomCard.png"));
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("ballroomCard.png"));
     }
 
     public Image getConservatoryCard() {
@@ -234,7 +234,7 @@ public class Assets {
     }
 
     public Image getHallCard() {
-        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("roomCard.png"));
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("hallCard.png"));
     }
 
     public Image getStudyCard() {
