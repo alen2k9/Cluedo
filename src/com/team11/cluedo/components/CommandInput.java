@@ -383,11 +383,13 @@ public class CommandInput {
                 this.remainingMoves = 0;
                 this.gameScreen.getMoveOverlay().setValidMoves(findValidMoves(), this.gameScreen, currentPlayerID);
 
-            } else {
-                infoOutput.append("This path isn't valid.\nYou have " + this.remainingMoves + " moves remaining.\n");
             }
+            this.gameScreen.getMoveOverlay().setValidMoves(findValidMoves(), this.gameScreen, currentPlayerID);
+        } else {
+                infoOutput.append("This path isn't valid.\nYou have " + this.remainingMoves + " moves remaining.\n");
         }
     }
+
 
     private ArrayList<OverlayTile> findValidMoves() {
         ArrayList<OverlayTile> validMoves = new ArrayList<>();
