@@ -15,10 +15,7 @@ import com.team11.cluedo.components.InputData;
 import com.team11.cluedo.board.Board;
 import com.team11.cluedo.players.Players;
 import com.team11.cluedo.suspects.Suspects;
-import com.team11.cluedo.ui.components.MoveOverlay;
-import com.team11.cluedo.ui.components.NotesPanel;
-import com.team11.cluedo.ui.components.PlayerHandLayout;
-import com.team11.cluedo.ui.components.PlayerLayout;
+import com.team11.cluedo.ui.components.*;
 import com.team11.cluedo.ui.panel.BackgroundPanel;
 import com.team11.cluedo.weapons.Weapons;
 import com.team11.cluedo.cards.Cards;
@@ -28,7 +25,10 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.*;
+import java.util.ArrayList;
 
 public class GameScreen implements Screen {
     private static final String COMMIT_ACTION = "commit";
@@ -40,6 +40,7 @@ public class GameScreen implements Screen {
     private NotesPanel notesPanel;
 
     private MoveOverlay moveOverlay;
+    private DoorOverlay doorOverlay;
 
     private JTextArea infoOutput;
     private JTabbedPane infoTabs;
@@ -62,7 +63,9 @@ public class GameScreen implements Screen {
         this.gameAssets = gameAssets;
         this.resolution = resolution;
         this.gameCards = new Cards();
-        this.moveOverlay = new MoveOverlay(this);
+        this.moveOverlay = new MoveOverlay(this.getGamePlayers().getPlayer(0), this.resolution);
+        this.doorOverlay = new DoorOverlay(this.getGamePlayers().getPlayer(0), this.resolution);
+
     }
 
     @Override
@@ -84,14 +87,14 @@ public class GameScreen implements Screen {
 
         this.playerPanel = setupPlayerPanel();
 
-        this.boardPanel = new BoardUI(this.gameSuspects, this.gameWeapons, new BoardComponent(),  moveOverlay);
+        this.boardPanel = new BoardUI(this.gameSuspects, this.gameWeapons, new BoardComponent(),  moveOverlay, doorOverlay);
 
         this.playerPanel = setupPlayerPanel();
         this.playerHandPanel = setupCardPanel();
         this.notesPanel = new NotesPanel(gamePlayers);
 
         JPanel infoPanel = setupInfoPanel();
-        this.boardPanel = new BoardUI(this.gameSuspects, this.gameWeapons, new BoardComponent(), this.moveOverlay);
+        this.boardPanel = new BoardUI(this.gameSuspects, this.gameWeapons, new BoardComponent(), this.moveOverlay, this.doorOverlay);
 
 
         contentPanel.add(playerPanel, BorderLayout.WEST);
@@ -281,12 +284,22 @@ public class GameScreen implements Screen {
         this.moveOverlay = moveOverlay;
     }
 
+    public void setDoorOverlay(DoorOverlay doorOverlay) {this.doorOverlay = doorOverlay;}
+
     public MoveOverlay getMoveOverlay() {
         return this.moveOverlay;
     }
 
+    public DoorOverlay getDoorOverlay() {
+        return this.doorOverlay;
+    }
+
     public void setTab(int i) {
         infoTabs.setSelectedIndex(i);
+    }
+
+    public BoardUI getBoardPanel() {
+        return this.boardPanel;
     }
 
     public Resolution getResolution(){
@@ -308,22 +321,51 @@ public class GameScreen implements Screen {
         Weapons gameWeapons;
         BoardComponent boardComponent;
         MoveOverlay moveOverlay;
+        DoorOverlay doorOverlay;
 
-        public BoardUI(Suspects players, Weapons weapons, BoardComponent boardImage, MoveOverlay moveOverlay ) {
+        public BoardUI(Suspects players, Weapons weapons, BoardComponent boardImage, MoveOverlay moveOverlay, DoorOverlay doorOverlay ) {
             this.gameSuspects = players;
 
             this.gameWeapons = weapons;
             this.boardComponent = boardImage;
             this.moveOverlay = moveOverlay;
+            this.doorOverlay = doorOverlay;
 
             this.add(this.boardComponent, new Integer(1));
             this.add(this.gameSuspects, new Integer(2));
             this.add(this.gameWeapons, new Integer(3));
             this.add(this.moveOverlay, new Integer(4));
+            this.add(this.doorOverlay, new Integer(5));
 
             ImageIcon board = new ImageIcon(gameAssets.getBoardImage());
             Dimension imageSize = new Dimension((int)(board.getIconWidth()*resolution.getScalePercentage()), (int)(board.getIconHeight()*resolution.getScalePercentage()));
             this.setPreferredSize(imageSize);
+            //addMouseListen();
+        }
+
+
+
+        public boolean checkPoint(int x, int y){
+            System.out.println("In method");
+            OverlayTile clickedPoint = new OverlayTile(x,y);
+            System.out.println("New Point" + clickedPoint);
+
+            ArrayList<OverlayTile> validMoves = this.moveOverlay.getValidMoves();
+            //System.out.println(validMoves);
+
+            if (!validMoves.isEmpty()){
+                //noinspection LoopStatementThatDoesntLoop
+                for (OverlayTile overlayTile  :validMoves){
+                    if (overlayTile.getLocation().equals(clickedPoint.getLocation())){
+                        //System.out.println("Found");
+                        return true;
+                    }
+                    //System.out.println(overlayTile.getLocation() + " " + clickedPoint.getLocation());
+                }
+            }
+
+            return false;
+
         }
 
         @Override
@@ -332,6 +374,7 @@ public class GameScreen implements Screen {
             gameSuspects.paintComponent(g);
             gameWeapons.paintComponent(g);
             moveOverlay.paintComponent(g);
+            doorOverlay.paintComponent(g);
         }
     }
 }

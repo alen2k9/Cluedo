@@ -8,7 +8,6 @@ import com.team11.cluedo.ui.Resolution;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Stack;
 
 public class Players {
     private HashMap<Integer, Player> players;
@@ -42,9 +41,7 @@ public class Players {
     }
 
     public boolean useSecretPassageWay(Board gameBoard, int player){
-        if (this.getPlayer(player).getSuspectToken().useSecretPassageWay(gameBoard)){
-            return true;
-        } else{return false;}
+        return this.getPlayer(player).getSuspectToken().useSecretPassageWay(gameBoard);
     }
     
     public void reverseMoves(int player){

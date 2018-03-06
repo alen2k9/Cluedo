@@ -4,38 +4,38 @@ import java.awt.*;
 import java.util.ArrayList;
 
 public class DoorData {
-    private ArrayList<ArrayList<Point>> entryPoints = new ArrayList<>();
-    private ArrayList<ArrayList<Point>> exitPoints = new ArrayList<>();
+    private final ArrayList<ArrayList<Point>> entryPoints = new ArrayList<>();
+    private final ArrayList<ArrayList<Point>> exitPoints = new ArrayList<>();
 
-    private ArrayList<Point> kitchenEntryPoints = new ArrayList<>();
-    private ArrayList<Point> kitchenExitPoints = new ArrayList<>();
+    private final ArrayList<Point> kitchenEntryPoints = new ArrayList<>();
+    private final ArrayList<Point> kitchenExitPoints = new ArrayList<>();
 
-    private ArrayList<Point> ballroomEntryPoints = new ArrayList<>();
-    private ArrayList<Point> ballroomExitPoints = new ArrayList<>();
+    private final ArrayList<Point> ballroomEntryPoints = new ArrayList<>();
+    private final ArrayList<Point> ballroomExitPoints = new ArrayList<>();
 
-    private ArrayList<Point> conservatoryEntryPoints = new ArrayList<>();
-    private ArrayList<Point> conservatoryExitPoints = new ArrayList<>();
+    private final ArrayList<Point> conservatoryEntryPoints = new ArrayList<>();
+    private final ArrayList<Point> conservatoryExitPoints = new ArrayList<>();
 
-    private ArrayList<Point> diningRoomEntryPoints = new ArrayList<>();
-    private ArrayList<Point> diningRoomExitPoints = new ArrayList<>();
+    private final ArrayList<Point> diningRoomEntryPoints = new ArrayList<>();
+    private final ArrayList<Point> diningRoomExitPoints = new ArrayList<>();
 
-    private ArrayList<Point> billiardRoomEntryPoints = new ArrayList<>();
-    private ArrayList<Point> billiardRoomExitPoints = new ArrayList<>();
+    private final ArrayList<Point> billiardRoomEntryPoints = new ArrayList<>();
+    private final ArrayList<Point> billiardRoomExitPoints = new ArrayList<>();
 
-    private ArrayList<Point> libraryEntryPoints = new ArrayList<>();
-    private ArrayList<Point> libraryExitPoints = new ArrayList<>();
+    private final ArrayList<Point> libraryEntryPoints = new ArrayList<>();
+    private final ArrayList<Point> libraryExitPoints = new ArrayList<>();
 
-    private ArrayList<Point> loungeEntryPoints = new ArrayList<>();
-    private ArrayList<Point> loungeExitPoints = new ArrayList<>();
+    private final ArrayList<Point> loungeEntryPoints = new ArrayList<>();
+    private final ArrayList<Point> loungeExitPoints = new ArrayList<>();
 
-    private ArrayList<Point> hallEntryPoints = new ArrayList<>();
-    private ArrayList<Point> hallExitPoints = new ArrayList<>();
+    private final ArrayList<Point> hallEntryPoints = new ArrayList<>();
+    private final ArrayList<Point> hallExitPoints = new ArrayList<>();
 
-    private ArrayList<Point> studyEntryPoints = new ArrayList<>();
-    private ArrayList<Point> studyExitPoints = new ArrayList<>();
+    private final ArrayList<Point> studyEntryPoints = new ArrayList<>();
+    private final ArrayList<Point> studyExitPoints = new ArrayList<>();
 
-    private ArrayList<Point> cellarEntryPoints = new ArrayList<>();
-    private ArrayList<Point> cellarExitPoints = new ArrayList<>();
+    private final ArrayList<Point> cellarEntryPoints = new ArrayList<>();
+    private final ArrayList<Point> cellarExitPoints = new ArrayList<>();
 
     public DoorData(){
         fillEntryData();

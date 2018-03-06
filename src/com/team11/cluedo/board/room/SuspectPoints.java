@@ -10,6 +10,7 @@ package com.team11.cluedo.board.room;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class SuspectPoints {
     
@@ -68,9 +69,7 @@ public class SuspectPoints {
     }
 
     private void addPointToList(ArrayList<Point> roomList, Point[] p){
-        for (Point point : p ){
-            roomList.add(point);
-        }
+        Collections.addAll(roomList, p);
     }
 
     public ArrayList<ArrayList<Point>> getPlayerSpawnList() {

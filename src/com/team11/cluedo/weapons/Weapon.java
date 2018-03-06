@@ -11,7 +11,6 @@ import com.team11.cluedo.ui.Resolution;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.geom.Ellipse2D;
 
 public class Weapon extends JComponent {
     private int weaponID;

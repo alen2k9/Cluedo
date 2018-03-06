@@ -11,6 +11,7 @@ package com.team11.cluedo.components;
 import com.team11.cluedo.pathfinder.AStarFinder;
 import com.team11.cluedo.pathfinder.Path;
 import com.team11.cluedo.suspects.Direction;
+import com.team11.cluedo.suspects.Suspect;
 import com.team11.cluedo.ui.GameScreen;
 
 import com.team11.cluedo.ui.components.OverlayTile;
@@ -21,7 +22,10 @@ import java.awt.*;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class CommandInput {
     private GameScreen gameScreen;
@@ -40,6 +44,7 @@ public class CommandInput {
         this.canRoll = true;
         this.numPlayers = this.gameScreen.getGamePlayers().getPlayerCount();
         this.gameScreen.reDraw(this.currentPlayer);
+        setUpMouseClick();
     }
 
     public void playerTurn() {
@@ -73,7 +78,7 @@ public class CommandInput {
                         this.gameScreen.getInfoOutput().append("You only have " + remainingMoves + " moves remaining.\n" +
                                 "You entered " + moveParameters.toString().length() + " parameters.\n");
                     } else {
-                        playerMovement(moveParameters.toString());
+                        playerMovement(inputToDirection(moveParameters.toString()));
                     }
                     break;
 
@@ -94,7 +99,8 @@ public class CommandInput {
 
                 case "done":
                     nextPlayer();
-                    this.gameScreen.getMoveOverlay().setValidMoves(new ArrayList<>(), this.gameScreen, currentPlayer);
+                    this.gameScreen.getMoveOverlay().setValidMoves(new ArrayList<>(), this.gameScreen.getGamePlayers().getPlayer(currentPlayer));
+                    this.gameScreen.getDoorOverlay().setExits(new ArrayList<>(), this.gameScreen.getGamePlayers().getPlayer(currentPlayer));
                     break;
 
                 case "quit":
@@ -141,28 +147,26 @@ public class CommandInput {
             {
                 if(key.getKeyCode() == KeyEvent.VK_DOWN)
                 {
-                    playerMovement("d");
+                    playerMovement(new ArrayList<>(Collections.singletonList(Direction.SOUTH)));
                     gameScreen.reDraw(currentPlayer);
                 }
                 else if(key.getKeyCode() == KeyEvent.VK_UP)
                 {
-                    playerMovement("u");
+                    playerMovement(new ArrayList<>(Collections.singletonList(Direction.NORTH)));
                     gameScreen.reDraw(currentPlayer);
                 }
                 else if(key.getKeyCode() == KeyEvent.VK_LEFT)
                 {
-                    playerMovement("l");
+                    playerMovement(new ArrayList<>(Collections.singletonList(Direction.WEST)));
                     gameScreen.reDraw(currentPlayer);
                 }
                 else if(key.getKeyCode() == KeyEvent.VK_RIGHT)
                 {
-                    playerMovement("r");
+                    playerMovement(new ArrayList<>(Collections.singletonList(Direction.EAST)));
                     gameScreen.reDraw(currentPlayer);
-
                 }
             }
         });
-
     }
 
     private void nextPlayer() {
@@ -177,9 +181,14 @@ public class CommandInput {
     }
 
     private void secretPassage() {
+        ArrayList<OverlayTile> overlayTiles = new ArrayList<>();
         if (this.gameScreen.getGamePlayers().useSecretPassageWay(this.gameScreen.getGameBoard(), this.currentPlayer)){
             String roomName = this.gameScreen.getGamePlayers().getPlayer(this.currentPlayer).getSuspectToken().getCurrentRoomName();
             this.gameScreen.getInfoOutput().append(this.playerName + " used secret passageway.\n" + this.playerName + " is now in the " + roomName + ".\n");
+            for (Point point : this.gameScreen.getGameBoard().getRoom(this.gameScreen.getGamePlayers().getPlayer(currentPlayer).getSuspectToken().getCurrentRoom()).getEntryPoints()){
+                overlayTiles.add(new OverlayTile(point));
+            }
+            this.gameScreen.getDoorOverlay().setExits(overlayTiles, this.gameScreen.getGamePlayers().getPlayer(currentPlayer));
         } else {
             this.gameScreen.getInfoOutput().append("There are no secret passageways to use in this room!\n");
         }
@@ -196,7 +205,7 @@ public class CommandInput {
                 this.gameScreen.getInfoOutput().append(this.playerName + " left the " + roomName + ".\n");
                 this.remainingMoves--;
             } else {
-                if (Integer.parseInt(inputs[1]) > gameScreen.getGameBoard().getRoom(gameScreen.getGamePlayers().getPlayer(currentPlayer).getSuspectToken().getCurrentRoom()).getExitPoints().size() || Integer.parseInt(inputs[1]) < 0) {
+                if (Integer.parseInt(inputs[1]) > gameScreen.getGameBoard().getRoom(gameScreen.getGamePlayers().getPlayer(currentPlayer).getSuspectToken().getCurrentRoom()).getExitPoints().size() || Integer.parseInt(inputs[1]) <= 0) {
                     this.gameScreen.getInfoOutput().append("Exit number entered is invalid.\nPlease enter a valid exit number. (1 - " + gameScreen.getGameBoard().getRoom(gameScreen.getGamePlayers().getPlayer(currentPlayer).getSuspectToken().getCurrentRoom()).getExitPoints().size() + ")\n");
                 } else {
                     returnValue = this.gameScreen.getGamePlayers().getPlayer(this.currentPlayer).getSuspectToken().moveOutOfRoom(gameScreen.getGameBoard(), Integer.parseInt(inputs[1]) - 1);
@@ -206,12 +215,13 @@ public class CommandInput {
             }
 
             if (returnValue == 1){
-                this.gameScreen.getMoveOverlay().setValidMoves(findValidMoves(), this.gameScreen, currentPlayer);
+                this.gameScreen.getMoveOverlay().setValidMoves(findValidMoves(), this.gameScreen.getGamePlayers().getPlayer(currentPlayer));
             }
 
             else if (returnValue == 0){
                 this.gameScreen.getInfoOutput().append("Exit " + (Integer.parseInt(inputs[1]) ) + " is blocked by another player");
             }
+
 
             printRemainingMoves();
 
@@ -226,8 +236,9 @@ public class CommandInput {
 
     private void diceRoll() {
         if(this.canRoll) {
-            this.gameScreen.getGameBoard().clearPlayerVisited();
+
             ArrayList<OverlayTile> overlayTiles = new ArrayList<>();
+
             Dice die = new Dice();
             this.dice = die.rolldice();
             this.remainingMoves = this.dice;
@@ -239,10 +250,13 @@ public class CommandInput {
                 for (Point point : this.gameScreen.getGameBoard().getRoom(this.gameScreen.getGamePlayers().getPlayer(currentPlayer).getSuspectToken().getCurrentRoom()).getEntryPoints()){
                     overlayTiles.add(new OverlayTile(point));
                 }
-                System.out.println("Valid Moves" + this.gameScreen.getMoveOverlay().getValidMoves());
+                System.out.println(overlayTiles);
+                this.gameScreen.getDoorOverlay().setExits(overlayTiles, this.gameScreen.getGamePlayers().getPlayer(currentPlayer));
+
             }
+
             else{
-                this.gameScreen.getMoveOverlay().setValidMoves(findValidMoves(), this.gameScreen, currentPlayer);
+                this.gameScreen.getMoveOverlay().setValidMoves(findValidMoves(), this.gameScreen.getGamePlayers().getPlayer(currentPlayer));
             }
 
             this.gameScreen.reDraw(currentPlayer);
@@ -332,53 +346,46 @@ public class CommandInput {
 
     }
 
-    private void playerMovement(String moves) {
-        ArrayList<Direction> list = new ArrayList<>();
-        int steps = 0;
-        for(int i = 0; i < moves.length() && (remainingMoves-steps > 0) ; i++) {
-            if (moves.charAt(i) == 'u') {
-                list.add(Direction.NORTH);
-                steps++;
-            } else if (moves.charAt(i) == 'd') {
-                list.add(Direction.SOUTH);
-                steps++;
-            } else if (moves.charAt(i) == 'l') {
-                list.add(Direction.WEST);
-                steps++;
-            } else if (moves.charAt(i) == 'r') {
-                list.add(Direction.EAST);
-                steps++;
-            }
-        }
+    private void playerMovement(ArrayList<Direction> moves) {
+        int steps = moves.size();
 
-        if(this.gameScreen.getGamePlayers().getPlayer(this.currentPlayer).getSuspectToken().move(this.gameScreen.getGameBoard(), list)) {
-            this.remainingMoves -= steps;
-            if (steps == 1) {
-                this.gameScreen.getInfoOutput().append("You have moved " + steps + " space.\n");
-                printRemainingMoves();
-            }
-            else{
-                this.gameScreen.getInfoOutput().append("You have moved " + steps + " spaces.\n");
-                printRemainingMoves();
-            }
 
-            if(this.gameScreen.getGamePlayers().getPlayer(this.currentPlayer).getSuspectToken().isInRoom()) {
-                String roomName = this.gameScreen.getGamePlayers().getPlayer(this.currentPlayer).getSuspectToken().getCurrentRoomName();
-                this.remainingMoves = 0;
-                this.gameScreen.getInfoOutput().append(this.playerName + " is now in the " + roomName + ", and has 0 moves remaining.\n");
+        if(remainingMoves > 0){
+            if(this.gameScreen.getGamePlayers().getPlayer(this.currentPlayer).getSuspectToken().move(this.gameScreen.getGameBoard(), moves)) {
+                this.remainingMoves -= steps;
+                if (steps == 1) {
+                    this.gameScreen.getInfoOutput().append("You have moved " + steps + " space.\n");
+                    printRemainingMoves();
+                }
+                else{
+                    this.gameScreen.getInfoOutput().append("You have moved " + steps + " spaces.\n");
+                    printRemainingMoves();
+                }
+
+                if(this.gameScreen.getGamePlayers().getPlayer(this.currentPlayer).getSuspectToken().isInRoom()) {
+                    String roomName = this.gameScreen.getGamePlayers().getPlayer(this.currentPlayer).getSuspectToken().getCurrentRoomName();
+                    this.remainingMoves = 0;
+                    this.gameScreen.getInfoOutput().append(this.playerName + " is now in the " + roomName + ", and has 0 moves remaining.\n");
+                }
+
+                this.gameScreen.getMoveOverlay().setValidMoves(findValidMoves(), this.gameScreen.getGamePlayers().getPlayer(currentPlayer));
+
             }
+            else {
 
-            this.gameScreen.getMoveOverlay().setValidMoves(findValidMoves(), this.gameScreen, currentPlayer);
-
+                this.gameScreen.getInfoOutput().append("This path isn't valid.\nYou have " + this.remainingMoves + " moves remaining.\n");
+            }
         } else {
-            this.gameScreen.getInfoOutput().append("This path isn't valid.\nYou have " + this.remainingMoves + " moves remaining.\n");
+
+                this.gameScreen.getInfoOutput().append("This path isn't valid.\nYou have " + this.remainingMoves + " moves remaining.\n");
+            }
+
         }
-    }
 
     private ArrayList<OverlayTile> findValidMoves() {
         ArrayList<OverlayTile> validMoves = new ArrayList<>();
 
-        Point currentPosition = new Point(this.gameScreen.getGamePlayers().getPlayer(currentPlayer).getSuspectToken().getLoc());
+        //Point currentPosition = new Point(this.gameScreen.getGamePlayers().getPlayer(currentPlayer).getSuspectToken().getLoc());
         Point startPoint;
         Point endPoint;
 
@@ -416,7 +423,7 @@ public class CommandInput {
 
             Point tmpPoint;
             this.gameScreen.getGameBoard().clearVisited();
-            AStarFinder finder = new AStarFinder(this.gameScreen.getGameBoard(), 500, false);
+            AStarFinder finder = new AStarFinder(this.gameScreen.getGameBoard(), 12, false);
             Path path;
             //Have start and exit points now so search through and add the valid points to the return list
             for (int i = (int) startPoint.getY(); i <= (int) endPoint.getY(); i++) {
@@ -450,6 +457,119 @@ public class CommandInput {
         return validMoves;
     }
 
+    private void mouseClickMove(Point target){
+        Suspect currentPlayer = this.gameScreen.getGamePlayers().getPlayer(this.currentPlayer).getSuspectToken();
+        finder = new AStarFinder(this.gameScreen.getGameBoard(), 100, false);
+
+        Path path = finder.findPath(currentPlayer, (int)currentPlayer.getLoc().getY(), (int)currentPlayer.getLoc().getX(), (int)target.getY(), (int)target.getX());
+        for (int i = 0; i < path.getLength(); i++){
+            System.out.println(path.getStep(i));
+        }
+        ArrayList<Direction> moveList = pathToDirections(path);
+
+        gameScreen.getInfoOutput().append("Click worked " + target);
+        //currentPlayer.move(this.gameScreen.getGameBoard(), moveList);
+        playerMovement(moveList);
+    }
+
+    private void setUpMouseClick(){
+        this.gameScreen.getBoardPanel().addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                if (gameScreen.getBoardPanel().checkPoint(e.getX()/30, e.getY()/30)){
+                    //Path to list method
+                    mouseClickMove(new Point(e.getX()/30, e.getY()/30));
+                    gameScreen.reDraw(currentPlayer);
+                    gameScreen.getMoveOverlay().setValidMoves(findValidMoves(), gameScreen.getGamePlayers().getPlayer(currentPlayer));
+                    //System.out.println("WOrking");
+                }
+
+            }
+        });
+    }
+
+
+
+    private ArrayList<Direction> pathToDirections(Path path){
+        ArrayList<Direction> directions = new ArrayList<>();
+        Suspect currentPlayer = this.gameScreen.getGamePlayers().getPlayer(this.currentPlayer).getSuspectToken();
+
+        Point previousPoint = new Point((int)currentPlayer.getLoc().getX(), (int)currentPlayer.getLoc().getY());
+
+        Point nextPoint = new Point(path.getStep(0).getY(), path.getStep(0).getX());
+
+
+        for (int i = 0; i < path.getLength(); i++){
+            System.out.println("i: "+ i );
+            System.out.println("Previous Point: " + previousPoint);
+            System.out.println("Next Point: " + nextPoint);
+
+            //Check the difference between the x values
+
+            if (nextPoint.getX() == previousPoint.getX()){
+                if (nextPoint.getY() > previousPoint.getY()){
+                    System.out.println(nextPoint.getY() + " > " + previousPoint.getY());
+                    directions.add(Direction.SOUTH);
+                }
+
+                else {
+                    System.out.println(nextPoint.getY() + " < " + previousPoint.getY());
+                    directions.add(Direction.NORTH);
+                }
+            }
+
+            else if (nextPoint.getY() == previousPoint.getY()){
+                if (nextPoint.getX() > previousPoint.getX()){
+                    System.out.println(nextPoint.getX() + " > " + previousPoint.getX());
+                    directions.add(Direction.EAST);
+                }
+
+                else {
+                    System.out.println(nextPoint.getX() + " < " + previousPoint.getX());
+                    directions.add(Direction.WEST);
+                }
+            }
+
+            //Update next and previous
+            previousPoint = new Point(path.getStep(i).getY(), path.getStep(i).getX());
+            if (i < path.getLength()-1){
+                nextPoint = new Point(path.getStep(i+1).getY(), path.getStep(i+1).getX());
+            }
+
+
+
+            System.out.println();
+        }
+
+        for (int j = 0; j < directions.size(); j++){
+            System.out.println(directions.get(j));
+        }
+        path.getSteps().remove(0);
+        return directions;
+    }
+
+    private ArrayList<Direction> inputToDirection(String moves){
+        ArrayList<Direction> list = new ArrayList<>();
+        int steps = 0;
+        for(int i = 0; i < moves.length() && (remainingMoves-steps > 0) ; i++) {
+            if (moves.charAt(i) == 'u') {
+                list.add(Direction.NORTH);
+                steps++;
+            } else if (moves.charAt(i) == 'd') {
+                list.add(Direction.SOUTH);
+                steps++;
+            } else if (moves.charAt(i) == 'l') {
+                list.add(Direction.WEST);
+                steps++;
+            } else if (moves.charAt(i) == 'r') {
+                list.add(Direction.EAST);
+                steps++;
+            }
+        }
+
+        return list;
+    }
 
     public void testFinder(){
         finder = new AStarFinder(this.gameScreen.getGameBoard(), 100, false);

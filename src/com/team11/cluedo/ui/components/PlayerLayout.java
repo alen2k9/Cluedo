@@ -9,7 +9,6 @@
 package com.team11.cluedo.ui.components;
 
 import com.team11.cluedo.players.Players;
-import com.team11.cluedo.suspects.Suspects;
 import com.team11.cluedo.ui.Resolution;
 
 import javax.swing.*;

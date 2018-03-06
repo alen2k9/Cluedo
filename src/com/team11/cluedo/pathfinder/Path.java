@@ -8,10 +8,11 @@
 
 package com.team11.cluedo.pathfinder;
 
+import java.awt.*;
 import java.util.ArrayList;
 
 public class Path {
-    private ArrayList steps = new ArrayList();
+    private ArrayList<Step> steps = new ArrayList<>();
 
     public Path() {}
 
@@ -20,7 +21,7 @@ public class Path {
     }
 
     public Step getStep(int index) {
-        return (Step) steps.get(index);
+        return steps.get(index);
     }
 
     public ArrayList getSteps() {
@@ -45,6 +46,10 @@ public class Path {
 
     public boolean contains(int x, int y) {
         return steps.contains(new Step(x,y));
+    }
+
+    public Point getStepAsPoint(int index){
+        return new Point(this.getX(index),this.getY(index));
     }
 
     public class Step {

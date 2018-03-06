@@ -36,9 +36,6 @@ public class Board extends JComponent implements TileBasedMap {
     //Used for pathfinding
     private boolean[][] visited = new boolean[BOARD_WIDTH][BOARD_HEIGHT];
 
-    //Used for general movement
-    private boolean[][] hasVisited = new boolean[BOARD_WIDTH][BOARD_HEIGHT];
-
     private ArrayList<Room> rooms = new ArrayList<>();
     private Room kitchen = new Room();
     private Room ballroom = new Room();
@@ -112,6 +109,7 @@ public class Board extends JComponent implements TileBasedMap {
                 }
                 else if (line[j].matches("2")) {
                     boardPos = new BoardPos(new Point(i,j), false, false, TileType.SECRETPASSAGE, tileSize);
+                    //System.out.println("Passage Way: " + i + " " +  j);
                 }
                 else if (line[j].matches("K")) {
                     boardPos = createNonTraversal(new Point(i,j), TileType.KITCHEN);
@@ -247,11 +245,7 @@ public class Board extends JComponent implements TileBasedMap {
 
     //Determine whether we can move on the tile or not
     public boolean blocked(Mover mover, int x, int y){
-        if (board[x][y].isTraversable() && !board[x][y].isOccupied() && !hasVisited[x][y]){
-            return false;
-        }
-
-        return true;
+        return !board[x][y].isTraversable() || board[x][y].isOccupied();
     }
 
     //Get the cost of moving
@@ -271,25 +265,5 @@ public class Board extends JComponent implements TileBasedMap {
                 visited[x][y] = false;
             }
         }
-    }
-
-    public void clearPlayerVisited() {
-        for (int x = 0; x < getWidthInTiles(); x++) {
-            for (int y = 0; y < getHeightInTiles(); y++) {
-                hasVisited[x][y] = false;
-            }
-        }
-    }
-
-    public boolean[][] getHasVisited() {
-        return hasVisited;
-    }
-
-    public boolean getPositionVisited(int x, int y){
-        return  hasVisited[x][y];
-    }
-
-    public void setPositionVisited(int x, int y){
-        hasVisited[x][y] = true;
     }
 }
