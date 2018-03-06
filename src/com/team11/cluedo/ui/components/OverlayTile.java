@@ -106,7 +106,7 @@ public class OverlayTile {
                         break;
                     //Mustard
                     case (5):
-                        g2.setColor(new Color(204,204,0, 90));
+                        g2.setColor(new Color(204, 110, 8, 100));
                         break;
                     default :
                         g2.setColor(new Color(0, 0, 0, 90));

@@ -37,7 +37,7 @@ public class SuspectData {
         suspectName.put(1, "Mr. Green");
         suspectName.put(2, "Ms. Peacock");
         suspectName.put(3, "Mr. Plum");
-        suspectName.put(4, "Miss Scarlet");
+        suspectName.put(4, "Miss Scarlett");
         suspectName.put(5, "Colonel Mustard");
     }
 
@@ -46,7 +46,7 @@ public class SuspectData {
         suspectID.put(1, "green");
         suspectID.put(2, "peacock");
         suspectID.put(3, "plum");
-        suspectID.put(4, "scarlet");
+        suspectID.put(4, "scarlett");
         suspectID.put(5, "mustard");
     }
 

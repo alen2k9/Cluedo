@@ -138,7 +138,7 @@ public class GameScreen implements Screen {
         commandInput.setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
         commandInput.setForeground(Color.DARK_GRAY);
 
-        ////////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////////
         /*
         Code for auto-completing commands
         Only add or remove commands to the commandData arrayList in InputData class
@@ -224,7 +224,7 @@ public class GameScreen implements Screen {
         infoTabs.addTab("Game Log", null, scrollPane[0], "Game Log - Forget what's happened so far?");
         infoTabs.addTab("Help Panel", null, scrollPane[1], "Help Panel - List of all commands");
         infoTabs.addTab("Current Cards", null, scrollPane[2], "The Current Cards you're holding");
-        infoTabs.addTab("Check List", null, scrollPane[3], "Check List for who has what cards");
+        infoTabs.addTab("Notes", null, scrollPane[3], "Check List for who has what cards");
 
         JPanel infoPanel = new JPanel(new BorderLayout());
         infoPanel.setOpaque(false);
@@ -242,7 +242,7 @@ public class GameScreen implements Screen {
     private PlayerLayout setupPlayerPanel() {
         PlayerLayout playerPanel = new PlayerLayout(gamePlayers, resolution, 0);
         playerPanel.setOpaque(false);
-        TitledBorder border = new TitledBorder(new LineBorder(Color.BLACK,3), "Players");
+        TitledBorder border = new TitledBorder(new LineBorder(Color.BLACK,3), "PLAYERS");
         border.setTitleFont(new Font("Orange Kid",Font.BOLD, (int)(20*resolution.getScalePercentage())));
         border.setTitleColor(Color.WHITE);
         playerPanel.setBorder(border);
