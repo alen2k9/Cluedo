@@ -152,7 +152,7 @@ public class MenuScreen implements Screen {
             this.closeScreen();
 
             this.setupScreen(1);
-            this.createScreen("cluedo - Character Selection");
+            this.createScreen("Cluedo - Character Selection");
             this.displayScreen();
         });
 

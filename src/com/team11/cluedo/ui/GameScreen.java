@@ -340,10 +340,7 @@ public class GameScreen implements Screen {
             ImageIcon board = new ImageIcon(gameAssets.getBoardImage());
             Dimension imageSize = new Dimension((int)(board.getIconWidth()*resolution.getScalePercentage()), (int)(board.getIconHeight()*resolution.getScalePercentage()));
             this.setPreferredSize(imageSize);
-            //addMouseListen();
         }
-
-
 
         public boolean checkPoint(int x, int y){
             System.out.println("In method");
@@ -354,18 +351,13 @@ public class GameScreen implements Screen {
             //System.out.println(validMoves);
 
             if (!validMoves.isEmpty()){
-                //noinspection LoopStatementThatDoesntLoop
                 for (OverlayTile overlayTile  :validMoves){
                     if (overlayTile.getLocation().equals(clickedPoint.getLocation())){
-                        //System.out.println("Found");
                         return true;
                     }
-                    //System.out.println(overlayTile.getLocation() + " " + clickedPoint.getLocation());
                 }
             }
-
             return false;
-
         }
 
         @Override
