@@ -402,7 +402,8 @@ public class CommandInput {
                 if(this.currentPlayer.getSuspectToken().isInRoom()) {
                     String roomName = this.currentPlayer.getSuspectToken().getCurrentRoomName();
                     this.remainingMoves = 0;
-                    this.gameScreen.getInfoOutput().append(this.playerName + " is now in the " + roomName + ", and has 0 moves remaining.\n");
+                    this.gameScreen.getInfoOutput().append(this.playerName + " is now in the " + roomName +"\n");
+                    printRemainingMoves();
                 }
 
                 this.gameScreen.getMoveOverlay().setValidMoves(findValidMoves(), this.currentPlayer);
@@ -434,11 +435,7 @@ public class CommandInput {
                     printRemainingMoves();
                 }
 
-                if(this.currentPlayer.getSuspectToken().isInRoom()) {
-                    String roomName = this.currentPlayer.getSuspectToken().getCurrentRoomName();
-                    this.remainingMoves = 0;
-                    this.gameScreen.getInfoOutput().append(this.playerName + " is now in the " + roomName + ", and has 0 moves remaining.\n");
-                }
+
 
                 this.gameScreen.getMoveOverlay().setValidMoves(findValidMoves(), this.currentPlayer);
 
@@ -538,8 +535,6 @@ public class CommandInput {
             System.out.println(path.getStep(i));
         }
         ArrayList<Direction> moveList = pathToDirections(path);
-
-        gameScreen.getInfoOutput().append("Click worked " + target);
 
         playerMovement(moveList);
     }

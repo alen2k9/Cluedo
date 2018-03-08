@@ -106,15 +106,22 @@ public class AStarFinder implements PathFinder {
                         float nextStepCost = current.cost + getMovementCost(mover, current.x, current.y, xp, yp);
                         Node neighbour = nodes[xp][yp];
                         map.pathFinderVisited(xp, yp);
+                        if (nextStepCost < 1000){
 
-                        if (nextStepCost < neighbour.cost) {
-                            if (inOpenList(neighbour)) {
-                                removeFromOpen(neighbour);
-                            }
-                            if (inClosedList(neighbour)) {
-                                removeFromClosed(neighbour);
+                            if (nextStepCost < neighbour.cost) {
+                                if (inOpenList(neighbour)) {
+                                    removeFromOpen(neighbour);
+                                }
+                                if (inClosedList(neighbour)) {
+                                    removeFromClosed(neighbour);
+                                }
                             }
                         }
+
+                        else {
+                            return null;
+                        }
+
 
 
                         //Check to see if the neighbour has been processed or discarded before now
