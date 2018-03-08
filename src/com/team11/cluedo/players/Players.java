@@ -32,10 +32,6 @@ public class Players {
         return this.playerCount;
     }
 
-    public void playerMove(Board gameBoard, int player, ArrayList<Direction> directions) {
-         this.getPlayer(player).getSuspectToken().move(gameBoard, directions);
-    }
-
     public void moveOutOfRoom(Board gameBoard,int player, int exitNum){
         this.getPlayer(player).getSuspectToken().moveOutOfRoom(gameBoard, exitNum);
     }

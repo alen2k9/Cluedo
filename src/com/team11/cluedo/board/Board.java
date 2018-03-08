@@ -29,6 +29,8 @@ public class Board extends JComponent implements TileBasedMap {
 
     private final int BOARD_WIDTH = 27;
     private final int BOARD_HEIGHT = 26;
+    public static final int TILE_SIZE = 30;
+
     private int tileSize;
 
     private BoardPos[][] board;
@@ -60,7 +62,7 @@ public class Board extends JComponent implements TileBasedMap {
             addRoomSecretPassages();
             addDoorPoints();
             addAllSpawns();
-            this.tileSize = (int)(30 * resolution.getScalePercentage());
+            this.tileSize = (int)(TILE_SIZE * resolution.getScalePercentage());
         }
         catch(IOException ex){
             ex.printStackTrace(System.out);

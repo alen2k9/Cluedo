@@ -8,6 +8,7 @@
 
 package com.team11.cluedo.ui;
 
+import com.sun.javafx.fxml.builder.JavaFXSceneBuilder;
 import com.team11.cluedo.assets.Assets;
 import com.team11.cluedo.components.Autocomplete;
 import com.team11.cluedo.components.InputData;
@@ -30,10 +31,9 @@ import java.awt.event.MouseEvent;
 import java.io.*;
 import java.util.ArrayList;
 
-public class GameScreen implements Screen {
+public class GameScreen extends JFrame implements Screen {
     private static final String COMMIT_ACTION = "commit";
 
-    private JFrame frame;
     private BoardUI boardPanel;
     private PlayerLayout playerPanel;
     private PlayerHandLayout playerHandPanel;
@@ -65,14 +65,13 @@ public class GameScreen implements Screen {
         this.gameCards = new Cards();
         this.moveOverlay = new MoveOverlay(this.getGamePlayers().getPlayer(0), this.resolution);
         this.doorOverlay = new DoorOverlay(this.getGamePlayers().getPlayer(0), this.resolution);
-
     }
 
     @Override
     public void createScreen(String name) {
-        this.frame = new JFrame(name);
-        this.frame.setResizable(false);
-        this.frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        super.setName(name);
+        super.setResizable(false);
+        super.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
 
     @Override
@@ -86,15 +85,10 @@ public class GameScreen implements Screen {
         BackgroundPanel backgroundPanel = new BackgroundPanel(backgroundImage, BackgroundPanel.TILED);
 
         this.playerPanel = setupPlayerPanel();
-
-        this.boardPanel = new BoardUI(this.gameSuspects, this.gameWeapons, new BoardComponent(),  moveOverlay, doorOverlay);
-
-        this.playerPanel = setupPlayerPanel();
         this.playerHandPanel = setupCardPanel();
         this.notesPanel = new NotesPanel(gamePlayers);
-
-        JPanel infoPanel = setupInfoPanel();
         this.boardPanel = new BoardUI(this.gameSuspects, this.gameWeapons, new BoardComponent(), this.moveOverlay, this.doorOverlay);
+        JPanel infoPanel = setupInfoPanel();
 
 
         contentPanel.add(playerPanel, BorderLayout.WEST);
@@ -103,29 +97,29 @@ public class GameScreen implements Screen {
 
         backgroundPanel.add(contentPanel, BorderLayout.CENTER);
         mainPanel.add(backgroundPanel, BorderLayout.CENTER);
-        this.frame.getContentPane().add(mainPanel);
 
-        this.frame.pack();
+        this.getContentPane().add(mainPanel);
+        this.pack();
     }
     @Override
     public void displayScreen() {
-        this.frame.setLocation(resolution.getScreenSize().width/2 - frame.getSize().width/2, resolution.getScreenSize().height/2 - (frame.getSize().height/2));
-        this.frame.setVisible(true);
+        setLocation(resolution.getScreenSize().width/2 - getSize().width/2, resolution.getScreenSize().height/2 - (getSize().height/2));
+        setVisible(true);
     }
 
     @Override
     public void closeScreen() {
-        this.frame.removeAll();
-        this.frame.dispose();
+        removeAll();
+        dispose();
         System.exit(0);
     }
     @Override
     public void reDraw(int currentPlayer) {
+        setSize(new Dimension(getPreferredSize().width, getSize().height));
         this.playerPanel.reDraw(currentPlayer);
         this.playerHandPanel.reDraw(currentPlayer);
         this.notesPanel.reDraw(currentPlayer);
-        this.boardPanel.repaint();
-        this.frame.repaint();
+        repaint();
     }
 
     private JPanel setupCommandPanel() {
@@ -325,17 +319,10 @@ public class GameScreen implements Screen {
 
         public BoardUI(Suspects players, Weapons weapons, BoardComponent boardImage, MoveOverlay moveOverlay, DoorOverlay doorOverlay ) {
             this.gameSuspects = players;
-
             this.gameWeapons = weapons;
             this.boardComponent = boardImage;
             this.moveOverlay = moveOverlay;
             this.doorOverlay = doorOverlay;
-
-            this.add(this.boardComponent, new Integer(1));
-            this.add(this.gameSuspects, new Integer(2));
-            this.add(this.gameWeapons, new Integer(3));
-            this.add(this.moveOverlay, new Integer(4));
-            this.add(this.doorOverlay, new Integer(5));
 
             ImageIcon board = new ImageIcon(gameAssets.getBoardImage());
             Dimension imageSize = new Dimension((int)(board.getIconWidth()*resolution.getScalePercentage()), (int)(board.getIconHeight()*resolution.getScalePercentage()));
@@ -343,12 +330,8 @@ public class GameScreen implements Screen {
         }
 
         public boolean checkPoint(int x, int y){
-            System.out.println("In method");
             OverlayTile clickedPoint = new OverlayTile(x,y);
-            System.out.println("New Point" + clickedPoint);
-
             ArrayList<OverlayTile> validMoves = this.moveOverlay.getValidMoves();
-            //System.out.println(validMoves);
 
             if (!validMoves.isEmpty()){
                 for (OverlayTile overlayTile  :validMoves){
@@ -361,7 +344,7 @@ public class GameScreen implements Screen {
         }
 
         @Override
-        public void paint(Graphics g) {
+        public void paintComponent(Graphics g) {
             boardComponent.paintComponent(g);
             gameSuspects.paintComponent(g);
             gameWeapons.paintComponent(g);

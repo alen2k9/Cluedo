@@ -17,7 +17,7 @@ import java.awt.*;
 import java.util.HashSet;
 import java.util.Iterator;
 
-public class Suspects extends JComponent implements Iterable<Suspect>, Iterator<Suspect>{
+public class Suspects extends JPanel implements Iterable<Suspect>, Iterator<Suspect>{
     private final int numSuspects = 6;
     private Iterator<Suspect> iterator;
     private final HashSet<Suspect> suspects = new HashSet<>();

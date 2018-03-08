@@ -22,12 +22,10 @@ import java.util.Stack;
 public class Suspect extends JComponent implements Mover {
     private int suspectID;
     private int currentRoom;
-
     private String suspectName;
-
     private Image tokenImage;
 
-    private Resolution resolution;
+    private int resolutionScalar;
 
     private Point location;
     private Point previousLocation;
@@ -38,14 +36,14 @@ public class Suspect extends JComponent implements Mover {
         this.suspectName = suspectName;
         this.location = location;
         this.tokenImage = tokenImage;
-        this.resolution = resolution;
+        this.resolutionScalar = (int)(resolution.getScalePercentage()* Board.TILE_SIZE);
         this.currentRoom = -1;
         this.previousLocation = null;
     }
 
     //Method which checks the moves passed in to see if they are valid and then checks to see if the final position is occupied or not
 
-    private boolean checkMove(ArrayList<Direction> moveList, Board gameBoard) {
+    public boolean checkMove(Board gameBoard, ArrayList<Direction> moveList) {
         Point testerPoint = new Point(this.getLoc());
         ArrayList<Direction> tmpList = new ArrayList<>(moveList);
 
@@ -200,8 +198,9 @@ public class Suspect extends JComponent implements Mover {
     /*
      * Method for handling the playerMovement of the suspects
      */
+    /*
     public boolean move(Board gameBoard, ArrayList<Direction> moveList){
-        boolean isValid = checkMove(moveList, gameBoard);
+        boolean isValid = checkMove(gameBoard, moveList);
         boolean doMoveToRoom = false;
         //Future use
         Stack<Direction> reverseStack = new Stack<>();
@@ -261,23 +260,42 @@ public class Suspect extends JComponent implements Mover {
 
         return isValid;
     }
+    */
+
+    public void move(Board gameBoard, Direction direction) {
+        gameBoard.getBoardPos((int)this.getLoc().getY(), (int)this.getLoc().getX()).setOccupied(false);
+        switch (direction){
+            case NORTH:
+                moveUp();
+                break;
+            case EAST:
+                moveRight();
+                break;
+            case SOUTH:
+                moveDown();
+                break;
+            case WEST:
+                moveLeft();
+                break;
+        }
+        gameBoard.getBoardPos((int)this.getLoc().getY(), (int)this.getLoc().getX()).setOccupied(true);
+    }
 
     //Method to move up
     private void moveUp(){
-        this.getLoc().setLocation((int)this.getLoc().getX(), (int)this.getLoc().getY()-1);
-
+        setLoc(new Point((int)this.getLoc().getX(), (int)this.getLoc().getY()-1));
     }
     //Method to move down
     private void moveDown(){
-        this.getLoc().setLocation((int)this.getLoc().getX(), (int)this.getLoc().getY()+1);
+        setLoc(new Point((int)this.getLoc().getX(), (int)this.getLoc().getY()+1));
     }
     //Method to move right
     private void moveRight(){
-        this.getLoc().setLocation((int)this.getLoc().getX()+1, (int)this.getLoc().getY());
+        setLoc(new Point((int)this.getLoc().getX()+1, (int)this.getLoc().getY()));
     }
     //Method to move left
     private void moveLeft(){
-        this.getLoc().setLocation((int) this.getLoc().getX() - 1, (int) this.getLoc().getY());
+        setLoc(new Point((int) this.getLoc().getX() - 1, (int) this.getLoc().getY()));
     }
 
     //Method to move a player into a room when they land on a door tile
@@ -472,11 +490,20 @@ public class Suspect extends JComponent implements Mover {
         return this.currentRoom;
     }
 
+    @Override
+    public int getX(){
+        return (int)location.getX();
+    }
+
+    @Override
+    public int getY(){
+        return (int)location.getY();
+    }
+
     public void draw(Graphics g){
         Graphics2D g2 = (Graphics2D) g;
 
-        g2.drawImage(this.tokenImage, (int)(this.location.getX() * ((int)(30 * this.resolution.getScalePercentage()))),
-                (int)(this.location.getY() * ((int)(30 * this.resolution.getScalePercentage()))),
-                ((int)(30 * this.resolution.getScalePercentage())),  ((int)(30 * this.resolution.getScalePercentage())),null);
+        int drawX = (getX() * resolutionScalar); int drawY = (getY()*resolutionScalar);
+        g2.drawImage(this.tokenImage, drawX, drawY, resolutionScalar, resolutionScalar,null);
     }
 }

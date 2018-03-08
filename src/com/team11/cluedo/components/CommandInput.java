@@ -29,6 +29,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class CommandInput {
+    private MovementHandling movementHandling;
+
     private GameScreen gameScreen;
     private JTextArea infoOutput;
     private Player currentPlayer;
@@ -36,9 +38,9 @@ public class CommandInput {
 
     private int dice, remainingMoves, numPlayers, currentPlayerID;
     private boolean canRoll;
-    private AStarFinder finder;
 
     private int resolutionScalar;
+    private boolean moveEnabled;
 
     public CommandInput(GameScreen gameScreen) {
         this.gameScreen = gameScreen;
@@ -47,6 +49,7 @@ public class CommandInput {
 
     public void initialSetup() {
         this.canRoll = true;
+        this.moveEnabled = false;
         this.numPlayers = this.gameScreen.getGamePlayers().getPlayerCount();
         setUpMouseClick();
         this.gameScreen.reDraw(this.currentPlayerID);
@@ -54,17 +57,18 @@ public class CommandInput {
         this.playerName = currentPlayer.getPlayerName();
         this.infoOutput = gameScreen.getInfoOutput();
         this.resolutionScalar = (int)(30*this.gameScreen.getResolution().getScalePercentage());
-
+        movementHandling = new MovementHandling(gameScreen, currentPlayer, this);
+        runPlayer();
     }
 
     public void playerTurn() {
         rollStart();
         currentPlayer = gameScreen.getGamePlayers().getPlayer(currentPlayerID);
-        this.playerName = this.currentPlayer.getPlayerName();
+        playerName = currentPlayer.getPlayerName();
+        movementHandling.setCurrentPlayer(currentPlayer);
         gameScreen.reDraw(currentPlayerID);
-        infoOutput.append("It is now " + this.playerName + "'s turn.\n");
+        infoOutput.append("It is now " + playerName + "'s turn.\n");
         infoOutput.append("Please enter 'roll' to start\n");
-        runPlayer();
     }
 
     private void runPlayer() {
@@ -76,75 +80,100 @@ public class CommandInput {
             this.gameScreen.getCommandInput().setText("");
             infoOutput.append("> "+ input + '\n');
 
-            switch (command){
-                case "move":
-                    StringBuilder moveParameters = new StringBuilder();
-                    for(int i = 1; i < inputs.length; i++) {
-                        moveParameters.append(inputs[i]);
-                    }
-                    if (this.remainingMoves <= 0) {
-                        infoOutput.append("You have 0 moves remaining.\n");
-                    } else if (this.remainingMoves < moveParameters.toString().length()) {
-                        infoOutput.append("You only have " + remainingMoves + " moves remaining.\n" +
-                                "You entered " + moveParameters.toString().length() + " parameters.\n");
-                    } else {
-                        playerMovement(inputToDirection(moveParameters.toString()));
-                    }
-                    break;
+            if (moveEnabled) {
+                switch (command) {
+                    case "u":
+                        movementHandling.playerMovement(new ArrayList<>(Collections.singletonList(Direction.NORTH)),remainingMoves,moveEnabled);
+                        break;
+                    case "r":
+                        movementHandling.playerMovement(new ArrayList<>(Collections.singletonList(Direction.EAST)),remainingMoves,moveEnabled);
+                        break;
+                    case "d":
+                        movementHandling.playerMovement(new ArrayList<>(Collections.singletonList(Direction.SOUTH)),remainingMoves,moveEnabled);
+                        break;
+                    case "l":
+                        movementHandling.playerMovement(new ArrayList<>(Collections.singletonList(Direction.WEST)),remainingMoves,moveEnabled);
+                        break;
+                    case "move":
+                        moveEnabled = movementHandling.disableMove();
+                        break;
+                    case "finished":
+                        moveEnabled = movementHandling.disableMove();
+                        break;
+                }
+            } else {
+                switch (command) {
+                    case "move":
+                        StringBuilder moveParameters = new StringBuilder();
+                        for (int i = 1; i < inputs.length; i++) {
+                            moveParameters.append(inputs[i]);
+                        }
+                        if (this.remainingMoves <= 0) {
+                            infoOutput.append("You have 0 moves remaining.\n");
+                        } else if (inputs.length == 1) {
+                            moveEnabled = movementHandling.enableMove(infoOutput);
+                        }  else if (this.remainingMoves < moveParameters.toString().length()) {
+                            infoOutput.append("You only have " + remainingMoves + " moves remaining.\n" +
+                                    "You entered " + moveParameters.toString().length() + " parameters.\n");
+                        } else {
+                            movementHandling.playerMovement(movementHandling.inputToDirection(moveParameters.toString(), remainingMoves),remainingMoves,moveEnabled);
+                        }
+                        break;
 
-                case "roll":
-                    diceRoll();
-                    break;
+                    case "roll":
+                        diceRoll();
+                        break;
 
-                case "exit":
-                    if (this.remainingMoves > 0) {
-                        moveOut(inputs);
-                    } else {
-                      infoOutput.append("Cannot move out of room\n");
-                      printRemainingMoves();
-                    }
-                    break;
+                    case "exit":
+                        if (this.remainingMoves > 0) {
+                            moveOut(inputs);
+                        } else {
+                            infoOutput.append("Cannot move out of room\n");
+                            CommandProcessing.printRemainingMoves(remainingMoves,infoOutput);
+                        }
+                        break;
 
-                case "done":
-                    nextPlayer();
-                    this.gameScreen.getMoveOverlay().setValidMoves(new ArrayList<>(), this.currentPlayer);
-                    this.gameScreen.getDoorOverlay().setExits(new ArrayList<>(), this.currentPlayer);
-                    break;
+                    case "done":
+                        nextPlayer();
+                        this.gameScreen.getMoveOverlay().setValidMoves(new ArrayList<>(), this.currentPlayer);
+                        this.gameScreen.getDoorOverlay().setExits(new ArrayList<>(), this.currentPlayer);
+                        break;
 
-                case "quit":
-                    quitGame();
-                    break;
+                    case "quit":
+                        quitGame();
+                        break;
 
-                case "passage":
-                    secretPassage();
-                    break;
+                    case "passage":
+                        secretPassage();
+                        break;
 
-                case "help":
-                    help();
-                    break;
+                    case "help":
+                        help();
+                        break;
 
-                case "weapon":
-                    weaponMovement();
-                    break;
+                    case "weapon":
+                        weaponMovement();
+                        break;
 
-                case "notes":
-                    notes();
-                    break;
+                    case "notes":
+                        notes();
+                        break;
 
-                case "cheat":
-                    cheat();
-                    break;
+                    case "cheat":
+                        cheat();
+                        break;
 
-                case "godroll":
-                    godRoll();
-                    break;
+                    case "godroll":
+                        godRoll();
+                        break;
 
-                case "back":
-                    break;
+                    case "back":
+                        break;
 
-                default:
-                    infoOutput.append("Unknown command\nUse command 'help' for instructions.\n");
-                    break;
+                    default:
+                        infoOutput.append("Unknown command\nUse command 'help' for instructions.\n");
+                        break;
+                }
             }
             if (!(command.equals("help")||command.equals("notes"))){
                 gameScreen.setTab(0);
@@ -156,27 +185,21 @@ public class CommandInput {
         {
             public void keyPressed(KeyEvent key)
             {
+                if (moveEnabled) {
+                    if (key.getKeyCode() == KeyEvent.VK_DOWN) {
+                        movementHandling.playerMovement(new ArrayList<>(Collections.singletonList(Direction.SOUTH)), remainingMoves, moveEnabled);
+                        gameScreen.reDraw(currentPlayerID);
+                    } else if (key.getKeyCode() == KeyEvent.VK_UP) {
+                        movementHandling.playerMovement(new ArrayList<>(Collections.singletonList(Direction.NORTH)), remainingMoves, moveEnabled);
+                        gameScreen.reDraw(currentPlayerID);
+                    } else if (key.getKeyCode() == KeyEvent.VK_LEFT) {
+                        movementHandling.playerMovement(new ArrayList<>(Collections.singletonList(Direction.WEST)), remainingMoves, moveEnabled);
+                        gameScreen.reDraw(currentPlayerID);
+                    } else if (key.getKeyCode() == KeyEvent.VK_RIGHT) {
+                        movementHandling.playerMovement(new ArrayList<>(Collections.singletonList(Direction.EAST)), remainingMoves, moveEnabled);
+                        gameScreen.reDraw(currentPlayerID);
 
-                if(key.getKeyCode() == KeyEvent.VK_DOWN)
-                {
-                    arrowPlayerMovement(new ArrayList<>(Collections.singletonList(Direction.SOUTH)));
-                    gameScreen.reDraw(currentPlayerID);
-                }
-                else if(key.getKeyCode() == KeyEvent.VK_UP)
-                {
-                    arrowPlayerMovement(new ArrayList<>(Collections.singletonList(Direction.NORTH)));
-                    gameScreen.reDraw(currentPlayerID);
-                }
-                else if(key.getKeyCode() == KeyEvent.VK_LEFT)
-                {
-                    arrowPlayerMovement(new ArrayList<>(Collections.singletonList(Direction.WEST)));
-                    gameScreen.reDraw(currentPlayerID);
-                }
-                else if(key.getKeyCode() == KeyEvent.VK_RIGHT)
-                {
-                    arrowPlayerMovement(new ArrayList<>(Collections.singletonList(Direction.EAST)));
-                    gameScreen.reDraw(currentPlayerID);
-
+                    }
                 }
             }
         });
@@ -190,13 +213,12 @@ public class CommandInput {
             this.currentPlayerID = 0;
         this.currentPlayer = this.gameScreen.getGamePlayers().getPlayer(currentPlayerID);
         this.playerName = currentPlayer.getPlayerName();
+        movementHandling.setCurrentPlayer(currentPlayer);
         infoOutput.append("\nIt is now player " + this.playerName + "'s turn.\n");
         infoOutput.append("Please enter 'roll'  to start\n");
-
     }
 
     private void secretPassage() {
-
         ArrayList<OverlayTile> overlayTiles = new ArrayList<>();
 
         if (!(currentPlayer.getSuspectToken().getCurrentRoom() == -1) && this.gameScreen.getGameBoard().getRoom(currentPlayer.getSuspectToken().getCurrentRoom()).hasSecretPassage() ) {
@@ -210,7 +232,6 @@ public class CommandInput {
             } else {
                 infoOutput.append("There are no secret passageways to use in this room!\n");
             }
-
         } else {
             infoOutput.append("No secret passage to use");
         }
@@ -241,44 +262,26 @@ public class CommandInput {
 
             if (returnValue == 1){
                 this.gameScreen.getDoorOverlay().setExits(new ArrayList<>(), currentPlayer);
-                this.gameScreen.getMoveOverlay().setValidMoves(findValidMoves(), currentPlayer);
+                this.gameScreen.getMoveOverlay().setValidMoves(movementHandling.findValidMoves(remainingMoves), currentPlayer);
             } else if (returnValue == 0){
                 this.gameScreen.getInfoOutput().append("Exit " + (Integer.parseInt(inputs[1]) ) + " is blocked by another player");
             }
 
-            printRemainingMoves();
+            CommandProcessing.printRemainingMoves(remainingMoves, infoOutput);
 
         } else {
             infoOutput.append("Cannot leave a room when you're not in a room!");
         }
     }
 
-    private void printRemainingMoves(){
-        infoOutput.append("You have " + this.remainingMoves + " moves remaining.\n");
-    }
-
     private void diceRoll() {
         if(this.canRoll) {
-
-            ArrayList<OverlayTile> overlayTiles = new ArrayList<>();
             Dice die = new Dice();
             this.dice = die.rolldice();
             this.remainingMoves = this.dice;
 
             infoOutput.append(this.playerName + " rolled a " + this.dice + ".\n");
             this.canRoll = false;
-
-            if (currentPlayer.getSuspectToken().isInRoom()){
-                System.out.println("Is in room");
-                for (Point point : this.gameScreen.getGameBoard().getRoom(currentPlayer.getSuspectToken().getCurrentRoom()).getEntryPoints()){
-                    overlayTiles.add(new OverlayTile(point));
-                }
-
-                this.gameScreen.getDoorOverlay().setExits(overlayTiles, currentPlayer);
-
-            } else {
-                this.gameScreen.getMoveOverlay().setValidMoves(findValidMoves(), currentPlayer);
-            }
             this.gameScreen.reDraw(currentPlayerID);
 
         } else {
@@ -384,263 +387,21 @@ public class CommandInput {
 
     }
 
-    private void playerMovement(ArrayList<Direction> moves) {
-        int steps = moves.size();
-
-        if(remainingMoves > 0){
-            if(this.currentPlayer.getSuspectToken().move(this.gameScreen.getGameBoard(), moves)){
-                this.remainingMoves -= steps;
-                if (steps == 1) {
-                    this.gameScreen.getInfoOutput().append("You have moved " + steps + " space.\n");
-                    printRemainingMoves();
-                }
-                else{
-                    this.gameScreen.getInfoOutput().append("You have moved " + steps + " spaces.\n");
-                    printRemainingMoves();
-                }
-
-                if(this.currentPlayer.getSuspectToken().isInRoom()) {
-                    String roomName = this.currentPlayer.getSuspectToken().getCurrentRoomName();
-                    this.remainingMoves = 0;
-                    this.gameScreen.getInfoOutput().append(this.playerName + " is now in the " + roomName + ", and has 0 moves remaining.\n");
-                }
-
-                this.gameScreen.getMoveOverlay().setValidMoves(findValidMoves(), this.currentPlayer);
-
-            }
-            else {
-
-                this.gameScreen.getInfoOutput().append("This path isn't valid.\nYou have " + this.remainingMoves + " moves remaining.\n");
-            }
-        } else {
-
-            this.gameScreen.getInfoOutput().append("This path isn't valid.\nYou have " + this.remainingMoves + " moves remaining.\n");
-        }
-
-    }
-
-    private void arrowPlayerMovement(ArrayList<Direction> moves) {
-        int steps = moves.size();
-
-        if(remainingMoves > 0){
-            if(this.currentPlayer.getSuspectToken().move(this.gameScreen.getGameBoard(), moves)) {
-                this.remainingMoves -= steps;
-                if (steps == 1) {
-
-                    printRemainingMoves();
-                }
-                else{
-
-                    printRemainingMoves();
-                }
-
-                if(this.currentPlayer.getSuspectToken().isInRoom()) {
-                    String roomName = this.currentPlayer.getSuspectToken().getCurrentRoomName();
-                    this.remainingMoves = 0;
-                    this.gameScreen.getInfoOutput().append(this.playerName + " is now in the " + roomName + ", and has 0 moves remaining.\n");
-                }
-
-                this.gameScreen.getMoveOverlay().setValidMoves(findValidMoves(), this.currentPlayer);
-
-            }
-            else {
-
-                this.gameScreen.getInfoOutput().append("This path isn't valid.\nYou have " + this.remainingMoves + " moves remaining.\n");
-            }
-        } else {
-
-            this.gameScreen.getInfoOutput().append("This path isn't valid.\nYou have " + this.remainingMoves + " moves remaining.\n");
-        }
-
-    }
-
-
-    private ArrayList<OverlayTile> findValidMoves() {
-        ArrayList<OverlayTile> validMoves = new ArrayList<>();
-
-        Point startPoint;
-        Point endPoint;
-
-        if (!currentPlayer.getSuspectToken().isInRoom()) {
-            startPoint = new Point((int) currentPlayer.getSuspectToken().getLoc().getX() - remainingMoves,
-                    (int) currentPlayer.getSuspectToken().getLoc().getY() - remainingMoves);
-
-            if (startPoint.getX() < 1) {
-                startPoint.setLocation(1, startPoint.getY());
-            } else if (startPoint.getX() > 25) {
-                startPoint.setLocation(25, startPoint.getY());
-            }
-
-            if (startPoint.getY() < 1) {
-                startPoint.setLocation(startPoint.getX(), 1);
-            } else if (startPoint.getY() > 25) {
-                startPoint.setLocation(startPoint.getX(), 25);
-            }
-
-            endPoint = new Point((int) currentPlayer.getSuspectToken().getLoc().getX() + remainingMoves,
-                    (int) currentPlayer.getSuspectToken().getLoc().getY() + remainingMoves);
-
-
-            if (endPoint.getX() < 1) {
-                endPoint.setLocation(1, endPoint.getY());
-            } else if (endPoint.getX() > 25) {
-                endPoint.setLocation(25, endPoint.getY());
-            }
-
-            if (endPoint.getY() < 1) {
-                endPoint.setLocation(endPoint.getX(), 1);
-            } else if (endPoint.getY() > 25) {
-                endPoint.setLocation(endPoint.getX(), 25);
-            }
-
-            Point tmpPoint;
-            this.gameScreen.getGameBoard().clearVisited();
-            AStarFinder finder = new AStarFinder(this.gameScreen.getGameBoard(), 12, false);
-            Path path;
-            //Have start and exit points now so search through and add the valid points to the return list
-            for (int i = (int) startPoint.getY(); i <= (int) endPoint.getY(); i++) {
-
-                for (int j = (int) startPoint.getX(); j <= (int) endPoint.getX(); j++) {
-
-                    tmpPoint = new Point(j, i);
-
-                    path = finder.findPath(currentPlayer.getSuspectToken(),
-                            (int) currentPlayer.getSuspectToken().getLoc().getY(),
-                            (int) currentPlayer.getSuspectToken().getLoc().getX(),
-                            (int)tmpPoint.getY(), (int)tmpPoint.getX());
-
-
-                    if (path != null && path.getLength() <= remainingMoves){
-                        validMoves.add(new OverlayTile(tmpPoint));
-                    }
-                }
-            }
-        }
-        ArrayList<OverlayTile> found = new ArrayList<>();
-
-        for (OverlayTile ov : validMoves){
-            if (this.gameScreen.getGameBoard().getBoardPos((int)ov.getLocation().getY(), (int)ov.getLocation().getX()).isOccupied()){
-                System.out.println("Found a tile with someone on it");
-                found.add(ov);
-            }
-        }
-
-        validMoves.removeAll(found);
-        return validMoves;
-    }
-
-    private void mouseClickMove(Point target){
-        Suspect currentPlayer = this.currentPlayer.getSuspectToken();
-        finder = new AStarFinder(this.gameScreen.getGameBoard(), 100, false);
-
-        Path path = finder.findPath(currentPlayer, (int)currentPlayer.getLoc().getY(), (int)currentPlayer.getLoc().getX(), (int)target.getY(), (int)target.getX());
-        for (int i = 0; i < path.getLength(); i++){
-            System.out.println(path.getStep(i));
-        }
-        ArrayList<Direction> moveList = pathToDirections(path);
-
-        gameScreen.getInfoOutput().append("Click worked " + target);
-
-        playerMovement(moveList);
-    }
 
     private void setUpMouseClick(){
         this.gameScreen.getBoardPanel().addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                if (gameScreen.getBoardPanel().checkPoint(e.getX()/resolutionScalar, e.getY()/resolutionScalar)){
-
-                    mouseClickMove(new Point(e.getX()/resolutionScalar, e.getY()/resolutionScalar));
-                    gameScreen.reDraw(currentPlayerID);
-                    gameScreen.getMoveOverlay().setValidMoves(findValidMoves(), currentPlayer);
-
+                if (moveEnabled) {
+                    if (gameScreen.getBoardPanel().checkPoint(e.getX() / resolutionScalar, e.getY() / resolutionScalar)) {
+                        movementHandling.mouseClickMove(new Point(e.getX() / resolutionScalar, e.getY() / resolutionScalar), remainingMoves, moveEnabled);
+                        gameScreen.reDraw(currentPlayerID);
+                        gameScreen.getMoveOverlay().setValidMoves(movementHandling.findValidMoves(remainingMoves), currentPlayer);
+                    }
                 }
-
             }
         });
-    }
-
-
-
-    private ArrayList<Direction> pathToDirections(Path path){
-        ArrayList<Direction> directions = new ArrayList<>();
-        Suspect currentPlayer = this.currentPlayer.getSuspectToken();
-
-        Point previousPoint = new Point((int)currentPlayer.getLoc().getX(), (int)currentPlayer.getLoc().getY());
-
-        Point nextPoint = new Point(path.getStep(0).getY(), path.getStep(0).getX());
-
-
-        for (int i = 0; i < path.getLength(); i++){
-            System.out.println("i: "+ i );
-            System.out.println("Previous Point: " + previousPoint);
-            System.out.println("Next Point: " + nextPoint);
-
-            //Check the difference between the x values
-
-            if (nextPoint.getX() == previousPoint.getX()){
-                if (nextPoint.getY() > previousPoint.getY()){
-                    System.out.println(nextPoint.getY() + " > " + previousPoint.getY());
-                    directions.add(Direction.SOUTH);
-                }
-
-                else {
-                    System.out.println(nextPoint.getY() + " < " + previousPoint.getY());
-                    directions.add(Direction.NORTH);
-                }
-            }
-
-            else if (nextPoint.getY() == previousPoint.getY()){
-                if (nextPoint.getX() > previousPoint.getX()){
-                    System.out.println(nextPoint.getX() + " > " + previousPoint.getX());
-                    directions.add(Direction.EAST);
-                }
-
-                else {
-                    System.out.println(nextPoint.getX() + " < " + previousPoint.getX());
-                    directions.add(Direction.WEST);
-                }
-            }
-
-            //Update next and previous
-            previousPoint = new Point(path.getStep(i).getY(), path.getStep(i).getX());
-            if (i < path.getLength()-1){
-                nextPoint = new Point(path.getStep(i+1).getY(), path.getStep(i+1).getX());
-            }
-
-
-
-            System.out.println();
-        }
-
-        for (int j = 0; j < directions.size(); j++){
-            System.out.println(directions.get(j));
-        }
-        path.getSteps().remove(0);
-        return directions;
-    }
-
-    private ArrayList<Direction> inputToDirection(String moves){
-        ArrayList<Direction> list = new ArrayList<>();
-        int steps = 0;
-        for(int i = 0; i < moves.length() && (remainingMoves-steps > 0) ; i++) {
-            if (moves.charAt(i) == 'u') {
-                list.add(Direction.NORTH);
-                steps++;
-            } else if (moves.charAt(i) == 'd') {
-                list.add(Direction.SOUTH);
-                steps++;
-            } else if (moves.charAt(i) == 'l') {
-                list.add(Direction.WEST);
-                steps++;
-            } else if (moves.charAt(i) == 'r') {
-                list.add(Direction.EAST);
-                steps++;
-            }
-        }
-
-        return list;
     }
 
     private void rollStart() {
@@ -701,5 +462,21 @@ public class CommandInput {
         private String getWeapon() {
             return this.weapon;
         }
+    }
+
+    public void setMoveEnabled(boolean moveEnabled) {
+        this.moveEnabled = moveEnabled;
+    }
+
+    public boolean isMoveEnabled() {
+        return moveEnabled;
+    }
+
+    public int getRemainingMoves() {
+        return remainingMoves;
+    }
+
+    public void setRemainingMoves(int remainingMoves) {
+        this.remainingMoves = remainingMoves;
     }
 }

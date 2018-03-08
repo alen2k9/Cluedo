@@ -17,7 +17,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Random;
 
-public class Weapons extends JComponent implements Iterable<Weapon>, Iterator<Weapon> {
+public class Weapons extends JPanel implements Iterable<Weapon>, Iterator<Weapon> {
 
     private final int NUM_WEAPONS = 6;
     private Iterator<Weapon> iterator;
