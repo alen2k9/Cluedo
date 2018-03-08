@@ -278,6 +278,9 @@ public class Suspect extends JComponent implements Mover {
                 moveLeft();
                 break;
         }
+        if (gameBoard.getBoardPos((int)this.getLoc().getY(), (int)this.getLoc().getX()).getType() == TileType.DOOR)
+            moveToRoom(gameBoard);
+
         gameBoard.getBoardPos((int)this.getLoc().getY(), (int)this.getLoc().getX()).setOccupied(true);
     }
 
@@ -304,7 +307,6 @@ public class Suspect extends JComponent implements Mover {
         Point nextPoint = gameBoard.getRoom(currRoom).getRandomPoint(gameBoard.getRoom(currRoom).getPlayerPositions());
         this.setLoc(nextPoint);
         this.setCurrentRoom(currRoom);
-        //System.out.println("Exit Points" + gameBoard.getRoom(currRoom).getExitPoints());
         gameBoard.getRoom(currRoom).getPlayerPositions().remove(nextPoint);
     }
 

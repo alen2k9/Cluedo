@@ -264,13 +264,13 @@ public class CommandInput {
                 this.gameScreen.getDoorOverlay().setExits(new ArrayList<>(), currentPlayer);
                 this.gameScreen.getMoveOverlay().setValidMoves(movementHandling.findValidMoves(remainingMoves), currentPlayer);
             } else if (returnValue == 0){
-                this.gameScreen.getInfoOutput().append("Exit " + (Integer.parseInt(inputs[1]) ) + " is blocked by another player");
+                this.gameScreen.getInfoOutput().append("Exit " + (Integer.parseInt(inputs[1]) ) + " is blocked by another player\n");
             }
 
             CommandProcessing.printRemainingMoves(remainingMoves, infoOutput);
 
         } else {
-            infoOutput.append("Cannot leave a room when you're not in a room!");
+            infoOutput.append("Cannot leave a room when you're not in a room!\n");
         }
     }
 
@@ -386,7 +386,6 @@ public class CommandInput {
         }
 
     }
-
 
     private void setUpMouseClick(){
         this.gameScreen.getBoardPanel().addMouseListener(new MouseAdapter() {

@@ -39,7 +39,8 @@ public class MovementHandling {
                 if (currentPlayer.getSuspectToken().isInRoom()) {
                     String roomName = currentPlayer.getSuspectToken().getCurrentRoomName();
                     remainingMoves = 0;
-                    gameScreen.getInfoOutput().append(currentPlayer.getPlayerName() + " is now in the " + roomName + ", and has 0 moves remaining.\n");
+                    gameScreen.getInfoOutput().append(currentPlayer.getPlayerName() + " is now in the " + roomName + "\n");
+                    CommandProcessing.printRemainingMoves(remainingMoves, gameScreen.getInfoOutput());
                 }
                 if (commandInput.isMoveEnabled()) {
                     gameScreen.getMoveOverlay().setValidMoves(findValidMoves(remainingMoves), currentPlayer);
@@ -89,7 +90,6 @@ public class MovementHandling {
             endPoint = new Point((int) currentPlayer.getSuspectToken().getLoc().getX() + remainingMoves,
                     (int) currentPlayer.getSuspectToken().getLoc().getY() + remainingMoves);
 
-
             if (endPoint.getX() < 1) {
                 endPoint.setLocation(1, endPoint.getY());
             } else if (endPoint.getX() > 25) {
@@ -108,16 +108,12 @@ public class MovementHandling {
             Path path;
             //Have start and exit points now so search through and add the valid points to the return list
             for (int i = (int) startPoint.getY(); i <= (int) endPoint.getY(); i++) {
-
                 for (int j = (int) startPoint.getX(); j <= (int) endPoint.getX(); j++) {
-
                     tmpPoint = new Point(j, i);
-
                     path = finder.findPath(currentPlayer.getSuspectToken(),
                             (int) currentPlayer.getSuspectToken().getLoc().getY(),
                             (int) currentPlayer.getSuspectToken().getLoc().getX(),
                             (int)tmpPoint.getY(), (int)tmpPoint.getX());
-
 
                     if (path != null && path.getLength() <= remainingMoves){
                         validMoves.add(new OverlayTile(tmpPoint));
@@ -125,11 +121,10 @@ public class MovementHandling {
                 }
             }
         }
-        ArrayList<OverlayTile> found = new ArrayList<>();
 
+        ArrayList<OverlayTile> found = new ArrayList<>();
         for (OverlayTile ov : validMoves){
             if (this.gameScreen.getGameBoard().getBoardPos((int)ov.getLocation().getY(), (int)ov.getLocation().getX()).isOccupied()){
-                System.out.println("Found a tile with someone on it");
                 found.add(ov);
             }
         }
@@ -183,32 +178,18 @@ public class MovementHandling {
 
 
         for (int i = 0; i < path.getLength(); i++){
-            System.out.println("i: "+ i );
-            System.out.println("Previous Point: " + previousPoint);
-            System.out.println("Next Point: " + nextPoint);
-
-            //Check the difference between the x values
-
             if (nextPoint.getX() == previousPoint.getX()){
                 if (nextPoint.getY() > previousPoint.getY()){
-                    System.out.println(nextPoint.getY() + " > " + previousPoint.getY());
                     directions.add(Direction.SOUTH);
-                }
-
-                else {
-                    System.out.println(nextPoint.getY() + " < " + previousPoint.getY());
+                }else {
                     directions.add(Direction.NORTH);
                 }
             }
 
             else if (nextPoint.getY() == previousPoint.getY()){
                 if (nextPoint.getX() > previousPoint.getX()){
-                    System.out.println(nextPoint.getX() + " > " + previousPoint.getX());
                     directions.add(Direction.EAST);
-                }
-
-                else {
-                    System.out.println(nextPoint.getX() + " < " + previousPoint.getX());
+                } else {
                     directions.add(Direction.WEST);
                 }
             }
@@ -218,14 +199,6 @@ public class MovementHandling {
             if (i < path.getLength()-1){
                 nextPoint = new Point(path.getStep(i+1).getY(), path.getStep(i+1).getX());
             }
-
-
-
-            System.out.println();
-        }
-
-        for (int j = 0; j < directions.size(); j++){
-            System.out.println(directions.get(j));
         }
         path.getSteps().remove(0);
         return directions;

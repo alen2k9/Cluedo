@@ -171,6 +171,12 @@ public class Board extends JComponent implements TileBasedMap {
                 else if (line[j].matches("M")){
                     boardPos = createTraversal(new Point (i,j), TileType.DOORMAT);
                 }
+                else if (line[j].matches("Q")){
+                    boardPos = createTraversal(new Point (i,j), TileType.PREFER);
+                }
+                else if (line[j].matches("A")){
+                    boardPos = createTraversal(new Point(i,j), TileType.AVOID);
+                }
                 else {
                     System.out.println("Unknown Tile Type, Please Check BoardInfo.txt");
                 }
@@ -250,17 +256,15 @@ public class Board extends JComponent implements TileBasedMap {
         return !board[x][y].isTraversable() || board[x][y].isOccupied();
     }
 
-    //Get the cost of moving
+    //Get the cost of moving from one tile (sx,sy) to (tx,ty)
     public float getCost(Mover mover, int sx, int sy, int tx, int ty){
-        if (board[tx][ty].getType() == TileType.DOOR){
+        if ( (board[sx][sy].getType() == TileType.AVOID && board[tx][ty].getType() == TileType.DOOR) ||
+                (board[sx][sy].getType() == TileType.DOOR && board[tx][ty].getType() == TileType.AVOID)){
             return 10;
         }
-
-        if (board[tx][ty].getType() == TileType.DOOR){
-            return 5;
+        else {
+            return 1;
         }
-
-        return 1;
     }
 
     //Set a tile to have been visited
