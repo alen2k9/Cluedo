@@ -250,6 +250,14 @@ public class Board extends JComponent implements TileBasedMap {
 
     //Get the cost of moving
     public float getCost(Mover mover, int sx, int sy, int tx, int ty){
+        if (board[tx][ty].getType() == TileType.DOOR){
+            return 10;
+        }
+
+        if (board[tx][ty].getType() == TileType.DOOR){
+            return 5;
+        }
+
         return 1;
     }
 

@@ -38,6 +38,8 @@ public class CommandInput {
     private boolean canRoll;
     private AStarFinder finder;
 
+    private int resolutionScalar;
+
     public CommandInput(GameScreen gameScreen) {
         this.gameScreen = gameScreen;
         currentPlayerID = 0;
@@ -46,13 +48,12 @@ public class CommandInput {
     public void initialSetup() {
         this.canRoll = true;
         this.numPlayers = this.gameScreen.getGamePlayers().getPlayerCount();
-
         setUpMouseClick();
-
         this.gameScreen.reDraw(this.currentPlayerID);
         this.currentPlayer = gameScreen.getGamePlayers().getPlayer(currentPlayerID);
         this.playerName = currentPlayer.getPlayerName();
         this.infoOutput = gameScreen.getInfoOutput();
+        this.resolutionScalar = (int)(30*this.gameScreen.getResolution().getScalePercentage());
 
     }
 
@@ -191,7 +192,7 @@ public class CommandInput {
         this.playerName = currentPlayer.getPlayerName();
         infoOutput.append("\nIt is now player " + this.playerName + "'s turn.\n");
         infoOutput.append("Please enter 'roll'  to start\n");
-        this.gameScreen.getMoveOverlay().setValidMoves(new ArrayList<>(), currentPlayer);
+
     }
 
     private void secretPassage() {
@@ -239,7 +240,7 @@ public class CommandInput {
             }
 
             if (returnValue == 1){
-
+                this.gameScreen.getDoorOverlay().setExits(new ArrayList<>(), currentPlayer);
                 this.gameScreen.getMoveOverlay().setValidMoves(findValidMoves(), currentPlayer);
             } else if (returnValue == 0){
                 this.gameScreen.getInfoOutput().append("Exit " + (Integer.parseInt(inputs[1]) ) + " is blocked by another player");
@@ -260,10 +261,10 @@ public class CommandInput {
         if(this.canRoll) {
 
             ArrayList<OverlayTile> overlayTiles = new ArrayList<>();
-
             Dice die = new Dice();
             this.dice = die.rolldice();
             this.remainingMoves = this.dice;
+
             infoOutput.append(this.playerName + " rolled a " + this.dice + ".\n");
             this.canRoll = false;
 
@@ -273,8 +274,8 @@ public class CommandInput {
                     overlayTiles.add(new OverlayTile(point));
                 }
 
-            System.out.println("Valid Moves" + this.gameScreen.getMoveOverlay().getValidMoves());
-            this.gameScreen.getDoorOverlay().setExits(overlayTiles, this.gameScreen.getGamePlayers().getPlayer(currentPlayerID));
+                this.gameScreen.getDoorOverlay().setExits(overlayTiles, currentPlayer);
+
             } else {
                 this.gameScreen.getMoveOverlay().setValidMoves(findValidMoves(), currentPlayer);
             }
@@ -385,7 +386,6 @@ public class CommandInput {
 
     private void playerMovement(ArrayList<Direction> moves) {
         int steps = moves.size();
-
 
         if(remainingMoves > 0){
             if(this.currentPlayer.getSuspectToken().move(this.gameScreen.getGameBoard(), moves)) {
@@ -514,9 +514,9 @@ public class CommandInput {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                if (gameScreen.getBoardPanel().checkPoint(e.getX()/30, e.getY()/30)){
+                if (gameScreen.getBoardPanel().checkPoint(e.getX()/resolutionScalar, e.getY()/resolutionScalar)){
 
-                    mouseClickMove(new Point(e.getX()/30, e.getY()/30));
+                    mouseClickMove(new Point(e.getX()/resolutionScalar, e.getY()/resolutionScalar));
                     gameScreen.reDraw(currentPlayerID);
                     gameScreen.getMoveOverlay().setValidMoves(findValidMoves(), currentPlayer);
 
