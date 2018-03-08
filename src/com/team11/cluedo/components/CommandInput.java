@@ -158,22 +158,22 @@ public class CommandInput {
 
                 if(key.getKeyCode() == KeyEvent.VK_DOWN)
                 {
-                    playerMovement(new ArrayList<>(Collections.singletonList(Direction.SOUTH)));
+                    arrowPlayerMovement(new ArrayList<>(Collections.singletonList(Direction.SOUTH)));
                     gameScreen.reDraw(currentPlayerID);
                 }
                 else if(key.getKeyCode() == KeyEvent.VK_UP)
                 {
-                    playerMovement(new ArrayList<>(Collections.singletonList(Direction.NORTH)));
+                    arrowPlayerMovement(new ArrayList<>(Collections.singletonList(Direction.NORTH)));
                     gameScreen.reDraw(currentPlayerID);
                 }
                 else if(key.getKeyCode() == KeyEvent.VK_LEFT)
                 {
-                    playerMovement(new ArrayList<>(Collections.singletonList(Direction.WEST)));
+                    arrowPlayerMovement(new ArrayList<>(Collections.singletonList(Direction.WEST)));
                     gameScreen.reDraw(currentPlayerID);
                 }
                 else if(key.getKeyCode() == KeyEvent.VK_RIGHT)
                 {
-                    playerMovement(new ArrayList<>(Collections.singletonList(Direction.EAST)));
+                    arrowPlayerMovement(new ArrayList<>(Collections.singletonList(Direction.EAST)));
                     gameScreen.reDraw(currentPlayerID);
 
                 }
@@ -388,7 +388,7 @@ public class CommandInput {
 
 
         if(remainingMoves > 0){
-            if(this.currentPlayer.getSuspectToken().move(this.gameScreen.getGameBoard(), moves)) {
+            if(this.currentPlayer.getSuspectToken().move(this.gameScreen.getGameBoard(), moves)){
                 this.remainingMoves -= steps;
                 if (steps == 1) {
                     this.gameScreen.getInfoOutput().append("You have moved " + steps + " space.\n");
@@ -414,10 +414,45 @@ public class CommandInput {
             }
         } else {
 
+            this.gameScreen.getInfoOutput().append("This path isn't valid.\nYou have " + this.remainingMoves + " moves remaining.\n");
+        }
+
+    }
+
+    private void arrowPlayerMovement(ArrayList<Direction> moves) {
+        int steps = moves.size();
+
+        if(remainingMoves > 0){
+            if(this.currentPlayer.getSuspectToken().move(this.gameScreen.getGameBoard(), moves)) {
+                this.remainingMoves -= steps;
+                if (steps == 1) {
+
+                    printRemainingMoves();
+                }
+                else{
+
+                    printRemainingMoves();
+                }
+
+                if(this.currentPlayer.getSuspectToken().isInRoom()) {
+                    String roomName = this.currentPlayer.getSuspectToken().getCurrentRoomName();
+                    this.remainingMoves = 0;
+                    this.gameScreen.getInfoOutput().append(this.playerName + " is now in the " + roomName + ", and has 0 moves remaining.\n");
+                }
+
+                this.gameScreen.getMoveOverlay().setValidMoves(findValidMoves(), this.currentPlayer);
+
+            }
+            else {
+
                 this.gameScreen.getInfoOutput().append("This path isn't valid.\nYou have " + this.remainingMoves + " moves remaining.\n");
             }
+        } else {
 
+            this.gameScreen.getInfoOutput().append("This path isn't valid.\nYou have " + this.remainingMoves + " moves remaining.\n");
         }
+
+    }
 
 
     private ArrayList<OverlayTile> findValidMoves() {
