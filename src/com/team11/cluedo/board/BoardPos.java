@@ -12,6 +12,8 @@ import com.team11.cluedo.board.room.TileType;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class BoardPos extends JComponent {
     private Point location;
@@ -26,6 +28,7 @@ public class BoardPos extends JComponent {
         this.isOccupied = occ;
         this.type = t;
         this.tileSize = size;
+        setupMouse();
     }
 
     public Point getLocation(){
@@ -48,10 +51,28 @@ public class BoardPos extends JComponent {
         return this.type;
     }
 
+    public void setupMouse(){
+
+        this.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                super.mouseEntered(e);
+                System.out.println("Entered " + e.getX() + " " + e.getY());
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                super.mouseExited(e);
+                System.out.println("Exited");
+            }
+        });
+
+    }
+
     public void draw(Graphics g, Point p){
         Graphics2D g2 = (Graphics2D) g;
-        g2.setColor(Color.BLACK);
-        g2.fillRect((int)p.getX(), (int)p.getY(), this.tileSize, this.tileSize);
+        g2.setColor(new Color(255, 255,0));
+        //g2.fillRect((int)p.getX(), (int)p.getY(), this.tileSize, this.tileSize);
         g2.drawRect((int)p.getX(), (int)p.getY(), this.tileSize, this.tileSize);
     }
 

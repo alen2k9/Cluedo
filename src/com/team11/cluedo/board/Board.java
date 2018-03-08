@@ -14,12 +14,14 @@ import com.team11.cluedo.pathfinder.TileBasedMap;
 
 import com.team11.cluedo.board.room.*;
 
+import com.team11.cluedo.recursiveMove.RecursiveMove;
 import com.team11.cluedo.ui.Resolution;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Stack;
 
 public class Board extends JComponent implements TileBasedMap {
 
@@ -52,6 +54,8 @@ public class Board extends JComponent implements TileBasedMap {
     private SuspectPoints suspectPoints = new SuspectPoints();
 
     private DoorData doorData = new DoorData();
+
+    private RecursiveMove recursiveMove;
 
     public Board(Resolution resolution) throws IOException{
         try{
@@ -169,6 +173,9 @@ public class Board extends JComponent implements TileBasedMap {
                 else if (line[j].matches("M")){
                     boardPos = createTraversal(new Point (i,j), TileType.DOORMAT);
                 }
+                else if (line[j].matches("P")){
+                    boardPos = createTraversal(new Point (i,j), TileType.AVOID);
+                }
                 else {
                     System.out.println("Unknown Tile Type, Please Check BoardInfo.txt");
                 }
@@ -225,8 +232,8 @@ public class Board extends JComponent implements TileBasedMap {
     public void paintComponent(Graphics g){
         int top = 0, left = 0;
 
-        for (int i = 0; i < BOARD_WIDTH; i++){
-            for (int j = 0; j < BOARD_HEIGHT; j++){
+        for (int i = 0; i < BOARD_WIDTH; i++) {
+            for (int j = 0; j < BOARD_HEIGHT; j++) {
                 board[i][j].draw(g, new Point(left, top));
                 left += tileSize;
             }
@@ -250,6 +257,15 @@ public class Board extends JComponent implements TileBasedMap {
 
     //Get the cost of moving
     public float getCost(Mover mover, int sx, int sy, int tx, int ty){
+
+        if (board[tx][ty].getType() == TileType.DOOR){
+            return 10;
+        }
+
+        if (board[tx][ty].getType() == TileType.DOORMAT){
+            return 5;
+        }
+
         return 1;
     }
 
