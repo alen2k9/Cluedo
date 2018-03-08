@@ -77,7 +77,7 @@ public class OverlayTile {
         if (!currentPlayer.getSuspectToken().isInRoom()){
 
             //Check to see if we need to draw a tile for a door
-            if (doorList.contains(new Point((int)this.getLocation().getX(), (int)this.getLocation().getY()))){
+            if (doorList.contains(new Point((int)this.getLocation().getY(), (int)this.getLocation().getX()))){
                 g2.setColor(new Color(0, 133, 255, 90));
             }
 

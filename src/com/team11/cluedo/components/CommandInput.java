@@ -8,11 +8,9 @@
 
 package com.team11.cluedo.components;
 
-import com.team11.cluedo.board.room.TileType;
 import com.team11.cluedo.players.Player;
 import com.team11.cluedo.pathfinder.AStarFinder;
 import com.team11.cluedo.pathfinder.Path;
-import com.team11.cluedo.recursiveMove.RecursiveMove;
 import com.team11.cluedo.suspects.Direction;
 import com.team11.cluedo.suspects.Suspect;
 import com.team11.cluedo.ui.GameScreen;
@@ -29,7 +27,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Stack;
 
 public class CommandInput {
     private GameScreen gameScreen;
@@ -40,7 +37,6 @@ public class CommandInput {
     private int dice, remainingMoves, numPlayers, currentPlayerID;
     private boolean canRoll;
     private AStarFinder finder;
-    private RecursiveMove recursiveMove;
 
     public CommandInput(GameScreen gameScreen) {
         this.gameScreen = gameScreen;
@@ -57,7 +53,7 @@ public class CommandInput {
         this.currentPlayer = gameScreen.getGamePlayers().getPlayer(currentPlayerID);
         this.playerName = currentPlayer.getPlayerName();
         this.infoOutput = gameScreen.getInfoOutput();
-        this.recursiveMove = new RecursiveMove(this.gameScreen.getGameBoard());
+
     }
 
     public void playerTurn() {
@@ -222,9 +218,7 @@ public class CommandInput {
     private void moveOut(String[] inputs) {
         int returnValue = 2 ; // 1 for success, 0 for blocked, 2 is default
         String roomName = currentPlayer.getSuspectToken().getCurrentRoomName();
-        this.recursiveMove.clearMoveList();
-        this.gameScreen.getDoorOverlay().setExits(new ArrayList<>(), this.currentPlayer);
-        ArrayList<OverlayTile> overlayTiles;
+
         if (currentPlayer.getSuspectToken().getCurrentRoom() != -1) {
             if (inputs.length > 2) {
                 infoOutput.append("Too many arguments for 'Exit'.\nExpected 1, Got " + (inputs.length - 1) + ".\n");
@@ -245,10 +239,8 @@ public class CommandInput {
             }
 
             if (returnValue == 1){
-                this.recursiveMove.findMoves(remainingMoves, new Point((int) currentPlayer.getSuspectToken().getLoc().getY(), (int)currentPlayer.getSuspectToken().getLoc().getX()), new Stack<>());
-                overlayTiles = recursiveMove.pointToOverlayTiles();
-                System.out.println(overlayTiles.remove(new OverlayTile((int)currentPlayer.getSuspectToken().getLoc().getX(),(int)currentPlayer.getSuspectToken().getLoc().getY())));
-                this.gameScreen.getMoveOverlay().setValidMoves(overlayTiles, currentPlayer);
+
+                this.gameScreen.getMoveOverlay().setValidMoves(findValidMoves(), currentPlayer);
             } else if (returnValue == 0){
                 this.gameScreen.getInfoOutput().append("Exit " + (Integer.parseInt(inputs[1]) ) + " is blocked by another player");
             }
@@ -269,8 +261,6 @@ public class CommandInput {
 
             ArrayList<OverlayTile> overlayTiles = new ArrayList<>();
 
-            this.recursiveMove.clearVisited();
-
             Dice die = new Dice();
             this.dice = die.rolldice();
             this.remainingMoves = this.dice;
@@ -286,10 +276,7 @@ public class CommandInput {
             System.out.println("Valid Moves" + this.gameScreen.getMoveOverlay().getValidMoves());
             this.gameScreen.getDoorOverlay().setExits(overlayTiles, this.gameScreen.getGamePlayers().getPlayer(currentPlayerID));
             } else {
-                this.recursiveMove.findMoves(remainingMoves, new Point((int) currentPlayer.getSuspectToken().getLoc().getY(), (int)currentPlayer.getSuspectToken().getLoc().getX()), new Stack<>());
-                overlayTiles = recursiveMove.pointToOverlayTiles();
-                System.out.println(overlayTiles.remove(new OverlayTile((int)currentPlayer.getSuspectToken().getLoc().getX(),(int)currentPlayer.getSuspectToken().getLoc().getY())));
-                this.gameScreen.getMoveOverlay().setValidMoves(overlayTiles, currentPlayer);
+                this.gameScreen.getMoveOverlay().setValidMoves(findValidMoves(), currentPlayer);
             }
             this.gameScreen.reDraw(currentPlayerID);
 
@@ -397,9 +384,8 @@ public class CommandInput {
     }
 
     private void playerMovement(ArrayList<Direction> moves) {
-        ArrayList<OverlayTile> overlayTiles;
-        this.recursiveMove.clearMoveList();
         int steps = moves.size();
+
 
         if(remainingMoves > 0){
             if(this.currentPlayer.getSuspectToken().move(this.gameScreen.getGameBoard(), moves)) {
@@ -419,10 +405,7 @@ public class CommandInput {
                     this.gameScreen.getInfoOutput().append(this.playerName + " is now in the " + roomName + ", and has 0 moves remaining.\n");
                 }
 
-                this.recursiveMove.findMoves(remainingMoves, new Point((int) currentPlayer.getSuspectToken().getLoc().getY(), (int)currentPlayer.getSuspectToken().getLoc().getX()), new Stack<>());
-                overlayTiles = recursiveMove.pointToOverlayTiles();
-                overlayTiles.remove(new OverlayTile((int)currentPlayer.getSuspectToken().getLoc().getX(),(int)currentPlayer.getSuspectToken().getLoc().getY()));
-                this.gameScreen.getMoveOverlay().setValidMoves(overlayTiles, currentPlayer);
+                this.gameScreen.getMoveOverlay().setValidMoves(findValidMoves(), this.currentPlayer);
 
             }
             else {
@@ -436,29 +419,14 @@ public class CommandInput {
 
         }
 
+
     private ArrayList<OverlayTile> findValidMoves() {
         ArrayList<OverlayTile> validMoves = new ArrayList<>();
 
-        //RecursiveMove recursiveMove = new RecursiveMove(this.gameScreen.getGameBoard());
-        //recursiveMove.clearVisited();
-        //recursiveMove.findMoves(remainingMoves, new Point((int)currentPlayer.getSuspectToken().getLoc().getY(),(int)currentPlayer.getSuspectToken().getLoc().getX() ), new Stack<>());
-        //recursiveMove.getMoveList().remove(new Point((int)currentPlayer.getSuspectToken().getLoc().getY(),(int)currentPlayer.getSuspectToken().getLoc().getX() ));
-        //recursiveMove.printMap();
-        //System.out.println("Size: " + recursiveMove.getMoveList().size());
         Point startPoint;
         Point endPoint;
-        Path path ;
-        //AStarFinder finder = new AStarFinder(this.gameScreen.getGameBoard(), 12, false);
-
-
-
 
         if (!currentPlayer.getSuspectToken().isInRoom()) {
-            validMoves = this.recursiveMove.pointToOverlayTiles();
-            System.out.println("Test");
-            System.out.println(validMoves.remove(new OverlayTile((int)currentPlayer.getSuspectToken().getLoc().getY(),(int)currentPlayer.getSuspectToken().getLoc().getX())));
-        }
-            /*
             startPoint = new Point((int) currentPlayer.getSuspectToken().getLoc().getX() - remainingMoves,
                     (int) currentPlayer.getSuspectToken().getLoc().getY() - remainingMoves);
 
@@ -492,7 +460,8 @@ public class CommandInput {
 
             Point tmpPoint;
             this.gameScreen.getGameBoard().clearVisited();
-
+            AStarFinder finder = new AStarFinder(this.gameScreen.getGameBoard(), 12, false);
+            Path path;
             //Have start and exit points now so search through and add the valid points to the return list
             for (int i = (int) startPoint.getY(); i <= (int) endPoint.getY(); i++) {
 
@@ -511,10 +480,17 @@ public class CommandInput {
                     }
                 }
             }
-
         }
-        */
+        ArrayList<OverlayTile> found = new ArrayList<>();
 
+        for (OverlayTile ov : validMoves){
+            if (this.gameScreen.getGameBoard().getBoardPos((int)ov.getLocation().getY(), (int)ov.getLocation().getX()).isOccupied()){
+                System.out.println("Found a tile with someone on it");
+                found.add(ov);
+            }
+        }
+
+        validMoves.removeAll(found);
         return validMoves;
     }
 
@@ -545,9 +521,12 @@ public class CommandInput {
                     gameScreen.getMoveOverlay().setValidMoves(findValidMoves(), currentPlayer);
 
                 }
+
             }
         });
     }
+
+
 
     private ArrayList<Direction> pathToDirections(Path path){
         ArrayList<Direction> directions = new ArrayList<>();
