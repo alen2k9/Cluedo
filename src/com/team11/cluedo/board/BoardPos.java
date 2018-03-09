@@ -9,9 +9,14 @@
 package com.team11.cluedo.board;
 
 import com.team11.cluedo.board.room.TileType;
+import com.team11.cluedo.suspects.Suspect;
+import com.team11.cluedo.suspects.SuspectData;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class BoardPos extends JComponent {
     private Point location;
@@ -26,6 +31,9 @@ public class BoardPos extends JComponent {
         this.isOccupied = occ;
         this.type = t;
         this.tileSize = size;
+
+        Dimension buttonSize = new Dimension(size, size);
+        super.setPreferredSize(buttonSize);
     }
 
     public Point getLocation(){
@@ -48,7 +56,8 @@ public class BoardPos extends JComponent {
         return this.type;
     }
 
-    public void draw(Graphics g, Point p){
+    @Override
+    public void paintComponent(Graphics g){
         Graphics2D g2 = (Graphics2D) g;
         int borderWidth = 3;
 
@@ -58,12 +67,10 @@ public class BoardPos extends JComponent {
                  this.getType() == TileType.PREFER)
                 ){
             g2.setColor(new Color(255,255,0,130));
+            //g2.fillRect(0,0,tileSize,tileSize);
             g2.setStroke(new BasicStroke(borderWidth));
-            g2.drawRect((int)p.getX(), (int)p.getY(), Board.TILE_SIZE, Board.TILE_SIZE);
+            //g2.drawRect((int)location.getY() * tileSize, (int)location.getX() * tileSize, tileSize, tileSize);
         }
-
-
-
     }
 
     public String toString(){

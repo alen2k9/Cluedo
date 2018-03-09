@@ -18,6 +18,8 @@ import com.team11.cluedo.ui.Resolution;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.*;
 import java.util.ArrayList;
 
@@ -57,15 +59,30 @@ public class Board extends JComponent implements TileBasedMap {
 
     public Board(Resolution resolution) throws IOException{
         try{
+            this.tileSize = (int)(TILE_SIZE * resolution.getScalePercentage());
             board = parseBoardFile();
             addRooms();
             addRoomSecretPassages();
             addDoorPoints();
             addAllSpawns();
-            this.tileSize = (int)(TILE_SIZE * resolution.getScalePercentage());
+            System.out.println("TileSize : " + tileSize);
+            addThis();
+
         }
         catch(IOException ex){
             ex.printStackTrace(System.out);
+        }
+    }
+
+    private void addThis() {
+        this.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        for (int i = 0 ; i < BOARD_WIDTH ; i++){
+            gbc.gridy = i;
+            for (int j = 0 ; j < BOARD_HEIGHT ; j++) {
+                gbc.gridx = j;
+                this.add(board[i][j], gbc);
+            }
         }
     }
 
@@ -222,6 +239,10 @@ public class Board extends JComponent implements TileBasedMap {
         return this.board[x][y];
     }
 
+    public BoardPos[][] getBoard(){
+        return this.board;
+    }
+
     private BoardPos createNonTraversal(Point p, TileType t){
         return new BoardPos(p, false, false, t, tileSize);
     }
@@ -235,7 +256,7 @@ public class Board extends JComponent implements TileBasedMap {
 
         for (int i = 0; i < BOARD_WIDTH; i++){
             for (int j = 0; j < BOARD_HEIGHT; j++){
-                board[i][j].draw(g, new Point(left, top));
+                board[i][j].paintComponent(g);
                 left += tileSize;
             }
             left = 0;
