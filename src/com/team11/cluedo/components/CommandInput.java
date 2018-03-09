@@ -437,6 +437,13 @@ public class CommandInput {
                         super.mouseEntered(e);
                         if (boardPos.getTileType() == TileType.ROOM || boardPos.getTileType() == TileType.DOOR
                                 || boardPos.getTileType() == TileType.SECRETPASSAGE) {
+                            if (!roomPos.isEmpty())
+                                if (boardPos.getRoomType() != roomPos.get(0).getRoomType()) {
+                                    while (!roomPos.isEmpty()) {
+                                        BoardPos innerPos = roomPos.remove(roomPos.size() - 1);
+                                        innerPos.setBorder(new EmptyBorder(0, 0, 0, 0));
+                                    }
+                                }
                             fillRoom(boardPos.getRoomType());
                             if (boardPos.getTileType() == TileType.DOOR) {
                                 boardPos.setBorder(BorderFactory.createLineBorder(new Color(0, 140, 255, 181), 3));
@@ -471,9 +478,11 @@ public class CommandInput {
                                 }
                             }
                         }
-                        for (int j = 0 ; j < i ; j++) {
-                            roomPos.get(j).setBorder(BorderFactory.createLineBorder(new Color(255, 255, 255, 124), 15));
-                        }
+                        SwingUtilities.invokeLater(() -> {
+                            for (int j = 0 ; j < roomPos.size() ; j++) {
+                                    roomPos.get(j).setBorder(BorderFactory.createLineBorder(new Color(255, 255, 255, 124), 15));
+                            }
+                        });
                     }
                 });
             }
