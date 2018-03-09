@@ -8,18 +8,22 @@
 
 package com.team11.cluedo.components;
 
+import com.team11.cluedo.board.BoardPos;
 import com.team11.cluedo.board.room.RoomData;
+import com.team11.cluedo.board.room.TileType;
 import com.team11.cluedo.players.Player;
 import com.team11.cluedo.pathfinder.AStarFinder;
 import com.team11.cluedo.pathfinder.Path;
 import com.team11.cluedo.suspects.Direction;
 import com.team11.cluedo.suspects.Suspect;
+import com.team11.cluedo.suspects.SuspectData;
 import com.team11.cluedo.ui.GameScreen;
 
 import com.team11.cluedo.ui.components.OverlayTile;
 import com.team11.cluedo.weapons.WeaponData;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 import java.awt.event.KeyAdapter;
@@ -95,6 +99,7 @@ public class CommandInput {
                         break;
                     case "l":
                         movementHandling.playerMovement(new ArrayList<>(Collections.singletonList(Direction.WEST)),remainingMoves,moveEnabled);
+
                         break;
                     case "move":
                         moveEnabled = movementHandling.disableMove();
@@ -103,6 +108,7 @@ public class CommandInput {
                         moveEnabled = movementHandling.disableMove();
                         break;
                 }
+                this.gameScreen.getMoveOverlay().setValidMoves(movementHandling.findValidMoves(remainingMoves), currentPlayer);
             } else {
                 switch (command) {
                     case "move":
@@ -119,6 +125,7 @@ public class CommandInput {
                                     "You entered " + moveParameters.toString().length() + " parameters.\n");
                         } else {
                             movementHandling.playerMovement(movementHandling.inputToDirection(moveParameters.toString(), remainingMoves),remainingMoves,moveEnabled);
+                            this.gameScreen.getMoveOverlay().setValidMoves(movementHandling.findValidMoves(remainingMoves), currentPlayer);
                         }
                         break;
 
@@ -177,7 +184,7 @@ public class CommandInput {
                         break;
                 }
             }
-            if (!(command.equals("help")||command.equals("notes"))){
+            if (!(command.equals("help")||command.equals("notes") || command.equals("fill"))){
                 gameScreen.setTab(0);
             }
             gameScreen.reDraw(currentPlayerID);
@@ -216,8 +223,8 @@ public class CommandInput {
         this.currentPlayer = this.gameScreen.getGamePlayers().getPlayer(currentPlayerID);
         this.playerName = currentPlayer.getPlayerName();
         movementHandling.setCurrentPlayer(currentPlayer);
-        infoOutput.append("\nIt is now player " + this.playerName + "'s turn.\n");
-        infoOutput.append("Please enter 'roll'  to start\n");
+        infoOutput.append("\nIt is now " + this.playerName + "'s turn.\n");
+        infoOutput.append("Please enter 'roll' to start\n");
     }
 
     private void secretPassage() {
@@ -234,7 +241,7 @@ public class CommandInput {
                 infoOutput.append("There are no secret passageways to use in this room!\n");
             }
         } else {
-            infoOutput.append("No secret passage to use");
+            infoOutput.append("No secret passage to use\n");
         }
     }
 
@@ -279,15 +286,16 @@ public class CommandInput {
             this.dice = die.rolldice();
             this.remainingMoves = this.dice;
 
-            if (currentPlayer.getSuspectToken().isInRoom()){
+            if (currentPlayer.getSuspectToken().isInRoom()) {
                 ArrayList<OverlayTile> overlayTiles = new ArrayList<>();
                 System.out.println("Is in room");
-                for (Point point : this.gameScreen.getGameBoard().getRoom(currentPlayer.getSuspectToken().getCurrentRoom()).getEntryPoints()){
+                for (Point point : this.gameScreen.getGameBoard().getRoom(currentPlayer.getSuspectToken().getCurrentRoom()).getEntryPoints()) {
                     overlayTiles.add(new OverlayTile(point));
                 }
                 this.gameScreen.getDoorOverlay().setExits(overlayTiles, currentPlayer);
+            } else {
+                //gameScreen.getMoveOverlay().setValidMoves(movementHandling.findValidMoves(remainingMoves), currentPlayer);
             }
-
             infoOutput.append(this.playerName + " rolled a " + this.dice + ".\n");
             this.canRoll = false;
             this.gameScreen.reDraw(currentPlayerID);
@@ -410,6 +418,47 @@ public class CommandInput {
                 }
             }
         });
+
+        for (BoardPos[] boardPosArray : gameScreen.getGameBoard().getBoard()) {
+            for (BoardPos boardPos : boardPosArray) {
+                boardPos.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        super.mouseClicked(e);
+                        if (moveEnabled) {
+                            if (gameScreen.getBoardPanel().checkPoint((int)boardPos.getLocation().getY(), (int)boardPos.getLocation().getX())) {
+                                movementHandling.mouseClickMove(new Point((int)boardPos.getLocation().getY(), (int)boardPos.getLocation().getX()), remainingMoves, moveEnabled);
+                                gameScreen.reDraw(currentPlayerID);
+                                gameScreen.getMoveOverlay().setValidMoves(movementHandling.findValidMoves(remainingMoves), currentPlayer);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void mouseEntered(MouseEvent e) {
+                        super.mouseEntered(e);if ( (boardPos.getLocation().getX() > 0 && boardPos.getLocation().getY() > 0) &&
+                                (boardPos.getLocation().getX() < 26 && boardPos.getLocation().getY() < 25) &&
+                                (boardPos.getType() == TileType.HALLWAY || boardPos.getType() == TileType.AVOID || boardPos.getType() == TileType.SPAWN || boardPos.getType() == TileType.DOORMAT || boardPos.getType() == TileType.DOOR ||
+                                        boardPos.getType() == TileType.PREFER)
+                                ) {
+                            if (boardPos.getType() == TileType.DOOR) {
+                                boardPos.setBorder(BorderFactory.createLineBorder(new Color(0, 140, 255, 181), 3));
+                            }
+                            else {
+                                SuspectData data = new SuspectData();
+                                boardPos.setBorder(BorderFactory.createLineBorder(data.getSuspectColor(currentPlayer.getSuspectToken().getSuspectID()), 3));
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void mouseExited(MouseEvent e) {
+                        super.mouseExited(e);
+                        boardPos.setBorder(new EmptyBorder(0,0,0,0));
+                    }
+                });
+            }
+        }
     }
 
     private void rollStart() {

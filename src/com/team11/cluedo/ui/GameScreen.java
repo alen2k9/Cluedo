@@ -312,6 +312,9 @@ public class GameScreen extends JFrame implements Screen {
             this.doorOverlay = doorOverlay;
             this.paintParam = 0;
 
+            this.setLayout(new FlowLayout(0,0,0));
+            this.add(gameBoard, 0);
+
             ImageIcon board = new ImageIcon(gameAssets.getBoardImage());
             Dimension imageSize = new Dimension((int)(board.getIconWidth()*resolution.getScalePercentage()), (int)(board.getIconHeight()*resolution.getScalePercentage()));
             this.setPreferredSize(imageSize);
@@ -322,7 +325,7 @@ public class GameScreen extends JFrame implements Screen {
             ArrayList<OverlayTile> validMoves = this.moveOverlay.getValidMoves();
 
             if (!validMoves.isEmpty()){
-                for (OverlayTile overlayTile  :validMoves){
+                for (OverlayTile overlayTile : validMoves){
                     if (overlayTile.getLocation().equals(clickedPoint.getLocation())){
                         return true;
                     }

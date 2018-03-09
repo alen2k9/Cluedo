@@ -34,7 +34,6 @@ public class Notes extends JTable {
         this.resolution = resolution;
         this.setBackground(Color.DARK_GRAY);
         setupComponents();
-        //paintCell(2, "Miss White");
     }
 
     private void setupComponents(){
@@ -114,6 +113,8 @@ public class Notes extends JTable {
         this.setDefaultRenderer(Object.class, new NotesRenderer());
     }
 
+    //Method which will paint a desired cell based on the player number and the value of the row they highlight
+    //To fill in global cards have playerNum = 0
     public void paintCell(int playerNum, String value){
         int offset = 1;
 
@@ -127,35 +128,8 @@ public class Notes extends JTable {
         }
 
         cellToPaint.add(new Point(rowIndex, columnIndex));
-
     }
 
-    //Mouse Listener for the table
-    public class NotesListener extends MouseAdapter{
-        @Override
-        public void mouseClicked(MouseEvent arg0){
-            super.mouseClicked(arg0);
-            int rows;
-            int cols;
-
-            //Get the position clicked
-            rows = getSelectedRow();
-            cols = getSelectedColumn();
-
-            //Check to see if the position can be drawn on and if it's already been coloured in
-            //If it hasn't been coloured in and is in a valid row/column then add it to the list to be coloured
-            if (!cellToPaint.contains(new Point(rows, cols)) && (cols != 0) && (rows != 0) &&(rows != 7) && (rows != 8) && (rows!= 15) && (rows != 16)){
-                cellToPaint.add(new Point(rows, cols));
-            }
-            //Otherwise remove the point from the paint list
-            else{
-                cellToPaint.remove(new Point(rows,cols));
-            }
-
-            //Repaint the table
-            repaint();
-        }
-    }
 
     //Custom Renderer for the table cells
     public class NotesRenderer extends DefaultTableCellRenderer{
@@ -163,17 +137,30 @@ public class Notes extends JTable {
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             JLabel label = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
-            Color c = Color.DARK_GRAY;
+            label.setHorizontalAlignment(SwingConstants.CENTER);
+            label.setVerticalAlignment(SwingConstants.CENTER);
+
+
             label.setForeground(Color.WHITE);
 
             if (column == 0){
-                label.setBorder(BorderFactory.createMatteBorder(0,2,0,1,Color.black));
+                label.setBorder(BorderFactory.createMatteBorder(0,2,0,1,Color.BLACK));
             }
-            if (cellToPaint.contains(new Point(row, column))){
-                c = Color.ORANGE;
+            if (cellToPaint.contains(new Point(row, column)) && column > 1){
+                label.setBackground(Color.YELLOW);
+                label.setForeground(Color.DARK_GRAY);
+                label.setFont(new Font("Ariel", Font.BOLD, (int)(25*resolution.getScalePercentage())));
+                label.setText("X");
+            } else if (cellToPaint.contains(new Point(row, column)) && column == 1){
+                label.setBackground(Color.YELLOW);
+                label.setForeground(Color.DARK_GRAY);
+                label.setFont(new Font("Ariel", Font.BOLD, (int)(25*resolution.getScalePercentage())));
+                label.setText("A");
+
+            } else{
+                label.setBackground(Color.DARK_GRAY);
             }
 
-            label.setBackground(c);
             return label;
         }
     }
