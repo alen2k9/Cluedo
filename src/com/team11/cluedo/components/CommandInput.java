@@ -70,7 +70,7 @@ public class CommandInput {
         movementHandling.setCurrentPlayer(currentPlayer);
         gameScreen.reDraw(currentPlayerID);
         infoOutput.append("It is now " + playerName + "'s turn.\n");
-        infoOutput.append("Please enter 'roll' to start\n");
+        infoOutput.append("Please enter 'roll' to start");
     }
 
     private void runPlayer() {
@@ -95,6 +95,7 @@ public class CommandInput {
                         break;
                     case "l":
                         movementHandling.playerMovement(new ArrayList<>(Collections.singletonList(Direction.WEST)),remainingMoves,moveEnabled);
+
                         break;
                     case "move":
                         moveEnabled = movementHandling.disableMove();
@@ -103,6 +104,7 @@ public class CommandInput {
                         moveEnabled = movementHandling.disableMove();
                         break;
                 }
+                this.gameScreen.getMoveOverlay().setValidMoves(movementHandling.findValidMoves(remainingMoves), currentPlayer);
             } else {
                 switch (command) {
                     case "move":
@@ -119,6 +121,7 @@ public class CommandInput {
                                     "You entered " + moveParameters.toString().length() + " parameters.\n");
                         } else {
                             movementHandling.playerMovement(movementHandling.inputToDirection(moveParameters.toString(), remainingMoves),remainingMoves,moveEnabled);
+                            this.gameScreen.getMoveOverlay().setValidMoves(movementHandling.findValidMoves(remainingMoves), currentPlayer);
                         }
                         break;
 
@@ -177,7 +180,7 @@ public class CommandInput {
                         break;
                 }
             }
-            if (!(command.equals("help")||command.equals("notes"))){
+            if (!(command.equals("help")||command.equals("notes") || command.equals("fill"))){
                 gameScreen.setTab(0);
             }
             gameScreen.reDraw(currentPlayerID);
@@ -288,6 +291,11 @@ public class CommandInput {
                 this.gameScreen.getDoorOverlay().setExits(overlayTiles, currentPlayer);
             }
 
+            else {
+
+                gameScreen.getMoveOverlay().setValidMoves(movementHandling.findValidMoves(remainingMoves), currentPlayer);
+
+            }
             infoOutput.append(this.playerName + " rolled a " + this.dice + ".\n");
             this.canRoll = false;
             this.gameScreen.reDraw(currentPlayerID);

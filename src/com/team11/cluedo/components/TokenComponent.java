@@ -6,7 +6,7 @@ import com.team11.cluedo.ui.Resolution;
 import javax.swing.*;
 import java.awt.*;
 
-public class TokenComponent extends JComponent {
+    public class TokenComponent extends JComponent {
     protected int tokenID;
     protected int currentRoom;
     protected String tokenName;
