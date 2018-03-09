@@ -50,9 +50,20 @@ public class BoardPos extends JComponent {
 
     public void draw(Graphics g, Point p){
         Graphics2D g2 = (Graphics2D) g;
-        g2.setColor(Color.BLACK);
-        g2.fillRect((int)p.getX(), (int)p.getY(), this.tileSize, this.tileSize);
-        g2.drawRect((int)p.getX(), (int)p.getY(), this.tileSize, this.tileSize);
+        int borderWidth = 3;
+
+        if ( (this.location.getX() > 0 && this.location.getY() > 0) &&
+                (this.location.getX() < 26 && this.location.getY() < 25) &&
+                (this.getType() == TileType.HALLWAY || this.getType() == TileType.AVOID || this.getType() == TileType.SPAWN || this.getType() == TileType.DOORMAT || this.getType() == TileType.DOOR ||
+                 this.getType() == TileType.PREFER)
+                ){
+            g2.setColor(new Color(255,255,0,130));
+            g2.setStroke(new BasicStroke(borderWidth));
+            g2.drawRect((int)p.getX(), (int)p.getY(), Board.TILE_SIZE, Board.TILE_SIZE);
+        }
+
+
+
     }
 
     public String toString(){

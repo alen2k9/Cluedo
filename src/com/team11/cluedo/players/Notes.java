@@ -34,6 +34,7 @@ public class Notes extends JTable {
         this.resolution = resolution;
         this.setBackground(Color.DARK_GRAY);
         setupComponents();
+        //paintCell(2, "Miss White");
     }
 
     private void setupComponents(){
@@ -111,9 +112,22 @@ public class Notes extends JTable {
 
         //Set the renderer for the table
         this.setDefaultRenderer(Object.class, new NotesRenderer());
+    }
 
-        //Add the listener
-        this.addMouseListener(new NotesListener());
+    public void paintCell(int playerNum, String value){
+        int offset = 1;
+
+        int rowIndex = 2;
+        int columnIndex = playerNum + offset;
+
+        for (int i = 0; i < this.getRowCount(); i++){
+            if (this.getModel().getValueAt(i,0).equals(value)){
+                rowIndex = i;
+            }
+        }
+
+        cellToPaint.add(new Point(rowIndex, columnIndex));
+
     }
 
     //Mouse Listener for the table
