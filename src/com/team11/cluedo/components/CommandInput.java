@@ -9,13 +9,11 @@
 package com.team11.cluedo.components;
 
 import com.team11.cluedo.board.BoardPos;
+import com.team11.cluedo.board.room.DoorData;
 import com.team11.cluedo.board.room.RoomData;
 import com.team11.cluedo.board.room.TileType;
 import com.team11.cluedo.players.Player;
-import com.team11.cluedo.pathfinder.AStarFinder;
-import com.team11.cluedo.pathfinder.Path;
 import com.team11.cluedo.suspects.Direction;
-import com.team11.cluedo.suspects.Suspect;
 import com.team11.cluedo.suspects.SuspectData;
 import com.team11.cluedo.ui.GameScreen;
 
@@ -32,6 +30,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 
 public class CommandInput {
     private MovementHandling movementHandling;
@@ -99,13 +98,25 @@ public class CommandInput {
                         break;
                     case "l":
                         movementHandling.playerMovement(new ArrayList<>(Collections.singletonList(Direction.WEST)),remainingMoves,moveEnabled);
-
                         break;
                     case "move":
                         moveEnabled = movementHandling.disableMove();
                         break;
                     case "finished":
                         moveEnabled = movementHandling.disableMove();
+                        break;
+                    case "done":
+                        moveEnabled = false;
+                        nextPlayer();
+                        this.gameScreen.getMoveOverlay().setValidMoves(new ArrayList<>(), this.currentPlayer);
+                        this.gameScreen.getDoorOverlay().setExits(new ArrayList<>(), this.currentPlayer);
+                        break;
+                    default:
+                        infoOutput.append("Unknown entry.\n +" +
+                                "Enter 'U', 'R', 'D', or 'L' to move.\n" +
+                                "Click on a highlighted square to move.\n" +
+                                "Use the arrow keys to move.\n" +
+                                "Close move by typing 'move' or 'finished'\n");
                         break;
                 }
                 this.gameScreen.getMoveOverlay().setValidMoves(movementHandling.findValidMoves(remainingMoves), currentPlayer);
@@ -405,20 +416,7 @@ public class CommandInput {
     }
 
     private void setUpMouseClick(){
-        this.gameScreen.getBoardPanel().addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                super.mouseClicked(e);
-                if (moveEnabled) {
-                    if (gameScreen.getBoardPanel().checkPoint(e.getX() / resolutionScalar, e.getY() / resolutionScalar)) {
-                        movementHandling.mouseClickMove(new Point(e.getX() / resolutionScalar, e.getY() / resolutionScalar), remainingMoves, moveEnabled);
-                        gameScreen.reDraw(currentPlayerID);
-                        gameScreen.getMoveOverlay().setValidMoves(movementHandling.findValidMoves(remainingMoves), currentPlayer);
-                    }
-                }
-            }
-        });
-
+        HashMap<Integer, BoardPos> roomPos = new HashMap<>();
         for (BoardPos[] boardPosArray : gameScreen.getGameBoard().getBoard()) {
             for (BoardPos boardPos : boardPosArray) {
                 boardPos.addMouseListener(new MouseAdapter() {
@@ -436,25 +434,46 @@ public class CommandInput {
 
                     @Override
                     public void mouseEntered(MouseEvent e) {
-                        super.mouseEntered(e);if ( (boardPos.getLocation().getX() > 0 && boardPos.getLocation().getY() > 0) &&
-                                (boardPos.getLocation().getX() < 26 && boardPos.getLocation().getY() < 25) &&
-                                (boardPos.getType() == TileType.HALLWAY || boardPos.getType() == TileType.AVOID || boardPos.getType() == TileType.SPAWN || boardPos.getType() == TileType.DOORMAT || boardPos.getType() == TileType.DOOR ||
-                                        boardPos.getType() == TileType.PREFER)
-                                ) {
-                            if (boardPos.getType() == TileType.DOOR) {
+                        super.mouseEntered(e);
+                        if (boardPos.getTileType() == TileType.ROOM || boardPos.getTileType() == TileType.DOOR
+                                || boardPos.getTileType() == TileType.SECRETPASSAGE) {
+                            fillRoom(boardPos.getRoomType());
+                            if (boardPos.getTileType() == TileType.DOOR) {
                                 boardPos.setBorder(BorderFactory.createLineBorder(new Color(0, 140, 255, 181), 3));
                             }
-                            else {
-                                SuspectData data = new SuspectData();
-                                boardPos.setBorder(BorderFactory.createLineBorder(data.getSuspectColor(currentPlayer.getSuspectToken().getSuspectID()), 3));
+                        } else {
+                            while (!roomPos.isEmpty()) {
+                                BoardPos innerPos = roomPos.remove(roomPos.size() - 1);
+                                innerPos.setBorder(new EmptyBorder(0, 0, 0, 0));
                             }
+                            SuspectData data = new SuspectData();
+                            if (boardPos.getTileType() != TileType.BLANK)
+                                boardPos.setBorder(BorderFactory.createLineBorder(data.getSuspectColor(currentPlayer.getSuspectToken().getSuspectID()), 3));
                         }
                     }
 
                     @Override
                     public void mouseExited(MouseEvent e) {
                         super.mouseExited(e);
-                        boardPos.setBorder(new EmptyBorder(0,0,0,0));
+
+                        if (!(boardPos.getTileType() == TileType.ROOM || boardPos.getTileType() == TileType.DOOR
+                                || boardPos.getTileType() == TileType.SECRETPASSAGE)) {
+                            boardPos.setBorder(new EmptyBorder(0, 0, 0, 0));
+                        }
+                    }
+
+                    private void fillRoom(TileType currentRoom) {
+                        int i = 0;
+                        for (BoardPos[] boardPosArray : gameScreen.getGameBoard().getBoard()) {
+                            for (BoardPos innerPos : boardPosArray) {
+                                if (innerPos.getRoomType() == currentRoom && !roomPos.containsValue(innerPos)) {
+                                    roomPos.put(i++, innerPos);
+                                }
+                            }
+                        }
+                        for (int j = 0 ; j < i ; j++) {
+                            roomPos.get(j).setBorder(BorderFactory.createLineBorder(new Color(255, 255, 255, 124), 15));
+                        }
                     }
                 });
             }

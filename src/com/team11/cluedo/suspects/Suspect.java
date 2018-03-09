@@ -14,7 +14,7 @@ import com.team11.cluedo.pathfinder.Mover;
 import com.team11.cluedo.board.Board;
 import com.team11.cluedo.board.room.TileType;
 import com.team11.cluedo.ui.Resolution;
-import javax.swing.*;
+
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -37,7 +37,7 @@ public class Suspect extends TokenComponent implements Mover {
                     if (gameBoard.getBoardPos((int)testerPoint.getLocation().getY()-1, (int)testerPoint.getLocation().getX()).isTraversable() &&
                             !(gameBoard.getBoardPos((int)testerPoint.getY()-1, (int)testerPoint.getX()).isOccupied())) {
 
-                        if (gameBoard.getBoardPos((int)testerPoint.getLocation().getY()-1, (int)testerPoint.getLocation().getX()).getType() == TileType.DOOR && !(gameBoard.getBoardPos((int)lastLoc.getY(), (int)lastLoc.getX()).getType() == TileType.DOORMAT)){
+                        if (gameBoard.getBoardPos((int)testerPoint.getLocation().getY()-1, (int)testerPoint.getLocation().getX()).getTileType() == TileType.DOOR && !(gameBoard.getBoardPos((int)lastLoc.getY(), (int)lastLoc.getX()).getTileType() == TileType.DOORMAT)){
                             validitySet.add("false");
                         }
                         testerPoint.setLocation((int)testerPoint.getLocation().getX(), (int)testerPoint.getLocation().getY()-1);
@@ -52,7 +52,7 @@ public class Suspect extends TokenComponent implements Mover {
                 case EAST:
                     if (gameBoard.getBoardPos((int)testerPoint.getLocation().getY(), (int)testerPoint.getLocation().getX()+1).isTraversable() &&
                             !(gameBoard.getBoardPos((int)testerPoint.getY(), (int)testerPoint.getX()+1).isOccupied())){
-                        if (gameBoard.getBoardPos((int)testerPoint.getLocation().getY(), (int)testerPoint.getLocation().getX()+1).getType() == TileType.DOOR && !(gameBoard.getBoardPos((int)lastLoc.getY(), (int)lastLoc.getX()).getType() == TileType.DOORMAT)){
+                        if (gameBoard.getBoardPos((int)testerPoint.getLocation().getY(), (int)testerPoint.getLocation().getX()+1).getTileType() == TileType.DOOR && !(gameBoard.getBoardPos((int)lastLoc.getY(), (int)lastLoc.getX()).getTileType() == TileType.DOORMAT)){
                             validitySet.add("false");
                         }
                         testerPoint.setLocation((int)testerPoint.getLocation().getX()+1, (int)testerPoint.getLocation().getY());
@@ -68,7 +68,7 @@ public class Suspect extends TokenComponent implements Mover {
                     if (gameBoard.getBoardPos((int)testerPoint.getLocation().getY()+1, (int)testerPoint.getLocation().getX()).isTraversable() &&
                             !(gameBoard.getBoardPos((int)testerPoint.getY()+1, (int)testerPoint.getX()).isOccupied())){
 
-                        if (gameBoard.getBoardPos((int)testerPoint.getLocation().getY()+1, (int)testerPoint.getLocation().getX()).getType() == TileType.DOOR && !(gameBoard.getBoardPos((int)lastLoc.getY(), (int)lastLoc.getX()).getType() == TileType.DOORMAT)){
+                        if (gameBoard.getBoardPos((int)testerPoint.getLocation().getY()+1, (int)testerPoint.getLocation().getX()).getTileType() == TileType.DOOR && !(gameBoard.getBoardPos((int)lastLoc.getY(), (int)lastLoc.getX()).getTileType() == TileType.DOORMAT)){
                             validitySet.add("false");
                         }
                         testerPoint.setLocation((int)testerPoint.getLocation().getX(), (int)testerPoint.getLocation().getY()+1);
@@ -83,7 +83,7 @@ public class Suspect extends TokenComponent implements Mover {
                 case WEST:
                     if (gameBoard.getBoardPos((int)testerPoint.getLocation().getY(), (int)testerPoint.getLocation().getX()-1).isTraversable() &&
                             !(gameBoard.getBoardPos((int)testerPoint.getY(), (int)testerPoint.getX()-1).isOccupied())){
-                        if (gameBoard.getBoardPos((int)testerPoint.getLocation().getY(), (int)testerPoint.getLocation().getX()-1).getType() == TileType.DOOR && !(gameBoard.getBoardPos((int)lastLoc.getY(), (int)lastLoc.getX()).getType() == TileType.DOORMAT)){
+                        if (gameBoard.getBoardPos((int)testerPoint.getLocation().getY(), (int)testerPoint.getLocation().getX()-1).getTileType() == TileType.DOOR && !(gameBoard.getBoardPos((int)lastLoc.getY(), (int)lastLoc.getX()).getTileType() == TileType.DOORMAT)){
                             validitySet.add("false");
                         }
                         testerPoint.setLocation((int)testerPoint.getLocation().getX()-1, (int)testerPoint.getLocation().getY());
@@ -99,14 +99,14 @@ public class Suspect extends TokenComponent implements Mover {
                     break;
             }
             tmpList.remove(0);
-            if (gameBoard.getBoardPos((int)testerPoint.getLocation().getY(), (int)testerPoint.getLocation().getX()).getType() == TileType.DOOR && gameBoard.getBoardPos((int)lastLoc.getY(), (int)lastLoc.getX()).getType() == TileType.DOORMAT){
+            if (gameBoard.getBoardPos((int)testerPoint.getLocation().getY(), (int)testerPoint.getLocation().getX()).getTileType() == TileType.DOOR && gameBoard.getBoardPos((int)lastLoc.getY(), (int)lastLoc.getX()).getTileType() == TileType.DOORMAT){
                 hasDoor = true;
             }
         }
 
         //Have checked all of the moves to see if they go to any non traversal
         //Now check to see of testerPoint is on a tile that is already occupied and that the validity set doesn't contain false
-        if ((gameBoard.getBoardPos((int)testerPoint.getLocation().getY(), (int) testerPoint.getLocation().getX()).isOccupied() && !(gameBoard.getBoardPos((int)testerPoint.getLocation().getY(), (int) testerPoint.getLocation().getX()).getType() == TileType.DOOR) || validitySet.contains("false"))){
+        if ((gameBoard.getBoardPos((int)testerPoint.getLocation().getY(), (int) testerPoint.getLocation().getX()).isOccupied() && !(gameBoard.getBoardPos((int)testerPoint.getLocation().getY(), (int) testerPoint.getLocation().getX()).getTileType() == TileType.DOOR) || validitySet.contains("false"))){
             isValid = false;
         }
 
@@ -135,7 +135,7 @@ public class Suspect extends TokenComponent implements Mover {
                 moveLeft();
                 break;
         }
-        if (gameBoard.getBoardPos((int)getLocation().getY(), (int)getLocation().getX()).getType() == TileType.DOOR)
+        if (gameBoard.getBoardPos((int)getLocation().getY(), (int)getLocation().getX()).getTileType() == TileType.DOOR)
             moveToRoom(gameBoard);
 
         gameBoard.getBoardPos((int)getLocation().getY(), (int)getLocation().getX()).setOccupied(true);

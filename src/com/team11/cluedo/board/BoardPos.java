@@ -9,27 +9,23 @@
 package com.team11.cluedo.board;
 
 import com.team11.cluedo.board.room.TileType;
-import com.team11.cluedo.suspects.Suspect;
-import com.team11.cluedo.suspects.SuspectData;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 public class BoardPos extends JComponent {
     private Point location;
     private boolean isTraversable;
     private boolean isOccupied;
-    private TileType type;
+    private TileType tileType, roomType;
     private int tileSize;
 
-    public BoardPos(Point loc, boolean traverse, boolean occ, TileType t, int size){
+    public BoardPos(Point loc, boolean traverse, boolean occ, TileType tileType, TileType roomType, int size){
         this.location = loc;
         this.isTraversable = traverse;
         this.isOccupied = occ;
-        this.type = t;
+        this.tileType = tileType;
+        this.roomType = roomType;
         this.tileSize = size;
 
         Dimension buttonSize = new Dimension(size, size);
@@ -52,8 +48,16 @@ public class BoardPos extends JComponent {
         return this.isOccupied;
     }
 
-    public TileType getType(){
-        return this.type;
+    public TileType getTileType(){
+        return this.tileType;
+    }
+
+    public void setRoomType(TileType roomType) {
+        this.roomType = roomType;
+    }
+
+    public TileType getRoomType(){
+        return this.roomType;
     }
 
     @Override
@@ -63,8 +67,8 @@ public class BoardPos extends JComponent {
 
         if ( (this.location.getX() > 0 && this.location.getY() > 0) &&
                 (this.location.getX() < 26 && this.location.getY() < 25) &&
-                (this.getType() == TileType.HALLWAY || this.getType() == TileType.AVOID || this.getType() == TileType.SPAWN || this.getType() == TileType.DOORMAT || this.getType() == TileType.DOOR ||
-                 this.getType() == TileType.PREFER)
+                (this.getTileType() == TileType.HALLWAY || this.getTileType() == TileType.AVOID || this.getTileType() == TileType.SPAWN || this.getTileType() == TileType.DOORMAT || this.getTileType() == TileType.DOOR ||
+                 this.getTileType() == TileType.PREFER)
                 ){
             g2.setColor(new Color(255,255,0,130));
             //g2.fillRect(0,0,tileSize,tileSize);
@@ -79,7 +83,7 @@ public class BoardPos extends JComponent {
         s.append("\nLocation: " + this.getLocation());
         s.append("\nIsTraverseable:" + this.isTraversable);
         s.append("\nIsOccupied: " + this.isOccupied());
-        s.append("\nTileType: " + this.getType() + "\n");
+        s.append("\nTileType: " + this.getTileType() + "\n");
         return s.toString();
     }
 

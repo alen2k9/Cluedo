@@ -22,6 +22,7 @@ public class Room {
 
     private TileType roomType;
     private boolean hasSecretPassage;
+    private Point passagePoint;
 
     public Room(){
         this.roomType = TileType.BLANK;
@@ -57,6 +58,7 @@ public class Room {
         this.hasSecretPassage = hasSecretPassage;
     }
 
+    public void setPassagePoint(Point passagePoint) { this.passagePoint = passagePoint;}
     // Getters
 
     public ArrayList<Point> getRoomPoints() {

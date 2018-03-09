@@ -18,8 +18,6 @@ import com.team11.cluedo.ui.Resolution;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.io.*;
 import java.util.ArrayList;
 
@@ -121,78 +119,80 @@ public class Board extends JComponent implements TileBasedMap {
                 BoardPos boardPos = null;
 
                 if (line[j].matches("#")) {
-                    boardPos = createNonTraversal(new Point(i,j), TileType.BLANK);
+                    boardPos = createNonTraversal(new Point(i,j), TileType.BLANK, TileType.BLANK);
                 }
                 else if (line[j].matches("1")) {
-                    boardPos = createTraversal(new Point(i,j), TileType.SPAWN);
+                    boardPos = createTraversal(new Point(i,j), TileType.SPAWN, TileType.BLANK);
                 }
                 else if (line[j].matches("2")) {
-                    boardPos = new BoardPos(new Point(i,j), false, false, TileType.SECRETPASSAGE, tileSize);
+                    boardPos = new BoardPos(new Point(i,j), false, false, TileType.SECRETPASSAGE, TileType.BLANK, tileSize);
                     //System.out.println("Passage Way: " + i + " " +  j);
                 }
                 else if (line[j].matches("K")) {
-                    boardPos = createNonTraversal(new Point(i,j), TileType.KITCHEN);
+                    boardPos = createNonTraversal(new Point(i,j), TileType.ROOM, TileType.KITCHEN);
                     kitchen.setRoomType(TileType.KITCHEN);
                     kitchen.getRoomPoints().add(new Point(i,j));
                 }
                 else if (line[j].matches("B")) {
-                    boardPos = createNonTraversal(new Point(i,j), TileType.BALLROOM);
+                    boardPos = createNonTraversal(new Point(i,j), TileType.ROOM, TileType.BALLROOM);
                     ballroom.setRoomType(TileType.BALLROOM);
                     ballroom.getRoomPoints().add(new Point(i,j));
                 }
                 else if (line[j].matches("C")) {
-                    boardPos = createNonTraversal(new Point(i,j), TileType.CONSERVATORY);
+                    boardPos = createNonTraversal(new Point(i,j), TileType.ROOM, TileType.CONSERVATORY);
                     conservatory.setRoomType(TileType.CONSERVATORY);
                     conservatory.getRoomPoints().add(new Point(i,j));
                 }
                 else if (line[j].matches("I")) {
-                    boardPos = createNonTraversal(new Point(i,j), TileType.DININGROOM);
+                    boardPos = createNonTraversal(new Point(i,j), TileType.ROOM, TileType.DININGROOM);
                     diningRoom.setRoomType(TileType.DININGROOM);
                     diningRoom.getRoomPoints().add(new Point(i,j));
                 }
                 else if (line[j].matches("T")) {
-                    boardPos = createNonTraversal(new Point(i,j), TileType.CELLAR);
+                    boardPos = createNonTraversal(new Point(i,j), TileType.ROOM, TileType.CELLAR);
                     cellar.setRoomType(TileType.CELLAR);
                     cellar.getRoomPoints().add(new Point(i,j));
                 }
                 else if (line[j].matches("R")) {
-                    boardPos = createNonTraversal(new Point(i,j), TileType.BILLIARDROOM);
+                    boardPos = createNonTraversal(new Point(i,j), TileType.ROOM, TileType.BILLIARDROOM);
                     billiardRoom.setRoomType(TileType.BILLIARDROOM);
                     billiardRoom.getRoomPoints().add(new Point(i,j));
                 }
                 else if (line[j].matches("U")) {
-                    boardPos = createNonTraversal(new Point(i,j), TileType.LOUNGE);
+                    boardPos = createNonTraversal(new Point(i,j), TileType.ROOM, TileType.LOUNGE);
                     lounge.setRoomType(TileType.LOUNGE);
                     lounge.getRoomPoints().add(new Point(i,j));
                 }
                 else if (line[j].matches("H")) {
-                    boardPos = createNonTraversal(new Point(i,j), TileType.HALL);
+                    boardPos = createNonTraversal(new Point(i,j), TileType.ROOM, TileType.HALL);
+                    hall.setRoomType(TileType.HALL);
+                    hall.getRoomPoints().add(new Point(i,j));
                 }
                 else if (line[j].matches("S")) {
-                    boardPos = createNonTraversal(new Point(i,j), TileType.STUDY);
+                    boardPos = createNonTraversal(new Point(i,j), TileType.ROOM, TileType.STUDY);
                     study.setRoomType(TileType.STUDY);
                     study.getRoomPoints().add(new Point(i,j));
                 }
                 else if (line[j].matches("L")) {
-                    boardPos = createNonTraversal(new Point(i,j), TileType.LIBRARY);
+                    boardPos = createNonTraversal(new Point(i,j), TileType.ROOM, TileType.LIBRARY);
                     library.setRoomType(TileType.LIBRARY);
                     library.getRoomPoints().add(new Point(i,j));
                 }
                 else if (line[j].matches("D")) {
-                    boardPos = createTraversal(new Point(i,j), TileType.DOOR);
+                    boardPos = createTraversal(new Point(i,j), TileType.DOOR, TileType.BLANK);
                     //System.out.println("j : " + j + " i : " + i);
                 }
                 else if (line[j].matches("-")) {
-                    boardPos = createTraversal(new Point(i,j), TileType.HALLWAY);
+                    boardPos = createTraversal(new Point(i,j), TileType.HALLWAY, TileType.BLANK);
                 }
                 else if (line[j].matches("M")){
-                    boardPos = createTraversal(new Point (i,j), TileType.DOORMAT);
+                    boardPos = createTraversal(new Point (i,j), TileType.DOORMAT, TileType.BLANK);
                 }
                 else if (line[j].matches("Q")){
-                    boardPos = createTraversal(new Point (i,j), TileType.PREFER);
+                    boardPos = createTraversal(new Point (i,j), TileType.PREFER, TileType.BLANK);
                 }
                 else if (line[j].matches("A")){
-                    boardPos = createTraversal(new Point(i,j), TileType.AVOID);
+                    boardPos = createTraversal(new Point(i,j), TileType.AVOID, TileType.BLANK);
                 }
                 else {
                     System.out.println("Unknown Tile Type, Please Check BoardInfo.txt");
@@ -207,12 +207,16 @@ public class Board extends JComponent implements TileBasedMap {
     private void addRoomSecretPassages(){
         //  0 - Kitchen
         rooms.get(0).setHasSecretPassage(true);
+        board[(int)doorData.getKitchenPassagePoints().getX()][(int)doorData.getKitchenPassagePoints().getY()].setRoomType(TileType.KITCHEN);
         //  8 - Study
         rooms.get(8).setHasSecretPassage(true);
+        board[(int)doorData.getStudyPassagePoints().getX()][(int)doorData.getStudyPassagePoints().getY()].setRoomType(TileType.STUDY);
         //  2 - Conservatory
         rooms.get(2).setHasSecretPassage(true);
+        board[(int)doorData.getConservatoryPassagePoints().getX()][(int)doorData.getConservatoryPassagePoints().getY()].setRoomType(TileType.CONSERVATORY);
         //  6 - Lounge
         rooms.get(6).setHasSecretPassage(true);
+        board[(int)doorData.getLoungePassagePoints().getX()][(int)doorData.getLoungePassagePoints().getY()].setRoomType(TileType.LOUNGE);
     }
 
     private void addDoorPoints(){
@@ -222,6 +226,13 @@ public class Board extends JComponent implements TileBasedMap {
 
         for (int i = 0; i < rooms.size(); i++){
             rooms.get(i).setExitPoints(doorData.getExitData(i));
+        }
+
+        for (Room room : rooms) {
+            System.out.println("Room: " + room.toString());
+            for (Point doorPoint : room.getEntryPoints()) {
+                board[(int)doorPoint.getX()][(int)doorPoint.getY()].setRoomType(room.getRoomType());
+            }
         }
     }
 
@@ -243,12 +254,12 @@ public class Board extends JComponent implements TileBasedMap {
         return this.board;
     }
 
-    private BoardPos createNonTraversal(Point p, TileType t){
-        return new BoardPos(p, false, false, t, tileSize);
+    private BoardPos createNonTraversal(Point p, TileType tileType, TileType roomType){
+        return new BoardPos(p, false, false, tileType, roomType, tileSize);
     }
 
-    private BoardPos createTraversal(Point p, TileType t){
-        return new BoardPos(p,true, false, t, tileSize);
+    private BoardPos createTraversal(Point p, TileType tileType, TileType roomType){
+        return new BoardPos(p,true, false, tileType, roomType, tileSize);
     }
 
     public void paintComponent(Graphics g){
@@ -279,8 +290,8 @@ public class Board extends JComponent implements TileBasedMap {
 
     //Get the cost of moving from one tile (sx,sy) to (tx,ty)
     public float getCost(Mover mover, int sx, int sy, int tx, int ty){
-        if ( (board[sx][sy].getType() == TileType.AVOID && board[tx][ty].getType() == TileType.DOOR) ||
-                (board[sx][sy].getType() == TileType.DOOR && board[tx][ty].getType() == TileType.AVOID)){
+        if ( (board[sx][sy].getTileType() == TileType.AVOID && board[tx][ty].getTileType() == TileType.DOOR) ||
+                (board[sx][sy].getTileType() == TileType.DOOR && board[tx][ty].getTileType() == TileType.AVOID)){
             return 10;
         }
         else {

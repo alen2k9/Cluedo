@@ -9,12 +9,14 @@ public class DoorData {
 
     private final ArrayList<Point> kitchenEntryPoints = new ArrayList<>();
     private final ArrayList<Point> kitchenExitPoints = new ArrayList<>();
+    private Point kitchenPassagePoints;
 
     private final ArrayList<Point> ballroomEntryPoints = new ArrayList<>();
     private final ArrayList<Point> ballroomExitPoints = new ArrayList<>();
 
     private final ArrayList<Point> conservatoryEntryPoints = new ArrayList<>();
     private final ArrayList<Point> conservatoryExitPoints = new ArrayList<>();
+    private Point conservatoryPassagePoints;
 
     private final ArrayList<Point> diningRoomEntryPoints = new ArrayList<>();
     private final ArrayList<Point> diningRoomExitPoints = new ArrayList<>();
@@ -27,12 +29,14 @@ public class DoorData {
 
     private final ArrayList<Point> loungeEntryPoints = new ArrayList<>();
     private final ArrayList<Point> loungeExitPoints = new ArrayList<>();
+    private Point loungePassagePoints;
 
     private final ArrayList<Point> hallEntryPoints = new ArrayList<>();
     private final ArrayList<Point> hallExitPoints = new ArrayList<>();
 
     private final ArrayList<Point> studyEntryPoints = new ArrayList<>();
     private final ArrayList<Point> studyExitPoints = new ArrayList<>();
+    private Point studyPassagePoints;
 
     private final ArrayList<Point> cellarEntryPoints = new ArrayList<>();
     private final ArrayList<Point> cellarExitPoints = new ArrayList<>();
@@ -40,6 +44,7 @@ public class DoorData {
     public DoorData(){
         fillEntryData();
         fillExitData();
+        fillPassageData();
         addLists();
     }
 
@@ -105,6 +110,17 @@ public class DoorData {
         cellarExitPoints.add(new Point(13,18));
     }
 
+    private void fillPassageData() {
+        // Kitchen
+        kitchenPassagePoints = new Point(2, 6);
+        // Study
+        studyPassagePoints = new Point(22,24);
+        // Conservatory
+        conservatoryPassagePoints = new Point(6,23);
+        // Lounge
+        loungePassagePoints = new Point(20, 1);
+    }
+
     private void addLists(){
         entryPoints.add(kitchenEntryPoints);
         entryPoints.add(ballroomEntryPoints);
@@ -139,5 +155,21 @@ public class DoorData {
 
     public ArrayList<ArrayList<Point>> getAllEntryData(){
         return this.entryPoints;
+    }
+
+    public Point getConservatoryPassagePoints() {
+        return conservatoryPassagePoints;
+    }
+
+    public Point getKitchenPassagePoints() {
+        return kitchenPassagePoints;
+    }
+
+    public Point getLoungePassagePoints() {
+        return loungePassagePoints;
+    }
+
+    public Point getStudyPassagePoints() {
+        return studyPassagePoints;
     }
 }
