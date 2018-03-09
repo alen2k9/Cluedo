@@ -291,7 +291,7 @@ public class Assets {
         } catch (FontFormatException f) {
             System.out.println("Looks like I can't make your font.");
         } catch (IOException e) {
-            System.out.println("Can't find font file.");
+            e.printStackTrace();
         }
     }
 
@@ -303,19 +303,19 @@ public class Assets {
         } catch (FontFormatException f) {
             System.out.println("Looks like I can't make your font.");
         } catch (IOException e) {
-            System.out.println("Can't find font file.");
+            e.printStackTrace();
         }
     }
 
     private void setupPixelFont() {
-        InputStream fontIn = getClass().getResourceAsStream("orange kid.TTF");
+        InputStream fontIn = getClass().getResourceAsStream("orange_kid.ttf");
         try {
             GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(
                     Font.createFont(Font.TRUETYPE_FONT, fontIn));
         } catch (FontFormatException f) {
             System.out.println("Looks like I can't make your font.");
         } catch (IOException e) {
-            System.out.println("Can't find font file.");
+            e.printStackTrace();
         }
     }
 

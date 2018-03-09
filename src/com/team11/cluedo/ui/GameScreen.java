@@ -314,6 +314,7 @@ public class GameScreen extends JFrame implements Screen {
 
             this.setLayout(new FlowLayout(0,0,0));
             this.add(gameBoard, 0);
+            this.add(gameSuspects, 1);
 
             ImageIcon board = new ImageIcon(gameAssets.getBoardImage());
             Dimension imageSize = new Dimension((int)(board.getIconWidth()*resolution.getScalePercentage()), (int)(board.getIconHeight()*resolution.getScalePercentage()));

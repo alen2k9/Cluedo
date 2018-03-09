@@ -58,29 +58,15 @@ public class Board extends JComponent implements TileBasedMap {
     public Board(Resolution resolution) throws IOException{
         try{
             this.tileSize = (int)(TILE_SIZE * resolution.getScalePercentage());
+            this.setLayout(new GridBagLayout());
             board = parseBoardFile();
             addRooms();
             addRoomSecretPassages();
             addDoorPoints();
             addAllSpawns();
-            System.out.println("TileSize : " + tileSize);
-            addThis();
-
         }
         catch(IOException ex){
             ex.printStackTrace(System.out);
-        }
-    }
-
-    private void addThis() {
-        this.setLayout(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        for (int i = 0 ; i < BOARD_WIDTH ; i++){
-            gbc.gridy = i;
-            for (int j = 0 ; j < BOARD_HEIGHT ; j++) {
-                gbc.gridx = j;
-                this.add(board[i][j], gbc);
-            }
         }
     }
 
@@ -106,6 +92,7 @@ public class Board extends JComponent implements TileBasedMap {
     }
 
     private BoardPos[][] parseBoardFile() throws IOException {
+        GridBagConstraints gbc = new GridBagConstraints();
         BoardPos[][] board = new BoardPos[BOARD_WIDTH][BOARD_HEIGHT];
 
         InputStream in = getClass().getResourceAsStream("BoardInfo.txt");
@@ -114,8 +101,10 @@ public class Board extends JComponent implements TileBasedMap {
         String cLine;
         for (int i = 0; (cLine = br.readLine()) != null; i++) {
             String line[] = cLine.split(" ");
+            gbc.gridy = i;
 
             for (int j = 0; j < line.length; j++) {
+                gbc.gridx = j;
                 BoardPos boardPos = null;
 
                 if (line[j].matches("#")) {
@@ -199,6 +188,7 @@ public class Board extends JComponent implements TileBasedMap {
                 }
 
                 board[i][j] = boardPos;
+                this.add(board[i][j], gbc);
             }
         }
         return board;
@@ -229,7 +219,6 @@ public class Board extends JComponent implements TileBasedMap {
         }
 
         for (Room room : rooms) {
-            System.out.println("Room: " + room.toString());
             for (Point doorPoint : room.getEntryPoints()) {
                 board[(int)doorPoint.getX()][(int)doorPoint.getY()].setRoomType(room.getRoomType());
             }
@@ -260,19 +249,6 @@ public class Board extends JComponent implements TileBasedMap {
 
     private BoardPos createTraversal(Point p, TileType tileType, TileType roomType){
         return new BoardPos(p,true, false, tileType, roomType, tileSize);
-    }
-
-    public void paintComponent(Graphics g){
-        int top = 0, left = 0;
-
-        for (int i = 0; i < BOARD_WIDTH; i++){
-            for (int j = 0; j < BOARD_HEIGHT; j++){
-                board[i][j].paintComponent(g);
-                left += tileSize;
-            }
-            left = 0;
-            top += tileSize;
-        }
     }
 
     public int getWidthInTiles(){

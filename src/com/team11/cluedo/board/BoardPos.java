@@ -60,23 +60,6 @@ public class BoardPos extends JComponent {
         return this.roomType;
     }
 
-    @Override
-    public void paintComponent(Graphics g){
-        Graphics2D g2 = (Graphics2D) g;
-        int borderWidth = 3;
-
-        if ( (this.location.getX() > 0 && this.location.getY() > 0) &&
-                (this.location.getX() < 26 && this.location.getY() < 25) &&
-                (this.getTileType() == TileType.HALLWAY || this.getTileType() == TileType.AVOID || this.getTileType() == TileType.SPAWN || this.getTileType() == TileType.DOORMAT || this.getTileType() == TileType.DOOR ||
-                 this.getTileType() == TileType.PREFER)
-                ){
-            g2.setColor(new Color(255,255,0,130));
-            //g2.fillRect(0,0,tileSize,tileSize);
-            g2.setStroke(new BasicStroke(borderWidth));
-            //g2.drawRect((int)location.getY() * tileSize, (int)location.getX() * tileSize, tileSize, tileSize);
-        }
-    }
-
     public String toString(){
         StringBuilder s = new StringBuilder();
 

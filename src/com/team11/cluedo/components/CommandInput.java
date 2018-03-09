@@ -42,8 +42,6 @@ public class CommandInput {
 
     private int dice, remainingMoves, numPlayers, currentPlayerID;
     private boolean canRoll;
-
-    private int resolutionScalar;
     private boolean moveEnabled;
 
     public CommandInput(GameScreen gameScreen) {
@@ -60,13 +58,13 @@ public class CommandInput {
         this.currentPlayer = gameScreen.getGamePlayers().getPlayer(currentPlayerID);
         this.playerName = currentPlayer.getPlayerName();
         this.infoOutput = gameScreen.getInfoOutput();
-        this.resolutionScalar = (int)(30*this.gameScreen.getResolution().getScalePercentage());
         movementHandling = new MovementHandling(gameScreen, currentPlayer, this);
 
         runPlayer();
     }
 
     public void playerTurn() {
+        gameScreen.paintComponents(gameScreen.getGraphics());
         rollStart();
         currentPlayer = gameScreen.getGamePlayers().getPlayer(currentPlayerID);
         playerName = currentPlayer.getPlayerName();
@@ -435,6 +433,7 @@ public class CommandInput {
                     @Override
                     public void mouseEntered(MouseEvent e) {
                         super.mouseEntered(e);
+                        if(gameScreen.isFocused())
                         if (boardPos.getTileType() == TileType.ROOM || boardPos.getTileType() == TileType.DOOR
                                 || boardPos.getTileType() == TileType.SECRETPASSAGE) {
                             if (!roomPos.isEmpty())
@@ -479,7 +478,7 @@ public class CommandInput {
                             }
                         }
                         for (int j = 0 ; j < roomPos.size() ; j++) {
-                                roomPos.get(j).setBorder(BorderFactory.createLineBorder(new Color(255, 255, 255, 124), 15));
+                                roomPos.get(j).setBorder(BorderFactory.createLineBorder(new Color(255, 255, 255, 70), 15));
                         }
                     }
                 });
@@ -495,6 +494,8 @@ public class CommandInput {
             diceNumber = die.rolldice();
             playerName = gameScreen.getGamePlayers().getPlayer(i).getPlayerName();
             infoOutput.append(playerName + " rolled a " + diceNumber + ".\n");
+            gameScreen.paintComponents(gameScreen.getGraphics());
+            try {Thread.sleep(500);} catch (InterruptedException ex) { ex.printStackTrace(); }
             dice.add(diceNumber);
         }
 
@@ -506,7 +507,7 @@ public class CommandInput {
         currentPlayerID = highRoller;
         currentPlayer = gameScreen.getGamePlayers().getPlayer(currentPlayerID);
         playerName = currentPlayer.getPlayerName();
-        infoOutput.append(playerName + " rolled the highest number\n");
+        infoOutput.append(playerName + " rolled the highest number!\n\n");
     }
 
     private class ChoiceOption {
