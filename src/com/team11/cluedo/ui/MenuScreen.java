@@ -55,10 +55,18 @@ public class MenuScreen implements Screen {
         this.gameScreen = new GameScreen(gameBoard, gameSuspects, gameWeapons, gamePlayers, gameAssets, resolution);
         this.gameInput = new CommandInput(gameScreen);
 
+        /*
+        SuspectData suspectData = new SuspectData();
+        for (int i = 0 ; i < 6 ; i++)
+            gamePlayers.addPlayer(suspectData.getSuspectName(i), gameSuspects.getSuspect(i), resolution);
+
+        startGame();
+        */
         //  Calling functions to create screen
         this.setupScreen(0);
         this.createScreen("Cluedo - Title Screen");
         this.displayScreen();
+
     }
 
     @Override
@@ -190,12 +198,12 @@ public class MenuScreen implements Screen {
         };
 
         ImageIcon[] selectedCharacters = new ImageIcon[] {
-                new ImageIcon(this.gameAssets.getSelectedWhiteCard()),
-                new ImageIcon(this.gameAssets.getSelectedGreenCard()),
-                new ImageIcon(this.gameAssets.getSelectedPeacockCard()),
-                new ImageIcon(this.gameAssets.getSelectedPlumCard()),
-                new ImageIcon(this.gameAssets.getSelectedScarletCard()),
-                new ImageIcon(this.gameAssets.getSelectedMustardCard())
+            new ImageIcon(this.gameAssets.getSelectedWhiteCard()),
+            new ImageIcon(this.gameAssets.getSelectedGreenCard()),
+            new ImageIcon(this.gameAssets.getSelectedPeacockCard()),
+            new ImageIcon(this.gameAssets.getSelectedPlumCard()),
+            new ImageIcon(this.gameAssets.getSelectedScarletCard()),
+            new ImageIcon(this.gameAssets.getSelectedMustardCard())
         };
 
         for (int i = 0, x = 0, y = 1 ; i < characterButtons.length ; i++, x++) {

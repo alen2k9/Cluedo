@@ -26,7 +26,7 @@ public class Suspects extends JPanel implements Iterable<Suspect>, Iterator<Susp
         this.setupSuspects(resolution);
     }
 
-    public void setupSuspects(Resolution resolution) {
+    private void setupSuspects(Resolution resolution) {
         SuspectData suspectData = new SuspectData();
         for(int i = 0 ; i < 6 ; i++) {
             suspects.add(new Suspect(i, suspectData.getSuspectName(i),
@@ -56,7 +56,7 @@ public class Suspects extends JPanel implements Iterable<Suspect>, Iterator<Susp
     @Override
     public void paintComponent(Graphics g){
         for (Suspect suspect : suspects) {
-            suspect.draw(g);
+            suspect.paintComponent(g);
         }
     }
 

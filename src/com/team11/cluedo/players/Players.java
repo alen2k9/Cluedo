@@ -31,16 +31,4 @@ public class Players {
     public int getPlayerCount() {
         return this.playerCount;
     }
-
-    public void moveOutOfRoom(Board gameBoard,int player, int exitNum){
-        this.getPlayer(player).getSuspectToken().moveOutOfRoom(gameBoard, exitNum);
-    }
-
-    public boolean useSecretPassageWay(Board gameBoard, int player){
-        return this.getPlayer(player).getSuspectToken().useSecretPassageWay(gameBoard);
-    }
-    
-    public void reverseMoves(int player){
-       this.getPlayer(player).getSuspectToken().reverseMoves();
-    }
 }
