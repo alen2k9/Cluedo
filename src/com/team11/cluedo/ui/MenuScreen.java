@@ -376,10 +376,9 @@ public class MenuScreen implements Screen {
     private void startGame() {
         gameScreen.createScreen("Cluedo");
         gameScreen.setupScreen(1);
-        gameScreen.displayScreen();
         gameScreen.getGameCards().dealCards(gameScreen.getGamePlayers());
         gameScreen.getGameSuspects().setSpawnsOccupied(gameScreen.getGameBoard());
+        gameScreen.displayScreen();
         gameInput.initialSetup();
-        gameInput.playerTurn();
     }
 }

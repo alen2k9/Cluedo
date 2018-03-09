@@ -109,5 +109,6 @@ public class PlayerHandLayout extends JPanel {
         setupLayout();
         this.revalidate();
         this.repaint();
+        paintComponent(getGraphics());
     }
 }

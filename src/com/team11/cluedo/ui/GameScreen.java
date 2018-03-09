@@ -285,6 +285,14 @@ public class GameScreen extends JFrame implements Screen {
         return this.resolution;
     }
 
+    public PlayerLayout getPlayerPanel() {
+        return playerPanel;
+    }
+
+    public JTabbedPane getInfoTabs() {
+        return infoTabs;
+    }
+
     public class BoardComponent extends JComponent {
         @Override
         public void paintComponent(Graphics g) {

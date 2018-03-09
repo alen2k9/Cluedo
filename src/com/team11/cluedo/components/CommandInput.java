@@ -24,13 +24,13 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Timer;
+
+import static sun.audio.AudioPlayer.player;
 
 public class CommandInput {
     private MovementHandling movementHandling;
@@ -53,18 +53,17 @@ public class CommandInput {
         this.canRoll = true;
         this.moveEnabled = false;
         this.numPlayers = this.gameScreen.getGamePlayers().getPlayerCount();
-        setUpMouseClick();
-        this.gameScreen.reDraw(this.currentPlayerID);
         this.currentPlayer = gameScreen.getGamePlayers().getPlayer(currentPlayerID);
         this.playerName = currentPlayer.getPlayerName();
         this.infoOutput = gameScreen.getInfoOutput();
         movementHandling = new MovementHandling(gameScreen, currentPlayer, this);
-
+        Runnable run = () -> playerTurn();
+        SwingUtilities.invokeLater(run);
         runPlayer();
+        setUpMouseClick();
     }
 
     public void playerTurn() {
-        gameScreen.paintComponents(gameScreen.getGraphics());
         rollStart();
         currentPlayer = gameScreen.getGamePlayers().getPlayer(currentPlayerID);
         playerName = currentPlayer.getPlayerName();
@@ -206,18 +205,14 @@ public class CommandInput {
                 if (moveEnabled) {
                     if (key.getKeyCode() == KeyEvent.VK_DOWN) {
                         movementHandling.playerMovement(new ArrayList<>(Collections.singletonList(Direction.SOUTH)), remainingMoves, moveEnabled);
-                        gameScreen.reDraw(currentPlayerID);
                     } else if (key.getKeyCode() == KeyEvent.VK_UP) {
                         movementHandling.playerMovement(new ArrayList<>(Collections.singletonList(Direction.NORTH)), remainingMoves, moveEnabled);
-                        gameScreen.reDraw(currentPlayerID);
                     } else if (key.getKeyCode() == KeyEvent.VK_LEFT) {
                         movementHandling.playerMovement(new ArrayList<>(Collections.singletonList(Direction.WEST)), remainingMoves, moveEnabled);
-                        gameScreen.reDraw(currentPlayerID);
                     } else if (key.getKeyCode() == KeyEvent.VK_RIGHT) {
                         movementHandling.playerMovement(new ArrayList<>(Collections.singletonList(Direction.EAST)), remainingMoves, moveEnabled);
-                        gameScreen.reDraw(currentPlayerID);
-
                     }
+                    gameScreen.reDraw(currentPlayerID);
                 }
             }
         });
@@ -494,8 +489,9 @@ public class CommandInput {
             diceNumber = die.rolldice();
             playerName = gameScreen.getGamePlayers().getPlayer(i).getPlayerName();
             infoOutput.append(playerName + " rolled a " + diceNumber + ".\n");
-            gameScreen.paintComponents(gameScreen.getGraphics());
-            try {Thread.sleep(500);} catch (InterruptedException ex) { ex.printStackTrace(); }
+            try {
+                gameScreen.getInfoOutput().paint(gameScreen.getInfoOutput().getGraphics());
+                Thread.sleep(500);} catch (InterruptedException ex) { ex.printStackTrace(); }
             dice.add(diceNumber);
         }
 

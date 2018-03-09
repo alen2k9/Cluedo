@@ -178,6 +178,7 @@ public class PlayerLayout extends JPanel {
         this.removeAll();
         getCardLayout();
         this.revalidate();
-        this.repaint();
+        repaint();
+        paintComponent(getGraphics());
     }
 }
