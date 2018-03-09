@@ -8,6 +8,7 @@
 package com.team11.cluedo.players;
 
 
+import com.team11.cluedo.cards.Card;
 import com.team11.cluedo.suspects.Suspect;
 import com.team11.cluedo.ui.Resolution;
 
@@ -51,5 +52,14 @@ public class Player {
 
     public Notes getPlayerNotes(){
         return this.playerNotes;
+    }
+
+    public void fillNotes(){
+        //System.out.println("Here");
+        System.out.println("Size " + playerHand.getCardAmount());
+        for (int i = 0; i < this.playerHand.getCardAmount(); i++){
+            System.out.println(playerHand.getCard(i).getName());
+            this.getPlayerNotes().paintCell(getSuspectToken().getSuspectID(), playerHand.getCard(i).getName());
+        }
     }
 }

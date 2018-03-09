@@ -30,6 +30,7 @@ public class InputData {
         addElement("cheat", this.commandData);
         addElement("notes", this.commandData);
         addElement("godroll", this.commandData);
+        addElement("finished", this.commandData);
 
 
         SuspectData suspectData = new SuspectData();

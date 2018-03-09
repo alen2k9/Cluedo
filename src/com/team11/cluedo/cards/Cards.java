@@ -66,6 +66,7 @@ public class Cards {
         int remainingCards = suspectCards.size() + weaponCards.size() + roomCards.size();
         int publicCards = remainingCards % gamePlayers.getPlayerCount();
         int dealCards = remainingCards - publicCards;
+        Card tmp;
 
         for (int i = 0, currentPlayer = 0 ; i < dealCards ; i++, currentPlayer++) {
             Random rand = new Random();
@@ -76,7 +77,9 @@ public class Cards {
             switch (rand.nextInt(3)) {
                 case 0:
                     if(suspectCards.size() > 0) {
-                        gamePlayers.getPlayer(currentPlayer).getPlayerHand().addCardToHand(suspectCards.remove(0));
+                        tmp = suspectCards.remove(0);
+                        gamePlayers.getPlayer(currentPlayer).getPlayerHand().addCardToHand(tmp);
+                        gamePlayers.getPlayer(currentPlayer).getPlayerNotes().paintCell(currentPlayer+1, tmp.getName());
                     } else {
                         i--;
                         if (currentPlayer == 0)
@@ -87,7 +90,9 @@ public class Cards {
                     break;
                 case 1:
                     if(weaponCards.size() > 0) {
-                        gamePlayers.getPlayer(currentPlayer).getPlayerHand().addCardToHand(weaponCards.remove(0));
+                        tmp = weaponCards.remove(0);
+                        gamePlayers.getPlayer(currentPlayer).getPlayerHand().addCardToHand(tmp);
+                        gamePlayers.getPlayer(currentPlayer).getPlayerNotes().paintCell(currentPlayer+1, tmp.getName());
                     } else {
                         i--;
                         currentPlayer--;
@@ -95,7 +100,9 @@ public class Cards {
                     break;
                 case 2:
                     if(roomCards.size() > 0) {
-                        gamePlayers.getPlayer(currentPlayer).getPlayerHand().addCardToHand(roomCards.remove(0));
+                        tmp = roomCards.remove(0);
+                        gamePlayers.getPlayer(currentPlayer).getPlayerHand().addCardToHand(tmp);
+                        gamePlayers.getPlayer(currentPlayer).getPlayerNotes().paintCell(currentPlayer+1, tmp.getName());
                     } else {
                         i--;
                         currentPlayer--;
@@ -122,4 +129,5 @@ public class Cards {
     public List<Card> getPublicEnvelope() {
         return publicEnvelope;
     }
+
 }
