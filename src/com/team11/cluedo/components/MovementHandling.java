@@ -59,10 +59,13 @@ public class MovementHandling {
     }
 
     private void move(ArrayList<Direction> moves) {
+        gameScreen.getBoardPanel().setPaintParam(1);
         while (!moves.isEmpty()) {
             currentPlayer.getSuspectToken().move(gameScreen.getGameBoard(), moves.remove(0));
-            move(moves);
+            try {Thread.sleep(50);} catch (Exception e) {}
+            gameScreen.getBoardPanel().paintComponent(gameScreen.getBoardPanel().getGraphics());
         }
+        gameScreen.getBoardPanel().setPaintParam(0);
     }
 
     public ArrayList<OverlayTile> findValidMoves(int remainingMoves) {
@@ -72,8 +75,8 @@ public class MovementHandling {
         Point endPoint;
 
         if (!currentPlayer.getSuspectToken().isInRoom()) {
-            startPoint = new Point((int) currentPlayer.getSuspectToken().getLoc().getX() - remainingMoves,
-                    (int) currentPlayer.getSuspectToken().getLoc().getY() - remainingMoves);
+            startPoint = new Point((int) currentPlayer.getSuspectToken().getLocation().getX() - remainingMoves,
+                    (int) currentPlayer.getSuspectToken().getLocation().getY() - remainingMoves);
 
             if (startPoint.getX() < 1) {
                 startPoint.setLocation(1, startPoint.getY());
@@ -87,8 +90,8 @@ public class MovementHandling {
                 startPoint.setLocation(startPoint.getX(), 25);
             }
 
-            endPoint = new Point((int) currentPlayer.getSuspectToken().getLoc().getX() + remainingMoves,
-                    (int) currentPlayer.getSuspectToken().getLoc().getY() + remainingMoves);
+            endPoint = new Point((int) currentPlayer.getSuspectToken().getLocation().getX() + remainingMoves,
+                    (int) currentPlayer.getSuspectToken().getLocation().getY() + remainingMoves);
 
             if (endPoint.getX() < 1) {
                 endPoint.setLocation(1, endPoint.getY());
@@ -111,8 +114,8 @@ public class MovementHandling {
                 for (int j = (int) startPoint.getX(); j <= (int) endPoint.getX(); j++) {
                     tmpPoint = new Point(j, i);
                     path = finder.findPath(currentPlayer.getSuspectToken(),
-                            (int) currentPlayer.getSuspectToken().getLoc().getY(),
-                            (int) currentPlayer.getSuspectToken().getLoc().getX(),
+                            (int) currentPlayer.getSuspectToken().getLocation().getY(),
+                            (int) currentPlayer.getSuspectToken().getLocation().getX(),
                             (int)tmpPoint.getY(), (int)tmpPoint.getX());
 
                     if (path != null && path.getLength() <= remainingMoves){
@@ -136,24 +139,13 @@ public class MovementHandling {
     public void mouseClickMove(Point target, int remainingMoves, boolean moveEnabled){
         Suspect suspectToken = currentPlayer.getSuspectToken();
         AStarFinder finder = new AStarFinder(gameScreen.getGameBoard(), 12, false);
-        Path path = finder.findPath(suspectToken, (int)suspectToken.getLoc().getY(), (int)suspectToken.getLoc().getX(), (int)target.getY(), (int)target.getX());
+        Path path = finder.findPath(suspectToken, (int)suspectToken.getLocation().getY(), (int)suspectToken.getLocation().getX(), (int)target.getY(), (int)target.getX());
         ArrayList<Direction> moveList = pathToDirections(path);
         playerMovement(moveList, remainingMoves, moveEnabled);
     }
 
     public boolean enableMove(JTextArea infoOutput) {
-        ArrayList<OverlayTile> overlayTiles = new ArrayList<>();
-
-        if (currentPlayer.getSuspectToken().isInRoom()){
-            System.out.println("Is in room");
-            for (Point point : this.gameScreen.getGameBoard().getRoom(currentPlayer.getSuspectToken().getCurrentRoom()).getEntryPoints()){
-                overlayTiles.add(new OverlayTile(point));
-            }
-            this.gameScreen.getDoorOverlay().setExits(overlayTiles, currentPlayer);
-        } else {
-            this.gameScreen.getMoveOverlay().setValidMoves(findValidMoves(commandInput.getRemainingMoves()), currentPlayer);
-        }
-
+        this.gameScreen.getMoveOverlay().setValidMoves(findValidMoves(commandInput.getRemainingMoves()), currentPlayer);
         infoOutput.append("Enter 'U', 'R', 'D', or 'L' to move.\n" +
                 "Click on a highlighted square to move.\n" +
                 "Use the arrow keys to move.\n" +
@@ -164,7 +156,6 @@ public class MovementHandling {
     public boolean disableMove() {
         gameScreen.getInfoOutput().append("Moves finished. Enter another command.\n");
         gameScreen.getMoveOverlay().setValidMoves(new ArrayList<>(), currentPlayer);
-        gameScreen.getDoorOverlay().setExits(new ArrayList<>(), currentPlayer);
         return false;
     }
 
@@ -172,7 +163,7 @@ public class MovementHandling {
         ArrayList<Direction> directions = new ArrayList<>();
         Suspect currentPlayer = this.currentPlayer.getSuspectToken();
 
-        Point previousPoint = new Point((int)currentPlayer.getLoc().getX(), (int)currentPlayer.getLoc().getY());
+        Point previousPoint = new Point((int)currentPlayer.getLocation().getX(), (int)currentPlayer.getLocation().getY());
 
         Point nextPoint = new Point(path.getStep(0).getY(), path.getStep(0).getX());
 

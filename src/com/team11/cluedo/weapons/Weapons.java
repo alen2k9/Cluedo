@@ -78,7 +78,7 @@ public class Weapons extends JPanel implements Iterable<Weapon>, Iterator<Weapon
     @Override
     public void paintComponent(Graphics g){
         for (Weapon weapon : weapons) {
-            weapon.draw(g);
+            weapon.paintComponent(g);
         }
     }
 

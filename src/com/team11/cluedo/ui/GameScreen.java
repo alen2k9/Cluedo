@@ -8,13 +8,13 @@
 
 package com.team11.cluedo.ui;
 
-import com.sun.javafx.fxml.builder.JavaFXSceneBuilder;
 import com.team11.cluedo.assets.Assets;
 import com.team11.cluedo.components.Autocomplete;
 import com.team11.cluedo.components.InputData;
 
 import com.team11.cluedo.board.Board;
 import com.team11.cluedo.players.Players;
+import com.team11.cluedo.suspects.Suspect;
 import com.team11.cluedo.suspects.Suspects;
 import com.team11.cluedo.ui.components.*;
 import com.team11.cluedo.ui.panel.BackgroundPanel;
@@ -26,8 +26,6 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.io.*;
 import java.util.ArrayList;
 
@@ -76,10 +74,6 @@ public class GameScreen extends JFrame implements Screen {
 
     @Override
     public void setupScreen(int state) {
-        JPanel mainPanel = new JPanel(new BorderLayout());
-        JPanel contentPanel = new JPanel(new BorderLayout());
-        contentPanel.setOpaque(false);
-
         ImageIcon backgroundTile = this.gameAssets.getBackgroundTile();
         Image backgroundImage = backgroundTile.getImage();
         BackgroundPanel backgroundPanel = new BackgroundPanel(backgroundImage, BackgroundPanel.TILED);
@@ -90,19 +84,16 @@ public class GameScreen extends JFrame implements Screen {
         this.boardPanel = new BoardUI(this.gameSuspects, this.gameWeapons, new BoardComponent(), this.moveOverlay, this.doorOverlay);
         JPanel infoPanel = setupInfoPanel();
 
+        backgroundPanel.add(playerPanel, BorderLayout.WEST);
+        backgroundPanel.add(infoPanel, BorderLayout.EAST);
+        backgroundPanel.add(boardPanel, BorderLayout.CENTER);
 
-        contentPanel.add(playerPanel, BorderLayout.WEST);
-        contentPanel.add(infoPanel, BorderLayout.EAST);
-        contentPanel.add(boardPanel, BorderLayout.CENTER);
-
-        backgroundPanel.add(contentPanel, BorderLayout.CENTER);
-        mainPanel.add(backgroundPanel, BorderLayout.CENTER);
-
-        this.getContentPane().add(mainPanel);
+        this.getContentPane().add(backgroundPanel);
         this.pack();
     }
     @Override
     public void displayScreen() {
+        boardPanel.paintComponent(boardPanel.getGraphics());
         setLocation(resolution.getScreenSize().width/2 - getSize().width/2, resolution.getScreenSize().height/2 - (getSize().height/2));
         setVisible(true);
     }
@@ -274,12 +265,6 @@ public class GameScreen extends JFrame implements Screen {
         return gameCards;
     }
 
-    public void setMoveOverlay(MoveOverlay moveOverlay){
-        this.moveOverlay = moveOverlay;
-    }
-
-    public void setDoorOverlay(DoorOverlay doorOverlay) {this.doorOverlay = doorOverlay;}
-
     public MoveOverlay getMoveOverlay() {
         return this.moveOverlay;
     }
@@ -310,19 +295,22 @@ public class GameScreen extends JFrame implements Screen {
         }
     }
 
-    public class BoardUI extends JLayeredPane {
+    public class BoardUI extends JPanel {
         Suspects gameSuspects;
         Weapons gameWeapons;
         BoardComponent boardComponent;
         MoveOverlay moveOverlay;
         DoorOverlay doorOverlay;
 
-        public BoardUI(Suspects players, Weapons weapons, BoardComponent boardImage, MoveOverlay moveOverlay, DoorOverlay doorOverlay ) {
-            this.gameSuspects = players;
+        int paintParam;
+
+        public BoardUI(Suspects suspects, Weapons weapons, BoardComponent boardImage, MoveOverlay moveOverlay, DoorOverlay doorOverlay ) {
+            this.gameSuspects = suspects;
             this.gameWeapons = weapons;
             this.boardComponent = boardImage;
             this.moveOverlay = moveOverlay;
             this.doorOverlay = doorOverlay;
+            this.paintParam = 0;
 
             ImageIcon board = new ImageIcon(gameAssets.getBoardImage());
             Dimension imageSize = new Dimension((int)(board.getIconWidth()*resolution.getScalePercentage()), (int)(board.getIconHeight()*resolution.getScalePercentage()));
@@ -343,13 +331,21 @@ public class GameScreen extends JFrame implements Screen {
             return false;
         }
 
+        public void setPaintParam(int param) {
+            this.paintParam = param;
+        }
+
         @Override
         public void paintComponent(Graphics g) {
-            boardComponent.paintComponent(g);
-            gameSuspects.paintComponent(g);
-            gameWeapons.paintComponent(g);
-            moveOverlay.paintComponent(g);
-            doorOverlay.paintComponent(g);
+            if (paintParam == 0) {
+                boardComponent.paintComponent(g);
+                gameSuspects.paintComponent(g);
+                gameWeapons.paintComponent(g);
+                moveOverlay.paintComponent(g);
+                doorOverlay.paintComponent(g);
+            } else if (paintParam == 1) {
+                gameSuspects.paintComponent(g);
+            }
         }
     }
 }

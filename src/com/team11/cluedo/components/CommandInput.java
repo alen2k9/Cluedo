@@ -8,6 +8,7 @@
 
 package com.team11.cluedo.components;
 
+import com.team11.cluedo.board.room.RoomData;
 import com.team11.cluedo.players.Player;
 import com.team11.cluedo.pathfinder.AStarFinder;
 import com.team11.cluedo.pathfinder.Path;
@@ -58,6 +59,7 @@ public class CommandInput {
         this.infoOutput = gameScreen.getInfoOutput();
         this.resolutionScalar = (int)(30*this.gameScreen.getResolution().getScalePercentage());
         movementHandling = new MovementHandling(gameScreen, currentPlayer, this);
+
         runPlayer();
     }
 
@@ -220,9 +222,8 @@ public class CommandInput {
 
     private void secretPassage() {
         ArrayList<OverlayTile> overlayTiles = new ArrayList<>();
-
         if (!(currentPlayer.getSuspectToken().getCurrentRoom() == -1) && this.gameScreen.getGameBoard().getRoom(currentPlayer.getSuspectToken().getCurrentRoom()).hasSecretPassage() ) {
-            if (this.gameScreen.getGamePlayers().useSecretPassageWay(this.gameScreen.getGameBoard(), this.currentPlayerID)){
+            if (currentPlayer.getSuspectToken().useSecretPassageWay(this.gameScreen.getGameBoard())){
                 String roomName = currentPlayer.getSuspectToken().getCurrentRoomName();
                 infoOutput.append(this.playerName + " used secret passageway.\n" + this.playerName + " is now in the " + roomName + ".\n");
                 for (Point point : this.gameScreen.getGameBoard().getRoom(this.currentPlayer.getSuspectToken().getCurrentRoom()).getEntryPoints()){
@@ -249,9 +250,8 @@ public class CommandInput {
                 infoOutput.append(this.playerName + " left the " + roomName + ".\n");
                 this.remainingMoves--;
             } else {
-
                 if (Integer.parseInt(inputs[1]) > gameScreen.getGameBoard().getRoom(currentPlayer.getSuspectToken().getCurrentRoom()).getExitPoints().size() || Integer.parseInt(inputs[1]) <= 0) {
-                    infoOutput.append("Exit number entered is invalid.\nPlease enter a valid exit number. (1 - " +gameScreen.getGameBoard().getRoom(currentPlayer.getSuspectToken().getCurrentRoom()).getExitPoints().size() + ")\n");
+                    infoOutput.append("Exit number entered is invalid.\nPlease enter a valid exit number. (1 - " + gameScreen.getGameBoard().getRoom(currentPlayer.getSuspectToken().getCurrentRoom()).getExitPoints().size() + ")\n");
 
                 } else {
                     returnValue = currentPlayer.getSuspectToken().moveOutOfRoom(gameScreen.getGameBoard(), Integer.parseInt(inputs[1]) - 1);
@@ -262,7 +262,6 @@ public class CommandInput {
 
             if (returnValue == 1){
                 this.gameScreen.getDoorOverlay().setExits(new ArrayList<>(), currentPlayer);
-                this.gameScreen.getMoveOverlay().setValidMoves(movementHandling.findValidMoves(remainingMoves), currentPlayer);
             } else if (returnValue == 0){
                 this.gameScreen.getInfoOutput().append("Exit " + (Integer.parseInt(inputs[1]) ) + " is blocked by another player\n");
             }
@@ -280,10 +279,18 @@ public class CommandInput {
             this.dice = die.rolldice();
             this.remainingMoves = this.dice;
 
+            if (currentPlayer.getSuspectToken().isInRoom()){
+                ArrayList<OverlayTile> overlayTiles = new ArrayList<>();
+                System.out.println("Is in room");
+                for (Point point : this.gameScreen.getGameBoard().getRoom(currentPlayer.getSuspectToken().getCurrentRoom()).getEntryPoints()){
+                    overlayTiles.add(new OverlayTile(point));
+                }
+                this.gameScreen.getDoorOverlay().setExits(overlayTiles, currentPlayer);
+            }
+
             infoOutput.append(this.playerName + " rolled a " + this.dice + ".\n");
             this.canRoll = false;
             this.gameScreen.reDraw(currentPlayerID);
-
         } else {
             infoOutput.append(this.playerName + " already rolled a " + this.dice + ".\n");
         }
@@ -323,37 +330,41 @@ public class CommandInput {
             /*
              * Moving Weapon
              */
-            switch (choice.getRoom()) {
-                case "Kitchen":
-                    room = 0;
-                    break;
-                case "Ballroom":
-                    room = 1;
-                    break;
-                case "Conservatory":
-                    room = 2;
-                    break;
-                case "Dining":
-                    room = 3;
-                    break;
-                case "Billiard":
-                    room = 4;
-                    break;
-                case "Library":
-                    room = 5;
-                    break;
-                case "Lounge":
-                    room = 6;
-                    break;
-                case "Hall":
-                    room = 7;
-                    break;
-                case "Study":
-                    room = 8;
-                    break;
+
+            RoomData roomData = new RoomData();
+
+            if (choice.getRoom().equals(roomData.getRoomName(0))) {
+                System.out.println("Found " + choice.getRoom());
+                room = 0;
+            } else if (choice.getRoom().equals(roomData.getRoomName(1))) {
+                System.out.println("Found " + choice.getRoom());
+                room = 1;
+            } else if (choice.getRoom().equals(roomData.getRoomName(2))) {
+                System.out.println("Found " + choice.getRoom());
+                room = 2;
+            } else if (choice.getRoom().equals(roomData.getRoomName(3))) {
+                System.out.println("Found " + choice.getRoom());
+                room = 3;
+            } else if (choice.getRoom().equals(roomData.getRoomName(4))) {
+                System.out.println("Found " + choice.getRoom());
+                room = 4;
+            } else if (choice.getRoom().equals(roomData.getRoomName(5))) {
+                System.out.println("Found " + choice.getRoom());
+                room = 5;
+            } else if (choice.getRoom().equals(roomData.getRoomName(6))) {
+                System.out.println("Found " + choice.getRoom());
+                room = 6;
+            } else if (choice.getRoom().equals(roomData.getRoomName(7))) {
+                System.out.println("Found " + choice.getRoom());
+                room = 7;
+            } else if (choice.getRoom().equals(roomData.getRoomName(8))) {
+                System.out.println("Found " + choice.getRoom());
+                room = 8;
+            } else if (choice.getRoom().equals("Cellar")) {
+                System.out.println("Found " + choice.getRoom());
+                room = 9;
             }
 
-            //private String[] weaponName = {"Candlestick", "Dagger", "Lead Pipe", "Revolver", "Rope", "Spanner"};
             WeaponData weaponData = new WeaponData();
 
             if (choice.getWeapon().equals(weaponData.getWeaponName(0))) {
@@ -376,15 +387,13 @@ public class CommandInput {
                 weapon = 5;
             }
 
-            System.out.println("Moving "+ weapon + choice.getWeapon() + " to " + room +choice.getRoom());
+            System.out.println("Moving "+ weapon + choice.getWeapon() + " to " + room + choice.getRoom());
             gameScreen.getGameWeapons().moveWeaponToRoom(weapon, room);
             infoOutput.append("\n\n" + choice.getWeapon() + " has been moved to " + choice.getRoom() + "\n\n");
             gameScreen.reDraw(currentPlayerID);
         } else {
             infoOutput.append("\nReturning to Main Menu\n");
-            initialSetup();
         }
-
     }
 
     private void setUpMouseClick(){
@@ -435,13 +444,18 @@ public class CommandInput {
 
         private void makeChoice() {
             WeaponData weaponData = new WeaponData();
+            RoomData roomData = new RoomData();
             String[] weaponChoice = new String[gameScreen.getGameWeapons().getNumWeapons()];
-            String[] roomChoice = { "Kitchen", "Ballroom", "Conservatory", "Billiard", "Library", "Study", "Hall", "Lounge", "Dining WeaponPoints", "Cellar" };
+            String[] roomChoice = new String[roomData.getRoomAmount() + 1];
 
             for (int i = 0; i < gameScreen.getGameWeapons().getNumWeapons() ; i++) {
                 weaponChoice[i] = weaponData.getWeaponName(i);
-                System.out.print(weaponChoice[i]);
             }
+
+            for (int i = 0; i < roomData.getRoomAmount() ; i++) {
+                roomChoice[i] = roomData.getRoomName(i);
+            }
+            roomChoice[9] = "Cellar";
 
             this.weapon = (String) JOptionPane.showInputDialog(null, "Choose the Weapon you want to move",
                     "Weapon Movement", JOptionPane.QUESTION_MESSAGE, null, weaponChoice, weaponChoice[0]);
