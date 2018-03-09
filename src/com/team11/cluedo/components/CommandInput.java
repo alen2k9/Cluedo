@@ -478,11 +478,9 @@ public class CommandInput {
                                 }
                             }
                         }
-                        SwingUtilities.invokeLater(() -> {
-                            for (int j = 0 ; j < roomPos.size() ; j++) {
-                                    roomPos.get(j).setBorder(BorderFactory.createLineBorder(new Color(255, 255, 255, 124), 15));
-                            }
-                        });
+                        for (int j = 0 ; j < roomPos.size() ; j++) {
+                                roomPos.get(j).setBorder(BorderFactory.createLineBorder(new Color(255, 255, 255, 124), 15));
+                        }
                     }
                 });
             }
