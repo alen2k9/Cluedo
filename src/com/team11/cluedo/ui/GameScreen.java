@@ -52,6 +52,7 @@ public class GameScreen extends JFrame implements Screen {
     private Cards gameCards;
 
     private Resolution resolution;
+    private Dimension currSize;
 
     public GameScreen(Board gameBoard, Suspects gameSuspects, Weapons gameWeapons, Players gamePlayers, Assets gameAssets, Resolution resolution) throws IOException{
         this.gameBoard = gameBoard;
@@ -81,14 +82,15 @@ public class GameScreen extends JFrame implements Screen {
         this.playerPanel = setupPlayerPanel();
         this.playerHandPanel = setupCardPanel();
         this.notesPanel = new NotesPanel(gamePlayers);
-        this.boardPanel = new BoardUI(this.gameSuspects, this.gameWeapons, new BoardComponent(), this.moveOverlay, this.doorOverlay);
+        this.boardPanel = new BoardUI(new BoardComponent());
         JPanel infoPanel = setupInfoPanel();
 
-        backgroundPanel.add(playerPanel, BorderLayout.WEST, 0);
-        backgroundPanel.add(boardPanel, BorderLayout.CENTER, 1);
-        backgroundPanel.add(infoPanel, BorderLayout.EAST, 2);
+        int index = 0;
+        backgroundPanel.add(playerPanel, BorderLayout.WEST, index++);
+        backgroundPanel.add(boardPanel, BorderLayout.CENTER, index++);
+        backgroundPanel.add(infoPanel, BorderLayout.EAST, index++);
 
-        this.getContentPane().add(backgroundPanel);
+        this.add(backgroundPanel);
         this.pack();
     }
     @Override
@@ -96,6 +98,7 @@ public class GameScreen extends JFrame implements Screen {
         boardPanel.paintComponent(boardPanel.getGraphics());
         setLocation(resolution.getScreenSize().width/2 - getSize().width/2, resolution.getScreenSize().height/2 - (getSize().height/2));
         setVisible(true);
+        currSize = getSize();
     }
 
     @Override
@@ -104,17 +107,20 @@ public class GameScreen extends JFrame implements Screen {
         dispose();
         System.exit(0);
     }
+
     @Override
     public void reDraw(int currentPlayer) {
-        setSize(new Dimension(getPreferredSize().width, getSize().height));
         this.playerPanel.reDraw(currentPlayer);
         this.playerHandPanel.reDraw(currentPlayer);
         this.notesPanel.reDraw(currentPlayer);
-        repaint();
     }
 
     public void reDrawFrame() {
-        getContentPane().getComponent(0).repaint();
+        if (new Dimension(getPreferredSize().width, getSize().height) != currSize) {
+            setSize(new Dimension(getPreferredSize().width, getSize().height));
+            currSize = new Dimension(getPreferredSize().width, getSize().height);
+        }
+        boardPanel.repaint();
     }
 
     private JPanel setupCommandPanel() {
@@ -297,36 +303,39 @@ public class GameScreen extends JFrame implements Screen {
         return infoTabs;
     }
 
-    public class BoardComponent extends JComponent {
+    public class BoardComponent extends JComponent{
         @Override
         public void paintComponent(Graphics g) {
             Image boardImage = gameAssets.getBoardImage();
             ImageIcon board = new ImageIcon(boardImage);
             g.drawImage(boardImage, 0, 0,(int)(board.getIconWidth()*resolution.getScalePercentage()),
                     (int)(board.getIconHeight()*resolution.getScalePercentage()), this);
+
+        }
+    }
+
+    public class SuspectPaintComponent extends JComponent {
+        @Override
+        public void paintComponent(Graphics g) {
+            super.paintComponent(super.getGraphics());
+            gameSuspects.paintComponent(g);
         }
     }
 
     public class BoardUI extends JPanel {
-        Suspects gameSuspects;
-        Weapons gameWeapons;
         BoardComponent boardComponent;
-        MoveOverlay moveOverlay;
-        DoorOverlay doorOverlay;
+        SuspectPaintComponent suspectPaintComponent;
+
 
         int paintParam;
 
-        public BoardUI(Suspects suspects, Weapons weapons, BoardComponent boardImage, MoveOverlay moveOverlay, DoorOverlay doorOverlay ) {
-            this.gameSuspects = suspects;
-            this.gameWeapons = weapons;
-            this.boardComponent = boardImage;
-            this.moveOverlay = moveOverlay;
-            this.doorOverlay = doorOverlay;
+        public BoardUI(BoardComponent boardImage) {
+            this.boardComponent = new BoardComponent();
+            this.suspectPaintComponent = new SuspectPaintComponent();
             this.paintParam = 0;
 
             this.setLayout(new FlowLayout(0,0,0));
             this.add(gameBoard, 0);
-            this.add(gameSuspects, 1);
 
             ImageIcon board = new ImageIcon(gameAssets.getBoardImage());
             Dimension imageSize = new Dimension((int)(board.getIconWidth()*resolution.getScalePercentage()), (int)(board.getIconHeight()*resolution.getScalePercentage()));
@@ -335,7 +344,7 @@ public class GameScreen extends JFrame implements Screen {
 
         public boolean checkPoint(int x, int y){
             OverlayTile clickedPoint = new OverlayTile(x,y);
-            ArrayList<OverlayTile> validMoves = this.moveOverlay.getValidMoves();
+            ArrayList<OverlayTile> validMoves = moveOverlay.getValidMoves();
 
             if (!validMoves.isEmpty()){
                 for (OverlayTile overlayTile : validMoves){
@@ -360,7 +369,10 @@ public class GameScreen extends JFrame implements Screen {
                 moveOverlay.paintComponent(g);
                 doorOverlay.paintComponent(g);
             } else if (paintParam == 1) {
-                gameSuspects.paintComponent(g);
+                //super.paintComponent(getGraphics());
+                boardComponent.paintComponent(g);
+                gameWeapons.paintComponent(g);
+                suspectPaintComponent.paintComponent(g);
             }
         }
     }

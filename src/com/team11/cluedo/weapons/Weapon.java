@@ -13,8 +13,8 @@ import com.team11.cluedo.ui.Resolution;
 import java.awt.*;
 
 public class Weapon extends TokenComponent {
-    public Weapon(int weaponID, String name, Image tokenImage, Resolution resolution){
-        super(weaponID, name, null, tokenImage, resolution );
+    public Weapon(int weaponID, String name, Point tokenLocation,Image tokenImage, Resolution resolution){
+        super(weaponID, name, tokenLocation, tokenImage, resolution );
     }
 
     public int getWeaponID(){

@@ -68,6 +68,7 @@ public class CommandInput {
         currentPlayer = gameScreen.getGamePlayers().getPlayer(currentPlayerID);
         playerName = currentPlayer.getPlayerName();
         movementHandling.setCurrentPlayer(currentPlayer);
+
         gameScreen.reDraw(currentPlayerID);
         infoOutput.append("It is now " + playerName + "'s turn.\n");
         infoOutput.append("Please enter 'roll' to start\n");
@@ -490,8 +491,9 @@ public class CommandInput {
             playerName = gameScreen.getGamePlayers().getPlayer(i).getPlayerName();
             infoOutput.append(playerName + " rolled a " + diceNumber + ".\n");
             try {
-                gameScreen.getInfoOutput().paint(gameScreen.getInfoOutput().getGraphics());
-                Thread.sleep(500);} catch (InterruptedException ex) { ex.printStackTrace(); }
+                gameScreen.getInfoOutput().paint(infoOutput.getGraphics());
+                Thread.sleep(500);
+            } catch (InterruptedException ex) { ex.printStackTrace(); }
             dice.add(diceNumber);
         }
 

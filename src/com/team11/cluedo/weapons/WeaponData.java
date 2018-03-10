@@ -17,6 +17,7 @@ public class WeaponData {
     private Assets gameAssets;
 
     private HashMap<Integer, String> weaponName = new HashMap<>();
+    private HashMap<Integer, Point> weaponLocation = new HashMap<>();
     private HashMap<Integer, Image> weaponToken = new HashMap<>();
     private HashMap<Integer, Image> weaponCard = new HashMap<>();
     private HashMap<Integer, Image> selectedWeaponCard = new HashMap<>();
@@ -27,6 +28,7 @@ public class WeaponData {
     public WeaponData() {
         this.gameAssets = new Assets();
         setWeaponName();
+        setWeaponPoint();
         setWeaponToken();
         setWeaponCard();
         setSelectedWeaponCard();
@@ -40,6 +42,15 @@ public class WeaponData {
         weaponName.put(3, "Revolver");
         weaponName.put(4, "Rope");
         weaponName.put(5, "Wrench");
+    }
+
+    private void setWeaponPoint() {
+        weaponLocation.put(0, new Point(0,0));
+        weaponLocation.put(1, new Point(0,0));
+        weaponLocation.put(2, new Point(0,0));
+        weaponLocation.put(3, new Point(0,0));
+        weaponLocation.put(4, new Point(0,0));
+        weaponLocation.put(5, new Point(0,0));
     }
 
     private void setWeaponID(){
@@ -80,6 +91,10 @@ public class WeaponData {
 
     public String getWeaponName(int index) {
         return weaponName.getOrDefault(index, null);
+    }
+
+    public Point getWeaponLocation(int index) {
+        return weaponLocation.getOrDefault(index, null);
     }
 
     public Image getWeaponToken(int index) {

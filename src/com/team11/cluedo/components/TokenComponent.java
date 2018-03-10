@@ -11,6 +11,7 @@ import java.awt.*;
     protected int currentRoom;
     protected String tokenName;
     protected Point tokenLocation;
+    protected int drawX, drawY;
 
     private Image tokenImage;
     private int resolutionScalar;
@@ -22,6 +23,19 @@ import java.awt.*;
         this.tokenImage = tokenImage;
         this.resolutionScalar = (int)(resolution.getScalePercentage()* Board.TILE_SIZE);
         this.currentRoom = -1;
+        this.drawX = (int)(tokenLocation.getX() * resolutionScalar);
+        this.drawY = (int)(tokenLocation.getY() * resolutionScalar);
+        setBounds();
+    }
+
+    public void setDrawX(int drawX) {
+        this.drawX = drawX;
+        setBounds();
+    }
+
+    public void setDrawY(int drawY) {
+        this.drawY = drawY;
+        setBounds();
     }
 
     @Override
@@ -52,10 +66,13 @@ import java.awt.*;
         return (int)tokenLocation.getY();
     }
 
+    private void setBounds() {
+        setBounds(drawX, drawY, resolutionScalar, resolutionScalar);
+    }
+
     @Override
     public void paintComponent(Graphics g){
         Graphics2D g2 = (Graphics2D) g;
-        int drawX = (getX() * resolutionScalar); int drawY = (getY()*resolutionScalar);
         g2.drawImage(tokenImage, drawX, drawY, resolutionScalar, resolutionScalar,null);
     }
 }

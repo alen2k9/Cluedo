@@ -37,7 +37,7 @@ public class Weapons extends JPanel implements Iterable<Weapon>, Iterator<Weapon
     private void setupWeapons(Resolution resolution) {
         WeaponData weaponData = new WeaponData();
         for(int i = 0 ; i < NUM_WEAPONS ; i++) {
-            weapons.add(new Weapon(i, weaponData.getWeaponName(i), weaponData.getWeaponToken(i), resolution));
+            weapons.add(new Weapon(i, weaponData.getWeaponName(i), weaponData.getWeaponLocation(i), weaponData.getWeaponToken(i), resolution));
         }
     }
 

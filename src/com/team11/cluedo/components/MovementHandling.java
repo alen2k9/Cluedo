@@ -6,6 +6,7 @@ import com.team11.cluedo.players.Player;
 import com.team11.cluedo.suspects.Direction;
 import com.team11.cluedo.suspects.Suspect;
 import com.team11.cluedo.ui.GameScreen;
+import com.team11.cluedo.ui.components.AnimateToken;
 import com.team11.cluedo.ui.components.OverlayTile;
 
 import javax.swing.*;
@@ -15,12 +16,14 @@ import java.util.ArrayList;
 public class MovementHandling {
     private CommandInput commandInput;
     private GameScreen gameScreen;
+    private AnimateToken animateToken;
     private Player currentPlayer;
 
     public MovementHandling(GameScreen gameScreen, Player currentPlayer, CommandInput commandInput) {
         this.gameScreen = gameScreen;
         this.currentPlayer = currentPlayer;
         this.commandInput = commandInput;
+        animateToken = new AnimateToken(gameScreen);
     }
 
     public void playerMovement(ArrayList<Direction> moves, int remainingMoves, boolean moveEnabled) {
@@ -59,13 +62,18 @@ public class MovementHandling {
     }
 
     private void move(ArrayList<Direction> moves) {
-        gameScreen.getBoardPanel().setPaintParam(1);
+        animateToken.setMoves(moves);
+        animateToken.setToken(currentPlayer.getSuspectToken());
+        animateToken.moveIt();
+        /*
         while (!moves.isEmpty()) {
+
             currentPlayer.getSuspectToken().move(gameScreen.getGameBoard(), moves.remove(0));
             try {Thread.sleep(50);} catch (Exception e) {}
             gameScreen.getBoardPanel().paintComponent(gameScreen.getBoardPanel().getGraphics());
         }
         gameScreen.getBoardPanel().setPaintParam(0);
+        */
     }
 
     public ArrayList<OverlayTile> findValidMoves(int remainingMoves) {
@@ -166,7 +174,6 @@ public class MovementHandling {
         Point previousPoint = new Point((int)currentPlayer.getLocation().getX(), (int)currentPlayer.getLocation().getY());
 
         Point nextPoint = new Point(path.getStep(0).getY(), path.getStep(0).getX());
-
 
         for (int i = 0; i < path.getLength(); i++){
             if (nextPoint.getX() == previousPoint.getX()){
