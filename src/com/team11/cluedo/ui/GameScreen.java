@@ -84,9 +84,9 @@ public class GameScreen extends JFrame implements Screen {
         this.boardPanel = new BoardUI(this.gameSuspects, this.gameWeapons, new BoardComponent(), this.moveOverlay, this.doorOverlay);
         JPanel infoPanel = setupInfoPanel();
 
-        backgroundPanel.add(playerPanel, BorderLayout.WEST);
-        backgroundPanel.add(infoPanel, BorderLayout.EAST);
-        backgroundPanel.add(boardPanel, BorderLayout.CENTER);
+        backgroundPanel.add(playerPanel, BorderLayout.WEST, 0);
+        backgroundPanel.add(boardPanel, BorderLayout.CENTER, 1);
+        backgroundPanel.add(infoPanel, BorderLayout.EAST, 2);
 
         this.getContentPane().add(backgroundPanel);
         this.pack();
@@ -111,6 +111,10 @@ public class GameScreen extends JFrame implements Screen {
         this.playerHandPanel.reDraw(currentPlayer);
         this.notesPanel.reDraw(currentPlayer);
         repaint();
+    }
+
+    public void reDrawFrame() {
+        getContentPane().getComponent(0).repaint();
     }
 
     private JPanel setupCommandPanel() {

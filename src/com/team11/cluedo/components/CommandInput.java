@@ -195,7 +195,7 @@ public class CommandInput {
             if (!(command.equals("help")||command.equals("notes") || command.equals("fill"))){
                 gameScreen.setTab(0);
             }
-            gameScreen.reDraw(currentPlayerID);
+            gameScreen.reDrawFrame();
         });
 
         gameScreen.getCommandInput().addKeyListener(new KeyAdapter()
@@ -212,7 +212,7 @@ public class CommandInput {
                     } else if (key.getKeyCode() == KeyEvent.VK_RIGHT) {
                         movementHandling.playerMovement(new ArrayList<>(Collections.singletonList(Direction.EAST)), remainingMoves, moveEnabled);
                     }
-                    gameScreen.reDraw(currentPlayerID);
+                    gameScreen.reDrawFrame();
                 }
             }
         });
@@ -229,6 +229,7 @@ public class CommandInput {
         movementHandling.setCurrentPlayer(currentPlayer);
         infoOutput.append("\nIt is now " + this.playerName + "'s turn.\n");
         infoOutput.append("Please enter 'roll' to start\n");
+        gameScreen.reDraw(currentPlayerID);
     }
 
     private void secretPassage() {
@@ -302,7 +303,7 @@ public class CommandInput {
             }
             infoOutput.append(this.playerName + " rolled a " + this.dice + ".\n");
             this.canRoll = false;
-            this.gameScreen.reDraw(currentPlayerID);
+            gameScreen.reDrawFrame();
         } else {
             infoOutput.append(this.playerName + " already rolled a " + this.dice + ".\n");
         }
@@ -402,7 +403,6 @@ public class CommandInput {
             System.out.println("Moving "+ weapon + choice.getWeapon() + " to " + room + choice.getRoom());
             gameScreen.getGameWeapons().moveWeaponToRoom(weapon, room);
             infoOutput.append("\n\n" + choice.getWeapon() + " has been moved to " + choice.getRoom() + "\n\n");
-            gameScreen.reDraw(currentPlayerID);
         } else {
             infoOutput.append("\nReturning to Main Menu\n");
         }
@@ -419,8 +419,8 @@ public class CommandInput {
                         if (moveEnabled) {
                             if (gameScreen.getBoardPanel().checkPoint((int)boardPos.getLocation().getY(), (int)boardPos.getLocation().getX())) {
                                 movementHandling.mouseClickMove(new Point((int)boardPos.getLocation().getY(), (int)boardPos.getLocation().getX()), remainingMoves, moveEnabled);
-                                gameScreen.reDraw(currentPlayerID);
                                 gameScreen.getMoveOverlay().setValidMoves(movementHandling.findValidMoves(remainingMoves), currentPlayer);
+                                gameScreen.reDrawFrame();
                             }
                         }
                     }
