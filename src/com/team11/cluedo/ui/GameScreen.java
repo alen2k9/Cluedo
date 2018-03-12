@@ -122,7 +122,7 @@ public class GameScreen extends JFrame implements Screen {
             setSize(new Dimension(getPreferredSize().width, getSize().height));
             currSize = new Dimension(getPreferredSize().width, getSize().height);
         }
-        boardPanel.repaint();
+        repaint();
     }
 
     private JPanel setupCommandPanel() {

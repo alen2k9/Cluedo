@@ -51,14 +51,15 @@ public class MovementHandling {
                     gameScreen.getMoveOverlay().setValidMoves(findValidMoves(remainingMoves), currentPlayer);
             }
         } else {
-        gameScreen.getInfoOutput().append("This path isn't valid.\nYou have " + remainingMoves + " moves remaining.\n");
+            gameScreen.getInfoOutput().append("This path isn't valid.\nYou have " + remainingMoves + " moves remaining.\n");
+            commandInput.setMoveEnabled(true);
         }
 
         if (remainingMoves == 0 && moveEnabled) {
             commandInput.setMoveEnabled(disableMove());
         }
-            commandInput.setRemainingMoves(remainingMoves);
-        }
+        commandInput.setRemainingMoves(remainingMoves);
+    }
 
     public ArrayList<OverlayTile> findValidMoves(int remainingMoves) {
         ArrayList<OverlayTile> validMoves = new ArrayList<>();

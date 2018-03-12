@@ -275,4 +275,8 @@ public class Suspect extends TokenComponent implements Mover {
     public int getSuspectID(){
         return super.tokenID;
     }
+
+    public String getSuspectName() {
+        return super.tokenName;
+    }
 }

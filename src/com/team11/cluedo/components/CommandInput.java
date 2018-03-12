@@ -9,7 +9,6 @@
 package com.team11.cluedo.components;
 
 import com.team11.cluedo.board.BoardPos;
-import com.team11.cluedo.board.room.DoorData;
 import com.team11.cluedo.board.room.RoomData;
 import com.team11.cluedo.board.room.TileType;
 import com.team11.cluedo.players.Player;
@@ -17,6 +16,7 @@ import com.team11.cluedo.suspects.Direction;
 import com.team11.cluedo.suspects.SuspectData;
 import com.team11.cluedo.ui.GameScreen;
 
+import com.team11.cluedo.ui.components.RollStart;
 import com.team11.cluedo.ui.components.OverlayTile;
 import com.team11.cluedo.weapons.WeaponData;
 
@@ -28,9 +28,6 @@ import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Timer;
-
-import static sun.audio.AudioPlayer.player;
 
 public class CommandInput {
     private MovementHandling movementHandling;
@@ -43,6 +40,7 @@ public class CommandInput {
     private int dice, remainingMoves, numPlayers, currentPlayerID;
     private boolean canRoll;
     private boolean moveEnabled;
+    private boolean mouseEnabled;
 
     public CommandInput(GameScreen gameScreen) {
         this.gameScreen = gameScreen;
@@ -52,24 +50,23 @@ public class CommandInput {
     public void initialSetup() {
         this.canRoll = true;
         this.moveEnabled = false;
+        this.mouseEnabled = true;
         this.numPlayers = this.gameScreen.getGamePlayers().getPlayerCount();
         this.currentPlayer = gameScreen.getGamePlayers().getPlayer(currentPlayerID);
         this.playerName = currentPlayer.getPlayerName();
         this.infoOutput = gameScreen.getInfoOutput();
         movementHandling = new MovementHandling(gameScreen, currentPlayer, this);
-        Runnable run = () -> playerTurn();
-        SwingUtilities.invokeLater(run);
+
+        RollStart rollStart = new RollStart(gameScreen, this, infoOutput, currentPlayer, currentPlayerID);
+        rollStart.execute();
         runPlayer();
         setUpMouseClick();
     }
 
     public void playerTurn() {
-        rollStart();
         currentPlayer = gameScreen.getGamePlayers().getPlayer(currentPlayerID);
         playerName = currentPlayer.getPlayerName();
         movementHandling.setCurrentPlayer(currentPlayer);
-
-        gameScreen.reDraw(currentPlayerID);
         infoOutput.append("It is now " + playerName + "'s turn.\n");
         infoOutput.append("Please enter 'roll' to start\n");
     }
@@ -79,123 +76,125 @@ public class CommandInput {
             String input = this.gameScreen.getCommandInput().getText();
             String[] inputs = input.toLowerCase().split(" ");
             String command = inputs[0];
-            
+
             this.gameScreen.getCommandInput().setText("");
-            infoOutput.append("> "+ input + '\n');
+            if (mouseEnabled) {
+                infoOutput.append("> " + input + '\n');
 
-            if (moveEnabled) {
-                switch (command) {
-                    case "u":
-                        movementHandling.playerMovement(new ArrayList<>(Collections.singletonList(Direction.NORTH)),remainingMoves,moveEnabled);
-                        break;
-                    case "r":
-                        movementHandling.playerMovement(new ArrayList<>(Collections.singletonList(Direction.EAST)),remainingMoves,moveEnabled);
-                        break;
-                    case "d":
-                        movementHandling.playerMovement(new ArrayList<>(Collections.singletonList(Direction.SOUTH)),remainingMoves,moveEnabled);
-                        break;
-                    case "l":
-                        movementHandling.playerMovement(new ArrayList<>(Collections.singletonList(Direction.WEST)),remainingMoves,moveEnabled);
-                        break;
-                    case "move":
-                        moveEnabled = movementHandling.disableMove();
-                        break;
-                    case "finished":
-                        moveEnabled = movementHandling.disableMove();
-                        break;
-                    case "done":
-                        moveEnabled = false;
-                        nextPlayer();
-                        this.gameScreen.getMoveOverlay().setValidMoves(new ArrayList<>(), this.currentPlayer);
-                        this.gameScreen.getDoorOverlay().setExits(new ArrayList<>(), this.currentPlayer);
-                        break;
-                    default:
-                        infoOutput.append("Unknown entry.\n" +
-                                "Enter 'U', 'R', 'D', or 'L' to move.\n" +
-                                "Click on a highlighted square to move.\n" +
-                                "Use the arrow keys to move.\n" +
-                                "Close move by typing 'move' or 'finished'\n");
-                        break;
-                }
-                this.gameScreen.getMoveOverlay().setValidMoves(movementHandling.findValidMoves(remainingMoves), currentPlayer);
-            } else {
-                switch (command) {
-                    case "move":
-                        StringBuilder moveParameters = new StringBuilder();
-                        for (int i = 1; i < inputs.length; i++) {
-                            moveParameters.append(inputs[i]);
-                        }
-                        if (!currentPlayer.getSuspectToken().isInRoom()) {
-                            if (this.remainingMoves <= 0) {
-                                infoOutput.append("You have 0 moves remaining.\n");
-                            } else if (inputs.length == 1) {
-                                moveEnabled = movementHandling.enableMove(infoOutput);
-                            } else if (this.remainingMoves < moveParameters.toString().length()) {
-                                infoOutput.append("You only have " + remainingMoves + " moves remaining.\n" +
-                                        "You entered " + moveParameters.toString().length() + " parameters.\n");
-                            } else {
-                                movementHandling.playerMovement(movementHandling.inputToDirection(moveParameters.toString(), remainingMoves), remainingMoves, moveEnabled);
-                                //this.gameScreen.getMoveOverlay().setValidMoves(movementHandling.findValidMoves(remainingMoves), currentPlayer);
+                if (moveEnabled) {
+                    switch (command) {
+                        case "u":
+                            movementHandling.playerMovement(new ArrayList<>(Collections.singletonList(Direction.NORTH)), remainingMoves, moveEnabled);
+                            break;
+                        case "r":
+                            movementHandling.playerMovement(new ArrayList<>(Collections.singletonList(Direction.EAST)), remainingMoves, moveEnabled);
+                            break;
+                        case "d":
+                            movementHandling.playerMovement(new ArrayList<>(Collections.singletonList(Direction.SOUTH)), remainingMoves, moveEnabled);
+                            break;
+                        case "l":
+                            movementHandling.playerMovement(new ArrayList<>(Collections.singletonList(Direction.WEST)), remainingMoves, moveEnabled);
+                            break;
+                        case "move":
+                            moveEnabled = movementHandling.disableMove();
+                            break;
+                        case "finished":
+                            moveEnabled = movementHandling.disableMove();
+                            break;
+                        case "done":
+                            moveEnabled = false;
+                            nextPlayer();
+                            this.gameScreen.getMoveOverlay().setValidMoves(new ArrayList<>(), this.currentPlayer);
+                            this.gameScreen.getDoorOverlay().setExits(new ArrayList<>(), this.currentPlayer);
+                            break;
+                        default:
+                            infoOutput.append("Unknown entry.\n" +
+                                    "Enter 'U', 'R', 'D', or 'L' to move.\n" +
+                                    "Click on a highlighted square to move.\n" +
+                                    "Use the arrow keys to move.\n" +
+                                    "Close move by typing 'move' or 'finished'\n");
+                            break;
+                    }
+                    this.gameScreen.getMoveOverlay().setValidMoves(movementHandling.findValidMoves(remainingMoves), currentPlayer);
+                } else {
+                    switch (command) {
+                        case "move":
+                            StringBuilder moveParameters = new StringBuilder();
+                            for (int i = 1; i < inputs.length; i++) {
+                                moveParameters.append(inputs[i]);
                             }
-                        } else {
-                            infoOutput.append("You can't move when in a room!\nYou must exit first.\n");
-                        }
-                        break;
+                            if (!currentPlayer.getSuspectToken().isInRoom()) {
+                                if (this.remainingMoves <= 0) {
+                                    infoOutput.append("You have 0 moves remaining.\n");
+                                } else if (inputs.length == 1) {
+                                    moveEnabled = movementHandling.enableMove(infoOutput);
+                                } else if (this.remainingMoves < moveParameters.toString().length()) {
+                                    infoOutput.append("You only have " + remainingMoves + " moves remaining.\n" +
+                                            "You entered " + moveParameters.toString().length() + " parameters.\n");
+                                } else {
+                                    movementHandling.playerMovement(movementHandling.inputToDirection(moveParameters.toString(), remainingMoves), remainingMoves, moveEnabled);
+                                    //this.gameScreen.getMoveOverlay().setValidMoves(movementHandling.findValidMoves(remainingMoves), currentPlayer);
+                                }
+                            } else {
+                                infoOutput.append("You can't move when in a room!\nYou must exit first.\n");
+                            }
+                            break;
 
-                    case "roll":
-                        diceRoll();
-                        break;
+                        case "roll":
+                            diceRoll();
+                            break;
 
-                    case "exit":
-                        if (this.remainingMoves > 0) {
-                            moveOut(inputs);
-                        } else {
-                            infoOutput.append("Cannot move out of room\n");
-                            CommandProcessing.printRemainingMoves(remainingMoves,infoOutput);
-                        }
-                        break;
+                        case "exit":
+                            if (this.remainingMoves > 0) {
+                                moveOut(inputs);
+                            } else {
+                                infoOutput.append("Cannot move out of room.\n");
+                                CommandProcessing.printRemainingMoves(remainingMoves, infoOutput);
+                            }
+                            break;
 
-                    case "done":
-                        nextPlayer();
-                        break;
+                        case "done":
+                            nextPlayer();
+                            break;
 
-                    case "quit":
-                        quitGame();
-                        break;
+                        case "quit":
+                            quitGame();
+                            break;
 
-                    case "passage":
-                        secretPassage();
-                        break;
+                        case "passage":
+                            secretPassage();
+                            break;
 
-                    case "help":
-                        help();
-                        break;
+                        case "help":
+                            help();
+                            break;
 
-                    case "weapon":
-                        weaponMovement();
-                        break;
+                        case "weapon":
+                            weaponMovement();
+                            break;
 
-                    case "notes":
-                        notes();
-                        break;
+                        case "notes":
+                            notes();
+                            break;
 
-                    case "cheat":
-                        cheat();
-                        break;
+                        case "cheat":
+                            cheat();
+                            break;
 
-                    case "godroll":
-                        godRoll();
-                        break;
+                        case "godroll":
+                            godRoll();
+                            break;
 
-                    case "back":
-                        break;
-                    case "time":
-                        movementHandling.getAvgTime();
-                        break;
+                        case "back":
+                            break;
+                        case "time":
+                            movementHandling.getAvgTime();
+                            break;
 
-                    default:
-                        infoOutput.append("Unknown command\nUse command 'help' for instructions.\n");
-                        break;
+                        default:
+                            infoOutput.append("Unknown command\nUse command 'help' for instructions.\n");
+                            break;
+                    }
                 }
             }
             if (!(command.equals("help")||command.equals("notes") || command.equals("fill"))){
@@ -210,15 +209,14 @@ public class CommandInput {
             {
                 if (moveEnabled) {
                     if (key.getKeyCode() == KeyEvent.VK_DOWN) {
-                        movementHandling.playerMovement(Direction.SOUTH, remainingMoves, moveEnabled);
+                        movementHandling.playerMovement(new ArrayList<>(Collections.singletonList(Direction.SOUTH)), remainingMoves, moveEnabled);
                     } else if (key.getKeyCode() == KeyEvent.VK_UP) {
-                        movementHandling.playerMovement(Direction.NORTH, remainingMoves, moveEnabled);
+                        movementHandling.playerMovement(new ArrayList<>(Collections.singletonList(Direction.NORTH)), remainingMoves, moveEnabled);
                     } else if (key.getKeyCode() == KeyEvent.VK_LEFT) {
-                        movementHandling.playerMovement(Direction.WEST, remainingMoves, moveEnabled);
+                        movementHandling.playerMovement(new ArrayList<>(Collections.singletonList(Direction.WEST)), remainingMoves, moveEnabled);
                     } else if (key.getKeyCode() == KeyEvent.VK_RIGHT) {
-                        movementHandling.playerMovement(Direction.EAST, remainingMoves, moveEnabled);
+                        movementHandling.playerMovement(new ArrayList<>(Collections.singletonList(Direction.EAST)), remainingMoves, moveEnabled);
                     }
-                    gameScreen.reDrawFrame();
                 }
             }
         });
@@ -290,7 +288,7 @@ public class CommandInput {
             CommandProcessing.printRemainingMoves(remainingMoves, infoOutput);
 
         } else {
-            infoOutput.append("Cannot leave a room when you're not in a room!\n");
+            infoOutput.append("Cannot leave a room when you're not\nin a room!\n");
         }
     }
 
@@ -435,29 +433,29 @@ public class CommandInput {
                     @Override
                     public void mouseEntered(MouseEvent e) {
                         super.mouseEntered(e);
-                        if(gameScreen.isFocused())
-                        if (boardPos.getTileType() == TileType.ROOM || boardPos.getTileType() == TileType.DOOR
-                                || boardPos.getTileType() == TileType.SECRETPASSAGE) {
-                            if (!roomPos.isEmpty())
-                                if (boardPos.getRoomType() != roomPos.get(0).getRoomType()) {
-                                    while (!roomPos.isEmpty()) {
-                                        BoardPos innerPos = roomPos.remove(roomPos.size() - 1);
-                                        innerPos.setBorder(new EmptyBorder(0, 0, 0, 0));
+                        if(gameScreen.isFocused() && mouseEnabled)
+                            if (boardPos.getTileType() == TileType.ROOM || boardPos.getTileType() == TileType.DOOR
+                                    || boardPos.getTileType() == TileType.SECRETPASSAGE) {
+                                if (!roomPos.isEmpty())
+                                    if (boardPos.getRoomType() != roomPos.get(0).getRoomType()) {
+                                        while (!roomPos.isEmpty()) {
+                                            BoardPos innerPos = roomPos.remove(roomPos.size() - 1);
+                                            innerPos.setBorder(new EmptyBorder(0, 0, 0, 0));
+                                        }
                                     }
+                                fillRoom(boardPos.getRoomType());
+                                if (boardPos.getTileType() == TileType.DOOR) {
+                                    boardPos.setBorder(BorderFactory.createLineBorder(new Color(0, 140, 255, 181), 3));
                                 }
-                            fillRoom(boardPos.getRoomType());
-                            if (boardPos.getTileType() == TileType.DOOR) {
-                                boardPos.setBorder(BorderFactory.createLineBorder(new Color(0, 140, 255, 181), 3));
+                            } else {
+                                while (!roomPos.isEmpty()) {
+                                    BoardPos innerPos = roomPos.remove(roomPos.size() - 1);
+                                    innerPos.setBorder(new EmptyBorder(0, 0, 0, 0));
+                                }
+                                SuspectData data = new SuspectData();
+                                if (boardPos.getTileType() != TileType.BLANK)
+                                    boardPos.setBorder(BorderFactory.createLineBorder(data.getSuspectColor(currentPlayer.getSuspectToken().getSuspectID()), 3));
                             }
-                        } else {
-                            while (!roomPos.isEmpty()) {
-                                BoardPos innerPos = roomPos.remove(roomPos.size() - 1);
-                                innerPos.setBorder(new EmptyBorder(0, 0, 0, 0));
-                            }
-                            SuspectData data = new SuspectData();
-                            if (boardPos.getTileType() != TileType.BLANK)
-                                boardPos.setBorder(BorderFactory.createLineBorder(data.getSuspectColor(currentPlayer.getSuspectToken().getSuspectID()), 3));
-                        }
                     }
 
                     @Override
@@ -486,32 +484,6 @@ public class CommandInput {
                 });
             }
         }
-    }
-
-    private void rollStart() {
-        Dice die = new Dice();
-        int diceNumber, highRoller = 0;
-        ArrayList<Integer> dice = new ArrayList<>();
-        for(int i = 0; i < numPlayers; i++) {
-            diceNumber = die.rolldice();
-            playerName = gameScreen.getGamePlayers().getPlayer(i).getPlayerName();
-            infoOutput.append(playerName + " rolled a " + diceNumber + ".\n");
-            try {
-                gameScreen.getInfoOutput().paint(infoOutput.getGraphics());
-                Thread.sleep(500);
-            } catch (InterruptedException ex) { ex.printStackTrace(); }
-            dice.add(diceNumber);
-        }
-
-        for(int j = 0; j < numPlayers; j++) {
-            if(dice.get(highRoller) < dice.get(j)){
-                highRoller = j;
-            }
-        }
-        currentPlayerID = highRoller;
-        currentPlayer = gameScreen.getGamePlayers().getPlayer(currentPlayerID);
-        playerName = currentPlayer.getPlayerName();
-        infoOutput.append(playerName + " rolled the highest number!\n\n");
     }
 
     private class ChoiceOption {
@@ -559,6 +531,14 @@ public class CommandInput {
 
     public void setMoveEnabled(boolean moveEnabled) {
         this.moveEnabled = moveEnabled;
+    }
+
+    public void setMouseEnabled(boolean mouseEnabled) {
+        this.mouseEnabled = mouseEnabled;
+    }
+
+    public void setCurrentPlayerID(int currentPlayerID) {
+        this.currentPlayerID = currentPlayerID;
     }
 
     public boolean isMoveEnabled() {

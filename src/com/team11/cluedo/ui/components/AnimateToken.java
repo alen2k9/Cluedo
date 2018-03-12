@@ -27,7 +27,7 @@ public class AnimateToken extends SwingWorker<Integer, String> {
 
     private final int distance = 2, delay = 5;
 
-    private int resolutionScalar;
+    private int resolutionScalar, drawX, drawY;
 
     private ArrayList<Direction> moves;
     private int remainingMoves;
@@ -45,6 +45,8 @@ public class AnimateToken extends SwingWorker<Integer, String> {
 
     @Override
     protected Integer doInBackground() throws Exception {
+        commandInput.setMouseEnabled(false);
+        commandInput.setMoveEnabled(false);
         Player currentPlayer = movementHandling.getCurrentPlayer();
         process(new ArrayList<>());
         int steps = moves.size();
@@ -53,8 +55,8 @@ public class AnimateToken extends SwingWorker<Integer, String> {
                 while (!moves.isEmpty()) {
                     AnimateToken.failIfInterrupted();
                     Direction direction = moves.remove(0);
-                    int drawX = (int) (token.getBoardLocation().getX() * resolutionScalar);
-                    int drawY = (int) (token.getBoardLocation().getY() * resolutionScalar);
+                    drawX = (int) (token.getBoardLocation().getX() * resolutionScalar);
+                    drawY = (int) (token.getBoardLocation().getY() * resolutionScalar);
                     token.move(gameScreen.getGameBoard(), direction);
 
                     while (drawX != (int) (token.getBoardLocation().getX() * resolutionScalar) || drawY != (int) (token.getBoardLocation().getY() * resolutionScalar)) {
@@ -78,6 +80,8 @@ public class AnimateToken extends SwingWorker<Integer, String> {
                     }
                 }
 
+                commandInput.setMoveEnabled(true);
+                commandInput.setMouseEnabled(true);
                 remainingMoves -= steps;
                 if (steps == 1) {
                     CommandProcessing.printRemainingMoves(remainingMoves, gameScreen.getInfoOutput());
@@ -96,10 +100,13 @@ public class AnimateToken extends SwingWorker<Integer, String> {
                     gameScreen.getMoveOverlay().setValidMoves(movementHandling.findValidMoves(remainingMoves), currentPlayer);
                 }
             } else {
+                commandInput.setMouseEnabled(true);
+                commandInput.setMoveEnabled(true);
                 gameScreen.getInfoOutput().append("This path isn't valid.\nYou have " + remainingMoves + " moves remaining.\n");
+                gameScreen.getMoveOverlay().setValidMoves(movementHandling.findValidMoves(remainingMoves), currentPlayer);
             }
         } else {
-            gameScreen.getInfoOutput().append("This path isn't valid.\nYou have " + remainingMoves + " moves remaining.\n");
+            gameScreen.getInfoOutput().append("You have " + remainingMoves + " moves remaining.\n");
         }
 
         if (remainingMoves == 0 && moveEnabled) {
@@ -113,7 +120,6 @@ public class AnimateToken extends SwingWorker<Integer, String> {
 
     @Override
     protected void process(List<String> chunks) {
-        gameScreen.repaint();
         gameScreen.reDrawFrame();
     }
 
