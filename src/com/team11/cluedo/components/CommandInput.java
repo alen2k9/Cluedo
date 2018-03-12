@@ -189,6 +189,9 @@ public class CommandInput {
 
                     case "back":
                         break;
+                    case "time":
+                        movementHandling.getAvgTime();
+                        break;
 
                     default:
                         infoOutput.append("Unknown command\nUse command 'help' for instructions.\n");

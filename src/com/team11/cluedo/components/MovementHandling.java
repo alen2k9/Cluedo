@@ -19,6 +19,8 @@ public class MovementHandling {
     private GameScreen gameScreen;
     private Player currentPlayer;
 
+    private ArrayList<Long> timings = new ArrayList<>();
+
     public MovementHandling(GameScreen gameScreen, Player currentPlayer, CommandInput commandInput) {
         this.gameScreen = gameScreen;
         this.currentPlayer = currentPlayer;
@@ -64,7 +66,13 @@ public class MovementHandling {
         Point startPoint;
         Point endPoint;
 
+        long startTime = 0;
+        long endTime;
+
         if (!currentPlayer.getSuspectToken().isInRoom()) {
+
+            startTime = System.currentTimeMillis();
+
             startPoint = new Point((int) currentPlayer.getSuspectToken().getBoardLocation().getX() - remainingMoves,
                     (int) currentPlayer.getSuspectToken().getBoardLocation().getY() - remainingMoves);
 
@@ -123,7 +131,24 @@ public class MovementHandling {
         }
 
         validMoves.removeAll(found);
+
+        endTime = System.currentTimeMillis();
+
+        long time = endTime - startTime;
+        timings.add(time);
+
+
         return validMoves;
+    }
+
+    public void getAvgTime(){
+        long sum = 0;
+        for (Long time : timings){
+            sum += time;
+        }
+
+        sum /= timings.size();
+        System.out.println("Average time for size " + timings.size() + " " + sum);
     }
 
     public void mouseClickMove(Point target, int remainingMoves, boolean moveEnabled){

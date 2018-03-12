@@ -10,13 +10,15 @@ package com.team11.cluedo.pathfinder;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.PriorityQueue;
 
 public class AStarFinder implements PathFinder {
     // The set of nodes that have been searched through
-    private ArrayList closed = new ArrayList();
+    private HashSet closed = new HashSet();
 
     // The set of nodes that we do not yet consider fully searched
-    private SortedList open = new SortedList();
+    private PriorityQueue open = new PriorityQueue();
 
     //The Board being searched
     private TileBasedMap map;
@@ -157,10 +159,10 @@ public class AStarFinder implements PathFinder {
 
 
     private Node getFirstInOpen() {
-        return (Node) open.first();
+        return (Node) open.peek();
     }
 
-
+    @SuppressWarnings("unchecked")
     private void addToOpen(Node node) {
         open.add(node);
     }
@@ -203,37 +205,6 @@ public class AStarFinder implements PathFinder {
 
     private float getHeuristicCost(Mover mover, int x, int y, int tx, int ty) {
         return heuristic.getCost(map, mover, x, y, tx, ty);
-    }
-
-    private class SortedList {
-        // The list of elements
-        private ArrayList list = new ArrayList();
-
-        public Object first() {
-            return list.get(0);
-        }
-
-        public void clear() {
-            list.clear();
-        }
-
-        @SuppressWarnings("unchecked")
-        public void add(Object o) {
-            list.add(o);
-            Collections.sort(list);
-        }
-
-        public void remove(Object o) {
-            list.remove(o);
-        }
-
-        public int size() {
-            return list.size();
-        }
-
-        public boolean contains(Object o) {
-            return list.contains(o);
-        }
     }
 
     //Class to represent a node on the map
