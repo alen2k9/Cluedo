@@ -43,7 +43,7 @@ public class AnimateToken extends SwingWorker<Integer, String> {
     @Override
     protected Integer doInBackground() throws Exception {
         Player currentPlayer = movementHandling.getCurrentPlayer();
-
+        process(new ArrayList<>());
         int steps = moves.size();
         if(remainingMoves > 0){
             if(currentPlayer.getSuspectToken().checkMove(gameScreen.getGameBoard(), moves)){
@@ -55,7 +55,7 @@ public class AnimateToken extends SwingWorker<Integer, String> {
                     token.move(gameScreen.getGameBoard(), direction);
 
                     while (drawX != (int) (token.getBoardLocation().getX() * resolutionScalar) || drawY != (int) (token.getBoardLocation().getY() * resolutionScalar)) {
-                        int distance = 3;
+                        int distance = 2;
                         if (drawX < token.getBoardLocation().getX() * resolutionScalar)
                             drawX += distance;
                         if (drawX > token.getBoardLocation().getX() * resolutionScalar)
@@ -68,9 +68,7 @@ public class AnimateToken extends SwingWorker<Integer, String> {
                         token.setDrawX(drawX);
                         token.setDrawY(drawY);
                         try {
-                            Thread.sleep(2);
-                            List<String> chunks = new ArrayList<>();
-                            process(chunks);
+                            Thread.sleep(5);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
