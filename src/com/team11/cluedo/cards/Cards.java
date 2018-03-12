@@ -120,6 +120,12 @@ public class Cards {
         while(!roomCards.isEmpty()) {
             publicEnvelope.add(roomCards.remove(0));
         }
+
+        for (int i = 0; i < gamePlayers.getPlayerCount(); i++){
+            for (Card card : publicEnvelope){
+                gamePlayers.getPlayer(i).getPlayerNotes().paintCell(0, card.getName());
+            }
+        }
     }
 
     public MurderEnvelope getMurderEnvelope() {

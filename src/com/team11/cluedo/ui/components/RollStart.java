@@ -90,6 +90,7 @@ public class RollStart extends SwingWorker<Integer, String> {
         infoOutput.append(playerName + " rolled a " + rolledNumbers.get(highRollers.get(0)) + ", the highest\nnumber!\n\n");
         commandInput.setCurrentPlayerID(currentPlayerID);
         commandInput.playerTurn();
+        gameScreen.getCommandInput().requestFocus();
         return null;
     }
 

@@ -8,8 +8,6 @@
 
 package com.team11.cluedo.pathfinder;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.PriorityQueue;
 
@@ -29,7 +27,7 @@ public class AStarFinder implements PathFinder {
     // The complete set of nodes across the map
     private Node[][] nodes;
 
-    // True if we allow diaganol movement
+    // True if we allow diagonal movement
     private boolean allowDiagMovement;
 
     // The heuristic we're applying to determine which nodes to search first
@@ -40,7 +38,7 @@ public class AStarFinder implements PathFinder {
     }
 
     public AStarFinder(TileBasedMap map, int maxSearchDistance,
-                           boolean allowDiagMovement, AStarHeuristic heuristic) {
+                       boolean allowDiagMovement, AStarHeuristic heuristic) {
         this.heuristic = heuristic;
         this.map = map;
         this.maxSearchDistance = maxSearchDistance;
@@ -54,6 +52,7 @@ public class AStarFinder implements PathFinder {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public Path findPath(Mover mover, int sx, int sy, int tx, int ty) {
         // Check first to see if the destination is blocked
         if (map.blocked(mover, tx, ty)) {
@@ -124,8 +123,6 @@ public class AStarFinder implements PathFinder {
                             return null;
                         }
 
-
-
                         //Check to see if the neighbour has been processed or discarded before now
                         if (!inOpenList(neighbour) && !(inClosedList(neighbour))) {
                             neighbour.cost = nextStepCost;
@@ -155,8 +152,6 @@ public class AStarFinder implements PathFinder {
         //Return the valid path found
         return path;
     }
-
-
 
     private Node getFirstInOpen() {
         return (Node) open.peek();
@@ -227,7 +222,7 @@ public class AStarFinder implements PathFinder {
             this.y = y;
         }
 
-        public int setParent(Node parent) {
+        private int setParent(Node parent) {
             depth = parent.depth + 1;
             this.parent = parent;
 
