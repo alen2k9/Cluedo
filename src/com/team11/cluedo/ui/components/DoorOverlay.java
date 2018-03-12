@@ -15,9 +15,10 @@ import com.team11.cluedo.ui.Resolution;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class DoorOverlay extends JComponent{
-    private ArrayList<OverlayTile> validExits = new ArrayList<>();
+    private HashSet<OverlayTile> validExits;
 
     private Player currentPlayer;
     private Resolution resolution;
@@ -25,18 +26,19 @@ public class DoorOverlay extends JComponent{
     private DoorData doorData = new DoorData();
 
     public DoorOverlay(Player currentPlayer, Resolution resolution){
-        this.validExits = new ArrayList<>();
+        this.validExits = new HashSet<>();
         this.currentPlayer = currentPlayer;
         this.resolution = resolution;
     }
 
-
-
-    public void setExits(ArrayList<OverlayTile> exits,Player currentPlayer){
+    public void setExits(HashSet<OverlayTile> exits, Player currentPlayer){
         this.validExits = exits;
         this.currentPlayer = currentPlayer;
     }
 
+    public HashSet<OverlayTile> getValidExits() {
+        return validExits;
+    }
 
     @Override
     public void paintComponent(Graphics g){

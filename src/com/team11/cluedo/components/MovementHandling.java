@@ -13,6 +13,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 
 public class MovementHandling {
     private CommandInput commandInput;
@@ -28,8 +29,8 @@ public class MovementHandling {
     }
 
     public void playerMovement(ArrayList<Direction> moves, int remainingMoves, boolean moveEnabled) {
-        gameScreen.getMoveOverlay().setValidMoves(new ArrayList<>(), currentPlayer);
-        gameScreen.getDoorOverlay().setExits(new ArrayList<>(), currentPlayer);
+        gameScreen.getMoveOverlay().setValidMoves(new HashSet<>(), currentPlayer);
+        gameScreen.getDoorOverlay().setExits(new HashSet<>(), currentPlayer);
         AnimateToken animateToken = new AnimateToken(gameScreen, remainingMoves, moveEnabled, commandInput,this);
         animateToken.setMoves(moves);
         animateToken.setToken(currentPlayer.getSuspectToken());
@@ -61,8 +62,8 @@ public class MovementHandling {
         commandInput.setRemainingMoves(remainingMoves);
     }
 
-    public ArrayList<OverlayTile> findValidMoves(int remainingMoves) {
-        ArrayList<OverlayTile> validMoves = new ArrayList<>();
+    public HashSet<OverlayTile> findValidMoves(int remainingMoves) {
+        HashSet<OverlayTile> validMoves = new HashSet<>();
 
         Point startPoint;
         Point endPoint;
@@ -108,6 +109,7 @@ public class MovementHandling {
             this.gameScreen.getGameBoard().clearVisited();
             AStarFinder finder = new AStarFinder(this.gameScreen.getGameBoard(), 12, false);
             Path path;
+
             //Have start and exit points now so search through and add the valid points to the return list
             for (int i = (int) startPoint.getY(); i <= (int) endPoint.getY(); i++) {
                 for (int j = (int) startPoint.getX(); j <= (int) endPoint.getX(); j++) {
@@ -124,14 +126,15 @@ public class MovementHandling {
             }
         }
 
-        ArrayList<OverlayTile> found = new ArrayList<>();
+
+        HashSet<OverlayTile> invalidTiles = new HashSet<>();
         for (OverlayTile ov : validMoves){
             if (this.gameScreen.getGameBoard().getBoardPos((int)ov.getLocation().getY(), (int)ov.getLocation().getX()).isOccupied()){
-                found.add(ov);
+                invalidTiles.add(ov);
             }
         }
 
-        validMoves.removeAll(found);
+        validMoves.removeAll(invalidTiles);
 
         endTime = System.currentTimeMillis();
 
@@ -171,7 +174,7 @@ public class MovementHandling {
 
     public boolean disableMove() {
         gameScreen.getInfoOutput().append("Moves finished. Enter another command.\n");
-        gameScreen.getMoveOverlay().setValidMoves(new ArrayList<>(), currentPlayer);
+        gameScreen.getMoveOverlay().setValidMoves(new HashSet<>(), currentPlayer);
         return false;
     }
 
