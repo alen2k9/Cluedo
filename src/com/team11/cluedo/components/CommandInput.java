@@ -512,6 +512,7 @@ public class CommandInput {
         currentPlayer = gameScreen.getGamePlayers().getPlayer(currentPlayerID);
         playerName = currentPlayer.getPlayerName();
         infoOutput.append(playerName + " rolled the highest number!\n\n");
+        gameScreen.getCommandInput().requestFocus();
     }
 
     private class ChoiceOption {
