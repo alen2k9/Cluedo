@@ -4,9 +4,10 @@ import com.team11.cluedo.board.Board;
 import com.team11.cluedo.ui.Resolution;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 
-    public class TokenComponent extends JComponent {
+    public class TokenComponent extends JLabel {
     protected int tokenID;
     protected int currentRoom;
     protected String tokenName;
@@ -17,6 +18,9 @@ import java.awt.*;
     private int resolutionScalar;
 
     public TokenComponent(int tokenID, String tokenName, Point tokenLocation, Image tokenImage, Resolution resolution){
+        super(new ImageIcon(tokenImage.getScaledInstance((int)(resolution.getScalePercentage()* Board.TILE_SIZE),
+                (int)(resolution.getScalePercentage()* Board.TILE_SIZE),0)));
+
         this.tokenID = tokenID;
         this.tokenName = tokenName;
         this.tokenLocation = tokenLocation;
@@ -25,26 +29,30 @@ import java.awt.*;
         this.currentRoom = -1;
         this.drawX = (int)(tokenLocation.getX() * resolutionScalar);
         this.drawY = (int)(tokenLocation.getY() * resolutionScalar);
-        setBounds();
+        //super.setBorder(new LineBorder(Color.MAGENTA, 3));
+        setBounds(drawX, drawY, resolutionScalar, resolutionScalar);
+        setLocation();
     }
 
     public void setDrawX(int drawX) {
         this.drawX = drawX;
-        setBounds();
+        setLocation();
     }
 
     public void setDrawY(int drawY) {
         this.drawY = drawY;
-        setBounds();
+        setLocation();
     }
 
-    @Override
-    public void setLocation(Point tokenLocation){
+    public void setBoardLocation(Point tokenLocation){
         this.tokenLocation = tokenLocation;
+        System.out.println(tokenLocation);
+        this.drawX = (int)(tokenLocation.getX() * resolutionScalar);
+        this.drawY = (int)(tokenLocation.getY() * resolutionScalar);
+        setLocation();
     }
 
-    @Override
-    public Point getLocation(){
+    public Point getBoardLocation(){
         return this.tokenLocation;
     }
 
@@ -56,23 +64,16 @@ import java.awt.*;
         return currentRoom;
     }
 
-    @Override
-    public int getX(){
+    public int getBoardX(){
         return (int)tokenLocation.getX();
     }
 
-    @Override
-    public int getY(){
+    public int getBoardY(){
         return (int)tokenLocation.getY();
     }
 
-    private void setBounds() {
-        setBounds(drawX, drawY, resolutionScalar, resolutionScalar);
-    }
-
-    @Override
-    public void paintComponent(Graphics g){
-        Graphics2D g2 = (Graphics2D) g;
-        g2.drawImage(tokenImage, drawX, drawY, resolutionScalar, resolutionScalar,null);
+    private void setLocation() {
+        super.setLocation(drawX,drawY);
+        System.out.println("location: " + getLocation());
     }
 }

@@ -26,7 +26,7 @@ public class Suspect extends TokenComponent implements Mover {
 
     public boolean checkMove(Board gameBoard, ArrayList<Direction> moveList) {
         boolean isValid = true, doOnce = true, hasDoor = false;
-        Point testerPoint = new Point(getLocation()), lastLoc;
+        Point testerPoint = new Point(getBoardLocation()), lastLoc;
         ArrayList<Direction> tmpList = new ArrayList<>(moveList);
         HashSet<String> validitySet = new HashSet<>();
 
@@ -120,7 +120,7 @@ public class Suspect extends TokenComponent implements Mover {
     }
 
     public void move(Board gameBoard, Direction direction) {
-        gameBoard.getBoardPos((int)getLocation().getY(), (int)getLocation().getX()).setOccupied(false);
+        gameBoard.getBoardPos((int) getBoardLocation().getY(), (int) getBoardLocation().getX()).setOccupied(false);
         switch (direction){
             case NORTH:
                 moveUp();
@@ -135,45 +135,45 @@ public class Suspect extends TokenComponent implements Mover {
                 moveLeft();
                 break;
         }
-        if (gameBoard.getBoardPos((int)getLocation().getY(), (int)getLocation().getX()).getTileType() == TileType.DOOR)
+        if (gameBoard.getBoardPos((int) getBoardLocation().getY(), (int) getBoardLocation().getX()).getTileType() == TileType.DOOR)
             moveToRoom(gameBoard);
 
-        gameBoard.getBoardPos((int)getLocation().getY(), (int)getLocation().getX()).setOccupied(true);
+        gameBoard.getBoardPos((int) getBoardLocation().getY(), (int) getBoardLocation().getX()).setOccupied(true);
     }
 
     //Method to move up
     private void moveUp(){
-        setLocation(new Point((int)getLocation().getX(), (int)getLocation().getY()-1));
+        setBoardLocation(new Point((int) getBoardLocation().getX(), (int) getBoardLocation().getY()-1));
     }
     //Method to move down
     private void moveDown(){
-        setLocation(new Point((int)getLocation().getX(), (int)getLocation().getY()+1));
+        setBoardLocation(new Point((int) getBoardLocation().getX(), (int) getBoardLocation().getY()+1));
     }
     //Method to move right
     private void moveRight(){
-        setLocation(new Point((int)getLocation().getX()+1, (int)getLocation().getY()));
+        setBoardLocation(new Point((int) getBoardLocation().getX()+1, (int) getBoardLocation().getY()));
     }
     //Method to move left
     private void moveLeft(){
-        setLocation(new Point((int) getLocation().getX() - 1, (int) getLocation().getY()));
+        setBoardLocation(new Point((int) getBoardLocation().getX() - 1, (int) getBoardLocation().getY()));
     }
 
     //Method to move a player into a room when they land on a door tile
     private void moveToRoom(Board gameBoard){
-        int currRoom = findParentRoom(gameBoard.getBoardPos((int)getLocation().getY(), (int)getLocation().getX()).getLocation(), gameBoard);
+        int currRoom = findParentRoom(gameBoard.getBoardPos((int) getBoardLocation().getY(), (int) getBoardLocation().getX()).getLocation(), gameBoard);
         Point nextPoint = gameBoard.getRoom(currRoom).getRandomPoint(gameBoard.getRoom(currRoom).getPlayerPositions());
-        setLocation(nextPoint);
+        setBoardLocation(nextPoint);
         this.setCurrentRoom(currRoom);
         gameBoard.getRoom(currRoom).getPlayerPositions().remove(nextPoint);
     }
 
     //Method to move the player out of the room
     public int moveOutOfRoom(Board gameBoard, int exitNum){
-        Point currPoint = new Point(getLocation());
+        Point currPoint = new Point(getBoardLocation());
         Point nextPoint = new Point(gameBoard.getRoom(this.getCurrentRoom()).getExitPoints().get(exitNum));
         if (!(gameBoard.getBoardPos((int)nextPoint.getY(), (int)nextPoint.getX()).isOccupied())) {
             gameBoard.getRoom(this.getCurrentRoom()).getPlayerPositions().add(currPoint);
-            setLocation(nextPoint);
+            setBoardLocation(nextPoint);
             this.setCurrentRoom(-1);
             return 1;
         } else {
@@ -182,7 +182,7 @@ public class Suspect extends TokenComponent implements Mover {
     }
 
     public boolean useSecretPassageWay(Board gameBoard){
-        Point currentPoint = new Point(getLocation());
+        Point currentPoint = new Point(getBoardLocation());
         //See if the room has as secret passage way
         if (gameBoard.getRoom(this.getCurrentRoom()).hasSecretPassage()){
             //Add the current position back to the spawn list
@@ -201,7 +201,7 @@ public class Suspect extends TokenComponent implements Mover {
                     this.setCurrentRoom(2);
                     break;
             }
-            setLocation(gameBoard.getRoom(this.getCurrentRoom()).getRandomPoint(gameBoard.getRoom(this.getCurrentRoom()).getPlayerPositions()));
+            setBoardLocation(gameBoard.getRoom(this.getCurrentRoom()).getRandomPoint(gameBoard.getRoom(this.getCurrentRoom()).getPlayerPositions()));
             return true;
         } else{
             return false;

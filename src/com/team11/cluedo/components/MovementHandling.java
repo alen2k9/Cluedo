@@ -83,8 +83,8 @@ public class MovementHandling {
         Point endPoint;
 
         if (!currentPlayer.getSuspectToken().isInRoom()) {
-            startPoint = new Point((int) currentPlayer.getSuspectToken().getLocation().getX() - remainingMoves,
-                    (int) currentPlayer.getSuspectToken().getLocation().getY() - remainingMoves);
+            startPoint = new Point((int) currentPlayer.getSuspectToken().getBoardLocation().getX() - remainingMoves,
+                    (int) currentPlayer.getSuspectToken().getBoardLocation().getY() - remainingMoves);
 
             if (startPoint.getX() < 1) {
                 startPoint.setLocation(1, startPoint.getY());
@@ -98,8 +98,8 @@ public class MovementHandling {
                 startPoint.setLocation(startPoint.getX(), 25);
             }
 
-            endPoint = new Point((int) currentPlayer.getSuspectToken().getLocation().getX() + remainingMoves,
-                    (int) currentPlayer.getSuspectToken().getLocation().getY() + remainingMoves);
+            endPoint = new Point((int) currentPlayer.getSuspectToken().getBoardLocation().getX() + remainingMoves,
+                    (int) currentPlayer.getSuspectToken().getBoardLocation().getY() + remainingMoves);
 
             if (endPoint.getX() < 1) {
                 endPoint.setLocation(1, endPoint.getY());
@@ -122,8 +122,8 @@ public class MovementHandling {
                 for (int j = (int) startPoint.getX(); j <= (int) endPoint.getX(); j++) {
                     tmpPoint = new Point(j, i);
                     path = finder.findPath(currentPlayer.getSuspectToken(),
-                            (int) currentPlayer.getSuspectToken().getLocation().getY(),
-                            (int) currentPlayer.getSuspectToken().getLocation().getX(),
+                            (int) currentPlayer.getSuspectToken().getBoardLocation().getY(),
+                            (int) currentPlayer.getSuspectToken().getBoardLocation().getX(),
                             (int)tmpPoint.getY(), (int)tmpPoint.getX());
 
                     if (path != null && path.getLength() <= remainingMoves){
@@ -147,7 +147,7 @@ public class MovementHandling {
     public void mouseClickMove(Point target, int remainingMoves, boolean moveEnabled){
         Suspect suspectToken = currentPlayer.getSuspectToken();
         AStarFinder finder = new AStarFinder(gameScreen.getGameBoard(), 12, false);
-        Path path = finder.findPath(suspectToken, (int)suspectToken.getLocation().getY(), (int)suspectToken.getLocation().getX(), (int)target.getY(), (int)target.getX());
+        Path path = finder.findPath(suspectToken, (int)suspectToken.getBoardLocation().getY(), (int)suspectToken.getBoardLocation().getX(), (int)target.getY(), (int)target.getX());
         ArrayList<Direction> moveList = pathToDirections(path);
         playerMovement(moveList, remainingMoves, moveEnabled);
     }
@@ -171,7 +171,7 @@ public class MovementHandling {
         ArrayList<Direction> directions = new ArrayList<>();
         Suspect currentPlayer = this.currentPlayer.getSuspectToken();
 
-        Point previousPoint = new Point((int)currentPlayer.getLocation().getX(), (int)currentPlayer.getLocation().getY());
+        Point previousPoint = new Point((int)currentPlayer.getBoardLocation().getX(), (int)currentPlayer.getBoardLocation().getY());
 
         Point nextPoint = new Point(path.getStep(0).getY(), path.getStep(0).getX());
 
