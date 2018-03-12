@@ -24,7 +24,10 @@ public class AnimateToken extends SwingWorker<Integer, String> {
     private MovementHandling movementHandling;
     private CommandInput commandInput;
     private Suspect token;
-    private int drawX, drawY, resolutionScalar;
+
+    private final int distance = 2, delay = 5;
+
+    private int resolutionScalar;
 
     private ArrayList<Direction> moves;
     private int remainingMoves;
@@ -50,12 +53,11 @@ public class AnimateToken extends SwingWorker<Integer, String> {
                 while (!moves.isEmpty()) {
                     AnimateToken.failIfInterrupted();
                     Direction direction = moves.remove(0);
-                    drawX = (int) (token.getBoardLocation().getX() * resolutionScalar);
-                    drawY = (int) (token.getBoardLocation().getY() * resolutionScalar);
+                    int drawX = (int) (token.getBoardLocation().getX() * resolutionScalar);
+                    int drawY = (int) (token.getBoardLocation().getY() * resolutionScalar);
                     token.move(gameScreen.getGameBoard(), direction);
 
                     while (drawX != (int) (token.getBoardLocation().getX() * resolutionScalar) || drawY != (int) (token.getBoardLocation().getY() * resolutionScalar)) {
-                        int distance = 2;
                         if (drawX < token.getBoardLocation().getX() * resolutionScalar)
                             drawX += distance;
                         if (drawX > token.getBoardLocation().getX() * resolutionScalar)
@@ -68,7 +70,7 @@ public class AnimateToken extends SwingWorker<Integer, String> {
                         token.setDrawX(drawX);
                         token.setDrawY(drawY);
                         try {
-                            Thread.sleep(5);
+                            Thread.sleep(delay);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
