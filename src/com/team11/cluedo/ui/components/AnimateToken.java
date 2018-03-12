@@ -71,6 +71,7 @@ public class AnimateToken extends SwingWorker<Integer, String> {
                         token.setDrawY(drawY);
                         try {
                             Thread.sleep(delay);
+                            process(new ArrayList<>());
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -113,6 +114,7 @@ public class AnimateToken extends SwingWorker<Integer, String> {
     @Override
     protected void process(List<String> chunks) {
         gameScreen.repaint();
+        gameScreen.reDrawFrame();
     }
 
     public void setToken(Suspect token) {
