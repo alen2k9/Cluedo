@@ -28,20 +28,6 @@ public class Suspects extends JComponent implements Iterable<Suspect>, Iterator<
     public Suspects(Resolution resolution) {
         setLayout(null);
         this.setupSuspects(resolution);
-
-        /*
-        ImageIcon board = new ImageIcon(new Assets().getBoardImage());
-        Dimension imageSize = new Dimension((int)(board.getIconWidth()*resolution.getScalePercentage()), (int)(board.getIconHeight()*resolution.getScalePercentage()));
-        super.setPreferredSize(imageSize);
-        */
-        //super.setOpaque(false);
-        printLocation();
-    }
-
-    private void printLocation(){
-        for (int i = 0 ; i < getComponentCount() ; i++) {
-            System.out.println(super.getComponent(i).getLocation());
-        }
     }
 
     private void setupSuspects(Resolution resolution) {
@@ -66,14 +52,6 @@ public class Suspects extends JComponent implements Iterable<Suspect>, Iterator<
 
     public int getNumSuspects() {
         return numSuspects;
-    }
-
-    public void updateLocation(int currentSuspect) {
-        for(Suspect suspect : suspects) {
-            if (suspect.getSuspectID() == currentSuspect) {
-
-            }
-        }
     }
 
     public Suspect getSuspect(int index) {
@@ -110,7 +88,6 @@ public class Suspects extends JComponent implements Iterable<Suspect>, Iterator<
         if (draw == 1) {
             gr.setClip(drawX, drawY, drawW, drawH);
             gr.setColor(super.getBackground());
-            //gr.drawOval(drawX, drawY, (int)(drawW*1.5), (int)(drawH*1.5));
             super.paintComponents(gr);
         } else {
             super.paintComponents(gr);

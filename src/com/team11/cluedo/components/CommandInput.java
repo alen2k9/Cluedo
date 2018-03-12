@@ -110,7 +110,7 @@ public class CommandInput {
                         this.gameScreen.getDoorOverlay().setExits(new ArrayList<>(), this.currentPlayer);
                         break;
                     default:
-                        infoOutput.append("Unknown entry.\n +" +
+                        infoOutput.append("Unknown entry.\n" +
                                 "Enter 'U', 'R', 'D', or 'L' to move.\n" +
                                 "Click on a highlighted square to move.\n" +
                                 "Use the arrow keys to move.\n" +
@@ -125,16 +125,20 @@ public class CommandInput {
                         for (int i = 1; i < inputs.length; i++) {
                             moveParameters.append(inputs[i]);
                         }
-                        if (this.remainingMoves <= 0) {
-                            infoOutput.append("You have 0 moves remaining.\n");
-                        } else if (inputs.length == 1) {
-                            moveEnabled = movementHandling.enableMove(infoOutput);
-                        }  else if (this.remainingMoves < moveParameters.toString().length()) {
-                            infoOutput.append("You only have " + remainingMoves + " moves remaining.\n" +
-                                    "You entered " + moveParameters.toString().length() + " parameters.\n");
+                        if (!currentPlayer.getSuspectToken().isInRoom()) {
+                            if (this.remainingMoves <= 0) {
+                                infoOutput.append("You have 0 moves remaining.\n");
+                            } else if (inputs.length == 1) {
+                                moveEnabled = movementHandling.enableMove(infoOutput);
+                            } else if (this.remainingMoves < moveParameters.toString().length()) {
+                                infoOutput.append("You only have " + remainingMoves + " moves remaining.\n" +
+                                        "You entered " + moveParameters.toString().length() + " parameters.\n");
+                            } else {
+                                movementHandling.playerMovement(movementHandling.inputToDirection(moveParameters.toString(), remainingMoves), remainingMoves, moveEnabled);
+                                //this.gameScreen.getMoveOverlay().setValidMoves(movementHandling.findValidMoves(remainingMoves), currentPlayer);
+                            }
                         } else {
-                            movementHandling.playerMovement(movementHandling.inputToDirection(moveParameters.toString(), remainingMoves),remainingMoves,moveEnabled);
-                            this.gameScreen.getMoveOverlay().setValidMoves(movementHandling.findValidMoves(remainingMoves), currentPlayer);
+                            infoOutput.append("You can't move when in a room!\nYou must exit first.\n");
                         }
                         break;
 
@@ -153,8 +157,6 @@ public class CommandInput {
 
                     case "done":
                         nextPlayer();
-                        this.gameScreen.getMoveOverlay().setValidMoves(new ArrayList<>(), this.currentPlayer);
-                        this.gameScreen.getDoorOverlay().setExits(new ArrayList<>(), this.currentPlayer);
                         break;
 
                     case "quit":
@@ -205,13 +207,13 @@ public class CommandInput {
             {
                 if (moveEnabled) {
                     if (key.getKeyCode() == KeyEvent.VK_DOWN) {
-                        movementHandling.playerMovement(new ArrayList<>(Collections.singletonList(Direction.SOUTH)), remainingMoves, moveEnabled);
+                        movementHandling.playerMovement(Direction.SOUTH, remainingMoves, moveEnabled);
                     } else if (key.getKeyCode() == KeyEvent.VK_UP) {
-                        movementHandling.playerMovement(new ArrayList<>(Collections.singletonList(Direction.NORTH)), remainingMoves, moveEnabled);
+                        movementHandling.playerMovement(Direction.NORTH, remainingMoves, moveEnabled);
                     } else if (key.getKeyCode() == KeyEvent.VK_LEFT) {
-                        movementHandling.playerMovement(new ArrayList<>(Collections.singletonList(Direction.WEST)), remainingMoves, moveEnabled);
+                        movementHandling.playerMovement(Direction.WEST, remainingMoves, moveEnabled);
                     } else if (key.getKeyCode() == KeyEvent.VK_RIGHT) {
-                        movementHandling.playerMovement(new ArrayList<>(Collections.singletonList(Direction.EAST)), remainingMoves, moveEnabled);
+                        movementHandling.playerMovement(Direction.EAST, remainingMoves, moveEnabled);
                     }
                     gameScreen.reDrawFrame();
                 }
@@ -220,6 +222,9 @@ public class CommandInput {
     }
 
     private void nextPlayer() {
+        this.gameScreen.getMoveOverlay().setValidMoves(new ArrayList<>(), this.currentPlayer);
+        this.gameScreen.getDoorOverlay().setExits(new ArrayList<>(), this.currentPlayer);
+
         this.canRoll = true;
         this.dice = 0; this.remainingMoves = 0;
         this.currentPlayerID++;
@@ -420,8 +425,6 @@ public class CommandInput {
                         if (moveEnabled) {
                             if (gameScreen.getBoardPanel().checkPoint((int)boardPos.getLocation().getY(), (int)boardPos.getLocation().getX())) {
                                 movementHandling.mouseClickMove(new Point((int)boardPos.getLocation().getY(), (int)boardPos.getLocation().getX()), remainingMoves, moveEnabled);
-                                gameScreen.getMoveOverlay().setValidMoves(movementHandling.findValidMoves(remainingMoves), currentPlayer);
-                                gameScreen.reDrawFrame();
                             }
                         }
                     }

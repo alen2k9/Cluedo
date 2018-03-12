@@ -25,7 +25,10 @@ import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
+import javax.swing.text.DefaultCaret;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.*;
 import java.util.ArrayList;
 
@@ -53,9 +56,6 @@ public class GameScreen extends JFrame implements Screen {
 
     private Resolution resolution;
     private Dimension currSize;
-
-    private int drawRegion;
-    private int drawX, drawY, drawW, drawH;
 
     public GameScreen(Board gameBoard, Suspects gameSuspects, Weapons gameWeapons, Players gamePlayers, Assets gameAssets, Resolution resolution) throws IOException{
         this.gameBoard = gameBoard;
@@ -205,6 +205,8 @@ public class GameScreen extends JFrame implements Screen {
         infoTabs.setBackground(Color.BLACK);
         infoTabs.setForeground(Color.WHITE);
         infoOutput = new JTextArea(22, 25);
+        DefaultCaret caret = (DefaultCaret)infoOutput.getCaret();
+        caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
         infoOutput.setFont(f);
         infoOutput.setEditable(false); infoOutput.setLineWrap(true);
         infoOutput.setBackground(Color.DARK_GRAY);
@@ -305,32 +307,6 @@ public class GameScreen extends JFrame implements Screen {
         return infoTabs;
     }
 
-    //////////////////////////////////////////////////////////
-
-    public void setDrawBounds(int x, int y, int w, int h) {
-        drawX = x;
-        drawY = y;
-        drawW = w;
-        drawH = h;
-    }
-
-    public void setDrawRegion(int drawRegion) {
-        this.drawRegion = drawRegion;
-    }
-
-    @Override
-    public void paintComponents(Graphics g) {
-        if (drawRegion == 1) {
-            g.setClip(drawX - 5, drawY - 5, drawW + 10, drawH + 10);
-            super.paintComponents(g);
-        } else {
-            super.paintComponents(g);
-        }
-
-    }
-
-    //////////////////////////////////////////////////////////
-
     public class BoardComponent extends JComponent{
         @Override
         public void paintComponent(Graphics g) {
@@ -394,30 +370,6 @@ public class GameScreen extends JFrame implements Screen {
             return false;
         }
 
-        public void setDrawBounds(int x, int y, int w, int h) {
-            drawX = x;
-            drawY = y;
-            drawW = w;
-            drawH = h;
-        }
 
-        public void setPaintParam(int param) {
-            this.paintParam = param;
-        }
-
-        @Override
-        public void paintComponent(Graphics gr)
-        {
-            if (paintParam == 0) {
-                boardComponent.paintComponent(gr);
-                gameSuspects.paintComponents(gr);
-                gameWeapons.paintComponents(gr);
-            }
-            if (paintParam == 1) {
-                gr.setClip(drawX, drawY, drawW, drawH);
-                boardComponent.paintComponent(gr);
-                //gameSuspects.paintComponents(gr);
-            }
-        }
     }
 }

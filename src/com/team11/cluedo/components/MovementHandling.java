@@ -12,69 +12,51 @@ import com.team11.cluedo.ui.components.OverlayTile;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class MovementHandling {
     private CommandInput commandInput;
     private GameScreen gameScreen;
-    private AnimateToken animateToken;
     private Player currentPlayer;
 
     public MovementHandling(GameScreen gameScreen, Player currentPlayer, CommandInput commandInput) {
         this.gameScreen = gameScreen;
         this.currentPlayer = currentPlayer;
         this.commandInput = commandInput;
-        animateToken = new AnimateToken(gameScreen);
     }
 
     public void playerMovement(ArrayList<Direction> moves, int remainingMoves, boolean moveEnabled) {
-        int steps = moves.size();
-        if(remainingMoves > 0){
-            if(currentPlayer.getSuspectToken().checkMove(gameScreen.getGameBoard(), moves)){
-                move(moves);
-                remainingMoves -= steps;
-                if (steps == 1) {
-                    CommandProcessing.printRemainingMoves(remainingMoves, gameScreen.getInfoOutput());
-                } else {
-                    gameScreen.getInfoOutput().append("You have moved " + steps + " spaces.\n");
-                    CommandProcessing.printRemainingMoves(remainingMoves, gameScreen.getInfoOutput());
-                }
+        gameScreen.getMoveOverlay().setValidMoves(new ArrayList<>(), currentPlayer);
+        gameScreen.getDoorOverlay().setExits(new ArrayList<>(), currentPlayer);
+        AnimateToken animateToken = new AnimateToken(gameScreen, remainingMoves, moveEnabled, commandInput,this);
+        animateToken.setMoves(moves);
+        animateToken.setToken(currentPlayer.getSuspectToken());
+        animateToken.execute();
+    }
 
-                if (currentPlayer.getSuspectToken().isInRoom()) {
-                    String roomName = currentPlayer.getSuspectToken().getCurrentRoomName();
-                    remainingMoves = 0;
-                    gameScreen.getInfoOutput().append(currentPlayer.getPlayerName() + " is now in the " + roomName + "\n");
-                    CommandProcessing.printRemainingMoves(remainingMoves, gameScreen.getInfoOutput());
-                }
-                if (commandInput.isMoveEnabled()) {
-                    gameScreen.getMoveOverlay().setValidMoves(findValidMoves(remainingMoves), currentPlayer);
-                }
+    public void playerMovement(Direction move, int remainingMoves, boolean moveEnabled) {
+        if(currentPlayer.getSuspectToken().checkMove(gameScreen.getGameBoard(), new ArrayList<>(Collections.singletonList(move)))) {
+            currentPlayer.getSuspectToken().move(gameScreen.getGameBoard(), move);
+            if (currentPlayer.getSuspectToken().isInRoom()) {
+                String roomName = currentPlayer.getSuspectToken().getCurrentRoomName();
+                remainingMoves = 0;
+                gameScreen.getInfoOutput().append(currentPlayer.getPlayerName() + " is now in the " + roomName + "\n");
+                CommandProcessing.printRemainingMoves(remainingMoves, gameScreen.getInfoOutput());
             } else {
-                gameScreen.getInfoOutput().append("This path isn't valid.\nYou have " + remainingMoves + " moves remaining.\n");
+                CommandProcessing.printRemainingMoves(--remainingMoves, gameScreen.getInfoOutput());
+            }
+            if (commandInput.isMoveEnabled()) {
+                    gameScreen.getMoveOverlay().setValidMoves(findValidMoves(remainingMoves), currentPlayer);
             }
         } else {
-            gameScreen.getInfoOutput().append("This path isn't valid.\nYou have " + remainingMoves + " moves remaining.\n");
+        gameScreen.getInfoOutput().append("This path isn't valid.\nYou have " + remainingMoves + " moves remaining.\n");
         }
 
         if (remainingMoves == 0 && moveEnabled) {
             commandInput.setMoveEnabled(disableMove());
         }
-        commandInput.setRemainingMoves(remainingMoves);
-    }
-
-    private void move(ArrayList<Direction> moves) {
-        animateToken.setMoves(moves);
-        animateToken.setToken(currentPlayer.getSuspectToken());
-        animateToken.moveIt();
-        /*
-        while (!moves.isEmpty()) {
-
-            currentPlayer.getSuspectToken().move(gameScreen.getGameBoard(), moves.remove(0));
-            try {Thread.sleep(50);} catch (Exception e) {}
-            gameScreen.getBoardPanel().paintComponent(gameScreen.getBoardPanel().getGraphics());
+            commandInput.setRemainingMoves(remainingMoves);
         }
-        gameScreen.getBoardPanel().setPaintParam(0);
-        */
-    }
 
     public ArrayList<OverlayTile> findValidMoves(int remainingMoves) {
         ArrayList<OverlayTile> validMoves = new ArrayList<>();
@@ -226,5 +208,9 @@ public class MovementHandling {
 
     public void setCurrentPlayer(Player currentPlayer) {
         this.currentPlayer = currentPlayer;
+    }
+
+    public Player getCurrentPlayer() {
+        return currentPlayer;
     }
 }

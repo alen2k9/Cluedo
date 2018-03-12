@@ -6,15 +6,17 @@ import com.team11.cluedo.ui.Resolution;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
-    public class TokenComponent extends JLabel {
+public class TokenComponent extends JLabel {
     protected int tokenID;
     protected int currentRoom;
     protected String tokenName;
     protected Point tokenLocation;
     protected int drawX, drawY;
 
-    private Image tokenImage;
     private int resolutionScalar;
 
     public TokenComponent(int tokenID, String tokenName, Point tokenLocation, Image tokenImage, Resolution resolution){
@@ -24,7 +26,6 @@ import java.awt.*;
         this.tokenID = tokenID;
         this.tokenName = tokenName;
         this.tokenLocation = tokenLocation;
-        this.tokenImage = tokenImage;
         this.resolutionScalar = (int)(resolution.getScalePercentage()* Board.TILE_SIZE);
         this.currentRoom = -1;
         this.drawX = (int)(tokenLocation.getX() * resolutionScalar);
@@ -32,6 +33,13 @@ import java.awt.*;
         //super.setBorder(new LineBorder(Color.MAGENTA, 3));
         setBounds(drawX, drawY, resolutionScalar, resolutionScalar);
         setLocation();
+
+        this.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                System.out.println("ID: " + tokenID + "\nName: " + tokenName + "\nLocation: " + tokenLocation);
+            }
+        });
     }
 
     public void setDrawX(int drawX) {
@@ -46,7 +54,6 @@ import java.awt.*;
 
     public void setBoardLocation(Point tokenLocation){
         this.tokenLocation = tokenLocation;
-        System.out.println(tokenLocation);
         this.drawX = (int)(tokenLocation.getX() * resolutionScalar);
         this.drawY = (int)(tokenLocation.getY() * resolutionScalar);
         setLocation();
@@ -74,6 +81,5 @@ import java.awt.*;
 
     private void setLocation() {
         super.setLocation(drawX,drawY);
-        System.out.println("location: " + getLocation());
     }
 }
