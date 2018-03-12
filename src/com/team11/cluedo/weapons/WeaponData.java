@@ -46,11 +46,11 @@ public class WeaponData {
 
     private void setWeaponPoint() {
         weaponLocation.put(0, new Point(0,0));
-        weaponLocation.put(1, new Point(0,0));
-        weaponLocation.put(2, new Point(0,0));
-        weaponLocation.put(3, new Point(0,0));
-        weaponLocation.put(4, new Point(0,0));
-        weaponLocation.put(5, new Point(0,0));
+        weaponLocation.put(1, new Point(0,1));
+        weaponLocation.put(2, new Point(0,2));
+        weaponLocation.put(3, new Point(0,3));
+        weaponLocation.put(4, new Point(0,4));
+        weaponLocation.put(5, new Point(0,5));
     }
 
     private void setWeaponID(){

@@ -54,6 +54,9 @@ public class GameScreen extends JFrame implements Screen {
     private Resolution resolution;
     private Dimension currSize;
 
+    private int drawRegion;
+    private int drawX, drawY, drawW, drawH;
+
     public GameScreen(Board gameBoard, Suspects gameSuspects, Weapons gameWeapons, Players gamePlayers, Assets gameAssets, Resolution resolution) throws IOException{
         this.gameBoard = gameBoard;
         this.gameSuspects = gameSuspects;
@@ -95,7 +98,6 @@ public class GameScreen extends JFrame implements Screen {
     }
     @Override
     public void displayScreen() {
-        boardPanel.paintComponent(boardPanel.getGraphics());
         setLocation(resolution.getScreenSize().width/2 - getSize().width/2, resolution.getScreenSize().height/2 - (getSize().height/2));
         setVisible(true);
         currSize = getSize();
@@ -303,6 +305,32 @@ public class GameScreen extends JFrame implements Screen {
         return infoTabs;
     }
 
+    //////////////////////////////////////////////////////////
+
+    public void setDrawBounds(int x, int y, int w, int h) {
+        drawX = x;
+        drawY = y;
+        drawW = w;
+        drawH = h;
+    }
+
+    public void setDrawRegion(int drawRegion) {
+        this.drawRegion = drawRegion;
+    }
+
+    @Override
+    public void paintComponents(Graphics g) {
+        if (drawRegion == 1) {
+            g.setClip(drawX - 5, drawY - 5, drawW + 10, drawH + 10);
+            super.paintComponents(g);
+        } else {
+            super.paintComponents(g);
+        }
+
+    }
+
+    //////////////////////////////////////////////////////////
+
     public class BoardComponent extends JComponent{
         @Override
         public void paintComponent(Graphics g) {
@@ -310,7 +338,6 @@ public class GameScreen extends JFrame implements Screen {
             ImageIcon board = new ImageIcon(boardImage);
             g.drawImage(boardImage, 0, 0,(int)(board.getIconWidth()*resolution.getScalePercentage()),
                     (int)(board.getIconHeight()*resolution.getScalePercentage()), this);
-
         }
     }
 
@@ -318,24 +345,35 @@ public class GameScreen extends JFrame implements Screen {
         @Override
         public void paintComponent(Graphics g) {
             super.paintComponent(super.getGraphics());
-            gameSuspects.paintComponent(g);
+            //gameSuspects.paintComponents(g);
         }
     }
 
-    public class BoardUI extends JPanel {
+    public class BoardUI extends JLayeredPane {
         BoardComponent boardComponent;
         SuspectPaintComponent suspectPaintComponent;
 
-
         int paintParam;
+
+        private int drawX, drawY, drawW, drawH;
 
         public BoardUI(BoardComponent boardImage) {
             this.boardComponent = new BoardComponent();
             this.suspectPaintComponent = new SuspectPaintComponent();
             this.paintParam = 0;
 
-            this.setLayout(new FlowLayout(0,0,0));
-            this.add(gameBoard, 0);
+            setLayout(new GridBagLayout());
+            GridBagConstraints gbc = new GridBagConstraints();
+            gbc.weightx = 1; gbc.weighty = 1;
+            gbc.gridx = 0; gbc.gridy = 0;
+            gbc.fill = GridBagConstraints.BOTH;
+
+            add(gameSuspects, gbc);
+            add(gameWeapons, gbc);
+            add(doorOverlay, gbc);
+            add(moveOverlay, gbc);
+            add(gameBoard, gbc);
+            add(boardImage, gbc);
 
             ImageIcon board = new ImageIcon(gameAssets.getBoardImage());
             Dimension imageSize = new Dimension((int)(board.getIconWidth()*resolution.getScalePercentage()), (int)(board.getIconHeight()*resolution.getScalePercentage()));
@@ -356,23 +394,29 @@ public class GameScreen extends JFrame implements Screen {
             return false;
         }
 
+        public void setDrawBounds(int x, int y, int w, int h) {
+            drawX = x;
+            drawY = y;
+            drawW = w;
+            drawH = h;
+        }
+
         public void setPaintParam(int param) {
             this.paintParam = param;
         }
 
         @Override
-        public void paintComponent(Graphics g) {
+        public void paintComponent(Graphics gr)
+        {
             if (paintParam == 0) {
-                boardComponent.paintComponent(g);
-                gameSuspects.paintComponent(g);
-                gameWeapons.paintComponent(g);
-                moveOverlay.paintComponent(g);
-                doorOverlay.paintComponent(g);
-            } else if (paintParam == 1) {
-                //super.paintComponent(getGraphics());
-                boardComponent.paintComponent(g);
-                gameWeapons.paintComponent(g);
-                suspectPaintComponent.paintComponent(g);
+                boardComponent.paintComponent(gr);
+                gameSuspects.paintComponents(gr);
+                gameWeapons.paintComponents(gr);
+            }
+            if (paintParam == 1) {
+                gr.setClip(drawX, drawY, drawW, drawH);
+                boardComponent.paintComponent(gr);
+                //gameSuspects.paintComponents(gr);
             }
         }
     }

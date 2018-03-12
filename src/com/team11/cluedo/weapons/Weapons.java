@@ -17,7 +17,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Random;
 
-public class Weapons extends JPanel implements Iterable<Weapon>, Iterator<Weapon> {
+public class Weapons extends JComponent implements Iterable<Weapon>, Iterator<Weapon> {
 
     private final int NUM_WEAPONS = 6;
     private Iterator<Weapon> iterator;
@@ -26,18 +26,22 @@ public class Weapons extends JPanel implements Iterable<Weapon>, Iterator<Weapon
     private Board gameBoard;
 
     public Weapons(Board gameBoard, Resolution resolution){
+        setLayout(null);
         this.gameBoard = gameBoard;
 
         setupWeapons(resolution);
-        for (Weapon weapon : weapons){
-            addWeaponToBoard(weapon.getWeaponID());
-        }
     }
 
     private void setupWeapons(Resolution resolution) {
         WeaponData weaponData = new WeaponData();
         for(int i = 0 ; i < NUM_WEAPONS ; i++) {
-            weapons.add(new Weapon(i, weaponData.getWeaponName(i), weaponData.getWeaponLocation(i), weaponData.getWeaponToken(i), resolution));
+            Weapon weapon = new Weapon(i, weaponData.getWeaponName(i), weaponData.getWeaponLocation(i), weaponData.getWeaponToken(i), resolution);
+            weapons.add(weapon);
+            addWeaponToBoard(i);
+            super.add(weapon, i);
+            weapon.setLocation(weapon.getLocation());
+            weapon.setSize((int)(resolution.getScalePercentage()*Board.TILE_SIZE),
+                    (int)(resolution.getScalePercentage()*Board.TILE_SIZE));
         }
     }
 
@@ -46,19 +50,19 @@ public class Weapons extends JPanel implements Iterable<Weapon>, Iterator<Weapon
         int randomInt = random.nextInt(gameBoard.getRooms().size()-1);
 
         Point spawnPoint = gameBoard.getRoom(randomInt).getRandomPoint(gameBoard.getRoom(randomInt).getWeaponPositions());
-        this.getWeapon(weaponID).setLocation(spawnPoint);
+        this.getWeapon(weaponID).setBoardLocation(spawnPoint);
         this.getWeapon(weaponID).setCurrentRoom(randomInt);
         gameBoard.getRoom(randomInt).getWeaponPositions().remove(spawnPoint);
     }
 
     public void moveWeaponToRoom(int weaponID, int roomID){
-        Point currentPoint = this.getWeapon(weaponID).getLocation();
+        Point currentPoint = this.getWeapon(weaponID).getBoardLocation();
         int currRoom = this.getWeapon(weaponID).getCurrentRoom();
 
         Point nextPoint = (gameBoard.getRoom(roomID).getRandomPoint(gameBoard.getRoom(roomID).getWeaponPositions()));
 
         gameBoard.getRoom(currRoom).getWeaponPositions().add(currentPoint);
-        this.getWeapon(weaponID).setLocation(nextPoint);
+        this.getWeapon(weaponID).setBoardLocation(nextPoint);
         gameBoard.getRoom(roomID).getWeaponPositions().remove(nextPoint);
     }
 
@@ -73,13 +77,6 @@ public class Weapons extends JPanel implements Iterable<Weapon>, Iterator<Weapon
             }
         }
         return null;
-    }
-
-    @Override
-    public void paintComponent(Graphics g){
-        for (Weapon weapon : weapons) {
-            weapon.paintComponent(g);
-        }
     }
 
     @Override
