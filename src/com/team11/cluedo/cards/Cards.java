@@ -11,7 +11,9 @@ package com.team11.cluedo.cards;
 import com.team11.cluedo.board.room.RoomData;
 import com.team11.cluedo.players.Players;
 import com.team11.cluedo.suspects.SuspectData;
+import com.team11.cluedo.ui.Resolution;
 import com.team11.cluedo.weapons.WeaponData;
+import javafx.beans.property.ReadOnlySetProperty;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,11 +28,11 @@ public class Cards {
 
     private MurderEnvelope murderEnvelope;
 
-    public Cards() {
+    public Cards(Resolution resolution) {
         setupSuspectCards();
         setupRoomCards();
         setupWeaponCards();
-        setupMurderEnvelope();
+        setupMurderEnvelope(resolution);
     }
 
     private void setupSuspectCards() {
@@ -54,12 +56,12 @@ public class Cards {
         }
     }
 
-    private void setupMurderEnvelope() {
+    private void setupMurderEnvelope(Resolution resolution) {
         Collections.shuffle(suspectCards);
         Collections.shuffle(weaponCards);
         Collections.shuffle(roomCards);
 
-        murderEnvelope = new MurderEnvelope(suspectCards.remove(0), roomCards.remove(0), weaponCards.remove(0));
+        murderEnvelope = new MurderEnvelope(suspectCards.remove(0), roomCards.remove(0), weaponCards.remove(0), resolution);
     }
 
     public void dealCards(Players gamePlayers) {

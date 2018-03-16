@@ -9,6 +9,7 @@
 package com.team11.cluedo.board;
 
 
+import com.team11.cluedo.assets.Assets;
 import com.team11.cluedo.pathfinder.Mover;
 import com.team11.cluedo.pathfinder.TileBasedMap;
 
@@ -32,6 +33,8 @@ public class Board extends JComponent implements TileBasedMap {
     public static final int TILE_SIZE = 30;
 
     private int tileSize;
+    private double resolutionScalar;
+    private Assets gameAssets;
 
     private BoardPos[][] board;
 
@@ -55,9 +58,11 @@ public class Board extends JComponent implements TileBasedMap {
 
     private DoorData doorData = new DoorData();
 
-    public Board(Resolution resolution) throws IOException{
+    public Board(Resolution resolution, Assets gameAssets) throws IOException{
         try{
+            this.gameAssets = gameAssets;
             this.tileSize = (int)(TILE_SIZE * resolution.getScalePercentage());
+            this.resolutionScalar = resolution.getScalePercentage();
             this.setLayout(new GridBagLayout());
             board = parseBoardFile();
             addRooms();
@@ -287,5 +292,15 @@ public class Board extends JComponent implements TileBasedMap {
                 visited[x][y] = false;
             }
         }
+    }
+
+    @Override
+    public void paintComponent(Graphics g){
+        super.paintComponents(g);
+
+        Image boardImage = gameAssets.getBoardImage();
+        ImageIcon board = new ImageIcon(gameAssets.getBoardImage());
+        g.drawImage(boardImage, 0, 0,(int)(board.getIconWidth()*resolutionScalar),
+                (int)(board.getIconHeight()*resolutionScalar), this);
     }
 }

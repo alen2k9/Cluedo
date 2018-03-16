@@ -64,7 +64,7 @@ public class GameScreen extends JFrame implements Screen {
         this.gamePlayers = gamePlayers;
         this.gameAssets = gameAssets;
         this.resolution = resolution;
-        this.gameCards = new Cards();
+        this.gameCards = new Cards(resolution);
         this.moveOverlay = new MoveOverlay(this.getGamePlayers().getPlayer(0), this.resolution);
         this.doorOverlay = new DoorOverlay(this.getGamePlayers().getPlayer(0), this.resolution);
     }
@@ -85,7 +85,7 @@ public class GameScreen extends JFrame implements Screen {
         this.playerPanel = setupPlayerPanel();
         this.playerHandPanel = setupCardPanel();
         this.notesPanel = new NotesPanel(gamePlayers);
-        this.boardPanel = new BoardUI(new BoardComponent());
+        this.boardPanel = new BoardUI();
         JPanel infoPanel = setupInfoPanel();
 
         int index = 0;
@@ -307,53 +307,31 @@ public class GameScreen extends JFrame implements Screen {
         return infoTabs;
     }
 
-    public class BoardComponent extends JComponent{
-        @Override
-        public void paintComponent(Graphics g) {
-            Image boardImage = gameAssets.getBoardImage();
-            ImageIcon board = new ImageIcon(boardImage);
-            g.drawImage(boardImage, 0, 0,(int)(board.getIconWidth()*resolution.getScalePercentage()),
-                    (int)(board.getIconHeight()*resolution.getScalePercentage()), this);
-        }
-    }
-
-    public class SuspectPaintComponent extends JComponent {
-        @Override
-        public void paintComponent(Graphics g) {
-            super.paintComponent(super.getGraphics());
-            //gameSuspects.paintComponents(g);
-        }
-    }
-
     public class BoardUI extends JLayeredPane {
-        BoardComponent boardComponent;
-        SuspectPaintComponent suspectPaintComponent;
 
-        int paintParam;
-
-        private int drawX, drawY, drawW, drawH;
-
-        public BoardUI(BoardComponent boardImage) {
-            this.boardComponent = new BoardComponent();
-            this.suspectPaintComponent = new SuspectPaintComponent();
-            this.paintParam = 0;
-
-            setLayout(new GridBagLayout());
+        public BoardUI() {
+            //setLayout(new GridBagLayout());
             GridBagConstraints gbc = new GridBagConstraints();
             gbc.weightx = 1; gbc.weighty = 1;
             gbc.gridx = 0; gbc.gridy = 0;
             gbc.fill = GridBagConstraints.BOTH;
 
-            add(gameSuspects, gbc);
-            add(gameWeapons, gbc);
-            add(doorOverlay, gbc);
-            add(moveOverlay, gbc);
-            add(gameBoard, gbc);
-            add(boardImage, gbc);
+            add(gameCards.getMurderEnvelope());
+            add(gameSuspects);
+            add(gameWeapons);
+            add(doorOverlay);
+            add(moveOverlay);
+            add(gameBoard);
 
             ImageIcon board = new ImageIcon(gameAssets.getBoardImage());
             Dimension imageSize = new Dimension((int)(board.getIconWidth()*resolution.getScalePercentage()), (int)(board.getIconHeight()*resolution.getScalePercentage()));
             this.setPreferredSize(imageSize);
+
+            this.getComponent(0).setLocation(0,0);
+            for (int i = 1 ; i < getComponentCount() ; i++) {
+                this.getComponent(i).setSize(imageSize);
+                this.getComponent(i).setLocation(0,0);
+            }
         }
 
         public boolean checkPoint(int x, int y){

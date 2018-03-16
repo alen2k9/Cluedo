@@ -30,7 +30,10 @@ public class TokenComponent extends JLabel {
         this.currentRoom = -1;
         this.drawX = (int)(tokenLocation.getX() * resolutionScalar);
         this.drawY = (int)(tokenLocation.getY() * resolutionScalar);
-        //super.setBorder(new LineBorder(Color.MAGENTA, 3));
+
+        this.createToolTip();
+        setToolTipText(tokenName);
+
         setBounds(drawX, drawY, resolutionScalar, resolutionScalar);
         setLocation();
 

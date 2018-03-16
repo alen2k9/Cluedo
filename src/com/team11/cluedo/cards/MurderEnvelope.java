@@ -9,59 +9,68 @@
 package com.team11.cluedo.cards;
 
 import com.team11.cluedo.assets.Assets;
+import com.team11.cluedo.ui.Resolution;
 import com.team11.cluedo.ui.panel.BackgroundPanel;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-public class MurderEnvelope {
+public class MurderEnvelope extends JComponent {
     private SuspectCard suspectCard;
     private RoomCard roomCard;
     private WeaponCard weaponCard;
 
-    private JFrame frame;
-    private JPanel panel;
+    private double resolutionScalar;
 
-    public MurderEnvelope(SuspectCard suspectCard, RoomCard roomCard, WeaponCard weaponCard) {
+    public MurderEnvelope(SuspectCard suspectCard, RoomCard roomCard, WeaponCard weaponCard, Resolution resolution) {
         this.suspectCard = suspectCard;
         this.roomCard = roomCard;
         this.weaponCard = weaponCard;
-
-        this.panel = new JPanel(new GridBagLayout());
+        this.resolutionScalar = resolution.getScalePercentage();
+        createMurderEnvelope();
     }
 
     public void displayMurderEnvelope() {
-        this.frame = new JFrame("Murder Envelope");
-        this.panel = new BackgroundPanel(new Assets().getBackgroundTile().getImage(), BackgroundPanel.TILED);
-        panel.setLayout(new GridBagLayout());
+        this.setVisible(true);
+    }
 
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(10,10,10,10);
-        gbc.gridx = 0; gbc.gridy = 0;
-        panel.add(new JLabel(new ImageIcon(weaponCard.getCardImage())), gbc);
-        gbc.gridx = 1;
-        panel.add(new JLabel(new ImageIcon(suspectCard.getCardImage())), gbc);
-        gbc.gridx = 2;
-        panel.add(new JLabel(new ImageIcon(roomCard.getCardImage())), gbc);
+    public void createMurderEnvelope() {
+        ImageIcon card = new ImageIcon(weaponCard.getCardImage());
+        int cardWidth = (int)(card.getIconWidth() * resolutionScalar * .80);
+        int cardHeight = (int)(card.getIconHeight() * resolutionScalar * .80);
 
-        frame.setResizable(false);
-        frame.getContentPane().add(panel);
-        frame.pack();
-        Dimension resolution = Toolkit.getDefaultToolkit().getScreenSize();
-        frame.setLocation(resolution.width/2 - frame.getSize().width/2, resolution.height/2 - (frame.getSize().height/2));
-        frame.setVisible(true);
+        JLabel weapon = new JLabel(new ImageIcon(weaponCard.getCardImage().getScaledInstance(cardWidth,cardHeight, 0))),
+        suspect = new JLabel(new ImageIcon(suspectCard.getCardImage().getScaledInstance(cardWidth,cardHeight, 0))),
+        room = new JLabel(new ImageIcon(roomCard.getCardImage().getScaledInstance(cardWidth,cardHeight, 0)));
 
-        frame.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowOpened(WindowEvent e) {
-                new Timer(3500, e1 -> {
-                    frame.dispose();
-                    panel.removeAll();
-                }).start();
-            }
-        });
+        weapon.setBorder(new LineBorder(Color.BLACK, 2));
+        room.setBorder(new LineBorder(Color.BLACK, 2));
+        suspect.setBorder(new LineBorder(Color.BLACK, 2));
+
+        add(weapon);
+        add(suspect);
+        add(room);
+
+        int x = (int)(30 * resolutionScalar), y = 0, space = (int)(10 * resolutionScalar);
+        weapon.setLocation(new Point(x, y));
+        suspect.setLocation(new Point(x + cardWidth + space, y));
+        room.setLocation(new Point(x + 2*(cardWidth + space), y));
+
+        weapon.setSize(cardWidth, cardHeight);
+        suspect.setSize(cardWidth, cardHeight);
+        room.setSize(cardWidth, cardHeight);
+
+        int width = (x*2) + (cardWidth*3) + (space*2);
+        super.setSize(new Dimension(width, cardHeight));
+
+        this.setVisible(false);
+    }
+
+    public void disposeMurderEnvelope() {
+        this.setVisible(false);
     }
 
     public SuspectCard getSuspectCard() {

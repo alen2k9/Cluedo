@@ -47,20 +47,23 @@ public class MenuScreen implements Screen {
         this.resolution = new Resolution();
 
         //  Game logic components
-        Board gameBoard = new Board(resolution);
+        Board gameBoard = new Board(resolution, gameAssets);
         Suspects gameSuspects = new Suspects(resolution);
         Weapons gameWeapons = new Weapons(gameBoard, resolution);
         Players gamePlayers = new Players();
+
 
         this.gameScreen = new GameScreen(gameBoard, gameSuspects, gameWeapons, gamePlayers, gameAssets, resolution);
         this.gameInput = new CommandInput(gameScreen);
 
 
+        ///*
         SuspectData suspectData = new SuspectData();
-        for (int i = 0 ; i < 6; i++)
+        for (int i = 0 ; i < 4; i++)
             gamePlayers.addPlayer(suspectData.getSuspectName(i), gameSuspects.getSuspect(i), resolution);
 
         startGame();
+        //*/
 
         /*
         //  Calling functions to create screen

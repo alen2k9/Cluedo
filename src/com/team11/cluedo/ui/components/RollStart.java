@@ -32,7 +32,6 @@ public class RollStart extends SwingWorker<Integer, String> {
         int diceNumber;
         ArrayList<Integer> rolledNumbers;
 
-
         HashMap<Integer, Integer> players = new HashMap<>();
         for (int i = 0 ; i < gameScreen.getGamePlayers().getPlayerCount() ; i++) {
             players.put(i,i);
@@ -89,6 +88,8 @@ public class RollStart extends SwingWorker<Integer, String> {
         infoOutput.setText("");
         infoOutput.append(playerName + " rolled a " + rolledNumbers.get(highRollers.get(0)) + ", the highest\nnumber!\n\n");
         commandInput.setCurrentPlayerID(currentPlayerID);
+        commandInput.runPlayer();
+        commandInput.setUpMouseClick();
         commandInput.playerTurn();
         gameScreen.getCommandInput().requestFocus();
         return null;

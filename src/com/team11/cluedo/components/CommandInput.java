@@ -28,6 +28,7 @@ import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 
 public class CommandInput {
     private MovementHandling movementHandling;
@@ -39,6 +40,7 @@ public class CommandInput {
 
     private int dice, remainingMoves, numPlayers, currentPlayerID;
     private boolean canRoll;
+    private boolean canCheat;
     private boolean moveEnabled;
     private boolean mouseEnabled;
 
@@ -49,6 +51,7 @@ public class CommandInput {
 
     public void initialSetup() {
         this.canRoll = true;
+        this.canCheat = true;
         this.moveEnabled = false;
         this.mouseEnabled = true;
         this.numPlayers = this.gameScreen.getGamePlayers().getPlayerCount();
@@ -59,8 +62,6 @@ public class CommandInput {
 
         RollStart rollStart = new RollStart(gameScreen, this, infoOutput, currentPlayer, currentPlayerID);
         rollStart.execute();
-        runPlayer();
-        setUpMouseClick();
     }
 
     public void playerTurn() {
@@ -71,7 +72,7 @@ public class CommandInput {
         infoOutput.append("Please enter 'roll' to start\n");
     }
 
-    private void runPlayer() {
+    public void runPlayer() {
         this.gameScreen.getCommandInput().addActionListener(e -> {
             String input = this.gameScreen.getCommandInput().getText();
             String[] inputs = input.toLowerCase().split(" ");
@@ -133,7 +134,6 @@ public class CommandInput {
                                             "You entered " + moveParameters.toString().length() + " parameters.\n");
                                 } else {
                                     movementHandling.playerMovement(movementHandling.inputToDirection(moveParameters.toString(), remainingMoves), remainingMoves, moveEnabled);
-                                    //this.gameScreen.getMoveOverlay().setValidMoves(movementHandling.findValidMoves(remainingMoves), currentPlayer);
                                 }
                             } else {
                                 infoOutput.append("You can't move when in a room!\nYou must exit first.\n");
@@ -187,6 +187,7 @@ public class CommandInput {
 
                         case "back":
                             break;
+
                         case "time":
                             movementHandling.getAvgTime();
                             break;
@@ -226,7 +227,7 @@ public class CommandInput {
         this.gameScreen.getMoveOverlay().setValidMoves(new ArrayList<>(), this.currentPlayer);
         this.gameScreen.getDoorOverlay().setExits(new ArrayList<>(), this.currentPlayer);
 
-        this.canRoll = true;
+        this.canRoll = true; this.canCheat = true;
         this.dice = 0; this.remainingMoves = 0;
         this.currentPlayerID++;
         if(this.currentPlayerID == this.numPlayers)
@@ -283,6 +284,7 @@ public class CommandInput {
                 this.gameScreen.getDoorOverlay().setExits(new ArrayList<>(), currentPlayer);
             } else if (returnValue == 0){
                 this.gameScreen.getInfoOutput().append("Exit " + (Integer.parseInt(inputs[1]) ) + " is blocked by another player\n");
+                this.remainingMoves++;
             }
 
             CommandProcessing.printRemainingMoves(remainingMoves, infoOutput);
@@ -305,8 +307,6 @@ public class CommandInput {
                     overlayTiles.add(new OverlayTile(point));
                 }
                 this.gameScreen.getDoorOverlay().setExits(overlayTiles, currentPlayer);
-            } else {
-                //gameScreen.getMoveOverlay().setValidMoves(movementHandling.findValidMoves(remainingMoves), currentPlayer);
             }
             infoOutput.append(this.playerName + " rolled a " + this.dice + ".\n");
             this.canRoll = false;
@@ -332,8 +332,67 @@ public class CommandInput {
     }
 
     private void cheat() {
-        infoOutput.append(playerName + " looked in the murder envelope!\n");
-        gameScreen.getGameCards().getMurderEnvelope().displayMurderEnvelope();
+        if (canCheat) {
+            infoOutput.append(playerName + " looked in the murder envelope!\n");
+            new SwingWorker<Integer, String>() {
+                @Override
+                protected Integer doInBackground() throws Exception {
+                    canCheat = false;
+                    int x = gameScreen.getBoardPanel().getSize().width / 2 - gameScreen.getGameCards().getMurderEnvelope().getSize().width / 2,
+                            y = gameScreen.getBoardPanel().getHeight();
+                    int targetY = gameScreen.getBoardPanel().getSize().height - (gameScreen.getGameCards().getMurderEnvelope().getHeight() + 10);
+
+
+                    int delay = 8, amount = 3;
+
+                    gameScreen.getGameCards().getMurderEnvelope().setLocation(new Point(x, y));
+                    gameScreen.getGameCards().getMurderEnvelope().displayMurderEnvelope();
+                    process(new ArrayList<>());
+
+                    while (y > targetY) {
+                        y -= amount*2;
+                        gameScreen.getGameCards().getMurderEnvelope().setLocation(new Point(x, y));
+                        Thread.sleep(delay / 4);
+                        process(new ArrayList<>());
+                    }
+
+                    for (int i = 0; i < 15; i++) {
+                        y += amount;
+                        gameScreen.getGameCards().getMurderEnvelope().setLocation(new Point(x, y));
+                        Thread.sleep(delay);
+                        process(new ArrayList<>());
+                    }
+
+                    Thread.sleep(3000);
+
+                    for (int i = 0; i < 15; i++) {
+                        y -= amount;
+                        gameScreen.getGameCards().getMurderEnvelope().setLocation(new Point(x, y));
+                        Thread.sleep(delay);
+                        process(new ArrayList<>());
+                    }
+
+                    while (y < gameScreen.getBoardPanel().getHeight()) {
+                        y += amount*2;
+                        gameScreen.getGameCards().getMurderEnvelope().setLocation(new Point(x, y));
+                        Thread.sleep(delay / 4);
+                        process(new ArrayList<>());
+                    }
+
+                    gameScreen.getGameCards().getMurderEnvelope().disposeMurderEnvelope();
+                    process(new ArrayList<>());
+                    return null;
+                }
+
+                @Override
+                protected void process(List<String> chunks) {
+                    gameScreen.validate();
+                    gameScreen.repaint();
+                }
+            }.execute();
+        } else {
+            infoOutput.append("Uh oh. Nobody likes a cheater.\n");
+        }
     }
 
     private void quitGame() {
@@ -415,7 +474,7 @@ public class CommandInput {
         }
     }
 
-    private void setUpMouseClick(){
+    public void setUpMouseClick(){
         HashMap<Integer, BoardPos> roomPos = new HashMap<>();
         for (BoardPos[] boardPosArray : gameScreen.getGameBoard().getBoard()) {
             for (BoardPos boardPos : boardPosArray) {
