@@ -14,7 +14,6 @@ import com.team11.cluedo.components.InputData;
 
 import com.team11.cluedo.board.Board;
 import com.team11.cluedo.players.Players;
-import com.team11.cluedo.suspects.Suspect;
 import com.team11.cluedo.suspects.Suspects;
 import com.team11.cluedo.ui.components.*;
 import com.team11.cluedo.ui.panel.BackgroundPanel;
@@ -27,17 +26,14 @@ import javax.swing.border.TitledBorder;
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
 import javax.swing.text.DefaultCaret;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.*;
-import java.util.ArrayList;
 import java.util.HashSet;
 
 public class GameScreen extends JFrame implements Screen {
     private static final String COMMIT_ACTION = "commit";
 
     private BoardUI boardPanel;
-    private PlayerLayout playerPanel;
+    private JPanel playerPanel;
     private PlayerHandLayout playerHandPanel;
     private NotesPanel notesPanel;
 
@@ -92,7 +88,7 @@ public class GameScreen extends JFrame implements Screen {
         int index = 0;
         backgroundPanel.add(playerPanel, BorderLayout.WEST, index++);
         backgroundPanel.add(boardPanel, BorderLayout.CENTER, index++);
-        backgroundPanel.add(infoPanel, BorderLayout.EAST, index++);
+        backgroundPanel.add(infoPanel, BorderLayout.EAST, index);
 
         this.add(backgroundPanel);
         this.pack();
@@ -113,7 +109,8 @@ public class GameScreen extends JFrame implements Screen {
 
     @Override
     public void reDraw(int currentPlayer) {
-        this.playerPanel.reDraw(currentPlayer);
+        //((PlayerLayout)this.playerPanel.getComponent(0)).reDraw(currentPlayer);
+        ((PlayerLayout)playerPanel).reDraw(currentPlayer);
         this.playerHandPanel.reDraw(currentPlayer);
         this.notesPanel.reDraw(currentPlayer);
     }
@@ -239,7 +236,9 @@ public class GameScreen extends JFrame implements Screen {
         return new PlayerHandLayout(gameCards, gamePlayers, resolution);
     }
 
-    private PlayerLayout setupPlayerPanel() {
+    private JPanel setupPlayerPanel() {
+        JPanel panel = new JPanel(new BorderLayout());
+
         PlayerLayout playerPanel = new PlayerLayout(gamePlayers, resolution, 0);
         playerPanel.setOpaque(false);
         TitledBorder border = new TitledBorder(new LineBorder(Color.BLACK,3), "PLAYERS");
@@ -247,6 +246,14 @@ public class GameScreen extends JFrame implements Screen {
         border.setTitleColor(Color.WHITE);
         playerPanel.setBorder(border);
 
+        panel.add(playerPanel, BorderLayout.NORTH);
+        panel.add(new JPanel() {
+            @Override
+            public void setOpaque(boolean isOpaque) {
+                super.setOpaque(false);
+            }
+        }, BorderLayout.CENTER);
+        panel.setOpaque(false);
         return playerPanel;
     }
 
@@ -298,14 +305,6 @@ public class GameScreen extends JFrame implements Screen {
 
     public Resolution getResolution(){
         return this.resolution;
-    }
-
-    public PlayerLayout getPlayerPanel() {
-        return playerPanel;
-    }
-
-    public JTabbedPane getInfoTabs() {
-        return infoTabs;
     }
 
     public class BoardUI extends JLayeredPane {

@@ -1,14 +1,20 @@
+/*
+ * Code to handle the tokens.
+ *
+ * Authors Team11:  Jack Geraghty - 16384181
+ *                  Conor Beenham - 16350851
+ *                  Alen Thomas   - 16333003
+ */
+
 package com.team11.cluedo.components;
 
 import com.team11.cluedo.board.Board;
 import com.team11.cluedo.ui.Resolution;
 
 import javax.swing.*;
-import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
 public class TokenComponent extends JLabel {
     protected int tokenID;

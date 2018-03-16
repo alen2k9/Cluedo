@@ -1,4 +1,3 @@
-
 /*
  * Code to handle the overlay of possible moves.
  *

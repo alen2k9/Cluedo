@@ -381,7 +381,9 @@ public class MenuScreen implements Screen {
         gameScreen.setupScreen(1);
         gameScreen.getGameCards().dealCards(gameScreen.getGamePlayers());
         gameScreen.getGameSuspects().setSpawnsOccupied(gameScreen.getGameBoard());
-        gameScreen.displayScreen();
-        gameInput.initialSetup();
+        SwingUtilities.invokeLater(() -> {
+            gameScreen.displayScreen();
+            gameInput.initialSetup();
+        });
     }
 }

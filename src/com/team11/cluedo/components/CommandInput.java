@@ -60,9 +60,8 @@ public class CommandInput {
         this.playerName = currentPlayer.getPlayerName();
         this.infoOutput = gameScreen.getInfoOutput();
         movementHandling = new MovementHandling(gameScreen, currentPlayer, this);
-
-        RollStart rollStart = new RollStart(gameScreen, this, infoOutput, currentPlayer, currentPlayerID);
-        rollStart.execute();
+        gameScreen.reDrawFrame();
+        SwingUtilities.invokeLater(() -> new RollStart(gameScreen, this, infoOutput, currentPlayer, currentPlayerID).execute());
     }
 
     public void playerTurn() {

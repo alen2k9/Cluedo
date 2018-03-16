@@ -17,17 +17,21 @@ import java.awt.*;
 public class PlayerLayout extends JPanel {
     private Players gamePlayers;
     private Resolution resolution;
-    private int currentPlayer;
+    private int currentPlayer, targetPlayer;
 
     public PlayerLayout(Players gamePlayers, Resolution resolution, int currentPlayer) {
         this.gamePlayers = gamePlayers;
         this.resolution = resolution;
         this.currentPlayer = currentPlayer;
+        this.targetPlayer = currentPlayer;
         getCardLayout();
+        //getCycleLayout();
     }
 
     private void getCardLayout() {
         this.setLayout(new GridBagLayout());
+        currentPlayer = targetPlayer;
+
         switch (gamePlayers.getPlayerCount()) {
             case 2: {
                 getColumnCardsLayout();
@@ -173,10 +177,172 @@ public class PlayerLayout extends JPanel {
         }
     }
 
+    private void getCycleLayout() {
+        ImageIcon card = new ImageIcon(gamePlayers.getPlayer(currentPlayer).getCardImage());
+        int width = (int)(card.getIconWidth() * resolution.getScalePercentage() * .66),
+                height = (int)(card.getIconHeight() * resolution.getScalePercentage() * .66);
+        int nextPlayer, prevPlayer, next2Player;
+        double otherScalar = .8;
+
+        if(currentPlayer == gamePlayers.getPlayerCount() - 1) {
+            nextPlayer = 0;
+            next2Player = nextPlayer + 1;
+        } else {
+            nextPlayer = currentPlayer + 1;
+            if (nextPlayer == gamePlayers.getPlayerCount() - 1)
+                next2Player = 0;
+                else
+                    next2Player = nextPlayer + 1;
+        }
+        if(currentPlayer == 0)
+            prevPlayer = gamePlayers.getPlayerCount() - 1;
+            else
+                prevPlayer = currentPlayer - 1;
+
+
+        ImageIcon currentCard = new ImageIcon(gamePlayers.getPlayer(currentPlayer).getCardImage().getScaledInstance(
+                width, height,0));
+
+        ImageIcon prevCard = new ImageIcon(gamePlayers.getPlayer(prevPlayer).getSelectedCardImage().getScaledInstance(
+                width, height,0));
+
+        ImageIcon nextCard = new ImageIcon(gamePlayers.getPlayer(nextPlayer).getSelectedCardImage().getScaledInstance(
+                width, height,0));
+
+        ImageIcon next2Card = new ImageIcon(gamePlayers.getPlayer(next2Player).getSelectedCardImage().getScaledInstance(
+                width, height,0));
+
+        JLabel playerCard = new JLabel(currentCard);
+        JLabel nextPlayerCard = new JLabel(nextCard);
+        JLabel next2PlayerCard = new JLabel(next2Card);
+        JLabel prevPlayerCard = new JLabel(prevCard);
+
+        this.setLayout(null);
+
+        this.add(playerCard);
+        this.add(prevPlayerCard);
+        this.add(nextPlayerCard);
+        this.add(next2PlayerCard);
+
+        playerCard.setSize(new Dimension(currentCard.getIconWidth(), currentCard.getIconHeight()));
+        prevPlayerCard.setSize(new Dimension((int)(prevCard.getIconWidth() * otherScalar), (int)(prevCard.getIconHeight()*otherScalar)));
+        nextPlayerCard.setSize(new Dimension((int)(nextCard.getIconWidth() * otherScalar), (int)(nextCard.getIconHeight()*otherScalar)));
+        next2PlayerCard.setSize(new Dimension((int)(nextCard.getIconWidth() * otherScalar), (int)(nextCard.getIconHeight()*otherScalar)));
+
+        int y = (int)(20 * resolution.getScalePercentage());
+        this.setPreferredSize(new Dimension(width*3, height+(2*y)));
+        int xPosition = this.getPreferredSize().width/2 - playerCard.getWidth()/2;
+        int yPosition = (int)((30 * resolution.getScalePercentage()) + y);
+
+        playerCard.setLocation(xPosition, y);
+        prevPlayerCard.setLocation(xPosition - prevPlayerCard.getWidth() - (int)(10 * resolution.getScalePercentage()), yPosition);
+        nextPlayerCard.setLocation(xPosition + playerCard.getWidth() + (int)(10 * resolution.getScalePercentage()), yPosition);
+        next2PlayerCard.setLocation(xPosition + playerCard.getWidth() + (int)(10 * resolution.getScalePercentage()), yPosition);
+    }
+
     public void reDraw(int currentPlayer) {
-        this.currentPlayer = currentPlayer;
+        this.targetPlayer = currentPlayer;
         this.removeAll();
         getCardLayout();
+        //new playerSwitcher().execute();
         this.revalidate();
+    }
+
+    public class playerSwitcher extends SwingWorker<Integer, String> {
+        @Override
+        protected Integer doInBackground() throws Exception {
+            if (currentPlayer != targetPlayer) {
+                currentPlayer++;
+
+                if (currentPlayer == gamePlayers.getPlayerCount()) {
+                    currentPlayer = 0;
+                }
+                JLabel currCard = (JLabel) getComponent(0);
+
+                int card;
+                if (currentPlayer == 0)
+                    card = gamePlayers.getPlayerCount() - 1;
+                else
+                    card = currentPlayer - 1;
+                currCard.setIcon(new ImageIcon(gamePlayers.getPlayer(card).getSelectedCardImage().getScaledInstance(
+                        currCard.getWidth(), currCard.getHeight(), 0)));
+
+                JLabel prevCard = (JLabel) getComponent(1);
+                JLabel nextCard = (JLabel) getComponent(2);
+
+                int targetX = currCard.getX(), targetY = currCard.getY(),
+                        targetW = currCard.getWidth(), targetH = currCard.getHeight();
+                int nextX = nextCard.getX(), nextY = nextCard.getY(),
+                        nextW = nextCard.getWidth(), nextH = nextCard.getHeight();
+                int currX = currCard.getX(), currY = currCard.getY(),
+                        currW = currCard.getWidth(), currH = currCard.getHeight();
+                int prevX = prevCard.getX(), prevY = prevCard.getY(),
+                        prevW = prevCard.getWidth(), prevH = prevCard.getHeight();
+
+                while (nextH != targetH || nextX != targetX || nextW != targetW || nextY != targetY ||
+                        currH != prevH || currX != prevX || currW != prevW || currY != prevY) {
+                    int sizeModifier = 2;
+                    int xModifier = 5;
+                    int yModifier = (int) 1.5;
+
+                    // Next Card
+                    if (nextH >= targetH)
+                        nextH = targetH;
+                    else
+                        nextH += sizeModifier;
+
+                    if (nextW >= targetW)
+                        nextW = targetW;
+                    else
+                        nextW += sizeModifier;
+
+                    if (nextX <= targetX)
+                        nextX = targetX;
+                    else
+                        nextX -= xModifier;
+
+                    if (nextY <= targetY)
+                        nextY = targetY;
+                    else
+                        nextY -= yModifier;
+
+                    // Curr Card
+                    if (currH <= prevH)
+                        currH = prevH;
+                    else
+                        currH -= sizeModifier;
+
+                    if (currW <= prevW)
+                        currW = prevW;
+                    else
+                        currW -= sizeModifier;
+
+                    if (currX <= prevX)
+                        currX = prevX;
+                    else
+                        currX -= xModifier;
+
+                    if (currY >= prevY)
+                        currY = prevY;
+                    else
+                        currY += yModifier;
+
+                    nextCard.setSize(new Dimension(nextW, nextH));
+                    nextCard.setLocation(nextX, nextY);
+
+                    currCard.setSize(new Dimension(currW, currH));
+                    currCard.setLocation(currX, currY);
+
+                    Thread.sleep(7);
+                }
+            }
+            removeAll();
+            getCycleLayout();
+
+            if(currentPlayer != targetPlayer) {
+                new playerSwitcher().execute();
+            }
+            return null;
+        }
     }
 }

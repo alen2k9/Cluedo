@@ -1,3 +1,11 @@
+/*
+ * Code to initial rolling of players, and visual update of who's rolling.
+ *
+ * Authors Team11:  Jack Geraghty - 16384181
+ *                  Conor Beenham - 16350851
+ *                  Alen Thomas   - 16333003
+ */
+
 package com.team11.cluedo.ui.components;
 
 import com.team11.cluedo.components.CommandInput;
@@ -13,7 +21,6 @@ public class RollStart extends SwingWorker<Integer, String> {
     private GameScreen gameScreen;
     private CommandInput commandInput;
     private JTextArea infoOutput;
-    private String playerName;
 
     private int currentPlayerID;
 
@@ -30,6 +37,7 @@ public class RollStart extends SwingWorker<Integer, String> {
     protected Integer doInBackground() throws Exception {
         Dice die = new Dice();
         int diceNumber;
+        String playerName;
         ArrayList<Integer> rolledNumbers;
 
         HashMap<Integer, Integer> players = new HashMap<>();
