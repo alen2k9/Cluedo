@@ -31,6 +31,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class GameScreen extends JFrame implements Screen {
     private static final String COMMIT_ACTION = "commit";
@@ -336,7 +337,7 @@ public class GameScreen extends JFrame implements Screen {
 
         public boolean checkPoint(int x, int y){
             OverlayTile clickedPoint = new OverlayTile(x,y);
-            ArrayList<OverlayTile> validMoves = moveOverlay.getValidMoves();
+            HashSet<OverlayTile> validMoves = moveOverlay.getValidMoves();
 
             if (!validMoves.isEmpty()){
                 for (OverlayTile overlayTile : validMoves){

@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.HashSet;
 
 public class CommandInput {
     private MovementHandling movementHandling;
@@ -105,8 +106,8 @@ public class CommandInput {
                         case "done":
                             moveEnabled = false;
                             nextPlayer();
-                            this.gameScreen.getMoveOverlay().setValidMoves(new ArrayList<>(), this.currentPlayer);
-                            this.gameScreen.getDoorOverlay().setExits(new ArrayList<>(), this.currentPlayer);
+                            this.gameScreen.getMoveOverlay().setValidMoves(new HashSet<>(), this.currentPlayer);
+                            this.gameScreen.getDoorOverlay().setExits(new HashSet<>(), this.currentPlayer);
                             break;
                         default:
                             infoOutput.append("Unknown entry.\n" +
@@ -224,8 +225,8 @@ public class CommandInput {
     }
 
     private void nextPlayer() {
-        this.gameScreen.getMoveOverlay().setValidMoves(new ArrayList<>(), this.currentPlayer);
-        this.gameScreen.getDoorOverlay().setExits(new ArrayList<>(), this.currentPlayer);
+        this.gameScreen.getMoveOverlay().setValidMoves(new HashSet<>(), this.currentPlayer);
+        this.gameScreen.getDoorOverlay().setExits(new HashSet<>(), this.currentPlayer);
 
         this.canRoll = true; this.canCheat = true;
         this.dice = 0; this.remainingMoves = 0;
@@ -241,7 +242,7 @@ public class CommandInput {
     }
 
     private void secretPassage() {
-        ArrayList<OverlayTile> overlayTiles = new ArrayList<>();
+        HashSet<OverlayTile> overlayTiles = new HashSet<>();
         if (!(currentPlayer.getSuspectToken().getCurrentRoom() == -1) && this.gameScreen.getGameBoard().getRoom(currentPlayer.getSuspectToken().getCurrentRoom()).hasSecretPassage() ) {
             if (currentPlayer.getSuspectToken().useSecretPassageWay(this.gameScreen.getGameBoard())){
                 String roomName = currentPlayer.getSuspectToken().getCurrentRoomName();
@@ -281,7 +282,7 @@ public class CommandInput {
             }
 
             if (returnValue == 1){
-                this.gameScreen.getDoorOverlay().setExits(new ArrayList<>(), currentPlayer);
+                this.gameScreen.getDoorOverlay().setExits(new HashSet<>(), currentPlayer);
             } else if (returnValue == 0){
                 this.gameScreen.getInfoOutput().append("Exit " + (Integer.parseInt(inputs[1]) ) + " is blocked by another player\n");
                 this.remainingMoves++;
@@ -301,7 +302,7 @@ public class CommandInput {
             this.remainingMoves = this.dice;
 
             if (currentPlayer.getSuspectToken().isInRoom()) {
-                ArrayList<OverlayTile> overlayTiles = new ArrayList<>();
+                HashSet<OverlayTile> overlayTiles = new HashSet<>();
                 System.out.println("Is in room");
                 for (Point point : this.gameScreen.getGameBoard().getRoom(currentPlayer.getSuspectToken().getCurrentRoom()).getEntryPoints()) {
                     overlayTiles.add(new OverlayTile(point));
