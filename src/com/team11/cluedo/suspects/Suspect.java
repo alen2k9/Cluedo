@@ -276,6 +276,10 @@ public class Suspect extends TokenComponent implements Mover {
         return super.tokenID;
     }
 
+    public Image getSuspectImage(){
+        return super.tokenImage;
+    }
+
     public String getSuspectName() {
         return super.tokenName;
     }

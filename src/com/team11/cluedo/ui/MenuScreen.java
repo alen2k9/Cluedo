@@ -59,7 +59,7 @@ public class MenuScreen implements Screen {
 
         ///*
         SuspectData suspectData = new SuspectData();
-        for (int i = 0 ; i < 4; i++)
+        for (int i = 0 ; i < 6 ; i++)
             gamePlayers.addPlayer(suspectData.getSuspectName(i), gameSuspects.getSuspect(i), resolution);
 
         startGame();

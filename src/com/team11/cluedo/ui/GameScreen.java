@@ -86,7 +86,7 @@ public class GameScreen extends JFrame implements Screen {
         JPanel infoPanel = setupInfoPanel();
 
         int index = 0;
-        backgroundPanel.add(playerPanel, BorderLayout.WEST, index++);
+        //backgroundPanel.add(playerPanel, BorderLayout.WEST, index++);
         backgroundPanel.add(boardPanel, BorderLayout.CENTER, index++);
         backgroundPanel.add(infoPanel, BorderLayout.EAST, index);
 
@@ -154,7 +154,7 @@ public class GameScreen extends JFrame implements Screen {
     }
 
     private JTextArea setupHelpPanel() {
-        JTextArea helpOutput = new JTextArea(28, 25);
+        JTextArea helpOutput = new JTextArea(15, 25);
         int fontSize = (int)(18 * resolution.getScalePercentage());
         helpOutput.setFont(new Font("Orange Kid",Font.BOLD, fontSize));
         helpOutput.setEditable(false); infoOutput.setLineWrap(true);
@@ -202,7 +202,7 @@ public class GameScreen extends JFrame implements Screen {
         });
         infoTabs.setBackground(Color.BLACK);
         infoTabs.setForeground(Color.WHITE);
-        infoOutput = new JTextArea(22, 25);
+        infoOutput = new JTextArea(15, 25);
         DefaultCaret caret = (DefaultCaret)infoOutput.getCaret();
         caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
         infoOutput.setFont(f);
@@ -224,9 +224,12 @@ public class GameScreen extends JFrame implements Screen {
         infoTabs.addTab("Notes", null, scrollPane[3], "Check List for who has what cards");
 
         JPanel infoPanel = new JPanel(new BorderLayout());
+
         infoPanel.setOpaque(false);
+        infoPanel.add(playerPanel, BorderLayout.NORTH);
         infoPanel.add(infoTabs, BorderLayout.CENTER);
         infoPanel.add(setupCommandPanel(), BorderLayout.SOUTH);
+        infoPanel.setPreferredSize(new Dimension(infoPanel.getPreferredSize().width + 3, infoOutput.getPreferredSize().height));
         return infoPanel;
 
 
@@ -237,7 +240,7 @@ public class GameScreen extends JFrame implements Screen {
     }
 
     private JPanel setupPlayerPanel() {
-        JPanel panel = new JPanel(new BorderLayout());
+        JPanel panel = new JPanel(null);
 
         PlayerLayout playerPanel = new PlayerLayout(gamePlayers, resolution, 0);
         playerPanel.setOpaque(false);
@@ -246,13 +249,9 @@ public class GameScreen extends JFrame implements Screen {
         border.setTitleColor(Color.WHITE);
         playerPanel.setBorder(border);
 
-        panel.add(playerPanel, BorderLayout.NORTH);
-        panel.add(new JPanel() {
-            @Override
-            public void setOpaque(boolean isOpaque) {
-                super.setOpaque(false);
-            }
-        }, BorderLayout.CENTER);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0; gbc.gridy = 0; gbc.anchor = GridBagConstraints.CENTER;// gbc.fill = GridBagConstraints.BOTH;
+        panel.add(playerPanel);
         panel.setOpaque(false);
         return playerPanel;
     }
@@ -308,7 +307,6 @@ public class GameScreen extends JFrame implements Screen {
     }
 
     public class BoardUI extends JLayeredPane {
-
         public BoardUI() {
             //setLayout(new GridBagLayout());
             GridBagConstraints gbc = new GridBagConstraints();
@@ -329,8 +327,7 @@ public class GameScreen extends JFrame implements Screen {
 
             this.getComponent(0).setLocation(0,0);
             for (int i = 1 ; i < getComponentCount() ; i++) {
-                this.getComponent(i).setSize(imageSize);
-                this.getComponent(i).setLocation(0,0);
+                this.getComponent(i).setBounds(0,0, imageSize.width, imageSize.height);
             }
         }
 

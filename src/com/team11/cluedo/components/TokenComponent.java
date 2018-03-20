@@ -21,6 +21,7 @@ public class TokenComponent extends JLabel {
     protected int currentRoom;
     protected String tokenName;
     protected Point tokenLocation;
+    protected Image tokenImage;
     protected int drawX, drawY;
 
     private int resolutionScalar;
@@ -32,6 +33,7 @@ public class TokenComponent extends JLabel {
         this.tokenID = tokenID;
         this.tokenName = tokenName;
         this.tokenLocation = tokenLocation;
+        this.tokenImage = tokenImage;
         this.resolutionScalar = (int)(resolution.getScalePercentage()* Board.TILE_SIZE);
         this.currentRoom = -1;
         this.drawX = (int)(tokenLocation.getX() * resolutionScalar);
@@ -41,7 +43,6 @@ public class TokenComponent extends JLabel {
         setToolTipText(tokenName);
 
         setBounds(drawX, drawY, resolutionScalar, resolutionScalar);
-        setLocation();
 
         this.addMouseListener(new MouseAdapter() {
             @Override

@@ -24,8 +24,8 @@ public class PlayerLayout extends JPanel {
         this.resolution = resolution;
         this.currentPlayer = currentPlayer;
         this.targetPlayer = currentPlayer;
-        getCardLayout();
-        //getCycleLayout();
+        //getCardLayout();
+        getCycleLayout();
     }
 
     private void getCardLayout() {
@@ -179,10 +179,12 @@ public class PlayerLayout extends JPanel {
 
     private void getCycleLayout() {
         ImageIcon card = new ImageIcon(gamePlayers.getPlayer(currentPlayer).getCardImage());
-        int width = (int)(card.getIconWidth() * resolution.getScalePercentage() * .66),
-                height = (int)(card.getIconHeight() * resolution.getScalePercentage() * .66);
+        double initialScalar = 0.55;
+
+        int width = (int)(card.getIconWidth() * resolution.getScalePercentage() * initialScalar),
+                height = (int)(card.getIconHeight() * resolution.getScalePercentage() * initialScalar);
         int nextPlayer, prevPlayer, next2Player;
-        double otherScalar = .8;
+        double secondScalar = .8;
 
         if(currentPlayer == gamePlayers.getPlayerCount() - 1) {
             nextPlayer = 0;
@@ -212,10 +214,10 @@ public class PlayerLayout extends JPanel {
         ImageIcon next2Card = new ImageIcon(gamePlayers.getPlayer(next2Player).getSelectedCardImage().getScaledInstance(
                 width, height,0));
 
-        JLabel playerCard = new JLabel(currentCard);
-        JLabel nextPlayerCard = new JLabel(nextCard);
-        JLabel next2PlayerCard = new JLabel(next2Card);
-        JLabel prevPlayerCard = new JLabel(prevCard);
+        myJLabel playerCard = new myJLabel(currentCard);
+        myJLabel nextPlayerCard = new myJLabel(nextCard);
+        myJLabel next2PlayerCard = new myJLabel(next2Card);
+        myJLabel prevPlayerCard = new myJLabel(prevCard);
 
         this.setLayout(null);
 
@@ -225,13 +227,13 @@ public class PlayerLayout extends JPanel {
         this.add(next2PlayerCard);
 
         playerCard.setSize(new Dimension(currentCard.getIconWidth(), currentCard.getIconHeight()));
-        prevPlayerCard.setSize(new Dimension((int)(prevCard.getIconWidth() * otherScalar), (int)(prevCard.getIconHeight()*otherScalar)));
-        nextPlayerCard.setSize(new Dimension((int)(nextCard.getIconWidth() * otherScalar), (int)(nextCard.getIconHeight()*otherScalar)));
-        next2PlayerCard.setSize(new Dimension((int)(nextCard.getIconWidth() * otherScalar), (int)(nextCard.getIconHeight()*otherScalar)));
+        prevPlayerCard.setSize(new Dimension((int)(prevCard.getIconWidth() * secondScalar), (int)(prevCard.getIconHeight()*secondScalar)));
+        nextPlayerCard.setSize(new Dimension((int)(nextCard.getIconWidth() * secondScalar), (int)(nextCard.getIconHeight()*secondScalar)));
+        next2PlayerCard.setSize(new Dimension((int)(nextCard.getIconWidth() * secondScalar), (int)(nextCard.getIconHeight()*secondScalar)));
 
         int y = (int)(20 * resolution.getScalePercentage());
         this.setPreferredSize(new Dimension(width*3, height+(2*y)));
-        int xPosition = this.getPreferredSize().width/2 - playerCard.getWidth()/2;
+        int xPosition = this.getPreferredSize().width /2 - playerCard.getWidth()/2;
         int yPosition = (int)((30 * resolution.getScalePercentage()) + y);
 
         playerCard.setLocation(xPosition, y);
@@ -242,10 +244,23 @@ public class PlayerLayout extends JPanel {
 
     public void reDraw(int currentPlayer) {
         this.targetPlayer = currentPlayer;
-        this.removeAll();
-        getCardLayout();
-        //new playerSwitcher().execute();
+        //this.removeAll();
+        //getCardLayout();
+        new playerSwitcher().execute();
         this.revalidate();
+    }
+
+    public class myJLabel extends JLabel {
+        public myJLabel(ImageIcon icon){
+            super(icon);
+        }
+
+        @Override
+        public void paintComponent(Graphics g){
+            super.paintComponent(g);
+            ImageIcon image = ((ImageIcon)super.getIcon());
+            g.drawImage(image.getImage(), 0, 0, getWidth(), getHeight(), this);
+        }
     }
 
     public class playerSwitcher extends SwingWorker<Integer, String> {
@@ -257,7 +272,7 @@ public class PlayerLayout extends JPanel {
                 if (currentPlayer == gamePlayers.getPlayerCount()) {
                     currentPlayer = 0;
                 }
-                JLabel currCard = (JLabel) getComponent(0);
+                myJLabel currCard = (myJLabel) getComponent(0);
 
                 int card;
                 if (currentPlayer == 0)
@@ -267,8 +282,8 @@ public class PlayerLayout extends JPanel {
                 currCard.setIcon(new ImageIcon(gamePlayers.getPlayer(card).getSelectedCardImage().getScaledInstance(
                         currCard.getWidth(), currCard.getHeight(), 0)));
 
-                JLabel prevCard = (JLabel) getComponent(1);
-                JLabel nextCard = (JLabel) getComponent(2);
+                myJLabel prevCard = (myJLabel) getComponent(1);
+                myJLabel nextCard = (myJLabel) getComponent(2);
 
                 int targetX = currCard.getX(), targetY = currCard.getY(),
                         targetW = currCard.getWidth(), targetH = currCard.getHeight();
