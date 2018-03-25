@@ -20,6 +20,7 @@ public class Player {
     private Image cardImage, selectedCardImage;
     private PlayerHand playerHand;
     private Notes playerNotes;
+    private boolean canQuestion;
 
     public Player(String playerName, Suspect suspectToken, Image cardImage, Image selectedCardImage, Resolution resolution) {
         this.playerName = playerName;
@@ -28,6 +29,7 @@ public class Player {
         this.selectedCardImage = selectedCardImage;
         this.playerHand = new PlayerHand();
         this.playerNotes = new Notes(resolution);
+        this.canQuestion = false;
     }
 
     public String getPlayerName() {

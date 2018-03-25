@@ -30,7 +30,7 @@ public class MovementHandling {
 
     public void playerMovement(ArrayList<Direction> moves, int remainingMoves, boolean moveEnabled) {
         gameScreen.getMoveOverlay().setValidMoves(new HashSet<>(), currentPlayer);
-        gameScreen.getDoorOverlay().setExits(new HashSet<>(), currentPlayer);
+        gameScreen.getDoorOverlay().setExits(new ArrayList<>(), currentPlayer);
         AnimateToken animateToken = new AnimateToken(gameScreen, remainingMoves, moveEnabled, commandInput,this);
         animateToken.setMoves(moves);
         animateToken.setToken(currentPlayer.getSuspectToken());
