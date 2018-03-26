@@ -188,17 +188,13 @@ public class CommandInput {
                         case "back":
                             break;
 
-                        case "time":
-                            movementHandling.getAvgTime();
-                            break;
-
                         default:
                             infoOutput.append("Unknown command\nUse command 'help' for instructions.\n");
                             break;
                     }
                 }
             }
-            if (!(command.equals("help")||command.equals("notes") || command.equals("fill"))){
+            if (!(command.equals("help")||command.equals("notes"))){
                 gameScreen.setTab(0);
             }
             gameScreen.reDrawFrame();
@@ -283,7 +279,11 @@ public class CommandInput {
             if (returnValue == 1){
                 this.gameScreen.getDoorOverlay().setExits(new ArrayList<>(), currentPlayer);
             } else if (returnValue == 0){
-                this.gameScreen.getInfoOutput().append("Exit " + (Integer.parseInt(inputs[1]) ) + " is blocked by another player\n");
+                if (inputs.length == 2){
+                    this.gameScreen.getInfoOutput().append("Exit " + (Integer.parseInt(inputs[1]) ) + " is blocked by another player\n");
+                } else if (inputs.length == 1){
+                    this.gameScreen.getInfoOutput().append("Exit 1" + " is blocked by another player\n");
+                }
                 this.remainingMoves++;
             }
 
@@ -482,6 +482,17 @@ public class CommandInput {
                     @Override
                     public void mouseClicked(MouseEvent e) {
                         super.mouseClicked(e);
+
+                        if (currentPlayer.getSuspectToken().isInRoom()){
+                            if (gameScreen.getGameBoard().getBoardPos((int)boardPos.getLocation().getX(), (int)boardPos.getLocation().getY()).getTileType() == TileType.DOOR){
+                                if (remainingMoves > 0){
+                                    String[] buffer = new String[2];
+                                    buffer[1] = Integer.toString(gameScreen.getBoardPanel().checkMoveOut((int)boardPos.getLocation().getY(), (int)boardPos.getLocation().getX()) + 1);
+                                    moveOut(buffer);
+                                }
+                            }
+                        }
+
                         if (moveEnabled) {
                             if (gameScreen.getBoardPanel().checkPoint((int)boardPos.getLocation().getY(), (int)boardPos.getLocation().getX())) {
                                 movementHandling.mouseClickMove(new Point((int)boardPos.getLocation().getY(), (int)boardPos.getLocation().getX()), remainingMoves, moveEnabled);

@@ -27,6 +27,7 @@ import javax.swing.plaf.basic.BasicTabbedPaneUI;
 import javax.swing.text.DefaultCaret;
 import java.awt.*;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.HashSet;
 
 public class GameScreen extends JFrame implements Screen {
@@ -37,21 +38,21 @@ public class GameScreen extends JFrame implements Screen {
     private PlayerHandLayout playerHandPanel;
     private NotesPanel notesPanel;
 
-    private MoveOverlay moveOverlay;
-    private DoorOverlay doorOverlay;
+    private final MoveOverlay moveOverlay;
+    private final DoorOverlay doorOverlay;
 
     private JTextArea infoOutput;
     private JTabbedPane infoTabs;
     private JTextField commandInput;
 
-    private Board gameBoard;
-    private Suspects gameSuspects;
-    private Weapons gameWeapons;
-    private Players gamePlayers;
-    private Assets gameAssets;
-    private Cards gameCards;
+    private final Board gameBoard;
+    private final Suspects gameSuspects;
+    private final Weapons gameWeapons;
+    private final Players gamePlayers;
+    private final Assets gameAssets;
+    private final Cards gameCards;
 
-    private Resolution resolution;
+    private final Resolution resolution;
     private Dimension currSize;
 
     public GameScreen(Board gameBoard, Suspects gameSuspects, Weapons gameWeapons, Players gamePlayers, Assets gameAssets, Resolution resolution) throws IOException{
@@ -343,6 +344,20 @@ public class GameScreen extends JFrame implements Screen {
                 }
             }
             return false;
+        }
+
+        public int checkMoveOut(int x, int y){
+            OverlayTile clickedPoint = new OverlayTile(y,x);
+            ArrayList<OverlayTile> validDoors = doorOverlay.getValidExits();
+
+            if (!validDoors.isEmpty()){
+                for (OverlayTile overlayTile : validDoors){
+                    if (overlayTile.getLocation().equals(clickedPoint.getLocation())){
+                        return validDoors.indexOf(overlayTile);
+                    }
+                }
+            }
+            return -1;
         }
 
 

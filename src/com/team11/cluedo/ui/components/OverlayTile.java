@@ -122,7 +122,6 @@ public class OverlayTile {
 
         //Player is in a room
         else{
-
             //Draw the doors
             if (currentPlayer.getSuspectToken().isInRoom()){
 
@@ -137,7 +136,6 @@ public class OverlayTile {
                 g2.setFont(new Font("Orange Kid",Font.BOLD, fontSize));
                 g2.setColor(Color.BLACK);
                 g2.drawString(Integer.toString(exitNum),(int)(this.getLocation().getY() * (resolutionScalar) + 10), (int)(this.getLocation().getX() * (resolutionScalar) + 22) );
-
             }
 
             //Check to see if the player is in a room with a secret passageway
@@ -147,20 +145,16 @@ public class OverlayTile {
                 g2.setColor(new Color(255,0,0, 90));
 
                 if (currentPlayer.getSuspectToken().getCurrentRoom() == 0 || currentPlayer.getSuspectToken().getCurrentRoom() == 8){
-
                     for (OverlayTile ov : kitchenStudy){
                         g2.fillRect((int)ov.getLocation().getY() * (resolutionScalar), (int)ov.getLocation().getX() * (resolutionScalar), resolutionScalar, resolutionScalar);
                         g2.drawRect((int)ov.getLocation().getY() * (resolutionScalar), (int)ov.getLocation().getX() * (resolutionScalar), resolutionScalar, resolutionScalar);
                     }
-
                 }
                 else{
-
                     for (OverlayTile ov : conservatoryLounge){
                         g2.fillRect((int)ov.getLocation().getY() * (resolutionScalar), (int)ov.getLocation().getX() * (resolutionScalar), resolutionScalar, resolutionScalar);
                         g2.drawRect((int)ov.getLocation().getY() * (resolutionScalar), (int)ov.getLocation().getX() * (resolutionScalar), resolutionScalar, resolutionScalar);
                     }
-
                 }
             }
         }
