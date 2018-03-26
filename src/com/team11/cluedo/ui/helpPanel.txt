@@ -37,7 +37,7 @@ this command will let them use the secret passage.
         what cards you know are not part of the
         murder.
 	
--'cheat' : Displays the cards in the envelope
+- 'cheat' : Displays the cards in the envelope
 			 
 - 'done' : Current player will end their turn.
 Next Player's turn will start.

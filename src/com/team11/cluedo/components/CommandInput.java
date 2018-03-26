@@ -78,6 +78,7 @@ public class CommandInput {
             String[] inputs = input.toLowerCase().split(" ");
             String command = inputs[0];
 
+
             this.gameScreen.getCommandInput().setText("");
             if (mouseEnabled) {
                 infoOutput.append("> " + input + '\n');
@@ -166,7 +167,10 @@ public class CommandInput {
                             break;
 
                         case "help":
-                            help();
+                            if(inputs.length == 1)
+                                help();
+                            else
+                                helps(inputs[1]);
                             break;
 
                         case "weapon":
@@ -324,6 +328,79 @@ public class CommandInput {
 
     private void help() {
         this.gameScreen.setTab(1);
+    }
+
+    private void helps(String command){
+        switch (command) {
+            case "roll":
+                infoOutput.append("- 'roll' : Dice would roll giving you the number\n" +
+                        "of movements you are allowed to move\n\n");
+                break;
+
+            case "move" :
+                infoOutput.append("- 'move': Move player in desired direction \n" +
+                        "        l = Left\t\n" +
+                        "        r = Right\n" +
+                        "        u = Up\n" +
+                        "        d = Down\n" +
+                        "Example\n" +
+                        "'move llddru' : \n" +
+                        " move left 2 spaces, move down 2 spaces\n" +
+                        " move right once and move up once\n" +
+                        "-You can use arrow keys to move\n" +
+                        "-User can also click the highlighted \n squares\n" +
+                        "-Type 'move' again to toggle movement on and off\n\n");
+                break;
+
+            case "exit":
+                infoOutput.append("- 'exit' :\nuser can exit a room with this command.\n" +
+                        "Exit depends on number of door's in room.\n" +
+                        "Doors to choose from are ranged 1-4\n" +
+                        "i.e. 1 is leftmost door, 4 is rightmost door\n" +
+                        "Example :'exit 2' :\n" +
+                        "Player will exit through second door.\n" +
+                        "             'exit' :\n" +
+                        "Player will exit through first door by \n default.\n\n");
+                break;
+
+            case "cards":
+                infoOutput.append("- 'cards' : This will display the current \ncards that the user has\n\n");
+                break;
+
+            case "passage":
+                infoOutput.append("- 'passage' : \nIf player is in a room with secret passage\n" +
+                        "this command will let them use the secret passage\n\n");
+                break;
+
+            case "notes":
+                infoOutput.append("- 'notes' :\n Opens the users notes page.\n" +
+                        " You can click on any cell to highlight\n" +
+                        " what cards you know are not part of the\n" +
+                        " murder.\n\n");
+                break;
+
+            case "cheat":
+                infoOutput.append("- 'cheat' : \nDisplays the cards in the envelope\n\n");
+                break;
+
+            case "done":
+                infoOutput.append("- 'done' :\n Current player will end their turn.\n" +
+                        "Next Player's turn will start.\n\n");
+                break;
+
+            case "back":
+                infoOutput.append("- 'back' :\n Brings you back to the game log.\n\n");
+                break;
+
+            case  "quit":
+                infoOutput.append("- 'quit' :\n Player can quit/stop entire game.\n\n");
+                break;
+
+            default:
+                infoOutput.append("Unknown command\nUse command 'help' + 'type command' for instructions.\n");
+                break;
+        }
+
     }
 
     private void notes(){
