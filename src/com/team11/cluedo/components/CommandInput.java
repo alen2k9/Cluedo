@@ -181,6 +181,10 @@ public class CommandInput {
                             notes();
                             break;
 
+                        case "cards":
+                            cards();
+                            break;
+
                         case "cheat":
                             cheat();
                             break;
@@ -202,7 +206,7 @@ public class CommandInput {
                     }
                 }
             }
-            if (!(command.equals("help")||command.equals("notes") || command.equals("fill"))){
+            if (!(command.equals("help")||command.equals("notes") || command.equals("cards"))){
                 gameScreen.setTab(0);
             }
             gameScreen.reDrawFrame();
@@ -329,6 +333,8 @@ public class CommandInput {
     private void help() {
         this.gameScreen.setTab(1);
     }
+
+    private void cards(){this.gameScreen.setTab(2);}
 
     private void helps(String command){
         switch (command) {
