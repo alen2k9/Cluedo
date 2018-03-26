@@ -8,11 +8,13 @@ of movements you are allowed to move
         r = Right
         u = Up
         d = Down
-        You can also use arrow keys to move
-Example
+    Example
     'move llddru' : 
          move left 2 spaces, move down 2 spaces,
          move right once and move up once
+    -You can use arrow keys to move
+    -User can also click the highlighted squares
+    -Type 'move' again to toggle movement on and off
 
 - 'exit' : user can exit a room with this command.
         Exit depends on number of door's in room.
@@ -24,6 +26,9 @@ Example
     'exit' :
         Player will exit through first door by default.
 
+- 'cards' : This will display the current cards that
+	the user has
+
 - 'passage' : If player is in a room with secret passage,
 this command will let them use the secret passage.
 
@@ -31,6 +36,8 @@ this command will let them use the secret passage.
         You can click on any cell to highlight
         what cards you know are not part of the
         murder.
+	
+-'cheat' : Displays the cards in the envelope
 			 
 - 'done' : Current player will end their turn.
 Next Player's turn will start.
