@@ -33,9 +33,8 @@ public class AnimateToken extends SwingWorker<Integer, String> {
     private CommandInput commandInput;
     private Suspect token;
 
-    private final int distance = 2, delay = 5;
-
     private int resolutionScalar, drawX, drawY;
+    private double percentageScalar;
 
     private ArrayList<Direction> moves;
     private int remainingMoves;
@@ -45,6 +44,7 @@ public class AnimateToken extends SwingWorker<Integer, String> {
                         boolean moveEnabled, CommandInput commandInput, MovementHandling movementHandling) {
         this.gameScreen = gameScreen;
         this.resolutionScalar = (int)(gameScreen.getResolution().getScalePercentage() * Board.TILE_SIZE);
+        this.percentageScalar = gameScreen.getResolution().getScalePercentage();
         this.remainingMoves = remainingMoves;
         this.moveEnabled = moveEnabled;
         this.commandInput = commandInput;
@@ -53,6 +53,8 @@ public class AnimateToken extends SwingWorker<Integer, String> {
 
     @Override
     protected Integer doInBackground() throws Exception {
+        int distance = 2, delay = (int)(4*percentageScalar);
+
         commandInput.setMouseEnabled(false);
         commandInput.setMoveEnabled(false);
         Player currentPlayer = movementHandling.getCurrentPlayer();

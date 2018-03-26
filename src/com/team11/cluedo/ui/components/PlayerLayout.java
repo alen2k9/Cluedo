@@ -8,6 +8,7 @@
 
 package com.team11.cluedo.ui.components;
 
+import com.team11.cluedo.components.T11Label;
 import com.team11.cluedo.players.Players;
 import com.team11.cluedo.ui.Resolution;
 
@@ -214,10 +215,10 @@ public class PlayerLayout extends JPanel {
         ImageIcon next2Card = new ImageIcon(gamePlayers.getPlayer(next2Player).getSelectedCardImage().getScaledInstance(
                 width, height,0));
 
-        myJLabel playerCard = new myJLabel(currentCard);
-        myJLabel nextPlayerCard = new myJLabel(nextCard);
-        myJLabel next2PlayerCard = new myJLabel(next2Card);
-        myJLabel prevPlayerCard = new myJLabel(prevCard);
+        T11Label playerCard = new T11Label(currentCard);
+        T11Label nextPlayerCard = new T11Label(nextCard);
+        T11Label next2PlayerCard = new T11Label(next2Card);
+        T11Label prevPlayerCard = new T11Label(prevCard);
 
         this.setLayout(null);
 
@@ -250,19 +251,6 @@ public class PlayerLayout extends JPanel {
         this.revalidate();
     }
 
-    public class myJLabel extends JLabel {
-        public myJLabel(ImageIcon icon){
-            super(icon);
-        }
-
-        @Override
-        public void paintComponent(Graphics g){
-            super.paintComponent(g);
-            ImageIcon image = ((ImageIcon)super.getIcon());
-            g.drawImage(image.getImage(), 0, 0, getWidth(), getHeight(), this);
-        }
-    }
-
     public class playerSwitcher extends SwingWorker<Integer, String> {
         @Override
         protected Integer doInBackground() throws Exception {
@@ -272,7 +260,7 @@ public class PlayerLayout extends JPanel {
                 if (currentPlayer == gamePlayers.getPlayerCount()) {
                     currentPlayer = 0;
                 }
-                myJLabel currCard = (myJLabel) getComponent(0);
+                T11Label currCard = (T11Label) getComponent(0);
 
                 int card;
                 if (currentPlayer == 0)
@@ -282,8 +270,8 @@ public class PlayerLayout extends JPanel {
                 currCard.setIcon(new ImageIcon(gamePlayers.getPlayer(card).getSelectedCardImage().getScaledInstance(
                         currCard.getWidth(), currCard.getHeight(), 0)));
 
-                myJLabel prevCard = (myJLabel) getComponent(1);
-                myJLabel nextCard = (myJLabel) getComponent(2);
+                T11Label prevCard = (T11Label) getComponent(1);
+                T11Label nextCard = (T11Label) getComponent(2);
 
                 int targetX = currCard.getX(), targetY = currCard.getY(),
                         targetW = currCard.getWidth(), targetH = currCard.getHeight();

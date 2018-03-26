@@ -214,23 +214,23 @@ public class Assets {
     }
 
     public Image getConservatoryCard() {
-        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("roomCard.png"));
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("conservatoryCard.png"));
     }
 
     public Image getDiningCard() {
-        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("roomCard.png"));
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("diningRoomCard.png"));
     }
 
     public Image getBilliardCard() {
-        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("roomCard.png"));
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("billiardRoomCard.png"));
     }
 
     public Image getLibraryCard() {
-        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("roomCard.png"));
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("libraryCard.png"));
     }
 
     public Image getLoungeCard() {
-        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("roomCard.png"));
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("loungeCard.png"));
     }
 
     public Image getHallCard() {
@@ -238,7 +238,7 @@ public class Assets {
     }
 
     public Image getStudyCard() {
-        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("roomCard.png"));
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("studyCard.png"));
     }
 
     public Image getSelectedKitchenCard() {
