@@ -27,6 +27,7 @@ public class Notes extends JTable {
     private RoomData roomData = new RoomData();
 
     private HashSet<Point> cellToPaint = new HashSet<>();
+    private HashSet<Point> customCellsToPaint = new HashSet<>();
 
     private Resolution resolution;
 
@@ -111,6 +112,7 @@ public class Notes extends JTable {
 
         //Set the renderer for the table
         this.setDefaultRenderer(Object.class, new NotesRenderer());
+        addMouseListener(new NotesListener());
     }
 
     //Method which will paint a desired cell based on the player number and the value of the row they highlight
@@ -131,27 +133,52 @@ public class Notes extends JTable {
     }
 
 
+    private class NotesListener extends MouseAdapter{
+
+        @Override
+        public void mouseClicked(MouseEvent e){
+            super.mouseClicked(e);
+            int rows;
+            int cols;
+
+            rows = getSelectedRow();
+            cols = getSelectedColumn();
+            Point selected = new Point(rows, cols);
+            if ( !customCellsToPaint.contains(selected) && (cols != 0) && (rows != 0) &&(rows != 7)
+                    && (rows != 8) && (rows!= 15) && (rows != 16) && !(cellToPaint.contains(selected))){
+                customCellsToPaint.add(selected);
+            } else {
+                customCellsToPaint.remove(selected);
+            }
+
+            repaint();
+        }
+
+    }
+
     //Custom Renderer for the table cells
     public class NotesRenderer extends DefaultTableCellRenderer{
         @Override
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+                                                       boolean hasFocus, int row, int column) {
             JLabel label = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
             label.setHorizontalAlignment(SwingConstants.CENTER);
             label.setVerticalAlignment(SwingConstants.CENTER);
-
-
             label.setForeground(Color.WHITE);
+            Point selected = new Point(row, column);
 
             if (column == 0){
                 label.setBorder(BorderFactory.createMatteBorder(0,2,0,1,Color.BLACK));
             }
-            if (cellToPaint.contains(new Point(row, column)) && column > 1){
+
+            //Non-editable boxes
+            if (cellToPaint.contains(selected) && column > 1){
                 label.setBackground(Color.YELLOW);
                 label.setForeground(Color.DARK_GRAY);
                 label.setFont(new Font("Ariel", Font.BOLD, (int)(25*resolution.getScalePercentage())));
                 label.setText("X");
-            } else if (cellToPaint.contains(new Point(row, column)) && column == 1){
+            } else if (cellToPaint.contains(selected) && column == 1){
                 label.setBackground(Color.YELLOW);
                 label.setForeground(Color.DARK_GRAY);
                 label.setFont(new Font("Ariel", Font.BOLD, (int)(25*resolution.getScalePercentage())));
@@ -159,6 +186,14 @@ public class Notes extends JTable {
 
             } else{
                 label.setBackground(Color.DARK_GRAY);
+            }
+
+            //Question mark boxes
+            if (customCellsToPaint.contains(selected)){
+                label.setBackground(Color.ORANGE);
+                label.setForeground(Color.DARK_GRAY);
+                label.setFont(new Font("Ariel", Font.BOLD, (int)(25*resolution.getScalePercentage())));
+                label.setText("?");
             }
 
             return label;

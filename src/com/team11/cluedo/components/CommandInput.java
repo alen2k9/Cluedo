@@ -163,7 +163,12 @@ public class CommandInput {
                             break;
 
                         case "passage":
-                            secretPassage();
+                            if (remainingMoves > 0){
+                                secretPassage();
+                            }
+                            else {
+                                infoOutput.append("Cannot use a secret passageway with zero moves");
+                            }
                             break;
 
                         case "help":
@@ -245,11 +250,16 @@ public class CommandInput {
         if (!(currentPlayer.getSuspectToken().getCurrentRoom() == -1) && this.gameScreen.getGameBoard().getRoom(currentPlayer.getSuspectToken().getCurrentRoom()).hasSecretPassage() ) {
             if (currentPlayer.getSuspectToken().useSecretPassageWay(this.gameScreen.getGameBoard())){
                 String roomName = currentPlayer.getSuspectToken().getCurrentRoomName();
+                remainingMoves--;
+
                 infoOutput.append(this.playerName + " used secret passageway.\n" + this.playerName + " is now in the " + roomName + ".\n");
-                for (Point point : this.gameScreen.getGameBoard().getRoom(this.currentPlayer.getSuspectToken().getCurrentRoom()).getEntryPoints()){
-                    overlayTiles.add(new OverlayTile(point));
+                if (remainingMoves > 0){
+                    for (Point point : this.gameScreen.getGameBoard().getRoom(this.currentPlayer.getSuspectToken().getCurrentRoom()).getEntryPoints()){
+                        overlayTiles.add(new OverlayTile(point));
+                    }
+                    this.gameScreen.getDoorOverlay().setExits(overlayTiles, this.currentPlayer);
                 }
-                this.gameScreen.getDoorOverlay().setExits(overlayTiles, this.currentPlayer);
+
             } else {
                 infoOutput.append("There are no secret passageways to use in this room!\n");
             }
