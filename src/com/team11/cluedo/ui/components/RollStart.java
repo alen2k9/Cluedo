@@ -35,8 +35,8 @@ public class RollStart extends SwingWorker<Integer, String> {
 
     @Override
     protected Integer doInBackground() throws Exception {
-        Dice die = new Dice();
         int diceNumber;
+        Dice highRoller = gameScreen.getGameDice();
         String playerName;
         ArrayList<Integer> rolledNumbers;
 
@@ -52,7 +52,7 @@ public class RollStart extends SwingWorker<Integer, String> {
             rolledNumbers = new ArrayList<>();
 
             for(int i = 0; i < players.size() ; i++) {
-                diceNumber = die.rolldice();
+                diceNumber = gameScreen.getGameDice().rollDice();
                 playerName = gameScreen.getGamePlayers().getPlayer(players.get(i)).getPlayerName();
                 infoOutput.append(playerName + " rolled a " + diceNumber + ".\n");
                 currentPlayerID = players.get(i);
@@ -67,6 +67,7 @@ public class RollStart extends SwingWorker<Integer, String> {
                     if (rolledNumbers.get(highRollers.get(0)) < diceNumber) {
                         highRollers = new HashMap<>();
                         highRollers.put(0, i);
+                        highRoller = gameScreen.getGameDice();
                     } else if (rolledNumbers.get(highRollers.get(0)).equals(diceNumber)) {
                         highRollers.put(highRollers.size(), i);
                     }
@@ -89,6 +90,7 @@ public class RollStart extends SwingWorker<Integer, String> {
 
         Thread.sleep(500);
 
+        gameScreen.getGameDice().setDoAnimation(true);
         currentPlayerID = players.get(highRollers.get(0));
         currentPlayer = gameScreen.getGamePlayers().getPlayer(currentPlayerID);
         playerName = currentPlayer.getPlayerName();

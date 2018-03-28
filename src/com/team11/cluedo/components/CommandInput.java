@@ -78,7 +78,6 @@ public class CommandInput {
             String[] inputs = input.toLowerCase().split(" ");
             String command = inputs[0];
 
-
             this.gameScreen.getCommandInput().setText("");
             if (mouseEnabled) {
                 infoOutput.append("> " + input + '\n');
@@ -235,6 +234,7 @@ public class CommandInput {
 
         this.canRoll = true; this.canCheat = true;
         this.dice = 0; this.remainingMoves = 0;
+
         this.currentPlayerID++;
         if(this.currentPlayerID == this.numPlayers)
             this.currentPlayerID = 0;
@@ -306,8 +306,8 @@ public class CommandInput {
 
     private void diceRoll() {
         if(this.canRoll) {
-            Dice die = new Dice();
-            this.dice = die.rolldice();
+            gameScreen.getGameDice().setVisible(true);
+            this.dice = gameScreen.getGameDice().rollDice();
             this.remainingMoves = this.dice;
 
             if (currentPlayer.getSuspectToken().isInRoom()) {

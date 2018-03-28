@@ -9,7 +9,9 @@
 package com.team11.cluedo.ui;
 
 import com.team11.cluedo.assets.Assets;
+import com.team11.cluedo.board.room.TileType;
 import com.team11.cluedo.components.Autocomplete;
+import com.team11.cluedo.components.Dice;
 import com.team11.cluedo.components.InputData;
 
 import com.team11.cluedo.board.Board;
@@ -37,6 +39,7 @@ public class GameScreen extends JFrame implements Screen {
     private JPanel playerPanel;
     private PlayerHandLayout playerHandPanel;
     private NotesPanel notesPanel;
+    private Dice gameDice;
 
     private final MoveOverlay moveOverlay;
     private final DoorOverlay doorOverlay;
@@ -55,7 +58,8 @@ public class GameScreen extends JFrame implements Screen {
     private final Resolution resolution;
     private Dimension currSize;
 
-    public GameScreen(Board gameBoard, Suspects gameSuspects, Weapons gameWeapons, Players gamePlayers, Assets gameAssets, Resolution resolution) throws IOException{
+    public GameScreen(Board gameBoard, Suspects gameSuspects, Weapons gameWeapons, Players gamePlayers, Assets gameAssets, Resolution resolution, String name) throws IOException{
+        super(name);
         this.gameBoard = gameBoard;
         this.gameSuspects = gameSuspects;
         this.gameWeapons = gameWeapons;
@@ -65,11 +69,11 @@ public class GameScreen extends JFrame implements Screen {
         this.gameCards = new Cards(resolution);
         this.moveOverlay = new MoveOverlay(this.getGamePlayers().getPlayer(0), this.resolution);
         this.doorOverlay = new DoorOverlay(this.getGamePlayers().getPlayer(0), this.resolution);
+        this.gameDice = new Dice(gameAssets, resolution);
     }
 
     @Override
     public void createScreen(String name) {
-        super.setName(name);
         super.setResizable(false);
         super.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
@@ -217,6 +221,7 @@ public class GameScreen extends JFrame implements Screen {
 
         for (JScrollPane pane : scrollPane) {
             pane.setBorder(null);
+            pane.getVerticalScrollBar().setUnitIncrement(15);
         }
 
         infoTabs.addTab("Game Log", null, scrollPane[0], "Game Log - Forget what's happened so far?");
@@ -295,8 +300,8 @@ public class GameScreen extends JFrame implements Screen {
         return this.doorOverlay;
     }
 
-    public void setTab(int i) {
-        infoTabs.setSelectedIndex(i);
+    public Dice getGameDice() {
+        return gameDice;
     }
 
     public BoardUI getBoardPanel() {
@@ -307,15 +312,14 @@ public class GameScreen extends JFrame implements Screen {
         return this.resolution;
     }
 
+    public void setTab(int i) {
+        infoTabs.setSelectedIndex(i);
+    }
+
     public class BoardUI extends JLayeredPane {
         public BoardUI() {
-            //setLayout(new GridBagLayout());
-            GridBagConstraints gbc = new GridBagConstraints();
-            gbc.weightx = 1; gbc.weighty = 1;
-            gbc.gridx = 0; gbc.gridy = 0;
-            gbc.fill = GridBagConstraints.BOTH;
-
             add(gameCards.getMurderEnvelope());
+            add(gameDice);
             add(gameSuspects);
             add(gameWeapons);
             add(doorOverlay);
@@ -328,6 +332,7 @@ public class GameScreen extends JFrame implements Screen {
 
             this.getComponent(0).setLocation(0,0);
             for (int i = 1 ; i < getComponentCount() ; i++) {
+                this.getComponent(i).setPreferredSize(imageSize);
                 this.getComponent(i).setBounds(0,0, imageSize.width, imageSize.height);
             }
         }

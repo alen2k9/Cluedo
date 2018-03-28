@@ -279,6 +279,37 @@ public class Assets {
 
     ////////////////////////////////////////////
     //                                        //
+    //             DICE IMAGES                //
+    //                                        //
+    ////////////////////////////////////////////
+
+    public Image getDice1() {
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("dice_1.png"));
+    }
+
+    public Image getDice2() {
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("dice_2.png"));
+    }
+
+    public Image getDice3() {
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("dice_3.png"));
+    }
+
+    public Image getDice4() {
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("dice_4.png"));
+    }
+
+    public Image getDice5() {
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("dice_5.png"));
+    }
+
+    public Image getDice6() {
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("dice_6.png"));
+    }
+
+
+    ////////////////////////////////////////////
+    //                                        //
     //             CUSTOM FONTS               //
     //                                        //
     ////////////////////////////////////////////

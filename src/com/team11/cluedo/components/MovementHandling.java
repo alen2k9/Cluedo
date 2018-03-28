@@ -37,31 +37,6 @@ public class MovementHandling {
         animateToken.execute();
     }
 
-    public void playerMovement(Direction move, int remainingMoves, boolean moveEnabled) {
-        if(currentPlayer.getSuspectToken().checkMove(gameScreen.getGameBoard(), new ArrayList<>(Collections.singletonList(move)))) {
-            currentPlayer.getSuspectToken().move(gameScreen.getGameBoard(), move);
-            if (currentPlayer.getSuspectToken().isInRoom()) {
-                String roomName = currentPlayer.getSuspectToken().getCurrentRoomName();
-                remainingMoves = 0;
-                gameScreen.getInfoOutput().append(currentPlayer.getPlayerName() + " is now in the " + roomName + "\n");
-                CommandProcessing.printRemainingMoves(remainingMoves, gameScreen.getInfoOutput());
-            } else {
-                CommandProcessing.printRemainingMoves(--remainingMoves, gameScreen.getInfoOutput());
-            }
-            if (commandInput.isMoveEnabled()) {
-                    gameScreen.getMoveOverlay().setValidMoves(findValidMoves(remainingMoves), currentPlayer);
-            }
-        } else {
-            gameScreen.getInfoOutput().append("This path isn't valid.\nYou have " + remainingMoves + " moves remaining.\n");
-            commandInput.setMoveEnabled(true);
-        }
-
-        if (remainingMoves == 0 && moveEnabled) {
-            commandInput.setMoveEnabled(disableMove());
-        }
-        commandInput.setRemainingMoves(remainingMoves);
-    }
-
     public HashSet<OverlayTile> findValidMoves(int remainingMoves) {
         HashSet<OverlayTile> validMoves = new HashSet<>();
 
