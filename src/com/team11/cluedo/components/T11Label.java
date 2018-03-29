@@ -16,6 +16,10 @@ public class T11Label extends JLabel {
         super(icon);
     }
 
+    public T11Label() {
+        super();
+    }
+
     @Override
     public void paintComponent(Graphics g){
         super.paintComponent(g);

@@ -32,6 +32,8 @@ public class InputData {
         addElement("godroll", this.commandData);
         addElement("finished", this.commandData);
         addElement("question", this.commandData);
+        addElement("cards", this.commandData);
+
 
 
         SuspectData suspectData = new SuspectData();

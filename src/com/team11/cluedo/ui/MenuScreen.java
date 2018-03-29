@@ -38,7 +38,7 @@ public class MenuScreen implements Screen {
 
     private Assets gameAssets;
 
-    public MenuScreen() throws IOException{
+    public MenuScreen() throws IOException {
 
         //  Used to handle the assets
         this.gameAssets = new Assets();
@@ -53,24 +53,23 @@ public class MenuScreen implements Screen {
         Players gamePlayers = new Players();
 
 
-        this.gameScreen = new GameScreen(gameBoard, gameSuspects, gameWeapons, gamePlayers, gameAssets, resolution);
+        this.gameScreen = new GameScreen(gameBoard, gameSuspects, gameWeapons, gamePlayers, gameAssets, resolution, "Cluedo");
         this.gameInput = new CommandInput(gameScreen);
 
-
-
+        //*/
         SuspectData suspectData = new SuspectData();
-        for (int i = 0 ; i < 4 ; i++)
+        for (int i = 0; i < 4; i++)
             gamePlayers.addPlayer(suspectData.getSuspectName(i), gameSuspects.getSuspect(i), resolution);
 
         startGame();
-
+        //*/
 
         /*
         //  Calling functions to create screen
         this.setupScreen(0);
         this.createScreen("Cluedo - Title Screen");
         this.displayScreen();
-    */
+        */
     }
 
     @Override

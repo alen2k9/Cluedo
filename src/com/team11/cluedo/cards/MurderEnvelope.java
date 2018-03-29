@@ -8,15 +8,11 @@
 
 package com.team11.cluedo.cards;
 
-import com.team11.cluedo.assets.Assets;
 import com.team11.cluedo.ui.Resolution;
-import com.team11.cluedo.ui.panel.BackgroundPanel;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 
 public class MurderEnvelope extends JComponent {
     private SuspectCard suspectCard;
