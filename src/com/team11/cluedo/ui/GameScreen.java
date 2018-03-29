@@ -14,6 +14,9 @@ import com.team11.cluedo.components.InputData;
 
 import com.team11.cluedo.board.Board;
 import com.team11.cluedo.players.Players;
+
+import com.team11.cluedo.questioning.QuestionPanel;
+
 import com.team11.cluedo.suspects.Suspects;
 import com.team11.cluedo.ui.components.*;
 import com.team11.cluedo.ui.panel.BackgroundPanel;
@@ -38,8 +41,10 @@ public class GameScreen extends JFrame implements Screen {
     private PlayerHandLayout playerHandPanel;
     private NotesPanel notesPanel;
 
-    private final MoveOverlay moveOverlay;
-    private final DoorOverlay doorOverlay;
+    private QuestionPanel questionPanel;
+
+    private MoveOverlay moveOverlay;
+    private DoorOverlay doorOverlay;
 
     private JTextArea infoOutput;
     private JTabbedPane infoTabs;
@@ -65,6 +70,7 @@ public class GameScreen extends JFrame implements Screen {
         this.gameCards = new Cards(resolution);
         this.moveOverlay = new MoveOverlay(this.getGamePlayers().getPlayer(0), this.resolution);
         this.doorOverlay = new DoorOverlay(this.getGamePlayers().getPlayer(0), this.resolution);
+        this.questionPanel = new QuestionPanel(resolution);
     }
 
     @Override
@@ -307,6 +313,25 @@ public class GameScreen extends JFrame implements Screen {
         return this.resolution;
     }
 
+
+
+    public JTabbedPane getInfoTabs() {
+        return infoTabs;
+    }
+
+    public void setQuestionPanel(QuestionPanel questionPanel){
+        this.questionPanel = questionPanel;
+    }
+
+    public QuestionPanel getQuestionPanel() {
+        return questionPanel;
+    }
+
+    public Assets getGameAssets() {
+        return gameAssets;
+    }
+
+
     public class BoardUI extends JLayeredPane {
         public BoardUI() {
             //setLayout(new GridBagLayout());
@@ -316,6 +341,10 @@ public class GameScreen extends JFrame implements Screen {
             gbc.fill = GridBagConstraints.BOTH;
 
             add(gameCards.getMurderEnvelope());
+
+            add(questionPanel);
+            questionPanel.hideQuestionPanel();
+
             add(gameSuspects);
             add(gameWeapons);
             add(doorOverlay);
@@ -326,9 +355,14 @@ public class GameScreen extends JFrame implements Screen {
             Dimension imageSize = new Dimension((int)(board.getIconWidth()*resolution.getScalePercentage()), (int)(board.getIconHeight()*resolution.getScalePercentage()));
             this.setPreferredSize(imageSize);
 
+
+
             this.getComponent(0).setLocation(0,0);
-            for (int i = 1 ; i < getComponentCount() ; i++) {
-                this.getComponent(i).setBounds(0,0, imageSize.width, imageSize.height);
+
+            for (int i = 2 ; i < getComponentCount() ; i++) {
+                this.getComponent(i).setSize(imageSize);
+                this.getComponent(i).setLocation(0,0);
+
             }
         }
 
