@@ -73,7 +73,7 @@ public class GameScreen extends JFrame implements Screen {
         this.gameCards = new Cards(resolution);
         this.moveOverlay = new MoveOverlay(this.getGamePlayers().getPlayer(0), this.resolution);
         this.doorOverlay = new DoorOverlay(this.getGamePlayers().getPlayer(0), this.resolution);
-        this.questionPanel = new QuestionPanel(resolution);
+        this.questionPanel = new QuestionPanel(this, this.resolution);
         this.gameDice = new Dice(gameAssets, resolution);
 
     }

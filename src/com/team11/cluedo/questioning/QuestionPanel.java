@@ -8,111 +8,87 @@
 package com.team11.cluedo.questioning;
 
 import com.team11.cluedo.assets.Assets;
+import com.team11.cluedo.board.room.RoomData;
 import com.team11.cluedo.cards.Card;
+import com.team11.cluedo.cards.WeaponCard;
 import com.team11.cluedo.components.T11Label;
+import com.team11.cluedo.players.PlayerHand;
+import com.team11.cluedo.suspects.Suspect;
 import com.team11.cluedo.suspects.SuspectData;
+import com.team11.cluedo.ui.GameScreen;
 import com.team11.cluedo.ui.Resolution;
+import com.team11.cluedo.weapons.WeaponData;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
 
 public class QuestionPanel extends JPanel {
 
     private Assets gameAssets = new Assets();
 
     //Player Cards (Not Selected)
-    private ImageIcon[] playerIcons = new ImageIcon[]{
-            new ImageIcon(gameAssets.getWhiteCard()),
-            new ImageIcon(gameAssets.getGreenCard()),
-            new ImageIcon(gameAssets.getPeacockCard()),
-            new ImageIcon(gameAssets.getPlumCard()),
-            new ImageIcon(gameAssets.getScarletCard()),
-            new ImageIcon(gameAssets.getMustardCard()),
-    };
+    private ImageIcon[] playerIcons;
 
-    private ImageIcon[] selectedPlayerIcons = new ImageIcon[]{
-            new ImageIcon(gameAssets.getSelectedWhiteCard()),
-            new ImageIcon(gameAssets.getSelectedGreenCard()),
-            new ImageIcon(gameAssets.getSelectedPeacockCard()),
-            new ImageIcon(gameAssets.getSelectedPlumCard()),
-            new ImageIcon(gameAssets.getSelectedScarletCard()),
-            new ImageIcon(gameAssets.getSelectedMustardCard()),
-    };
-
-    private T11Label[] cardLabels = new T11Label[]{
-            new T11Label(new ImageIcon(gameAssets.getWhiteCard())),
-            new T11Label(new ImageIcon(gameAssets.getGreenCard())),
-            new T11Label(new ImageIcon(gameAssets.getPeacockCard())),
-            new T11Label(new ImageIcon(gameAssets.getPlumCard())),
-            new T11Label(new ImageIcon(gameAssets.getScarletCard())),
-            new T11Label(new ImageIcon(gameAssets.getMustardCard())),
-    };
-
-    private T11Label[] roomCards = new T11Label[]{
-            new T11Label(new ImageIcon(gameAssets.getKitchenCard())),
-            new T11Label(new ImageIcon(gameAssets.getBallroomCard())),
-            new T11Label(new ImageIcon(gameAssets.getConservatoryCard())),
-            new T11Label(new ImageIcon(gameAssets.getDiningCard())),
-            new T11Label(new ImageIcon(gameAssets.getBilliardCard())),
-            new T11Label(new ImageIcon(gameAssets.getLibraryCard())),
-            new T11Label(new ImageIcon(gameAssets.getLoungeCard())),
-            new T11Label(new ImageIcon(gameAssets.getHallCard())),
-            new T11Label(new ImageIcon(gameAssets.getStudyCard())),
-    };
+    private ImageIcon[] selectedPlayerIcons;
 
     private Resolution resolution;
 
     private Point[] cardPoints = new Point[6];
 
-    private double scale = 0.42;
+    private GameScreen gameScreen;
 
     private int cardYDown, cardYUp;
-    private int playerTargetX, playerTargetY;
-    private int weaponTargetX, weaponTargetY;
+
+    private int currentPlayer;
 
     private boolean selected;
     private boolean moving = false;
     private boolean inWeaponState = false;
 
-    private T11Label selectedPlayer;
-    private T11Label selectedWeapon;
-    private T11Label currentRoom;
+    private T11ExtendedLabel selectedPlayer;
+    private T11ExtendedLabel selectedWeapon;
+    private T11ExtendedLabel currentRoom;
+    private T11ExtendedLabel[] selectedCards = new T11ExtendedLabel[3];
 
-    private T11Label[] selectedCards = new T11Label[3];
+    private T11ExtendedLabel[] cardLabels;
+    private T11ExtendedLabel[] roomCards;
 
-    public QuestionPanel(Resolution resolution) {
+
+    public QuestionPanel(GameScreen gameScreen, Resolution resolution) {
+        this.gameScreen = gameScreen;
         this.resolution = resolution;
 
         this.setLayout(null);
         this.setLocation((int)(10 * resolution.getScalePercentage()),(int)(100 * resolution.getScalePercentage()));
         this.setSize((int)(760 * resolution.getScalePercentage()),(int)(600 * resolution.getScalePercentage()));
 
-        this.cardYUp = (int)((this.getHeight() - (int)(resolution.getScalePercentage() * 100) - cardLabels[0].getIcon().getIconHeight() * scale) - (int)(resolution.getScalePercentage()*40));
-        this.cardYDown =  this.cardYUp + (int)(resolution.getScalePercentage() * 40);
-
         this.setBorder(BorderFactory.createLineBorder(Color.BLACK, 5));
+
     }
 
     private int sumWidth(int index){
         int sum = 0;
 
         for (int i = 0; i < index; i++){
-            sum += cardLabels[i].getIcon().getIconWidth() * scale;
+            sum += cardLabels[i].getIcon().getIconWidth() * (resolution.getScalePercentage() * 0.42);
         }
         return sum;
     }
 
-    public void displayQuestionPanel(int roomNum){
+    public void displayQuestionPanel(int roomNum, int currentPlayer){
         this.setSelected(false);
         inWeaponState = false;
         selected = false;
         this.displayPanel(roomNum);
         this.setVisible(true);
         this.setFocusable(true);
+        this.currentPlayer = currentPlayer;
     }
 
     public void hideQuestionPanel(){
@@ -121,29 +97,81 @@ public class QuestionPanel extends JPanel {
         this.setVisible(false);
     }
 
-    public void displayPanel(int roomNum){
+    private void displayPanel(int roomNum){
+        SuspectData suspectData = new SuspectData();
+        RoomData roomData = new RoomData();
+        moving = false;
+        selectedPlayerIcons = new ImageIcon[]{
+                new ImageIcon(gameAssets.getSelectedWhiteCard()),
+                new ImageIcon(gameAssets.getSelectedGreenCard()),
+                new ImageIcon(gameAssets.getSelectedPeacockCard()),
+                new ImageIcon(gameAssets.getSelectedPlumCard()),
+                new ImageIcon(gameAssets.getSelectedScarletCard()),
+                new ImageIcon(gameAssets.getSelectedMustardCard()),
+        };
+        playerIcons = new ImageIcon[]{
+                new ImageIcon(gameAssets.getWhiteCard()),
+                new ImageIcon(gameAssets.getGreenCard()),
+                new ImageIcon(gameAssets.getPeacockCard()),
+                new ImageIcon(gameAssets.getPlumCard()),
+                new ImageIcon(gameAssets.getScarletCard()),
+                new ImageIcon(gameAssets.getMustardCard()),
+        };
+
+        cardLabels = new T11ExtendedLabel[]{
+                new T11ExtendedLabel(playerIcons[0], suspectData.getSuspectName(0)),
+                new T11ExtendedLabel(playerIcons[1], suspectData.getSuspectName(1)),
+                new T11ExtendedLabel(playerIcons[2], suspectData.getSuspectName(2)),
+                new T11ExtendedLabel(playerIcons[3], suspectData.getSuspectName(3)),
+                new T11ExtendedLabel(playerIcons[4], suspectData.getSuspectName(4)),
+                new T11ExtendedLabel(playerIcons[5], suspectData.getSuspectName(5)),
+        };
+        roomCards = new T11ExtendedLabel[]{
+                new T11ExtendedLabel(new ImageIcon(gameAssets.getKitchenCard()),      roomData.getRoomName(0)),
+                new T11ExtendedLabel(new ImageIcon(gameAssets.getBallroomCard()),     roomData.getRoomName(1)),
+                new T11ExtendedLabel(new ImageIcon(gameAssets.getConservatoryCard()), roomData.getRoomName(2)),
+                new T11ExtendedLabel(new ImageIcon(gameAssets.getDiningCard()),       roomData.getRoomName(3)),
+                new T11ExtendedLabel(new ImageIcon(gameAssets.getBilliardCard()),     roomData.getRoomName(4)),
+                new T11ExtendedLabel(new ImageIcon(gameAssets.getLibraryCard()),      roomData.getRoomName(5)),
+                new T11ExtendedLabel(new ImageIcon(gameAssets.getLoungeCard()),       roomData.getRoomName(6)),
+                new T11ExtendedLabel(new ImageIcon(gameAssets.getHallCard()),         roomData.getRoomName(7)),
+                new T11ExtendedLabel(new ImageIcon(gameAssets.getStudyCard()),        roomData.getRoomName(8)),
+        };
+
+        this.cardYUp = (int)((this.getHeight() - (int)(resolution.getScalePercentage() * 100) - cardLabels[0].getIcon().getIconHeight() * (resolution.getScalePercentage() * 0.42)) - (int)(resolution.getScalePercentage()*40));
+        this.cardYDown =  this.cardYUp + (int)(resolution.getScalePercentage() * 40);
 
         int extraWidth = 0;
         for (int i = 0; i < cardPoints.length; i++){
-            cardLabels[i].setSize(new Dimension((int)(cardLabels[i].getIcon().getIconWidth() * this.scale), (int)(cardLabels[i].getIcon().getIconHeight() * scale)));
+            cardLabels[i].setSize((int)(cardLabels[i].getIcon().getIconWidth() * (resolution.getScalePercentage() * 0.42)), ((int)(cardLabels[i].getIcon().getIconHeight() * (resolution.getScalePercentage() * 0.42))));
             cardLabels[i].setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
             if (i == 0){
-                cardPoints[i] = new Point((int)(resolution.getScalePercentage()*22),
-                        (int)(this.getHeight() - cardLabels[i].getIcon().getIconHeight() * scale) - (int)(resolution.getScalePercentage() * 100));
+                if ((int)(resolution.getScalePercentage() *22) % 2 != 0){
+                    cardPoints[i] = new Point(((int)(resolution.getScalePercentage()*22) + 1),
+                            (int)(this.getHeight() - cardLabels[i].getIcon().getIconHeight() * (resolution.getScalePercentage() * 0.42)) - (int)(resolution.getScalePercentage() * 100));
+                } else{
+                    cardPoints[i] = new Point(((int)(resolution.getScalePercentage()*22)),
+                            (int)(this.getHeight() - cardLabels[i].getIcon().getIconHeight() * (resolution.getScalePercentage() * 0.42)) - (int)(resolution.getScalePercentage() * 100));
+                }
+
             }
 
             else{
-                cardPoints[i] = new Point((int)(resolution.getScalePercentage()*15) + (int)(resolution.getScalePercentage() * 5) + sumWidth(i) + extraWidth
-                        , (int)(this.getHeight() - cardLabels[i].getIcon().getIconHeight() * scale) - (int)(resolution.getScalePercentage() * 100));
+                if ((int)(resolution.getScalePercentage() * 20) % 2 != 0){
+                    cardPoints[i] = new Point(((int)(resolution.getScalePercentage()*20) + 1) + sumWidth(i) + extraWidth
+                            , (int)(this.getHeight() - cardLabels[i].getIcon().getIconHeight() * (resolution.getScalePercentage() * 0.42)) - (int)(resolution.getScalePercentage() * 100));
+                } else {
+                    cardPoints[i] = new Point((int) (resolution.getScalePercentage() * 20)  + sumWidth(i) + extraWidth
+                            , (int) (this.getHeight() - cardLabels[i].getIcon().getIconHeight() * (resolution.getScalePercentage() * 0.42)) - (int) (resolution.getScalePercentage() * 100));
+                }
             }
 
             extraWidth += (int)(resolution.getScalePercentage() * 15);
         }
 
         for (int i = 0; i < roomCards.length; i++){
-            roomCards[i].setSize(new Dimension((int)(roomCards[i].getIcon().getIconWidth() * 0.66), (int)(roomCards[i].getIcon().getIconHeight() * 0.66)));
+            roomCards[i].setSize(new Dimension((int)(roomCards[i].getIcon().getIconWidth() * (resolution.getScalePercentage() * 0.66)), ((int)(roomCards[i].getIcon().getIconHeight() * (resolution.getScalePercentage() * 0.66)))));
         }
-
 
         roomCards[roomNum].setLocation(this.getWidth()/2 - ((roomCards[roomNum].getWidth()/2)), (int)(resolution.getScalePercentage() * 20));
         roomCards[roomNum].setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
@@ -152,13 +180,6 @@ public class QuestionPanel extends JPanel {
         selectedCards[1] = currentRoom;
 
         this.add(roomCards[roomNum]);
-
-        this.playerTargetX = this.getWidth()/6 - roomCards[roomNum].getWidth()/2;
-        this.playerTargetY = (int)(resolution.getScalePercentage() * 20);
-
-        this.weaponTargetX = ((this.getWidth()/3)*2 + (this.getWidth()/6) - roomCards[roomNum].getWidth()/2);
-        this.weaponTargetY = (int)(resolution.getScalePercentage() * 20);
-
 
         for (int i = 0; i < cardLabels.length; i++){
             cardLabels[i].setLocation(cardPoints[i]);
@@ -170,9 +191,9 @@ public class QuestionPanel extends JPanel {
                     super.mouseClicked(e);
                     if (!selected && !inWeaponState && !moving){
                         setSelected(true);
-                        new AnimateCard(cardLabels, finalI, 2, playerTargetX, playerTargetY).execute();
                         selectedPlayer = cardLabels[finalI];
                         selectedCards[0] = selectedPlayer;
+                        new AnimateCorner(0, cardLabels[finalI], cardLabels, finalI).execute();
                     }
 
                 }
@@ -207,7 +228,6 @@ public class QuestionPanel extends JPanel {
 
             this.add(cardLabels[i]);
         }
-
     }
 
     public void setSelected(boolean bool){
@@ -215,39 +235,41 @@ public class QuestionPanel extends JPanel {
     }
 
     private void addWeaponCards(){
+        WeaponData weaponData = new WeaponData();
+
         ImageIcon[] weaponsCards = new ImageIcon[]{
-                new ImageIcon(gameAssets.getRopeCard()),
-                new ImageIcon(gameAssets.getRevolverCard()),
-                new ImageIcon(gameAssets.getDaggerCard()),
                 new ImageIcon(gameAssets.getHatchetCard()),
+                new ImageIcon(gameAssets.getDaggerCard()),
                 new ImageIcon(gameAssets.getPoisonCard()),
+                new ImageIcon(gameAssets.getRevolverCard()),
+                new ImageIcon(gameAssets.getRopeCard()),
                 new ImageIcon(gameAssets.getWrenchCard()),
         };
 
         ImageIcon[] selectedWeaponCards = new ImageIcon[]{
-                new ImageIcon(gameAssets.getSelectedRopeCard()),
-                new ImageIcon(gameAssets.getSelectedRevolverCard()),
-                new ImageIcon(gameAssets.getSelectedDaggerCard()),
                 new ImageIcon(gameAssets.getSelectedHatchetCard()),
+                new ImageIcon(gameAssets.getSelectedDaggerCard()),
                 new ImageIcon(gameAssets.getSelectedPoisonCard()),
+                new ImageIcon(gameAssets.getSelectedRevolverCard()),
+                new ImageIcon(gameAssets.getSelectedRopeCard()),
                 new ImageIcon(gameAssets.getSelectedWrenchCard()),
         };
 
-        T11Label[] weaponsLabels = new T11Label[]{
-                new T11Label(weaponsCards[0]),
-                new T11Label(weaponsCards[1]),
-                new T11Label(weaponsCards[2]),
-                new T11Label(weaponsCards[3]),
-                new T11Label(weaponsCards[4]),
-                new T11Label(weaponsCards[5]),
+        T11ExtendedLabel[] weaponsLabels = new T11ExtendedLabel[]{
+                new T11ExtendedLabel(weaponsCards[0], weaponData.getWeaponName(0)),
+                new T11ExtendedLabel(weaponsCards[1], weaponData.getWeaponName(1)),
+                new T11ExtendedLabel(weaponsCards[2], weaponData.getWeaponName(2)),
+                new T11ExtendedLabel(weaponsCards[3], weaponData.getWeaponName(3)),
+                new T11ExtendedLabel(weaponsCards[4], weaponData.getWeaponName(4)),
+                new T11ExtendedLabel(weaponsCards[5], weaponData.getWeaponName(5)),
         };
 
         int extraWidth = 0;
         for (int i = 0; i < 6; i++){
-            weaponsLabels[i].setLocation(getWidth() + sumWidth(i) + (int)(resolution.getScalePercentage()*22) + extraWidth,
-                    (int)(this.getHeight() - weaponsLabels[i].getIcon().getIconHeight() * scale)
+            weaponsLabels[i].setLocation(this.getWidth() + sumWidth(i) + (int)(resolution.getScalePercentage()*22) + extraWidth,
+                    (int)(this.getHeight() - weaponsLabels[i].getIcon().getIconHeight() * (resolution.getScalePercentage() * 0.42))
                             - (int)(resolution.getScalePercentage() * 100));
-            weaponsLabels[i].setSize((int)(weaponsLabels[i].getIcon().getIconWidth() * this.scale), (int)(weaponsLabels[i].getIcon().getIconHeight() * scale));
+            weaponsLabels[i].setSize((int)(weaponsLabels[i].getIcon().getIconWidth() * (resolution.getScalePercentage() * 0.42)), (int)(weaponsLabels[i].getIcon().getIconHeight() * (resolution.getScalePercentage() * 0.42)));
 
             extraWidth += (int)(resolution.getScalePercentage() * 15);
 
@@ -266,21 +288,27 @@ public class QuestionPanel extends JPanel {
                     super.mouseClicked(e);
                     if (!selected && inWeaponState && !moving){
                         setSelected(true);
-                        new AnimateCard(weaponsLabels, finalI1, 4, weaponTargetX, weaponTargetY).execute();
                         selectedWeapon = weaponsLabels[finalI1];
+                        selectedCards[2] = selectedWeapon;
+                        new AnimateCorner(2, weaponsLabels[finalI1], weaponsLabels, finalI1).execute();
+
+
                     }
                 }
 
                 @Override
                 public void mouseEntered(MouseEvent e) {
                     super.mouseEntered(e);
-                    System.out.println(selected + "  " + inWeaponState + "  " + moving);
                     if (!selected && inWeaponState && !moving){
                         for (int j = 0; j < 6; j++){
                             if (j != finalI1){
                                 weaponsLabels[j].setIcon(selectedWeaponCards[j]);
                             }
                         }
+
+                        selectedCards[0].setLocation(getWidth()/6 - roomCards[0].getWidth()/2, (int)(resolution.getScalePercentage() * 20));
+                        add(selectedCards[0]);
+                        revalidate();
                         weaponsLabels[finalI1].revalidate();
                         new AnimateCard(weaponsLabels, finalI1, 0, cardYDown, cardYUp).execute();
                     }
@@ -301,11 +329,243 @@ public class QuestionPanel extends JPanel {
         }
     }
 
-    private T11Label[] question(){
+    private void question(){
+        int nextPlayer;
+        boolean hasAnswered = true;
+        if (currentPlayer + 1 == gameScreen.getGamePlayers().getPlayerCount()){
+            nextPlayer = 0;
+        } else{
+            nextPlayer = currentPlayer + 1;
+        }
 
-        //new AnimateCard(selectedCards, 0 , 5, 0,0).execute();
+        remove(selectedCards[0]);
+        remove(selectedCards[2]);
 
-        return selectedCards;
+        selectedCards[0].setLocation(getWidth()/6 - roomCards[0].getWidth()/2, (int)(resolution.getScalePercentage() * 20));
+        selectedCards[2].setLocation(((getWidth()/3)*2 + (getWidth()/6) - roomCards[0].getWidth()/2), (int)(resolution.getScalePercentage() * 20));
+
+        add(selectedCards[0]);
+        add(selectedCards[2]);
+        revalidate();
+
+        T11ExtendedLabel nextCard = new T11ExtendedLabel(playerIcons[nextPlayer], cardLabels[nextPlayer].getName());
+
+        nextCard.setSize(new Dimension(selectedPlayer.getWidth(), selectedPlayer.getHeight()));
+        nextCard.setLocation(0, (int)(this.getHeight() - (nextCard.getIcon().getIconHeight() * (resolution.getScalePercentage() * 0.42)))
+                - (int)(resolution.getScalePercentage() * 125));
+        this.add(nextCard);
+        new AnimateCard(nextCard, nextPlayer, 6).execute();
+
+        //while (!hasAnswered) {
+            ArrayList<T11ExtendedLabel> validCards = findValidSelectedCards(nextPlayer);
+
+            ArrayList<ImageIcon> icons = getSelectedIcons(nextPlayer, 1);
+            ArrayList<ImageIcon> selectedIcons = getSelectedIcons(nextPlayer, 0);
+
+            System.out.println(icons.size());
+            System.out.println(selectedIcons.size());
+
+            int extraWidth = 0;
+            for (int i = 0; i < validCards.size(); i++){
+
+                if (validCards.size() == 1){
+                    validCards.get(i).setLocation(this.getWidth(), nextCard.getY());
+                    validCards.get(i).setSize(new Dimension(selectedCards[1].getWidth(), selectedCards[1].getHeight()));
+                } else if (validCards.size() == 2){
+
+
+                    if ( (int)(resolution.getScalePercentage() * 10) % 2 != 0){
+                        validCards.get(i).setLocation(this.getWidth() + sumWidth(i) + extraWidth + 1, nextCard.getY() + (int)(resolution.getScalePercentage() * 20));
+                        System.out.println(validCards.get(i).getLocation());
+                    }
+                    else{
+                        validCards.get(i).setLocation(this.getWidth() + sumWidth(i) + extraWidth, nextCard.getY() + (int)(resolution.getScalePercentage() * 20));
+                        System.out.println(validCards.get(i).getLocation());
+                    }
+
+                    validCards.get(i).setSize(new Dimension((int)(nextCard.getWidth() * (resolution.getScalePercentage() * 0.9)), (int)(nextCard.getHeight() * (resolution.getScalePercentage() * 0.9))));
+
+                } else if (validCards.size() == 3){
+                    validCards.get(i).setLocation(this.getWidth() + sumWidth(i) + extraWidth, nextCard.getY() + (int)(resolution.getScalePercentage() * 30));
+                    validCards.get(i).setSize(new Dimension((int)(nextCard.getWidth() * (resolution.getScalePercentage() * 0.7)), (int)(nextCard.getHeight() * (resolution.getScalePercentage() * 0.7))));
+                }
+                extraWidth += (int)(resolution.getScalePercentage() * 220);
+                this.add(validCards.get(i));
+            }
+
+
+
+            switch (validCards.size()) {
+                case (0):
+                    JLabel doneButton = new JLabel();
+                    doneButton.setText("DONE");
+                    doneButton.setFont(new Font("Bulky Pixels", Font.BOLD, (int) (35 * resolution.getScalePercentage())));
+                    doneButton.setHorizontalAlignment(SwingConstants.CENTER);
+                    doneButton.setVerticalAlignment(SwingConstants.CENTER);
+
+                    doneButton.setLocation(selectedCards[1].getX() + selectedCards[1].getIcon().getIconWidth() / 2
+                            + (int) (20 * resolution.getScalePercentage()), nextCard.getY() + nextCard.getIcon().getIconHeight() / 6);
+
+                    doneButton.setSize(new Dimension((int) (resolution.getScalePercentage() * 150), (int) (resolution.getScalePercentage() * 50)));
+                    doneButton.setForeground(Color.WHITE);
+                    doneButton.setBackground(Color.DARK_GRAY);
+                    doneButton.setLayout(null);
+
+                    this.add(doneButton);
+                    this.validate();
+
+                    doneButton.addMouseListener(new MouseAdapter() {
+                        @Override
+                        public void mouseClicked(MouseEvent e) {
+                            super.mouseClicked(e);
+                            doneButton.setForeground(Color.RED);
+
+                            //Show confirmation of change
+
+                            //Update the next players cards
+
+                        }
+
+                        @Override
+                        public void mouseEntered(MouseEvent e) {
+                            super.mouseEntered(e);
+                            doneButton.setForeground(Color.RED);
+                        }
+
+                        @Override
+                        public void mouseExited(MouseEvent e) {
+                            super.mouseExited(e);
+                            doneButton.setForeground(Color.WHITE);
+                        }
+                    });
+
+                    break;
+
+                //Player only has one valid card that they can show
+                case (1):
+                     new AnimateNextCards(validCards).execute();
+
+                    break;
+
+                case (2):
+                    JLabel infoLabel = new JLabel("Pick a Card to Show");
+                    infoLabel.setSize((int)(resolution.getScalePercentage() * 400), (int)(resolution.getScalePercentage() * 70));
+                    infoLabel.setLocation((getWidth()/2 - validCards.get(0).getWidth()/2),validCards.get(0).getY() - (int)(resolution.getScalePercentage() * 70));
+
+                    infoLabel.setForeground(Color.WHITE);
+                    infoLabel.setBackground(Color.DARK_GRAY);
+                    infoLabel.setFont(new Font("Bulky Pixels", Font.BOLD, (int) (18 * resolution.getScalePercentage())));
+                    infoLabel.setHorizontalAlignment(SwingConstants.CENTER);
+                    add(infoLabel);
+
+                    infoLabel.revalidate();
+                    System.out.println(infoLabel.getSize());
+                    System.out.println(infoLabel.getLocation());
+                    new AnimateNextCards(validCards).execute();
+
+                    break;
+
+                case (3):
+                    new AnimateNextCards(validCards).execute();
+                    break;
+            }
+
+            moving = false;
+            for (int i = 0; i < validCards.size(); i++){
+                int finalI = i;
+                System.out.println(moving);
+                validCards.get(i).addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        super.mouseClicked(e);
+                        if (!moving){
+                            validCards.get(finalI).setIcon(icons.get(finalI));
+                        }
+                    }
+
+                    @Override
+                    public void mouseEntered(MouseEvent e) {
+                        super.mouseEntered(e);
+                        if (!moving) {
+                            validCards.get(finalI).setIcon(icons.get(finalI));
+                        }
+                    }
+
+                    @Override
+                    public void mouseExited(MouseEvent e) {
+                        super.mouseExited(e);
+                        if (!moving){
+                            validCards.get(finalI).setIcon(selectedIcons.get(finalI));
+                        }
+                    }
+                });
+            }
+    }
+
+    private ArrayList<T11ExtendedLabel> findValidSelectedCards(int nextPlayer){
+        PlayerHand playerHand = this.gameScreen.getGamePlayers().getPlayer(nextPlayer).getPlayerHand();
+        ArrayList<T11ExtendedLabel> validCardsFromHand = new ArrayList<>();
+
+        for (int i = 0; i < 3; i++){
+            for (Card card : playerHand.getPlayerHand()){
+                if (card.getName().matches(selectedCards[i].getLabelID())){
+                    validCardsFromHand.add(new T11ExtendedLabel(new ImageIcon(card.getSelectedCardImage()), card.getName()));
+                    System.out.println("Added " + card.getName() + " to valid cards");
+                }
+            }
+        }
+
+        for (int i = 0; i < 3; i++){
+            for (Card card : playerHand.getPublicHand()){
+                System.out.println("Comparing " + card.getName() + " and " + selectedCards[i].getLabelID());
+                if (card.getName().matches(selectedCards[i].getLabelID())){
+                    validCardsFromHand.add(new T11ExtendedLabel(new ImageIcon(card.getSelectedCardImage()), card.getName()));
+                    System.out.println("Added " + card.getName() + " to valid cards");
+                }
+            }
+        }
+        return validCardsFromHand;
+    }
+
+    private ArrayList<ImageIcon> getSelectedIcons(int nextPlayer, int flag){
+        PlayerHand playerHand = gameScreen.getGamePlayers().getPlayer(nextPlayer).getPlayerHand();
+        ArrayList<ImageIcon> icons = new ArrayList<>();
+
+        if (flag == 0){
+            for (int i = 0; i < 3; i++){
+                for (Card card : playerHand.getPlayerHand()){
+                    if (card.getName().matches(selectedCards[i].getLabelID())){
+                        icons.add(new ImageIcon(card.getSelectedCardImage()));
+                    }
+                }
+            }
+
+            for (int i = 0; i < playerHand.getPublicHand().size(); i++){
+                for (Card card : playerHand.getPublicHand()){
+                    if (card.getName().matches(selectedCards[i].getLabelID())){
+                        icons.add(new ImageIcon(card.getSelectedCardImage()));
+                    }
+                }
+            }
+        } else if (flag == 1){
+            for (int i = 0; i < 3; i++){
+                for (Card card : playerHand.getPlayerHand()){
+                    if (card.getName().matches(selectedCards[i].getLabelID())){
+                        icons.add(new ImageIcon(card.getCardImage()));
+                    }
+                }
+            }
+
+            for (int i = 0; i < playerHand.getPublicHand().size(); i++){
+                for (Card card : playerHand.getPublicHand()){
+                    if (card.getName().matches(selectedCards[i].getLabelID())){
+                        icons.add(new ImageIcon(card.getCardImage()));
+                    }
+                }
+            }
+        }
+
+        return icons;
     }
 
     @Override
@@ -323,24 +583,19 @@ public class QuestionPanel extends JPanel {
     private class AnimateCard extends SwingWorker<Integer, String>{
 
         private int animateFlag;
-
         private int index;
 
-        private T11Label[] cards;
-
-        private T11Label cardToAnimate;
+        private T11ExtendedLabel[] cards;
+        private T11ExtendedLabel cardToAnimate;
 
         private int heightUp;
         private int heightDown;
 
         private final int distance = 2, delay = 4;
         private final int moveDistance = 1, moveDelay = 2;
-
         private final int fastDistance = 4;
 
-        private boolean weaponsAdded = false;
-
-        public AnimateCard(T11Label[] cards, int index, int animateFlag, int heightDown, int heightUp ){
+        public AnimateCard(T11ExtendedLabel[] cards, int index, int animateFlag, int heightDown, int heightUp ){
             this.cards = cards;
             this.index = index;
             this.cardToAnimate = cards[index];
@@ -349,29 +604,20 @@ public class QuestionPanel extends JPanel {
             this.heightUp = heightUp;
         }
 
-        public void setAnimateFlag(int flag){
-            this.animateFlag = flag;
-        }
 
-        public void setCardToAnimate(T11Label button){
-            this.cardToAnimate = button;
+        public AnimateCard(T11ExtendedLabel cardToAnimate, int index, int animateFlag){
+            this.cardToAnimate = cardToAnimate;
+            this.index = index;
+            this.animateFlag = animateFlag;
         }
 
         @Override
         protected Integer doInBackground() throws Exception{
             process(new ArrayList<>());
 
-            int targetW = roomCards[index].getWidth();
-            int targetH = roomCards[index].getHeight();
-
-            int nextH = cardToAnimate.getHeight();
-            int nextW = cardToAnimate.getWidth();
-            int nextX = cardToAnimate.getX();
-            int nextY = cardToAnimate.getY();
-
-            int scaleModifier = 1;
-
             switch (this.animateFlag) {
+
+                //Cases of both weapon and player cards moving up and down on hover//
                 //Moving Up
                 case (0) :
 
@@ -395,21 +641,11 @@ public class QuestionPanel extends JPanel {
                     cards[index].setEnabled(true);
 
                     break;
+                /////////////////////////////////////////////////////////////////////
 
-                //Moving Up to Room
-                case (2) :
-                    ArrayList<T11Label> remainingPlayerCards = new ArrayList<>(5);
+                //Case for moving the weapon cards onto the screen from the right hand side of the panel
 
-                    moveToCorner(nextH, nextW, targetH, targetW, scaleModifier, nextX, nextY, playerTargetX, playerTargetY, remainingPlayerCards);
-
-                    if (!weaponsAdded){
-                        selected = false;
-                        addWeaponCards();
-                        weaponsAdded = true;
-                    }
-
-                    break;
-
+                //Moving weapon cards
                 case (3):
                     moving = true;
                     while (cards[0].getX()!= cardPoints[0].getX()) {
@@ -451,47 +687,23 @@ public class QuestionPanel extends JPanel {
                     }
                     moving = false;
                     inWeaponState = true;
+                    System.out.println("Finished moving weapon cards onto screen");
                     break;
-                case (4) :
-                    ArrayList<T11Label> remainingWeaponCards = new ArrayList<>(5);
 
-                    //Card is to the left of the room card
-                    moveToCorner(nextH, nextW, targetH, targetW, scaleModifier, nextX, nextY,weaponTargetX, weaponTargetY, remainingWeaponCards);
+                //Case for moving the selected weapon card up to the top right hand corner of the panel and moving the others of the screen
 
+                case (6) :
 
-                    selectedCards[2] = cardToAnimate;
-
-                    for (T11Label label : remainingWeaponCards){
-                        remove(label);
-                    }
-
-                    Thread.sleep(500);
-
-                    int desiredY = getHeight()/2 - cards[0].getIcon().getIconHeight()/2 + (int)(resolution.getScalePercentage() * 75);
-
-                    while (selectedCards[0].getY() != desiredY || selectedCards[1].getY() != desiredY || selectedCards[2].getY() != desiredY){
-
-                        if (selectedCards[0].getY() >= desiredY){
-                            selectedCards[0].setLocation(selectedCards[0].getX(), desiredY);
-                        } else{
-                            selectedCards[0].setLocation(selectedCards[0].getX(), selectedCards[0].getY() + distance);
-                        }
-
-                        if (selectedCards[1].getY() >= desiredY){
-                            selectedCards[1].setLocation(selectedCards[1].getX(), desiredY);
-                        } else{
-                            selectedCards[1].setLocation(selectedCards[1].getX(), selectedCards[1].getY() + distance );
-                        }
-
-                        if (selectedCards[2].getY() >= desiredY){
-                            selectedCards[2].setLocation(selectedCards[2].getX(), desiredY);
-                        } else{
-                            selectedCards[2].setLocation(selectedCards[2].getX(), selectedCards[2].getY() + distance );
+                    while (cardToAnimate.getX() != (selectedCards[0].getX())){
+                        cardToAnimate.setLocation(cardToAnimate.getX() + moveDistance, cardToAnimate.getY());
+                        if (cardToAnimate.getX() >= selectedCards[0].getX()){
+                            cardToAnimate.setLocation(selectedCards[0].getX(), cardToAnimate.getY());
                         }
 
                         process(new ArrayList<>());
                         Thread.sleep(delay);
                     }
+                    gameScreen.setTab(2);
                     break;
 
                 default:
@@ -507,66 +719,245 @@ public class QuestionPanel extends JPanel {
             revalidate();
         }
 
-        protected void moveToCorner(int nextH, int nextW, int targetH, int targetW, int scaleModifier, int currX, int currY, int targetX, int targetY, ArrayList<T11Label> remainingCards) throws Exception{
+    }
 
-            System.out.println("Target Y: " + targetY);
+    private class AnimateCorner extends SwingWorker<Integer, String>{
+        private final int distance = 2, delay= 4;
 
-            while((cardToAnimate.getX() != targetX) || (cardToAnimate.getY() != targetY)){
-                if (nextH >= targetH){
-                    nextH = targetH;
-                } else{
-                    nextH += scaleModifier;
-                }
+        private T11ExtendedLabel labelToAnimate;
+        private T11ExtendedLabel[] labels;
 
-                if (nextW >= targetW){
-                    nextW = targetW;
-                } else {
-                    nextW += scaleModifier;
-                }
+        private final int playerTargetX = getWidth()/6 - roomCards[0].getWidth()/2;
+        private final int weaponTargetX = ((getWidth()/3)*2 + (getWidth()/6) - roomCards[0].getWidth()/2);
 
-                if (currX <= targetX){
-                    currX += moveDistance;
+        private final int targetY = (int)(resolution.getScalePercentage() * 20);
+
+        private int targetH;
+        private int targetW;
+
+        private int flag;
+        private int index;
+
+        private boolean weaponsAdded = false;
+
+        public AnimateCorner(int flag, T11ExtendedLabel label, T11ExtendedLabel[] labels, int index){
+            this.flag = flag;
+            this.labels = labels;
+            this.index = index;
+            this.labelToAnimate = labels[index];
+            this.targetH = roomCards[0].getHeight();
+            this.targetW = roomCards[0].getWidth();
+
+        }
+
+        @Override
+        protected Integer doInBackground() throws Exception{
+
+            process(new ArrayList<>());
+
+            switch (flag){
+                //Player
+                case (0):
+                    moving = true;
+                    moveToCorner(playerTargetX);
+                    moveCardsOffScreen();
+                    if (!weaponsAdded){
+                        selected = false;
+                        addWeaponCards();
+                        weaponsAdded = true;
+                    }
+
+                    moving = false;
+                    break;
+
+                //Weapon
+                case (2):
+                    moving = true;
+                    moveToCorner(weaponTargetX);
+                    moveCardsOffScreen();
+                    moving = false;
+                    question();
+                    break;
+            }
+            process(new ArrayList<>());
+            return null;
+        }
+
+        private void moveToCorner(int targetX) throws Exception{
+            int scalar = 1;
+
+            int currX = labelToAnimate.getX();
+            int currY = labelToAnimate.getY();
+
+            int currH = labelToAnimate.getHeight();
+            int currW = labelToAnimate.getWidth();
+
+            while (currX != targetX || currY != targetY ){
+
+                if (currX < targetX){
+                    currX += distance;
                 } else if (currX > targetX){
-                    currX -= moveDistance;
+                    currX -= distance;
                 }
 
                 if (currY <= targetY){
                     currY = targetY;
-                } else {
-                    currY -= moveDistance;
+                } else{
+                    currY -= distance;
                 }
 
-                cardToAnimate.setSize(new Dimension(nextW, nextH));
-                cardToAnimate.setLocation(currX, currY);
+                if (currH >= targetH){
+                    currH = targetH;
+                } else {
+                    currH += scalar;
+                }
+
+                if (currW >= targetW){
+                    currW = targetW;
+                } else {
+                    currW += scalar;
+                }
+
+                labelToAnimate.setLocation(currX, currY);
+                labelToAnimate.setSize(new Dimension(currW, currH));
 
                 process(new ArrayList<>());
-                Thread.sleep(moveDelay);
+                Thread.sleep(delay);
             }
 
-        for (int i = 0; i < cards.length; i++){
-            if (i != this.index){
-                remainingCards.add(cards[i]);
+            selectedCards[flag].setLocation(labelToAnimate.getX(), labelToAnimate.getY());
+            selectedCards[flag].setSize(labelToAnimate.getSize());
+            add(selectedCards[flag]);
+            remove(labelToAnimate);
+        }
+
+        private void moveCardsOffScreen() throws Exception{
+            //Get Remaining Cards
+
+            ArrayList<T11ExtendedLabel> remainingLabels = new ArrayList<>(5);
+
+            for (int i = 0; i < labels.length; i++){
+                if (i != this.index){
+                    remainingLabels.add(labels[i]);
+                }
+            }
+
+            while (remainingLabels.get(remainingLabels.size() - 1).getX() > 0 - remainingLabels.get(0).getIcon().getIconWidth()){
+                remainingLabels.get(0).setLocation(remainingLabels.get(0).getX() - distance - 2, remainingLabels.get(0).getY());
+                remainingLabels.get(1).setLocation(remainingLabels.get(1).getX() - distance - 2, remainingLabels.get(1).getY());
+                remainingLabels.get(2).setLocation(remainingLabels.get(2).getX() - distance - 2, remainingLabels.get(2).getY());
+                remainingLabels.get(3).setLocation(remainingLabels.get(3).getX() - distance - 2, remainingLabels.get(3).getY());
+                remainingLabels.get(4).setLocation(remainingLabels.get(4).getX() - distance - 2, remainingLabels.get(4).getY());
+
+                process(new ArrayList<>());
+                Thread.sleep(delay);
+            }
+
+            for (T11ExtendedLabel label : remainingLabels){
+                remove(label);
             }
         }
 
-        while (remainingCards.get(remainingCards.size()-1).getX() + remainingCards.get(0).getWidth() > 0){
-            remainingCards.get(0).setLocation(remainingCards.get(0).getX() - fastDistance, remainingCards.get(0).getY());
-            remainingCards.get(1).setLocation(remainingCards.get(1).getX() - fastDistance, remainingCards.get(1).getY());
-            remainingCards.get(2).setLocation(remainingCards.get(2).getX() - fastDistance, remainingCards.get(2).getY());
-            remainingCards.get(3).setLocation(remainingCards.get(3).getX() - fastDistance, remainingCards.get(3).getY());
-            remainingCards.get(4).setLocation(remainingCards.get(4).getX() - fastDistance, remainingCards.get(4).getY());
+        @Override
+        protected void process(List<String> chunks){
+            labelToAnimate.revalidate();
+        }
+    }
 
+    private class AnimateNextCards extends SwingWorker<Integer, String> {
+
+        private final int distance = 2, delay = 4;
+
+        private ArrayList<T11ExtendedLabel> cards;
+
+        public AnimateNextCards(ArrayList<T11ExtendedLabel> cards){
+            this.cards = cards;
+        }
+
+        @Override
+        protected Integer doInBackground() throws Exception{
+            process(new ArrayList<>());
+            moving = true;
+            switch (cards.size()){
+                case (1):
+                    while (cards.get(0).getX() != selectedCards[2].getX()){
+                        cards.get(0).setLocation(cards.get(0).getX() - distance, cards.get(0).getY());
+                        process(new ArrayList<>());
+                        Thread.sleep(delay);
+                    }
+                    break;
+
+                case (2):
+                    while (cards.get(0).getX() != (getWidth()/2 - cards.get(0).getWidth()/2) || cards.get(1).getX() != (selectedCards[2].getX() +  cards.get(0).getWidth()/13)){
+
+                        if (cards.get(0).getX() <= (getWidth()/2 - cards.get(0).getWidth()/2) ){
+                            cards.get(0).setLocation((getWidth()/2 - cards.get(0).getWidth()/2), cards.get(0).getY());
+                        } else{
+                            cards.get(0).setLocation(cards.get(0).getX() - distance - 2, cards.get(0).getY());
+                        }
+
+                        if (cards.get(1).getX() <= (selectedCards[2].getX() + cards.get(0).getWidth()/13)){
+                            cards.get(1).setLocation((selectedCards[2].getX() + cards.get(0).getWidth()/13), cards.get(1).getY());
+                        } else{
+                            cards.get(1).setLocation(cards.get(1).getX() - distance - 2 , cards.get(1).getY());
+                        }
+                        process(new ArrayList<>());
+                        Thread.sleep(delay);
+                    }
+                    break;
+
+                case (3):
+                    while ((cards.get(0).getX() != (selectedCards[1].getX() - (int)(resolution.getScalePercentage() * 20))
+                            || (cards.get(1).getX() != (selectedCards[1].getX() + selectedCards[1].getWidth()) + (int)(resolution.getScalePercentage() * 10) - (int)(resolution.getScalePercentage() * 20))
+                            || (cards.get(1).getX() != (selectedCards[1].getX() +  selectedCards[1].getWidth() * 2) + (int)(resolution.getScalePercentage() * 10) - (int)(resolution.getScalePercentage() * 20)) )){
+
+                        if ((cards.get(0).getX() <= (selectedCards[1].getX() - (int)(resolution.getScalePercentage() * 20)))){
+                            cards.get(0).setLocation( selectedCards[1].getX() - (int)(resolution.getScalePercentage() * 20), cards.get(0).getY());
+                        } else {
+                            cards.get(0).setLocation(cards.get(0).getX() - distance-2, cards.get(0).getY());
+                        }
+                        if ((cards.get(1).getX() <= (selectedCards[1].getX() + selectedCards[1].getWidth()) + (int)(resolution.getScalePercentage() * 10) - (int)(resolution.getScalePercentage() * 20))){
+                            cards.get(1).setLocation( selectedCards[1].getX() + selectedCards[1].getWidth() + (int)(resolution.getScalePercentage() * 10) - (int)(resolution.getScalePercentage() * 20), cards.get(0).getY());
+                        } else {
+                            cards.get(1).setLocation(cards.get(1).getX() - distance-2, cards.get(1).getY());
+                        }
+                        if ((cards.get(2).getX() <= (selectedCards[1].getX() +  selectedCards[1].getWidth() * 2) + (int)(resolution.getScalePercentage() *10) - (int)(resolution.getScalePercentage() * 20))){
+                            cards.get(2).setLocation( (selectedCards[1].getX() +  selectedCards[1].getWidth() * 2) + (int)(resolution.getScalePercentage() * 10) - (int)(resolution.getScalePercentage() * 20), cards.get(0).getY());
+                        } else {
+                            cards.get(2).setLocation(cards.get(2).getX() - distance-2, cards.get(2).getY());
+                        }
+
+
+                        process(new ArrayList<>());
+                        Thread.sleep(delay);
+                    }
+                    break;
+            }
+            moving = false;
             process(new ArrayList<>());
             Thread.sleep(delay);
-        }
-        for (T11Label label : remainingCards){
-            remove(label);
+            return null;
         }
 
+        @Override
+        protected void process(List<String>chunks){
+            revalidate();
+        }
     }
 
-    }
+    private class T11ExtendedLabel extends T11Label{
+        String name;
 
+        public T11ExtendedLabel(ImageIcon icon, String name){
+            super(icon);
+            this.name = name;
+            //System.out.println("Created instance with name: " + name);
+        }
+
+        public String getLabelID(){
+            return this.name;
+        }
+    }
 
 }
 

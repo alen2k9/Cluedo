@@ -163,6 +163,7 @@ public class CommandInput {
 
                         case "done":
                             nextPlayer();
+                            this.gameScreen.getQuestionPanel().hideQuestionPanel();
                             break;
 
                         case "quit":
@@ -206,8 +207,9 @@ public class CommandInput {
                             break;
 
                         case "question":
+                            System.out.println(canQuestion);
                             if (currentPlayer.getSuspectToken().isCanQuestion()) {
-                                this.gameScreen.getQuestionPanel().displayQuestionPanel(currentPlayer.getSuspectToken().getCurrentRoom());
+                                this.gameScreen.getQuestionPanel().displayQuestionPanel(currentPlayer.getSuspectToken().getCurrentRoom(), currentPlayerID);
                                 this.gameScreen.getQuestionPanel().addKeyListener(new QuestionListener(this.gameScreen.getQuestionPanel()));
                                 this.gameScreen.getQuestionPanel().addMouseListener(new QuestionMouseListener(this.gameScreen.getQuestionPanel()));
                                 this.gameScreen.getQuestionPanel().requestFocus();

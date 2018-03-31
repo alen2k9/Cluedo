@@ -9,7 +9,6 @@ public class QuestionListener implements KeyListener {
     private final QuestionPanel panel;
 
     public QuestionListener(QuestionPanel panel){
-        System.out.println("Added Listener");
         this.panel = panel;
     }
 
