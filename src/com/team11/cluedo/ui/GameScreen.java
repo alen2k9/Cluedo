@@ -9,7 +9,6 @@
 package com.team11.cluedo.ui;
 
 import com.team11.cluedo.assets.Assets;
-import com.team11.cluedo.board.room.TileType;
 import com.team11.cluedo.components.Autocomplete;
 import com.team11.cluedo.components.Dice;
 import com.team11.cluedo.components.InputData;
@@ -38,6 +37,7 @@ public class GameScreen extends JFrame implements Screen {
     private BoardUI boardPanel;
     private JPanel playerPanel;
     private PlayerHandLayout playerHandPanel;
+    private PlayerChange playerChange;
     private NotesPanel notesPanel;
     private Dice gameDice;
 
@@ -70,6 +70,7 @@ public class GameScreen extends JFrame implements Screen {
         this.moveOverlay = new MoveOverlay(this.getGamePlayers().getPlayer(0), this.resolution);
         this.doorOverlay = new DoorOverlay(this.getGamePlayers().getPlayer(0), this.resolution);
         this.gameDice = new Dice(gameAssets, resolution);
+        this.playerChange = new PlayerChange(resolution);
     }
 
     @Override
@@ -300,6 +301,10 @@ public class GameScreen extends JFrame implements Screen {
         return this.doorOverlay;
     }
 
+    public PlayerChange getPlayerChange() {
+        return playerChange;
+    }
+
     public Dice getGameDice() {
         return gameDice;
     }
@@ -319,6 +324,7 @@ public class GameScreen extends JFrame implements Screen {
     public class BoardUI extends JLayeredPane {
         public BoardUI() {
             add(gameCards.getMurderEnvelope());
+            add(playerChange);
             add(gameDice);
             add(gameSuspects);
             add(gameWeapons);

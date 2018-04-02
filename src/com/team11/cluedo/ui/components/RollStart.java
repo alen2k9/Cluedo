@@ -97,8 +97,12 @@ public class RollStart extends SwingWorker<Integer, String> {
         process(new ArrayList<>());
         infoOutput.setText("");
         infoOutput.append(playerName + " rolled a " + rolledNumbers.get(highRollers.get(0)) + ", the highest\nnumber!\n\n");
+        commandInput.getGameLog().append(playerName)
+                .append(" rolled a ")
+                .append(rolledNumbers.get(highRollers.get(0)))
+                .append(", the highest\nnumber!\n");
+
         commandInput.setCurrentPlayerID(currentPlayerID);
-        commandInput.runPlayer();
         commandInput.setUpMouseClick();
         commandInput.playerTurn();
         gameScreen.getCommandInput().requestFocus();

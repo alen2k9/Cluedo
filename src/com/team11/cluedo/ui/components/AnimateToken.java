@@ -33,7 +33,7 @@ public class AnimateToken extends SwingWorker<Integer, String> {
     private CommandInput commandInput;
     private Suspect token;
 
-    private int resolutionScalar, drawX, drawY;
+    private int resolutionScalar;
     private double percentageScalar;
 
     private ArrayList<Direction> moves;
@@ -53,7 +53,9 @@ public class AnimateToken extends SwingWorker<Integer, String> {
 
     @Override
     protected Integer doInBackground() throws Exception {
-        int distance = 2, delay = (int)(4*percentageScalar);
+        int delay = 1;
+        System.out.println(delay);
+
 
         commandInput.setMouseEnabled(false);
         commandInput.setMoveEnabled(false);
@@ -65,19 +67,18 @@ public class AnimateToken extends SwingWorker<Integer, String> {
                 while (!moves.isEmpty()) {
                     AnimateToken.failIfInterrupted();
                     Direction direction = moves.remove(0);
-                    drawX = (int) (token.getBoardLocation().getX() * resolutionScalar);
-                    drawY = (int) (token.getBoardLocation().getY() * resolutionScalar);
+                    int initialX = (int) (token.getBoardLocation().getX() * resolutionScalar);
+                    int initialY = (int) (token.getBoardLocation().getY() * resolutionScalar);
                     token.move(gameScreen.getGameBoard(), direction);
+                    int targetX = (int) (token.getBoardLocation().getX() * resolutionScalar);
+                    int targetY = (int) (token.getBoardLocation().getY() * resolutionScalar);
+
+                    int drawX = initialX;
+                    int drawY = initialY;
 
                     while (drawX != (int) (token.getBoardLocation().getX() * resolutionScalar) || drawY != (int) (token.getBoardLocation().getY() * resolutionScalar)) {
-                        if (drawX < token.getBoardLocation().getX() * resolutionScalar)
-                            drawX += distance;
-                        if (drawX > token.getBoardLocation().getX() * resolutionScalar)
-                            drawX -= distance;
-                        if (drawY < token.getBoardLocation().getY() * resolutionScalar)
-                            drawY += distance;
-                        if (drawY > token.getBoardLocation().getY() * resolutionScalar)
-                            drawY -= distance;
+                        drawX += ((targetX-initialX)/(Board.TILE_SIZE*percentageScalar));
+                        drawY += ((targetY-initialY)/(Board.TILE_SIZE*percentageScalar));
 
                         token.setDrawX(drawX);
                         token.setDrawY(drawY);
@@ -103,8 +104,7 @@ public class AnimateToken extends SwingWorker<Integer, String> {
                 if (currentPlayer.getSuspectToken().isInRoom()) {
                     String roomName = currentPlayer.getSuspectToken().getCurrentRoomName();
                     remainingMoves = 0;
-                    gameScreen.getInfoOutput().append(currentPlayer.getPlayerName() + " is now in the " + roomName + "\n");
-                    CommandProcessing.printRemainingMoves(remainingMoves, gameScreen.getInfoOutput());
+                    gameScreen.getInfoOutput().append("\n" + currentPlayer.getPlayerName() + " is now in the " + roomName + "\n");
                 }
                 if (commandInput.isMoveEnabled()) {
                     gameScreen.getMoveOverlay().setValidMoves(movementHandling.findValidMoves(remainingMoves), currentPlayer);
@@ -121,6 +121,7 @@ public class AnimateToken extends SwingWorker<Integer, String> {
 
         if (remainingMoves == 0 && moveEnabled) {
             commandInput.setMoveEnabled(movementHandling.disableMove());
+            commandInput.incrementGamestate();
         }
         commandInput.setRemainingMoves(remainingMoves);
         process(new ArrayList<>());

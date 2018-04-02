@@ -20,8 +20,6 @@ public class Dice extends JComponent {
     private boolean doAnimation = false;
     private Die leftDice;
     private Die rightDice;
-    private int leftVal;
-    private int rightVal;
 
     private Assets gameAssets;
     private double resolutionScalar;
@@ -153,15 +151,16 @@ public class Dice extends JComponent {
             int size = (int)(48 * resolutionScalar);
             Dimension targetSize = new Dimension(size, size);
             int leftTargetX = targetX, rightTargetX = targetX + size + spacing;
-            int leftMoveX, leftMoveY, rightMoveX, rightMoveY;
-            leftMoveX = (leftTargetX - leftDice.getX())/20;
-            leftMoveY = (targetY - leftDice.getY())/20;
-            rightMoveX = (rightTargetX - rightDice.getX())/20;
-            rightMoveY = (targetY - rightDice.getY())/20;
+            int leftMoveX, leftMoveY, rightMoveX, rightMoveY, divisor = (int)(20*resolutionScalar);
 
-            while(leftDice.getX() != leftTargetX && leftDice.getY() != targetY &&
-                    rightDice.getX() != rightTargetX && rightDice.getY() != targetY) {
-                if (leftDice.getPreferredSize().height >= targetSize.height && rightDice.getPreferredSize().height >= targetSize.height) {
+            leftMoveX = (int)(((leftTargetX - leftDice.getX())/divisor)*resolutionScalar);
+            leftMoveY = (int)(((targetY - leftDice.getY())/divisor)*resolutionScalar);
+            rightMoveX = (int)(((rightTargetX - rightDice.getX())/divisor)*resolutionScalar);
+            rightMoveY = (int)(((targetY - rightDice.getY())/divisor)*resolutionScalar);
+
+            while(leftDice.getX() != leftTargetX || leftDice.getY() != targetY ||
+                    rightDice.getX() != rightTargetX || rightDice.getY() != targetY) {
+                if (leftDice.getPreferredSize().height > targetSize.height && rightDice.getPreferredSize().height > targetSize.height) {
                     int sizeScalar = (int)(4 * resolutionScalar);
                     Dimension newSize = new Dimension(leftDice.getSize().width - sizeScalar,
                             leftDice.getSize().height - sizeScalar);
@@ -170,11 +169,11 @@ public class Dice extends JComponent {
                     rightDice.setPreferredSize(newSize);
                     rightDice.setSize(newSize);
                 }
-                if (leftDice.getX() >= leftTargetX && leftDice.getY() >= targetY)
+                if (leftDice.getX() > leftTargetX || leftDice.getY() > targetY)
                     leftDice.setLocation(leftDice.getX()+leftMoveX, leftDice.getY()+leftMoveY);
                 if (leftDice.getX() < leftTargetX || leftDice.getY() < targetY)
                     leftDice.setLocation(leftTargetX, targetY);
-                if (rightDice.getX() >= rightTargetX && rightDice.getY() >= targetY)
+                if (rightDice.getX() > rightTargetX || rightDice.getY() > targetY)
                     rightDice.setLocation(rightDice.getX()+rightMoveX, rightDice.getY()+rightMoveY);
                 if (rightDice.getX() < rightTargetX || rightDice.getY() < targetY)
                     rightDice.setLocation(rightTargetX, targetY);
