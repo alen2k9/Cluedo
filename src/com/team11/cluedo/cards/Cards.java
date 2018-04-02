@@ -134,6 +134,7 @@ public class Cards {
 
         for (int i = 0; i < gamePlayers.getPlayerCount(); i++){
             for (Card card : publicEnvelope){
+                gamePlayers.getPlayer(i).getPlayerHand().addPublicCards(card);
                 gamePlayers.getPlayer(i).getPlayerNotes().paintCell(0, card.getName());
             }
         }

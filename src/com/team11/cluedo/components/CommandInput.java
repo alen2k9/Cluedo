@@ -12,10 +12,14 @@ import com.team11.cluedo.board.BoardPos;
 import com.team11.cluedo.board.room.RoomData;
 import com.team11.cluedo.board.room.TileType;
 import com.team11.cluedo.players.Player;
+import com.team11.cluedo.questioning.QuestionListener;
+import com.team11.cluedo.questioning.QuestionMouseListener;
+import com.team11.cluedo.questioning.QuestionPanel;
 import com.team11.cluedo.suspects.Direction;
 import com.team11.cluedo.suspects.SuspectData;
 import com.team11.cluedo.ui.GameScreen;
 
+import com.team11.cluedo.ui.Resolution;
 import com.team11.cluedo.ui.components.RollStart;
 import com.team11.cluedo.ui.components.OverlayTile;
 import com.team11.cluedo.weapons.WeaponData;
@@ -43,6 +47,7 @@ public class CommandInput {
     private int dice, remainingMoves, numPlayers, currentPlayerID, gameState;
     private boolean canRoll;
     private boolean canCheat;
+    private boolean canQuestion;
     private boolean moveEnabled;
     private boolean mouseEnabled;
 
@@ -54,6 +59,7 @@ public class CommandInput {
     public void initialSetup() {
         this.canRoll = true;
         this.canCheat = true;
+        this.canQuestion = false;
         this.moveEnabled = false;
         this.mouseEnabled = true;
         this.numPlayers = this.gameScreen.getGamePlayers().getPlayerCount();
@@ -107,8 +113,13 @@ public class CommandInput {
                             incrementGamestate();
                             break;
 
-                        case "question":
-                            //question();
+                        case "done":
+                            nextPlayer();
+                            this.gameScreen.getQuestionPanel().hideQuestionPanel();
+                            break;
+
+                        case "quit":
+                            quitGame();
                             break;
 
                         case "help":
@@ -133,12 +144,25 @@ public class CommandInput {
                             cheat();
                             break;
 
-                        case "done":
-                            nextPlayer();
+                        case "question":
+                            System.out.println(canQuestion);
+                            if (currentPlayer.getSuspectToken().isCanQuestion()) {
+                                this.gameScreen.getQuestionPanel().displayQuestionPanel(currentPlayer.getSuspectToken().getCurrentRoom(), currentPlayerID);
+                                this.gameScreen.getQuestionPanel().addKeyListener(new QuestionListener(this.gameScreen.getQuestionPanel()));
+                                this.gameScreen.getQuestionPanel().addMouseListener(new QuestionMouseListener(this.gameScreen.getQuestionPanel()));
+                                this.gameScreen.getQuestionPanel().requestFocus();
+                            } else {
+                                infoOutput.append("Cannot question, must be in a room");
+                            }
                             break;
 
-                        case "quit":
-                            quitGame();
+                        case "hide":
+                            this.gameScreen.getQuestionPanel().hideQuestionPanel();
+                            this.gameScreen.getQuestionPanel().removeKeyListener(gameScreen.getQuestionPanel().getKeyListeners()[0]);
+                            this.gameScreen.getCommandInput().requestFocus();
+                            break;
+
+                        case "back":
                             break;
 
                         default:
@@ -911,6 +935,7 @@ public class CommandInput {
             return this.weapon;
         }
     }
+
 
     public void setMoveEnabled(boolean moveEnabled) {
         this.moveEnabled = moveEnabled;

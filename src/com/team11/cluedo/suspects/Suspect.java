@@ -22,9 +22,11 @@ import java.util.HashSet;
 
 public class Suspect extends TokenComponent implements Mover {
     private TileType previousRoom;
+    private boolean canQuestion;
 
     public Suspect(int suspectID, String suspectName, Point location, Image tokenImage, Resolution resolution){
         super(suspectID,suspectName,location,tokenImage,resolution);
+        this.canQuestion = false;
     }
 
     public boolean checkMove(Board gameBoard, ArrayList<Direction> moveList) {
@@ -179,6 +181,7 @@ public class Suspect extends TokenComponent implements Mover {
         setBoardLocation(nextPoint);
         this.setCurrentRoom(currRoom);
         this.previousRoom = gameBoard.getBoardPos((int) getBoardLocation().getY(), (int) getBoardLocation().getX()).getRoomType();
+        this.setCanQuestion(true);
         gameBoard.getRoom(currRoom).getPlayerPositions().remove(nextPoint);
     }
 
@@ -190,6 +193,7 @@ public class Suspect extends TokenComponent implements Mover {
             gameBoard.getRoom(this.getCurrentRoom()).getPlayerPositions().add(currPoint);
             setBoardLocation(nextPoint);
             this.setCurrentRoom(-1);
+            this.setCanQuestion(false);
             return 1;
         } else {
             return 0;
@@ -305,5 +309,13 @@ public class Suspect extends TokenComponent implements Mover {
 
     public String getSuspectName() {
         return super.tokenName;
+    }
+
+    public void setCanQuestion(boolean bool){
+        this.canQuestion = bool;
+    }
+
+    public boolean isCanQuestion(){
+        return this.canQuestion;
     }
 }

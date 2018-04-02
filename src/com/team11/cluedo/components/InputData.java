@@ -31,8 +31,10 @@ public class InputData {
         addElement("notes", this.commandData);
         addElement("godroll", this.commandData);
         addElement("finished", this.commandData);
+        addElement("question", this.commandData);
         addElement("cards", this.commandData);
         addElement("log", this.commandData);
+
 
 
         SuspectData suspectData = new SuspectData();

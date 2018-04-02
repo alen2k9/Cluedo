@@ -15,6 +15,7 @@ import java.util.List;
 
 public class PlayerHand {
     private final List<Card> playerHand = new ArrayList<>();
+    private ArrayList<Card> publicHand = new ArrayList<>();
 
     public PlayerHand() {
     }
@@ -29,5 +30,17 @@ public class PlayerHand {
 
     public int getCardAmount() {
         return playerHand.size();
+    }
+
+    public void addPublicCards(Card card){
+        this.publicHand.add(card);
+    }
+
+    public List<Card> getPlayerHand(){
+        return this.playerHand;
+    }
+
+    public List<Card> getPublicHand(){
+        return this.publicHand;
     }
 }
