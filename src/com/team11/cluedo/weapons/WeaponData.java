@@ -116,4 +116,8 @@ public class WeaponData {
     public String getWeaponID(int index){
         return weaponID.getOrDefault(index,null);
     }
+
+    public HashMap<Integer, String> getWeaponID() {
+        return weaponID;
+    }
 }

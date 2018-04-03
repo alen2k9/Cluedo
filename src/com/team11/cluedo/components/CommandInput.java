@@ -105,6 +105,10 @@ public class CommandInput {
                             incrementGamestate();
                             break;
 
+                        case "accuse":
+                            accuse();
+                            break;
+
                         case "godroll":
                             godRoll();
                             incrementGamestate();
@@ -669,8 +673,8 @@ public class CommandInput {
         System.out.println(canQuestion);
         if (currentPlayer.getSuspectToken().isCanQuestion()) {
             this.gameScreen.getQuestionPanel().displayQuestionPanel(currentPlayer.getSuspectToken().getCurrentRoom(), currentPlayerID);
-            this.gameScreen.getQuestionPanel().addKeyListener(new QuestionListener(this.gameScreen.getQuestionPanel()));
-            this.gameScreen.getQuestionPanel().addMouseListener(new QuestionMouseListener(this.gameScreen.getQuestionPanel()));
+            //this.gameScreen.getQuestionPanel().addKeyListener(new QuestionListener(this.gameScreen.getQuestionPanel()));
+            //this.gameScreen.getQuestionPanel().addMouseListener(new QuestionMouseListener(this.gameScreen.getQuestionPanel()));
             this.gameScreen.getQuestionPanel().requestFocus();
         }
     }
@@ -801,5 +805,11 @@ public class CommandInput {
 
     public StringBuilder getGameLog() {
         return gameLog;
+    }
+
+    public void accuse(){
+        setGameEnabled(false);
+        gameScreen.getAccusations().setUpAccustations();
+
     }
 }

@@ -12,12 +12,24 @@ import javax.swing.*;
 import java.awt.*;
 
 public class T11Label extends JLabel {
+
+    String name;
+
     public T11Label(ImageIcon icon){
         super(icon);
     }
 
     public T11Label() {
         super();
+    }
+
+    public T11Label(ImageIcon icon, String name){
+        super(icon);
+        this.name = name;
+    }
+
+    public String getCardName(){
+        return this.name;
     }
 
     @Override

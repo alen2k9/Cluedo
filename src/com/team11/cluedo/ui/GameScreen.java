@@ -8,6 +8,7 @@
 
 package com.team11.cluedo.ui;
 
+import com.team11.cluedo.accustations.Accusations;
 import com.team11.cluedo.assets.Assets;
 import com.team11.cluedo.components.Autocomplete;
 import com.team11.cluedo.components.Dice;
@@ -16,6 +17,7 @@ import com.team11.cluedo.components.InputData;
 import com.team11.cluedo.board.Board;
 import com.team11.cluedo.players.Players;
 
+import com.team11.cluedo.questioning.QPanel;
 import com.team11.cluedo.questioning.QuestionPanel;
 
 import com.team11.cluedo.suspects.Suspects;
@@ -44,7 +46,7 @@ public class GameScreen extends JFrame implements Screen {
     private NotesPanel notesPanel;
     private Dice gameDice;
 
-    private QuestionPanel questionPanel;
+    private QPanel qPanel;
 
     private MoveOverlay moveOverlay;
     private DoorOverlay doorOverlay;
@@ -59,6 +61,7 @@ public class GameScreen extends JFrame implements Screen {
     private final Players gamePlayers;
     private final Assets gameAssets;
     private final Cards gameCards;
+    private Accusations accusations;
 
     private final Resolution resolution;
     private Dimension currSize;
@@ -74,9 +77,11 @@ public class GameScreen extends JFrame implements Screen {
         this.gameCards = new Cards(resolution);
         this.moveOverlay = new MoveOverlay(this.getGamePlayers().getPlayer(0), this.resolution);
         this.doorOverlay = new DoorOverlay(this.getGamePlayers().getPlayer(0), this.resolution);
-        this.questionPanel = new QuestionPanel(this, this.resolution);
+        //this.questionPanel = new QuestionPanel(this, this.resolution);
+        this.qPanel = new QPanel(this, this.resolution);
         this.gameDice = new Dice(gameAssets, resolution);
         this.playerChange = new PlayerChange(resolution);
+        this.accusations= new Accusations(gameAssets,gameCards,resolution);
     }
 
     @Override
@@ -224,7 +229,7 @@ public class GameScreen extends JFrame implements Screen {
         infoOutput.setBorder(null);
 
         JScrollPane[] scrollPane = new JScrollPane[] {new JScrollPane(infoOutput), new JScrollPane(setupHelpPanel()),
-                new JScrollPane(playerHandPanel), new JScrollPane(notesPanel)};
+                new JScrollPane(playerHandPanel), new JScrollPane(notesPanel), new JScrollPane()};
 
         for (JScrollPane pane : scrollPane) {
             pane.setBorder(null);
@@ -235,6 +240,7 @@ public class GameScreen extends JFrame implements Screen {
         infoTabs.addTab("Help Panel", null, scrollPane[1], "Help Panel - List of all commands");
         infoTabs.addTab("Current Cards", null, scrollPane[2], "The Current Cards you're holding");
         infoTabs.addTab("Notes", null, scrollPane[3], "Check List for who has what cards");
+        infoTabs.addTab("Log", null, scrollPane[4], "See what has happened throughout the game");
 
         JPanel infoPanel = new JPanel(new BorderLayout());
 
@@ -332,12 +338,12 @@ public class GameScreen extends JFrame implements Screen {
         return infoTabs;
     }
 
-    public void setQuestionPanel(QuestionPanel questionPanel){
-        this.questionPanel = questionPanel;
+    public QPanel getQuestionPanel() {
+        return qPanel;
     }
 
-    public QuestionPanel getQuestionPanel() {
-        return questionPanel;
+    public QPanel getqPanel() {
+        return qPanel;
     }
 
     public Assets getGameAssets() {
@@ -351,11 +357,16 @@ public class GameScreen extends JFrame implements Screen {
     public void setTabEnabled(int i, boolean bFlag) {
         infoTabs.setEnabledAt(i, bFlag);
     }
+    public Accusations getAccusations(){
+        return accusations;
+    }
 
     public class BoardUI extends JLayeredPane {
         public BoardUI() {
+
             add(gameCards.getMurderEnvelope());
-            add(questionPanel);
+            add(qPanel);
+            add(accusations);
             add(playerChange);
             add(gameDice);
             add(gameSuspects);
@@ -364,19 +375,17 @@ public class GameScreen extends JFrame implements Screen {
             add(moveOverlay);
             add(gameBoard);
 
-            questionPanel.hideQuestionPanel();
+            qPanel.hideQuestionPanel();
+            accusations.setVisible(false);
 
             ImageIcon board = new ImageIcon(gameAssets.getBoardImage());
             Dimension imageSize = new Dimension((int)(board.getIconWidth()*resolution.getScalePercentage()), (int)(board.getIconHeight()*resolution.getScalePercentage()));
             this.setPreferredSize(imageSize);
-
             this.getComponent(0).setLocation(0,0);
 
-            for (int i = 2 ; i < getComponentCount() ; i++) {
+            for (int i = 1 ; i < getComponentCount() ; i++) {
                 this.getComponent(i).setSize(imageSize);
                 this.getComponent(i).setLocation(0,0);
-
-
             }
         }
 
