@@ -243,6 +243,11 @@ public class GameScreen extends JFrame implements Screen {
         infoPanel.add(infoTabs, BorderLayout.CENTER);
         infoPanel.add(setupCommandPanel(), BorderLayout.SOUTH);
         infoPanel.setPreferredSize(new Dimension(infoPanel.getPreferredSize().width + 3, infoOutput.getPreferredSize().height));
+
+        for (int i = 1 ; i < 4 ; i++) {
+            infoTabs.setEnabledAt(i, false);
+        }
+
         return infoPanel;
 
 
@@ -341,6 +346,10 @@ public class GameScreen extends JFrame implements Screen {
 
     public void setTab(int i) {
         infoTabs.setSelectedIndex(i);
+    }
+
+    public void setTabEnabled(int i, boolean bFlag) {
+        infoTabs.setEnabledAt(i, bFlag);
     }
 
     public class BoardUI extends JLayeredPane {

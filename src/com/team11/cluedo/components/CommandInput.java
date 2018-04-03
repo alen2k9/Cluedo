@@ -371,6 +371,7 @@ public class CommandInput {
                     break;
             }
         } else {
+            infoOutput.append("> " + input + '\n');
             switch (gameState) {
                 case 0:
                     switch (command) {
@@ -431,6 +432,11 @@ public class CommandInput {
         this.currentPlayer = this.gameScreen.getGamePlayers().getPlayer(currentPlayerID);
         this.playerName = currentPlayer.getPlayerName();
         movementHandling.setCurrentPlayer(currentPlayer);
+
+        for (int i = 1 ; i < 4 ; i++) {
+            gameScreen.setTabEnabled(i, false);
+        }
+
 
         gameScreen.getPlayerChange().setPlayerCard(currentPlayer);
         gameScreen.getPlayerChange().setVisible(true);
@@ -632,6 +638,10 @@ public class CommandInput {
         switch (gameState) {
             case 1: //  Roll
                 gameScreen.getPlayerChange().setVisible(false);
+                for (int i = 1 ; i < 4 ; i++) {
+                    gameScreen.setTabEnabled(i, true);
+                }
+
                 infoOutput.setText("It is now " + playerName + "'s turn.\n");
                 if (currentPlayer.getSuspectToken().isInRoom()) {
                     infoOutput.append("Type 'Question' to question,\nOr 'roll' to start moving.\n");
