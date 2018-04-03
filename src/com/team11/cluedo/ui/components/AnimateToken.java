@@ -119,7 +119,7 @@ public class AnimateToken extends SwingWorker<Integer, String> {
 
         if (remainingMoves == 0 && moveEnabled) {
             commandInput.setMoveEnabled(movementHandling.disableMove());
-            commandInput.incrementGamestate();
+            commandInput.incrementGamestate(3);
         }
         commandInput.setRemainingMoves(remainingMoves);
         process(new ArrayList<>());

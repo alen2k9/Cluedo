@@ -19,6 +19,7 @@ import com.team11.cluedo.ui.GameScreen;
 
 import com.team11.cluedo.ui.components.RollStart;
 import com.team11.cluedo.ui.components.OverlayTile;
+import com.team11.cluedo.weapons.WeaponData;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -54,7 +55,7 @@ public class CommandInput {
     public void initialSetup() {
         this.canRoll = true;
         this.canCheat = true;
-        this.canQuestion = false;
+        this.canQuestion = true;
         this.canPassage = true;
         this.moveEnabled = false;
         this.gameEnabled = true;
@@ -102,17 +103,18 @@ public class CommandInput {
                     switch (command) {
                         case "roll":
                             diceRoll();
-                            incrementGamestate();
+                            incrementGamestate(2);
                             break;
 
                         case "godroll":
                             godRoll();
-                            incrementGamestate();
+                            incrementGamestate(2);
                             break;
 
                         case "done":
-                            nextPlayer();
                             this.gameScreen.getQuestionPanel().hideQuestionPanel();
+                            gameScreen.reDraw(currentPlayerID);
+                            nextPlayer();
                             break;
 
                         case "quit":
@@ -144,7 +146,8 @@ public class CommandInput {
 
                         case "question":
                             if (currentPlayer.getSuspectToken().isInRoom()) {
-                                question();
+                                incrementGamestate(4);
+                                question(inputs);
                             } else {
                                 infoOutput.append("Cannot question, must be in a room");
                             }
@@ -152,7 +155,7 @@ public class CommandInput {
 
                         case "hide":
                             this.gameScreen.getQuestionPanel().hideQuestionPanel();
-                            this.gameScreen.getQuestionPanel().removeKeyListener(gameScreen.getQuestionPanel().getKeyListeners()[0]);
+                            //this.gameScreen.getQuestionPanel().removeKeyListener(gameScreen.getQuestionPanel().getKeyListeners()[0]);
                             this.gameScreen.getCommandInput().requestFocus();
                             break;
 
@@ -223,25 +226,25 @@ public class CommandInput {
                             case "u":
                                 movementHandling.playerMovement(new ArrayList<>(Collections.singletonList(Direction.NORTH)), remainingMoves, moveEnabled);
                                 if (remainingMoves == 0) {
-                                    incrementGamestate();
+                                    incrementGamestate(2);
                                 }
                                 break;
                             case "r":
                                 movementHandling.playerMovement(new ArrayList<>(Collections.singletonList(Direction.EAST)), remainingMoves, moveEnabled);
                                 if (remainingMoves == 0) {
-                                    incrementGamestate();
+                                    incrementGamestate(2);
                                 }
                                 break;
                             case "d":
                                 movementHandling.playerMovement(new ArrayList<>(Collections.singletonList(Direction.SOUTH)), remainingMoves, moveEnabled);
                                 if (remainingMoves == 0) {
-                                    incrementGamestate();
+                                    incrementGamestate(2);
                                 }
                                 break;
                             case "l":
                                 movementHandling.playerMovement(new ArrayList<>(Collections.singletonList(Direction.WEST)), remainingMoves, moveEnabled);
                                 if (remainingMoves == 0) {
-                                    incrementGamestate();
+                                    incrementGamestate(2);
                                 }
                                 break;
 
@@ -289,7 +292,7 @@ public class CommandInput {
                     if (currentPlayer.getSuspectToken().isInRoom()) {
                         switch (command) {
                             case "question":
-                                question();
+                                question(inputs);
                                 break;
 
                             case "help":
@@ -364,18 +367,15 @@ public class CommandInput {
                         }
                     }
                     break;
-                case 4: //  Questioning
-                    //question(command);
-                    break;
-                case 5: //  Accusation
-                    break;
+
             }
         } else {
+            infoOutput.append("> " + input + '\n');
             switch (gameState) {
                 case 0:
                     switch (command) {
                         case "done":
-                            incrementGamestate();
+                            incrementGamestate(1);
                             setGameEnabled(true);
                             break;
                         default:
@@ -384,6 +384,60 @@ public class CommandInput {
                     }
                     break;
                 case 4: // Question
+                    switch (command){
+                        case "done":
+                            gameScreen.getqPanel().hideQuestionPanel();
+                            setGameEnabled(true);
+                            canQuestion = false;
+                            if (canRoll){
+                                incrementGamestate(1);
+                            } else{
+                                incrementGamestate(3);
+                            }
+
+                            break;
+                        case "white":
+                            gameScreen.getqPanel().textSelectCard("white");
+                            break;
+                        case "green":
+                            gameScreen.getqPanel().textSelectCard("green");
+                            break;
+                        case "peacock":
+                            gameScreen.getqPanel().textSelectCard("peacock");
+                            break;
+                        case "plum":
+                            gameScreen.getqPanel().textSelectCard("plum");
+                            break;
+                        case "scarlett":
+                            gameScreen.getqPanel().textSelectCard("scarlett");
+                            break;
+                        case "mustard":
+                            gameScreen.getqPanel().textSelectCard("mustard");
+                            break;
+                        case "hatchet":
+                            gameScreen.getqPanel().textSelectCard("hatchet");
+                            break;
+                        case "dagger":
+                            gameScreen.getqPanel().textSelectCard("dagger");
+                            break;
+                        case "poison":
+                            gameScreen.getqPanel().textSelectCard("poison");
+                            break;
+                        case "revolver":
+                            gameScreen.getqPanel().textSelectCard("revolver");
+                            break;
+                        case "rope":
+                            gameScreen.getqPanel().textSelectCard("rope");
+                            break;
+                        case "wrench":
+                            gameScreen.getqPanel().textSelectCard("wrench");
+                            break;
+
+                        default :
+                            infoOutput.append("Unknown command entered\n");
+
+                    }
+
                     break;
                 case 5: //  Accuse
                     break;
@@ -424,6 +478,7 @@ public class CommandInput {
         this.canRoll = true; this.canCheat = true; this.canPassage = true;
         this.dice = 0; this.remainingMoves = 0;
         setGameEnabled(false);
+        canQuestion = true;
 
         this.currentPlayerID++;
         if(this.currentPlayerID == this.numPlayers)
@@ -627,8 +682,8 @@ public class CommandInput {
         this.gameScreen.closeScreen();
     }
 
-    public void incrementGamestate() {
-        gameState++;
+    public void incrementGamestate(int gameState) {
+        this.gameState = gameState;
         switch (gameState) {
             case 1: //  Roll
                 gameScreen.getPlayerChange().setVisible(false);
@@ -655,13 +710,61 @@ public class CommandInput {
         }
     }
 
-    private void question() {
-        System.out.println(canQuestion);
-        if (currentPlayer.getSuspectToken().isCanQuestion()) {
+    private void question(String[] inputs) {
+        SuspectData suspectData = new SuspectData();
+        WeaponData weaponData = new WeaponData();
+        boolean validInput = false;
+        //One extra input, determine if weapon or player
+
+        if (inputs.length == 1){
+            validInput = true;
+        }
+        else if (inputs.length == 2){
+
+            System.out.println(inputs[1]);
+            //is a player
+            if (suspectData.getSuspectID().containsValue(inputs[1])){
+                System.out.println("suspect data contains");
+                this.gameScreen.getqPanel().setSelectedPlayer(inputs[1]);
+                validInput = true;
+            }
+            //is a weapon
+            else if (weaponData.getWeaponID().containsValue(inputs[1])){
+                System.out.println("Is not player");
+                this.gameScreen.getqPanel().setSelectedWeapon(inputs[1]);
+                validInput = true;
+            } else {
+                infoOutput.append("Enter a valid player/weapon");
+            }
+        } else if (inputs.length == 3) {
+            if ((suspectData.getSuspectID().containsValue(inputs[1]) || suspectData.getSuspectID().containsValue(inputs[2])) &&
+                    (weaponData.getWeaponID().containsValue(inputs[1]) || weaponData.getWeaponID().containsValue(inputs[2]))) {
+
+                if (suspectData.getSuspectID().containsValue(inputs[1])) {
+                    this.gameScreen.getqPanel().setSelectedPlayer(inputs[1]);
+                } else {
+                    this.gameScreen.getqPanel().setSelectedPlayer(inputs[2]);
+                }
+
+                if (weaponData.getWeaponID().containsValue(inputs[1])) {
+                    this.gameScreen.getqPanel().setSelectedWeapon(inputs[1]);
+                } else {
+                    this.gameScreen.getqPanel().setSelectedWeapon(inputs[2]);
+                }
+                validInput = true;
+            } else {
+                infoOutput.append("Enter a valid player and weapon");
+            }
+        } else {
+            infoOutput.append("Invalid number of arguments");
+        }
+
+
+        if (currentPlayer.getSuspectToken().isInRoom() && canQuestion && validInput) {
+            gameEnabled = false;
+            incrementGamestate(4);
             this.gameScreen.getQuestionPanel().displayQuestionPanel(currentPlayer.getSuspectToken().getCurrentRoom(), currentPlayerID);
-            //this.gameScreen.getQuestionPanel().addKeyListener(new QuestionListener(this.gameScreen.getQuestionPanel()));
-            //this.gameScreen.getQuestionPanel().addMouseListener(new QuestionMouseListener(this.gameScreen.getQuestionPanel()));
-            this.gameScreen.getQuestionPanel().requestFocus();
+
         }
     }
 
@@ -685,7 +788,7 @@ public class CommandInput {
                             if (gameScreen.getBoardPanel().checkPoint((int)boardPos.getLocation().getY(), (int)boardPos.getLocation().getX())) {
                                 movementHandling.mouseClickMove(new Point((int)boardPos.getLocation().getY(), (int)boardPos.getLocation().getX()), remainingMoves, moveEnabled);
                                 if (remainingMoves == 0) {
-                                    incrementGamestate();
+                                    incrementGamestate(2);
                                 }
                             }
                         }

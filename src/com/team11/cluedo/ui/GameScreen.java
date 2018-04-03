@@ -374,7 +374,7 @@ public class GameScreen extends JFrame implements Screen {
 
             this.getComponent(0).setLocation(0,0);
 
-            for (int i = 2 ; i < getComponentCount() ; i++) {
+            for (int i = 1 ; i < getComponentCount() ; i++) {
                 this.getComponent(i).setSize(imageSize);
                 this.getComponent(i).setLocation(0,0);
 
