@@ -56,7 +56,7 @@ public class MenuScreen implements Screen {
         this.gameScreen = new GameScreen(gameBoard, gameSuspects, gameWeapons, gamePlayers, gameAssets, resolution, "Cluedo");
         this.gameInput = new CommandInput(gameScreen);
 
-        //*/
+        ///*
         SuspectData suspectData = new SuspectData();
         for (int i = 0; i < 4; i++)
             gamePlayers.addPlayer(suspectData.getSuspectName(i), gameSuspects.getSuspect(i), resolution);
@@ -69,7 +69,7 @@ public class MenuScreen implements Screen {
         this.setupScreen(0);
         this.createScreen("Cluedo - Title Screen");
         this.displayScreen();
-        */
+        //*/
     }
 
     @Override

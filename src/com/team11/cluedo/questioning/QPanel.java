@@ -141,7 +141,7 @@ public class QPanel extends JPanel {
 
         this.setSize((int) (760 * resolution.getScalePercentage()), (int) (600 * resolution.getScalePercentage()));
         this.setLocation((int) (10 * resolution.getScalePercentage()), (int) (100 * resolution.getScalePercentage()));
-        this.setBackground(Color.DARK_GRAY);
+        setBackground(new Color(0,0,0, 168));
         this.setLayout(null);
         this.setBorder(BorderFactory.createLineBorder(Color.BLACK, 4));
     }
