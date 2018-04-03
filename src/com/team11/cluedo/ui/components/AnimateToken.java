@@ -54,10 +54,8 @@ public class AnimateToken extends SwingWorker<Integer, String> {
     @Override
     protected Integer doInBackground() throws Exception {
         int delay = 1;
-        System.out.println(delay);
 
-
-        commandInput.setMouseEnabled(false);
+        commandInput.setGameEnabled(false);
         commandInput.setMoveEnabled(false);
         Player currentPlayer = movementHandling.getCurrentPlayer();
         process(new ArrayList<>());
@@ -92,7 +90,7 @@ public class AnimateToken extends SwingWorker<Integer, String> {
                 }
 
                 commandInput.setMoveEnabled(true);
-                commandInput.setMouseEnabled(true);
+                commandInput.setGameEnabled(true);
                 remainingMoves -= steps;
                 if (steps == 1) {
                     CommandProcessing.printRemainingMoves(remainingMoves, gameScreen.getInfoOutput());
@@ -110,7 +108,7 @@ public class AnimateToken extends SwingWorker<Integer, String> {
                     gameScreen.getMoveOverlay().setValidMoves(movementHandling.findValidMoves(remainingMoves), currentPlayer);
                 }
             } else {
-                commandInput.setMouseEnabled(true);
+                commandInput.setGameEnabled(true);
                 commandInput.setMoveEnabled(true);
                 gameScreen.getInfoOutput().append("This path isn't valid.\nYou have " + remainingMoves + " moves remaining.\n");
                 gameScreen.getMoveOverlay().setValidMoves(movementHandling.findValidMoves(remainingMoves), currentPlayer);

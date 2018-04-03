@@ -9,20 +9,16 @@
 package com.team11.cluedo.components;
 
 import com.team11.cluedo.board.BoardPos;
-import com.team11.cluedo.board.room.RoomData;
 import com.team11.cluedo.board.room.TileType;
 import com.team11.cluedo.players.Player;
 import com.team11.cluedo.questioning.QuestionListener;
 import com.team11.cluedo.questioning.QuestionMouseListener;
-import com.team11.cluedo.questioning.QuestionPanel;
 import com.team11.cluedo.suspects.Direction;
 import com.team11.cluedo.suspects.SuspectData;
 import com.team11.cluedo.ui.GameScreen;
 
-import com.team11.cluedo.ui.Resolution;
 import com.team11.cluedo.ui.components.RollStart;
 import com.team11.cluedo.ui.components.OverlayTile;
-import com.team11.cluedo.weapons.WeaponData;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -39,17 +35,16 @@ public class CommandInput {
     private MovementHandling movementHandling;
 
     private GameScreen gameScreen;
+    private HelpCommand helpCommand;
     private JTextArea infoOutput;
     private Player currentPlayer;
     private String playerName;
     private StringBuilder gameLog;
 
     private int dice, remainingMoves, numPlayers, currentPlayerID, gameState;
-    private boolean canRoll;
-    private boolean canCheat;
-    private boolean canQuestion;
+    private boolean canRoll, canCheat, canQuestion, canPassage;
     private boolean moveEnabled;
-    private boolean mouseEnabled;
+    private boolean gameEnabled;
 
     public CommandInput(GameScreen gameScreen) {
         this.gameScreen = gameScreen;
@@ -60,12 +55,14 @@ public class CommandInput {
         this.canRoll = true;
         this.canCheat = true;
         this.canQuestion = false;
+        this.canPassage = true;
         this.moveEnabled = false;
-        this.mouseEnabled = true;
+        this.gameEnabled = true;
         this.numPlayers = this.gameScreen.getGamePlayers().getPlayerCount();
         this.currentPlayer = gameScreen.getGamePlayers().getPlayer(currentPlayerID);
         this.playerName = currentPlayer.getPlayerName();
         this.infoOutput = gameScreen.getInfoOutput();
+        this.helpCommand = new HelpCommand(infoOutput);
         this.gameState = 0;
 
         this.gameLog = new StringBuilder();
@@ -82,7 +79,7 @@ public class CommandInput {
 
     public void playerTurn() {
         gameState = 0;
-        mouseEnabled = false;
+        gameEnabled = false;
         currentPlayer = gameScreen.getGamePlayers().getPlayer(currentPlayerID);
         playerName = currentPlayer.getPlayerName();
         movementHandling.setCurrentPlayer(currentPlayer);
@@ -98,7 +95,7 @@ public class CommandInput {
 
         this.gameScreen.getCommandInput().setText("");
 
-        if (mouseEnabled) {
+        if (gameEnabled) {
             infoOutput.append("> " + input + '\n');
             switch (gameState) {
                 case 1: //  Pre-Roll
@@ -128,6 +125,7 @@ public class CommandInput {
                             else
                                 help(inputs[1]);
                             break;
+
                         case "notes":
                             notes();
                             break;
@@ -145,12 +143,8 @@ public class CommandInput {
                             break;
 
                         case "question":
-                            System.out.println(canQuestion);
-                            if (currentPlayer.getSuspectToken().isCanQuestion()) {
-                                this.gameScreen.getQuestionPanel().displayQuestionPanel(currentPlayer.getSuspectToken().getCurrentRoom(), currentPlayerID);
-                                this.gameScreen.getQuestionPanel().addKeyListener(new QuestionListener(this.gameScreen.getQuestionPanel()));
-                                this.gameScreen.getQuestionPanel().addMouseListener(new QuestionMouseListener(this.gameScreen.getQuestionPanel()));
-                                this.gameScreen.getQuestionPanel().requestFocus();
+                            if (currentPlayer.getSuspectToken().isInRoom()) {
+                                question();
                             } else {
                                 infoOutput.append("Cannot question, must be in a room");
                             }
@@ -188,9 +182,6 @@ public class CommandInput {
                                     infoOutput.append("Cannot move out of room.\n");
                                     CommandProcessing.printRemainingMoves(remainingMoves, infoOutput);
                                 }
-                                break;
-                            case "question":
-                                //question();
                                 break;
 
                             case "help":
@@ -298,7 +289,7 @@ public class CommandInput {
                     if (currentPlayer.getSuspectToken().isInRoom()) {
                         switch (command) {
                             case "question":
-                                //question();
+                                question();
                                 break;
 
                             case "help":
@@ -380,14 +371,21 @@ public class CommandInput {
                     break;
             }
         } else {
-            switch (command) {
-                case "done":
-                    incrementGamestate();
-                    setMouseEnabled(true);
-                    infoOutput.setText("It is now " + playerName + "'s turn.\n");
+            switch (gameState) {
+                case 0:
+                    switch (command) {
+                        case "done":
+                            incrementGamestate();
+                            setGameEnabled(true);
+                            break;
+                        default:
+                            infoOutput.append("When passed to " + playerName + ",\nType 'Done'.\n");
+                            break;
+                    }
                     break;
-                default:
-                    infoOutput.append("When passed to " + playerName + ",\nType 'Done'.\n");
+                case 4: // Question
+                    break;
+                case 5: //  Accuse
                     break;
             }
         }
@@ -399,10 +397,8 @@ public class CommandInput {
     }
 
     private void keyInput() {
-        gameScreen.getCommandInput().addKeyListener(new KeyAdapter()
-        {
-            public void keyPressed(KeyEvent key)
-            {
+        gameScreen.getCommandInput().addKeyListener(new KeyAdapter() {
+            public void keyPressed(KeyEvent key) {
                 if (moveEnabled) {
                     if (key.getKeyCode() == KeyEvent.VK_DOWN) {
                         movementHandling.playerMovement(new ArrayList<>(Collections.singletonList(Direction.SOUTH)), remainingMoves, moveEnabled);
@@ -425,9 +421,9 @@ public class CommandInput {
         if (!currentPlayer.getSuspectToken().isInRoom()) {
             currentPlayer.getSuspectToken().setPreviousRoom(TileType.AVOID);
         }
-        this.canRoll = true; this.canCheat = true;
+        this.canRoll = true; this.canCheat = true; this.canPassage = true;
         this.dice = 0; this.remainingMoves = 0;
-        setMouseEnabled(false);
+        setGameEnabled(false);
 
         this.currentPlayerID++;
         if(this.currentPlayerID == this.numPlayers)
@@ -445,24 +441,27 @@ public class CommandInput {
 
     private void secretPassage() {
         ArrayList<OverlayTile> overlayTiles = new ArrayList<>();
-        if (!(currentPlayer.getSuspectToken().getCurrentRoom() == -1) && this.gameScreen.getGameBoard().getRoom(currentPlayer.getSuspectToken().getCurrentRoom()).hasSecretPassage() ) {
-            if (currentPlayer.getSuspectToken().useSecretPassageWay(this.gameScreen.getGameBoard())){
+        if (currentPlayer.getSuspectToken().isInRoom()) {
+            if (canPassage && gameScreen.getGameBoard().getRoom(currentPlayer.getSuspectToken().getCurrentRoom()).hasSecretPassage()){
+                currentPlayer.getSuspectToken().useSecretPassageWay(this.gameScreen.getGameBoard());
                 String roomName = currentPlayer.getSuspectToken().getCurrentRoomName();
                 remainingMoves--;
 
                 infoOutput.append(this.playerName + " used secret passageway.\n" + this.playerName + " is now in the " + roomName + ".\n");
-                if (remainingMoves > 0){
-                    for (Point point : this.gameScreen.getGameBoard().getRoom(this.currentPlayer.getSuspectToken().getCurrentRoom()).getEntryPoints()){
+                if (remainingMoves > 0) {
+                    for (Point point : this.gameScreen.getGameBoard().getRoom(this.currentPlayer.getSuspectToken().getCurrentRoom()).getEntryPoints()) {
                         overlayTiles.add(new OverlayTile(point));
                     }
                     this.gameScreen.getDoorOverlay().setExits(overlayTiles, this.currentPlayer);
+                    canPassage = false;
                 }
-
+            } else if (!canPassage) {
+                infoOutput.append("You've already used a passage this turn!\n");
             } else {
-                infoOutput.append("There are no secret passageways to use in this room!\n");
+                infoOutput.append("There are no secret passages to use in this room!\n");
             }
         } else {
-            infoOutput.append("No secret passage to use\n");
+            infoOutput.append("You're not in a room.\n");
         }
     }
 
@@ -536,7 +535,7 @@ public class CommandInput {
     }
 
     private void help() {
-        this.gameScreen.setTab(1);
+        helpCommand.output(currentPlayer, gameState);
     }
 
     private void cards() {
@@ -544,76 +543,7 @@ public class CommandInput {
     }
 
     private void help(String command){
-        switch (command) {
-            case "roll":
-                infoOutput.append("- 'roll' : Dice would roll giving you the number\n" +
-                        "of movements you are allowed to move\n\n");
-                break;
-
-            case "move" :
-                infoOutput.append("- 'move': Move player in desired direction \n" +
-                        "        l = Left\t\n" +
-                        "        r = Right\n" +
-                        "        u = Up\n" +
-                        "        d = Down\n" +
-                        "Example\n" +
-                        "'move llddru' : \n" +
-                        " move left 2 spaces, move down 2 spaces\n" +
-                        " move right once and move up once\n" +
-                        "-You can use arrow keys to move\n" +
-                        "-User can also click the highlighted \n squares\n" +
-                        "-Type 'move' again to toggle movement on and off\n\n");
-                break;
-
-            case "exit":
-                infoOutput.append("- 'exit' :\nuser can exit a room with this command.\n" +
-                        "Exit depends on number of door's in room.\n" +
-                        "Doors to choose from are ranged 1-4\n" +
-                        "i.e. 1 is leftmost door, 4 is rightmost door\n" +
-                        "Example :'exit 2' :\n" +
-                        "Player will exit through second door.\n" +
-                        "             'exit' :\n" +
-                        "Player will exit through first door by \n default.\n\n");
-                break;
-
-            case "cards":
-                infoOutput.append("- 'cards' : This will display the current \ncards that the user has\n\n");
-                break;
-
-            case "passage":
-                infoOutput.append("- 'passage' : \nIf player is in a room with secret passage\n" +
-                        "this command will let them use the secret passage\n\n");
-                break;
-
-            case "notes":
-                infoOutput.append("- 'notes' :\n Opens the users notes page.\n" +
-                        " You can click on any cell to highlight\n" +
-                        " what cards you know are not part of the\n" +
-                        " murder.\n\n");
-                break;
-
-            case "cheat":
-                infoOutput.append("- 'cheat' : \nDisplays the cards in the envelope\n\n");
-                break;
-
-            case "done":
-                infoOutput.append("- 'done' :\n Current player will end their turn.\n" +
-                        "Next Player's turn will start.\n\n");
-                break;
-
-            case "back":
-                infoOutput.append("- 'back' :\n Brings you back to the game log.\n\n");
-                break;
-
-            case  "quit":
-                infoOutput.append("- 'quit' :\n Player can quit/stop entire game.\n\n");
-                break;
-
-            default:
-                infoOutput.append("Unknown command\nUse command 'help' + 'type command' for instructions.\n");
-                break;
-        }
-
+        helpCommand.output(command);
     }
 
     private void notes(){
@@ -702,6 +632,12 @@ public class CommandInput {
         switch (gameState) {
             case 1: //  Roll
                 gameScreen.getPlayerChange().setVisible(false);
+                infoOutput.setText("It is now " + playerName + "'s turn.\n");
+                if (currentPlayer.getSuspectToken().isInRoom()) {
+                    infoOutput.append("Type 'Question' to question,\nOr 'roll' to start moving.\n");
+                } else {
+                    infoOutput.append("Type 'Roll' to begin your turn.\n");
+                }
                 break;
             case 2: //  Moving
                 movementHandling.setCurrentPlayer(currentPlayer);
@@ -709,7 +645,7 @@ public class CommandInput {
                 break;
             case 3: //  After move
                 if (currentPlayer.getSuspectToken().isInRoom()) {
-                    infoOutput.append("Type 'Question' or 'Done'\n");
+                    infoOutput.append("Type 'Question' to question,\nOr 'Done' to finish your turn.\n");
                 } else {
                     infoOutput.append("Type 'Done' to finish your turn.\n");
                 }
@@ -719,77 +655,13 @@ public class CommandInput {
         }
     }
 
-    private void weaponMovement() {
-        ChoiceOption choice = new ChoiceOption();
-        int weapon = 0;
-        int room = 0;
-
-        if (choice.getWeapon() != null){
-            /*
-             * Moving Weapon
-             */
-
-            RoomData roomData = new RoomData();
-
-            if (choice.getRoom().equals(roomData.getRoomName(0))) {
-                System.out.println("Found " + choice.getRoom());
-                room = 0;
-            } else if (choice.getRoom().equals(roomData.getRoomName(1))) {
-                System.out.println("Found " + choice.getRoom());
-                room = 1;
-            } else if (choice.getRoom().equals(roomData.getRoomName(2))) {
-                System.out.println("Found " + choice.getRoom());
-                room = 2;
-            } else if (choice.getRoom().equals(roomData.getRoomName(3))) {
-                System.out.println("Found " + choice.getRoom());
-                room = 3;
-            } else if (choice.getRoom().equals(roomData.getRoomName(4))) {
-                System.out.println("Found " + choice.getRoom());
-                room = 4;
-            } else if (choice.getRoom().equals(roomData.getRoomName(5))) {
-                System.out.println("Found " + choice.getRoom());
-                room = 5;
-            } else if (choice.getRoom().equals(roomData.getRoomName(6))) {
-                System.out.println("Found " + choice.getRoom());
-                room = 6;
-            } else if (choice.getRoom().equals(roomData.getRoomName(7))) {
-                System.out.println("Found " + choice.getRoom());
-                room = 7;
-            } else if (choice.getRoom().equals(roomData.getRoomName(8))) {
-                System.out.println("Found " + choice.getRoom());
-                room = 8;
-            } else if (choice.getRoom().equals("Cellar")) {
-                System.out.println("Found " + choice.getRoom());
-                room = 9;
-            }
-
-            WeaponData weaponData = new WeaponData();
-
-            if (choice.getWeapon().equals(weaponData.getWeaponName(0))) {
-                System.out.println("Found " + choice.getWeapon());
-                weapon = 0;
-            } else if(choice.getWeapon().equals(weaponData.getWeaponName(1))) {
-                System.out.println("Found " + choice.getWeapon());
-                weapon = 1;
-            } else if(choice.getWeapon().equals(weaponData.getWeaponName(2))) {
-                System.out.println("Found " + choice.getWeapon());
-                weapon = 2;
-            } else if(choice.getWeapon().equals(weaponData.getWeaponName(3))) {
-                System.out.println("Found " + choice.getWeapon());
-                weapon = 3;
-            } else if(choice.getWeapon().equals(weaponData.getWeaponName(4))) {
-                System.out.println("Found " + choice.getWeapon());
-                weapon = 4;
-            } else if(choice.getWeapon().equals(weaponData.getWeaponName(5))) {
-                System.out.println("Found " + choice.getWeapon());
-                weapon = 5;
-            }
-
-            System.out.println("Moving "+ weapon + choice.getWeapon() + " to " + room + choice.getRoom());
-            gameScreen.getGameWeapons().moveWeaponToRoom(weapon, room);
-            infoOutput.append("\n\n" + choice.getWeapon() + " has been moved to " + choice.getRoom() + "\n\n");
-        } else {
-            infoOutput.append("\nReturning to Main Menu\n");
+    private void question() {
+        System.out.println(canQuestion);
+        if (currentPlayer.getSuspectToken().isCanQuestion()) {
+            this.gameScreen.getQuestionPanel().displayQuestionPanel(currentPlayer.getSuspectToken().getCurrentRoom(), currentPlayerID);
+            this.gameScreen.getQuestionPanel().addKeyListener(new QuestionListener(this.gameScreen.getQuestionPanel()));
+            this.gameScreen.getQuestionPanel().addMouseListener(new QuestionMouseListener(this.gameScreen.getQuestionPanel()));
+            this.gameScreen.getQuestionPanel().requestFocus();
         }
     }
 
@@ -822,7 +694,7 @@ public class CommandInput {
                     @Override
                     public void mouseEntered(MouseEvent e) {
                         super.mouseEntered(e);
-                        if(gameScreen.isFocused() && mouseEnabled)
+                        if(gameScreen.isFocused() && gameEnabled)
                             if (boardPos.getTileType() == TileType.ROOM || boardPos.getTileType() == TileType.DOOR
                                     || boardPos.getTileType() == TileType.SECRETPASSAGE) {
                                 if (!roomPos.isEmpty())
@@ -878,7 +750,7 @@ public class CommandInput {
             gameScreen.getCommandInput().setText("done");
             processCommand();
             gameScreen.getCommandInput().requestFocus();
-            setMouseEnabled(true);
+            setGameEnabled(true);
         });
 
 
@@ -893,56 +765,12 @@ public class CommandInput {
         });
     }
 
-    private class ChoiceOption {
-        private String weapon;
-        private String room;
-
-        private ChoiceOption() {
-            makeChoice();
-        }
-
-        private void makeChoice() {
-            WeaponData weaponData = new WeaponData();
-            RoomData roomData = new RoomData();
-            String[] weaponChoice = new String[gameScreen.getGameWeapons().getNumWeapons()];
-            String[] roomChoice = new String[roomData.getRoomAmount() + 1];
-
-            for (int i = 0; i < gameScreen.getGameWeapons().getNumWeapons() ; i++) {
-                weaponChoice[i] = weaponData.getWeaponName(i);
-            }
-
-            for (int i = 0; i < roomData.getRoomAmount() ; i++) {
-                roomChoice[i] = roomData.getRoomName(i);
-            }
-            roomChoice[9] = "Cellar";
-
-            this.weapon = (String) JOptionPane.showInputDialog(null, "Choose the Weapon you want to move",
-                    "Weapon Movement", JOptionPane.QUESTION_MESSAGE, null, weaponChoice, weaponChoice[0]);
-
-            if (this.weapon != null) {
-                this.room = (String) JOptionPane.showInputDialog(null, "Choose the WeaponPoints you want to move it into",
-                        "Weapon Movement", JOptionPane.QUESTION_MESSAGE, null, roomChoice, roomChoice[0]);
-            } else {
-                System.out.println("Cancelling weapon movement");
-            }
-        }
-
-        private String getRoom() {
-            return this.room;
-        }
-
-        private String getWeapon() {
-            return this.weapon;
-        }
-    }
-
-
     public void setMoveEnabled(boolean moveEnabled) {
         this.moveEnabled = moveEnabled;
     }
 
-    public void setMouseEnabled(boolean mouseEnabled) {
-        this.mouseEnabled = mouseEnabled;
+    public void setGameEnabled(boolean gameEnabled) {
+        this.gameEnabled = gameEnabled;
     }
 
     public void setCurrentPlayerID(int currentPlayerID) {

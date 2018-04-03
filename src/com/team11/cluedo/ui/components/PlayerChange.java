@@ -46,8 +46,6 @@ public class PlayerChange extends JPanel {
         ));
         JLabel playerCard = new JLabel(icon);
 
-        System.out.println("Card: " + playerCard.getSize() + " Panel: " + getSize());
-
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5,5,5,5);
         gbc.gridx = 0; gbc.gridy = 0;
