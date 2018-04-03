@@ -33,6 +33,7 @@ public class InputData {
         addElement("finished", this.commandData);
         addElement("question", this.commandData);
         addElement("cards", this.commandData);
+        addElement("log", this.commandData);
 
 
 

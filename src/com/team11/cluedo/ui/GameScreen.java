@@ -41,6 +41,7 @@ public class GameScreen extends JFrame implements Screen {
     private BoardUI boardPanel;
     private JPanel playerPanel;
     private PlayerHandLayout playerHandPanel;
+    private PlayerChange playerChange;
     private NotesPanel notesPanel;
     private Dice gameDice;
 
@@ -78,7 +79,7 @@ public class GameScreen extends JFrame implements Screen {
         //this.questionPanel = new QuestionPanel(this, this.resolution);
         this.qPanel = new QPanel(this, this.resolution);
         this.gameDice = new Dice(gameAssets, resolution);
-
+        this.playerChange = new PlayerChange(resolution);
     }
 
     @Override
@@ -310,6 +311,10 @@ public class GameScreen extends JFrame implements Screen {
         return this.doorOverlay;
     }
 
+    public PlayerChange getPlayerChange() {
+        return playerChange;
+    }
+
     public Dice getGameDice() {
         return gameDice;
     }
@@ -330,8 +335,8 @@ public class GameScreen extends JFrame implements Screen {
         this.questionPanel = questionPanel;
     }
 
-    public QuestionPanel getQuestionPanel() {
-        return questionPanel;
+    public QPanel getQuestionPanel() {
+        return qPanel;
     }
 
     public QPanel getqPanel() {
@@ -350,22 +355,22 @@ public class GameScreen extends JFrame implements Screen {
         public BoardUI() {
             add(gameCards.getMurderEnvelope());
 
-
             add(qPanel);
             qPanel.hideQuestionPanel();
-            add(gameDice);
 
+            add(playerChange);
+            add(gameDice);
             add(gameSuspects);
             add(gameWeapons);
             add(doorOverlay);
             add(moveOverlay);
             add(gameBoard);
 
+            qPanel.hideQuestionPanel();
+
             ImageIcon board = new ImageIcon(gameAssets.getBoardImage());
             Dimension imageSize = new Dimension((int)(board.getIconWidth()*resolution.getScalePercentage()), (int)(board.getIconHeight()*resolution.getScalePercentage()));
             this.setPreferredSize(imageSize);
-
-
 
             this.getComponent(0).setLocation(0,0);
 

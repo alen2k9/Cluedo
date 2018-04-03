@@ -12,15 +12,12 @@ import com.team11.cluedo.ui.components.OverlayTile;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 
 public class MovementHandling {
     private CommandInput commandInput;
     private GameScreen gameScreen;
     private Player currentPlayer;
-
-    private ArrayList<Long> timings = new ArrayList<>();
 
     public MovementHandling(GameScreen gameScreen, Player currentPlayer, CommandInput commandInput) {
         this.gameScreen = gameScreen;
@@ -43,13 +40,7 @@ public class MovementHandling {
         Point startPoint;
         Point endPoint;
 
-        long startTime = 0;
-        long endTime;
-
         if (!currentPlayer.getSuspectToken().isInRoom()) {
-
-            startTime = System.currentTimeMillis();
-
             startPoint = new Point((int) currentPlayer.getSuspectToken().getBoardLocation().getX() - remainingMoves,
                     (int) currentPlayer.getSuspectToken().getBoardLocation().getY() - remainingMoves);
 
@@ -107,27 +98,14 @@ public class MovementHandling {
             if (this.gameScreen.getGameBoard().getBoardPos((int)ov.getLocation().getY(), (int)ov.getLocation().getX()).isOccupied()){
                 invalidTiles.add(ov);
             }
+            if (this.gameScreen.getGameBoard().getBoardPos((int)ov.getLocation().getY(),
+                    (int)ov.getLocation().getX()).getRoomType() == currentPlayer.getSuspectToken().getPreviousRoom()){
+                invalidTiles.add(ov);
+            }
         }
 
         validMoves.removeAll(invalidTiles);
-
-        endTime = System.currentTimeMillis();
-
-        long time = endTime - startTime;
-        timings.add(time);
-
-
         return validMoves;
-    }
-
-    public void getAvgTime(){
-        long sum = 0;
-        for (Long time : timings){
-            sum += time;
-        }
-
-        sum /= timings.size();
-        System.out.println("Average time for size " + timings.size() + " " + sum);
     }
 
     public void mouseClickMove(Point target, int remainingMoves, boolean moveEnabled){
@@ -140,15 +118,20 @@ public class MovementHandling {
 
     public boolean enableMove(JTextArea infoOutput) {
         this.gameScreen.getMoveOverlay().setValidMoves(findValidMoves(commandInput.getRemainingMoves()), currentPlayer);
-        infoOutput.append("Enter 'U', 'R', 'D', or 'L' to move.\n" +
-                "Click on a highlighted square to move.\n" +
-                "Use the arrow keys to move.\n" +
-                "Close 'move' by typing 'move' or 'finished'\n");
+        if (currentPlayer.getSuspectToken().isInRoom()) {
+            infoOutput.append("Type 'Exit' followed by a number to exit.\n" +
+                    "Type 'Passage' to use the secret passage if available.\n" +
+                    "Click on a highlighted square to exit.\n");
+        } else {
+            infoOutput.append("Enter 'U', 'R', 'D', or 'L' to move.\n" +
+                    "Click on a highlighted square to move.\n" +
+                    "Use the arrow keys to move.\n");
+        }
         return true;
     }
 
     public boolean disableMove() {
-        gameScreen.getInfoOutput().append("Moves finished. Enter another command.\n");
+        gameScreen.getInfoOutput().append("\n");
         gameScreen.getMoveOverlay().setValidMoves(new HashSet<>(), currentPlayer);
         return false;
     }
@@ -186,28 +169,6 @@ public class MovementHandling {
         }
         path.getSteps().remove(0);
         return directions;
-    }
-
-    public ArrayList<Direction> inputToDirection(String moves, int remainingMoves){
-        ArrayList<Direction> list = new ArrayList<>();
-        int steps = 0;
-        for(int i = 0; i < moves.length() && (remainingMoves-steps > 0) ; i++) {
-            if (moves.charAt(i) == 'u') {
-                list.add(Direction.NORTH);
-                steps++;
-            } else if (moves.charAt(i) == 'd') {
-                list.add(Direction.SOUTH);
-                steps++;
-            } else if (moves.charAt(i) == 'l') {
-                list.add(Direction.WEST);
-                steps++;
-            } else if (moves.charAt(i) == 'r') {
-                list.add(Direction.EAST);
-                steps++;
-            }
-        }
-
-        return list;
     }
 
     public void setCurrentPlayer(Player currentPlayer) {

@@ -57,10 +57,7 @@ public class Player {
     }
 
     public void fillNotes(){
-        //System.out.println("Here");
-        System.out.println("Size " + playerHand.getCardAmount());
         for (int i = 0; i < this.playerHand.getCardAmount(); i++){
-            System.out.println(playerHand.getCard(i).getName());
             this.getPlayerNotes().paintCell(getSuspectToken().getSuspectID(), playerHand.getCard(i).getName());
         }
     }
