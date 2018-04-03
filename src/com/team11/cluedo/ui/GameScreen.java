@@ -8,6 +8,7 @@
 
 package com.team11.cluedo.ui;
 
+import com.team11.cluedo.accustations.Accusations;
 import com.team11.cluedo.assets.Assets;
 import com.team11.cluedo.components.Autocomplete;
 import com.team11.cluedo.components.Dice;
@@ -45,7 +46,6 @@ public class GameScreen extends JFrame implements Screen {
     private NotesPanel notesPanel;
     private Dice gameDice;
 
-    private QuestionPanel questionPanel;
     private QPanel qPanel;
 
     private MoveOverlay moveOverlay;
@@ -61,6 +61,7 @@ public class GameScreen extends JFrame implements Screen {
     private final Players gamePlayers;
     private final Assets gameAssets;
     private final Cards gameCards;
+    private Accusations accusations;
 
     private final Resolution resolution;
     private Dimension currSize;
@@ -80,6 +81,7 @@ public class GameScreen extends JFrame implements Screen {
         this.qPanel = new QPanel(this, this.resolution);
         this.gameDice = new Dice(gameAssets, resolution);
         this.playerChange = new PlayerChange(resolution);
+        this.accusations= new Accusations(gameAssets,gameCards,resolution);
     }
 
     @Override
@@ -247,6 +249,11 @@ public class GameScreen extends JFrame implements Screen {
         infoPanel.add(infoTabs, BorderLayout.CENTER);
         infoPanel.add(setupCommandPanel(), BorderLayout.SOUTH);
         infoPanel.setPreferredSize(new Dimension(infoPanel.getPreferredSize().width + 3, infoOutput.getPreferredSize().height));
+
+        for (int i = 1 ; i < 4 ; i++) {
+            infoTabs.setEnabledAt(i, false);
+        }
+
         return infoPanel;
 
 
@@ -331,10 +338,6 @@ public class GameScreen extends JFrame implements Screen {
         return infoTabs;
     }
 
-    public void setQuestionPanel(QuestionPanel questionPanel){
-        this.questionPanel = questionPanel;
-    }
-
     public QPanel getQuestionPanel() {
         return qPanel;
     }
@@ -351,13 +354,19 @@ public class GameScreen extends JFrame implements Screen {
         infoTabs.setSelectedIndex(i);
     }
 
+    public void setTabEnabled(int i, boolean bFlag) {
+        infoTabs.setEnabledAt(i, bFlag);
+    }
+    public Accusations getAccusations(){
+        return accusations;
+    }
+
     public class BoardUI extends JLayeredPane {
         public BoardUI() {
+
             add(gameCards.getMurderEnvelope());
-
             add(qPanel);
-            qPanel.hideQuestionPanel();
-
+            add(accusations);
             add(playerChange);
             add(gameDice);
             add(gameSuspects);
@@ -367,18 +376,16 @@ public class GameScreen extends JFrame implements Screen {
             add(gameBoard);
 
             qPanel.hideQuestionPanel();
+            accusations.setVisible(false);
 
             ImageIcon board = new ImageIcon(gameAssets.getBoardImage());
             Dimension imageSize = new Dimension((int)(board.getIconWidth()*resolution.getScalePercentage()), (int)(board.getIconHeight()*resolution.getScalePercentage()));
             this.setPreferredSize(imageSize);
-
             this.getComponent(0).setLocation(0,0);
 
             for (int i = 1 ; i < getComponentCount() ; i++) {
                 this.getComponent(i).setSize(imageSize);
                 this.getComponent(i).setLocation(0,0);
-
-
             }
         }
 

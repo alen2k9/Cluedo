@@ -106,6 +106,10 @@ public class CommandInput {
                             incrementGamestate(2);
                             break;
 
+                        case "accuse":
+                            accuse();
+                            break;
+
                         case "godroll":
                             godRoll();
                             incrementGamestate(2);
@@ -487,6 +491,11 @@ public class CommandInput {
         this.playerName = currentPlayer.getPlayerName();
         movementHandling.setCurrentPlayer(currentPlayer);
 
+        for (int i = 1 ; i < 4 ; i++) {
+            gameScreen.setTabEnabled(i, false);
+        }
+
+
         gameScreen.getPlayerChange().setPlayerCard(currentPlayer);
         gameScreen.getPlayerChange().setVisible(true);
 
@@ -687,6 +696,10 @@ public class CommandInput {
         switch (gameState) {
             case 1: //  Roll
                 gameScreen.getPlayerChange().setVisible(false);
+                for (int i = 1 ; i < 4 ; i++) {
+                    gameScreen.setTabEnabled(i, true);
+                }
+
                 infoOutput.setText("It is now " + playerName + "'s turn.\n");
                 if (currentPlayer.getSuspectToken().isInRoom()) {
                     infoOutput.append("Type 'Question' to question,\nOr 'roll' to start moving.\n");
@@ -894,5 +907,11 @@ public class CommandInput {
 
     public StringBuilder getGameLog() {
         return gameLog;
+    }
+
+    public void accuse(){
+        setGameEnabled(false);
+        gameScreen.getAccusations().setUpAccustations();
+
     }
 }

@@ -15,14 +15,24 @@ public class HelpCommand {
         infoOutput.append("List of available commands.\nType 'help command' for more information.\n");
         switch (gameState) {
             case 1: //  Pre-Roll
-                infoOutput.append("     - Roll\n" +
-                        "     - Question\n" +
-                        "     - Done\n" +
-                        "     - Quit\n" +
-                        "     - Notes\n" +
-                        "     - Cards\n" +
-                        "     - Log\n" +
-                        "     - Cheat\n");
+                if (currentPlayer.getSuspectToken().isInRoom()) {
+                    infoOutput.append("     - Roll\n" +
+                            "     - Question\n" +
+                            "     - Done\n" +
+                            "     - Quit\n" +
+                            "     - Notes\n" +
+                            "     - Cards\n" +
+                            "     - Log\n" +
+                            "     - Cheat\n");
+                } else {
+                    infoOutput.append("     - Roll\n" +
+                            "     - Done\n" +
+                            "     - Quit\n" +
+                            "     - Notes\n" +
+                            "     - Cards\n" +
+                            "     - Log\n" +
+                            "     - Cheat\n");
+                }
                 break;
             case 2: //  After-Roll
                 if (currentPlayer.getSuspectToken().isInRoom()) {
