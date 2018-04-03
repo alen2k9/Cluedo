@@ -254,11 +254,7 @@ public class Accusations extends JPanel {
                         removePlayerCards(finalI);
                         //setUpAccustations();
 
-                        try {
-                            Thread.sleep(150);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
+
                         addWeaponCards();
                     }
                 }
@@ -311,11 +307,7 @@ public class Accusations extends JPanel {
                         removeWeaponCards(finalI);
                         //setUpAccustations();
 
-                        try {
-                            Thread.sleep(150);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
+
 
                     }
 
@@ -344,11 +336,7 @@ public class Accusations extends JPanel {
         //add(chosenPlayerCard).setBounds(0,0,cardSelectWidth*2,cardSelectHeight*2);
         chosenPlayerCard.removeMouseListener(ml);
         add(chosenPlayerCard).setBounds(0,5,cardSelectWidth*2,cardSelectHeight*2);
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+
         addWeaponCards();
 
     }
@@ -371,11 +359,7 @@ public class Accusations extends JPanel {
         chosenWeaponCard.removeMouseListener(ml);
         //add(chosenPlayerCard).setBounds(10,5,cardSelectWidth*2,cardSelectHeight*2);
         add(chosenWeaponCard).setBounds(cardSelectWidth*2,5,cardSelectWidth*2,cardSelectHeight*2);
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+
         addRoomCards();
 
 
@@ -455,11 +439,7 @@ public class Accusations extends JPanel {
         getRootPane().getContentPane().repaint();
         getRootPane().getContentPane().revalidate();
         chosenRoomCard.setVisible(true);
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+
         displayEnvelope();
 
     }

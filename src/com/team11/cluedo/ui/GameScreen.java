@@ -8,6 +8,7 @@
 
 package com.team11.cluedo.ui;
 
+import com.team11.cluedo.accustations.Accusations;
 import com.team11.cluedo.assets.Assets;
 import com.team11.cluedo.components.Autocomplete;
 import com.team11.cluedo.components.Dice;
@@ -61,6 +62,7 @@ public class GameScreen extends JFrame implements Screen {
     private final Players gamePlayers;
     private final Assets gameAssets;
     private final Cards gameCards;
+    private Accusations accusations;
 
     private final Resolution resolution;
     private Dimension currSize;
@@ -80,6 +82,7 @@ public class GameScreen extends JFrame implements Screen {
         this.qPanel = new QPanel(this, this.resolution);
         this.gameDice = new Dice(gameAssets, resolution);
         this.playerChange = new PlayerChange(resolution);
+        this.accusations= new Accusations(gameAssets,gameCards,resolution);
     }
 
     @Override
@@ -351,6 +354,10 @@ public class GameScreen extends JFrame implements Screen {
         infoTabs.setSelectedIndex(i);
     }
 
+    public Accusations getAccusations(){
+        return accusations;
+    }
+
     public class BoardUI extends JLayeredPane {
         public BoardUI() {
             add(gameCards.getMurderEnvelope());
@@ -365,6 +372,7 @@ public class GameScreen extends JFrame implements Screen {
             add(doorOverlay);
             add(moveOverlay);
             add(gameBoard);
+            add(accusations,0,0);
 
             qPanel.hideQuestionPanel();
 
