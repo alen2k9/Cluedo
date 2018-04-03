@@ -16,6 +16,7 @@ import com.team11.cluedo.components.InputData;
 import com.team11.cluedo.board.Board;
 import com.team11.cluedo.players.Players;
 
+import com.team11.cluedo.questioning.QPanel;
 import com.team11.cluedo.questioning.QuestionPanel;
 
 import com.team11.cluedo.suspects.Suspects;
@@ -44,6 +45,7 @@ public class GameScreen extends JFrame implements Screen {
     private Dice gameDice;
 
     private QuestionPanel questionPanel;
+    private QPanel qPanel;
 
     private MoveOverlay moveOverlay;
     private DoorOverlay doorOverlay;
@@ -73,7 +75,8 @@ public class GameScreen extends JFrame implements Screen {
         this.gameCards = new Cards(resolution);
         this.moveOverlay = new MoveOverlay(this.getGamePlayers().getPlayer(0), this.resolution);
         this.doorOverlay = new DoorOverlay(this.getGamePlayers().getPlayer(0), this.resolution);
-        this.questionPanel = new QuestionPanel(this, this.resolution);
+        //this.questionPanel = new QuestionPanel(this, this.resolution);
+        this.qPanel = new QPanel(this, this.resolution);
         this.gameDice = new Dice(gameAssets, resolution);
 
     }
@@ -223,7 +226,7 @@ public class GameScreen extends JFrame implements Screen {
         infoOutput.setBorder(null);
 
         JScrollPane[] scrollPane = new JScrollPane[] {new JScrollPane(infoOutput), new JScrollPane(setupHelpPanel()),
-                new JScrollPane(playerHandPanel), new JScrollPane(notesPanel)};
+                new JScrollPane(playerHandPanel), new JScrollPane(notesPanel), new JScrollPane()};
 
         for (JScrollPane pane : scrollPane) {
             pane.setBorder(null);
@@ -234,6 +237,7 @@ public class GameScreen extends JFrame implements Screen {
         infoTabs.addTab("Help Panel", null, scrollPane[1], "Help Panel - List of all commands");
         infoTabs.addTab("Current Cards", null, scrollPane[2], "The Current Cards you're holding");
         infoTabs.addTab("Notes", null, scrollPane[3], "Check List for who has what cards");
+        infoTabs.addTab("Log", null, scrollPane[4], "See what has happened throughout the game");
 
         JPanel infoPanel = new JPanel(new BorderLayout());
 
@@ -330,6 +334,10 @@ public class GameScreen extends JFrame implements Screen {
         return questionPanel;
     }
 
+    public QPanel getqPanel() {
+        return qPanel;
+    }
+
     public Assets getGameAssets() {
         return gameAssets;
     }
@@ -343,8 +351,8 @@ public class GameScreen extends JFrame implements Screen {
             add(gameCards.getMurderEnvelope());
 
 
-            add(questionPanel);
-            questionPanel.hideQuestionPanel();
+            add(qPanel);
+            qPanel.hideQuestionPanel();
             add(gameDice);
 
             add(gameSuspects);

@@ -126,6 +126,10 @@ public class SuspectData {
         return suspectID.getOrDefault(index, null);
     }
 
+    public HashMap<Integer, String> getSuspectID() {
+        return suspectID;
+    }
+
     public Color getSuspectColor(int index) {
         return suspectColor.getOrDefault(index, null);
     }
