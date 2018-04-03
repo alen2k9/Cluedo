@@ -24,7 +24,8 @@ public class Accusations extends JPanel {
     private int cardSelectHeight;
     private T11Label[] playerCards = new T11Label[6];
     private T11Label[] selectedPlayerCards = new T11Label[6];
-    private Bounds[] bounds = new Bounds[9];
+    private Bounds[] bounds = new Bounds[6];
+    private Bounds[] roomBounds = new Bounds[9];
     private Bounds[] murderBouds = new Bounds[3];
     private T11Label[] weaponsCards = new T11Label[6];
     private T11Label[] selectedWeaponCards = new T11Label[6];
@@ -61,6 +62,8 @@ public class Accusations extends JPanel {
         this.gameAssets = gameAssets;
         this.resolution = resolution;
         this.gameCards = gameCards;
+        int boardX = (int) (780 * resolution.getScalePercentage());
+        int boardY  = (int)(810 * resolution.getScalePercentage());
 
         //setUpAccustations();
 
@@ -152,17 +155,29 @@ public class Accusations extends JPanel {
             roomName.put(7, "Hall");
             roomName.put(8, "Study");
 
+            ;
+
 
         this.bounds = new Bounds[]{
-                new Bounds(10,135+cardSelectHeight,cardSelectWidth,cardSelectHeight),
-                new Bounds(115,135+cardSelectHeight,cardSelectWidth,cardSelectHeight),
-                new Bounds(215,135+cardSelectHeight,cardSelectWidth,cardSelectHeight),
-                new Bounds(320,135+cardSelectHeight,cardSelectWidth,cardSelectHeight),
-                new Bounds(425,135+cardSelectHeight,cardSelectWidth,cardSelectHeight),
-                new Bounds(10,400,cardSelectWidth, cardSelectHeight),
-                new Bounds(115,400,cardSelectWidth,cardSelectHeight),
-                new Bounds(215,400,cardSelectWidth,cardSelectHeight),
-                new Bounds(320,400,cardSelectWidth,cardSelectHeight)
+                new Bounds(boardX/4 - cardSelectWidth/2,boardY/2,cardSelectWidth,cardSelectHeight),
+                new Bounds(boardX/4*2 - cardSelectWidth/2,boardY/2,cardSelectWidth,cardSelectHeight),
+                new Bounds(boardX/4*3 - cardSelectWidth/2,boardY/2,cardSelectWidth,cardSelectHeight),
+                new Bounds(boardX/4 - cardSelectWidth/2,boardY/4*3,cardSelectWidth,cardSelectHeight),
+                new Bounds(boardX/4*2 - cardSelectWidth/2,boardY/4*3,cardSelectWidth,cardSelectHeight),
+                new Bounds(boardX/4*3 - cardSelectWidth/2,boardY/4*3,cardSelectWidth, cardSelectHeight),
+        };
+
+        this.roomBounds = new Bounds[]{
+                new Bounds(boardX/6 - cardSelectWidth/2,boardY/2,cardSelectWidth,cardSelectHeight),
+                new Bounds(boardX/6*2 - cardSelectWidth/2,boardY/2,cardSelectWidth,cardSelectHeight),
+                new Bounds(boardX/6*3 - cardSelectWidth/2,boardY/2,cardSelectWidth,cardSelectHeight),
+                new Bounds(boardX/6*4 - cardSelectWidth/2,boardY/2,cardSelectWidth,cardSelectHeight),
+                new Bounds(boardX/6*5 - cardSelectWidth/2,boardY/2,cardSelectWidth,cardSelectHeight),
+                new Bounds(boardX/5 - cardSelectWidth/2,boardY/4*3,cardSelectWidth, cardSelectHeight),
+                new Bounds(boardX/5*2 - cardSelectWidth/2,boardY/4*3,cardSelectWidth,cardSelectHeight),
+                new Bounds(boardX/5*3 - cardSelectWidth/2,boardY/4*3,cardSelectWidth,cardSelectHeight),
+                new Bounds(boardX/5*4 - cardSelectWidth/2,boardY/4*3,cardSelectWidth,cardSelectHeight),
+
         };
 
         this.murderBouds = new Bounds[]{
@@ -369,11 +384,11 @@ public class Accusations extends JPanel {
     public void addRoomCards(){
         selected = false;
         for (int i = 0; i < roomCards.length;i++){
-            add(roomCards[i]).setBounds(bounds[i].getX(), bounds[i].getY(), bounds[i].getCardSelectWidth(), bounds[i].getCardSelectHeight());
+            add(roomCards[i]).setBounds(roomBounds[i].getX(), roomBounds[i].getY(), roomBounds[i].getCardSelectWidth(), roomBounds[i].getCardSelectHeight());
         }
 
         for (int i = 0; i < selectedRoomCards.length;i++){
-            add(selectedRoomCards[i]).setBounds(bounds[i].getX(), bounds[i].getY(), bounds[i].getCardSelectWidth(), bounds[i].getCardSelectHeight());
+            add(selectedRoomCards[i]).setBounds(roomBounds[i].getX(), roomBounds[i].getY(), roomBounds[i].getCardSelectWidth(), roomBounds[i].getCardSelectHeight());
             selectedRoomCards[i].setVisible(false);
         }
 
