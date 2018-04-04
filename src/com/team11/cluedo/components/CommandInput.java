@@ -46,6 +46,7 @@ public class CommandInput {
     private boolean canRoll, canCheat, canQuestion, canPassage;
     private boolean moveEnabled;
     private boolean gameEnabled;
+    private HashSet<Integer> removedPlayer = new HashSet<>();
 
     public CommandInput(GameScreen gameScreen) {
         this.gameScreen = gameScreen;
@@ -487,6 +488,9 @@ public class CommandInput {
         this.currentPlayerID++;
         if(this.currentPlayerID == this.numPlayers)
             this.currentPlayerID = 0;
+        if(removedPlayer.contains(this.currentPlayerID))
+            nextPlayer();
+
         this.currentPlayer = this.gameScreen.getGamePlayers().getPlayer(currentPlayerID);
         this.playerName = currentPlayer.getPlayerName();
         movementHandling.setCurrentPlayer(currentPlayer);
@@ -974,8 +978,24 @@ public class CommandInput {
     }
 
     public void accuse(){
-        setGameEnabled(false);
+        //setGameEnabled(false);
         gameScreen.getAccusations().setUpAccustations();
+        gameScreen.getAccusations().test();
+        /*if(gameScreen.getAccusations().getFinish() == 1){
+            infoOutput.append("Congratulations, " + currentPlayer.getPlayerName() + "is the winner\n");
+            infoOutput.append("Please type 'exit' to finish\n");
+        }
+        else {
+            infoOutput.append(currentPlayer.getPlayerName() + "Accused wrong and their turn shall be skipped and removed\n");
+            gameScreen.getAccusations().disableAccusation();
+            //setGameEnabled(true);
+            removeCurrentPlayer();
+        }*/
 
+
+    }
+
+    public void removeCurrentPlayer(){
+        removedPlayer.add(currentPlayerID);
     }
 }

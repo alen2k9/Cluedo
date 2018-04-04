@@ -37,6 +37,7 @@ public class Accusations extends JPanel {
     int playerCard;
     int weaponCard;
     int roomCard;
+    int finish = 0;
 
     String murderPlayerCardName;
     String murderWeaponCardName;
@@ -234,8 +235,19 @@ public class Accusations extends JPanel {
                 public void mouseEntered(java.awt.event.MouseEvent evt) {
                     if(!selected) {
 
-                        selectedPlayerCards[finalI].setVisible(true);
-                        playerCards[finalI].setVisible(false);
+                        for (int i = 0; i < selectedPlayerCards.length;i++){
+                            if(i != finalI){
+                                playerCards[i].setVisible(false);
+                                selectedPlayerCards[i].setVisible(true);
+
+                            }
+
+                        }
+                        selectedPlayerCards[finalI].setVisible(false);
+                        playerCards[finalI].setVisible(true);
+
+                       getRootPane().getContentPane().repaint();
+                       getRootPane().getContentPane().revalidate();
                     }
 
                 }
@@ -248,9 +260,22 @@ public class Accusations extends JPanel {
 
                 public void mouseExited(java.awt.event.MouseEvent evt) {
                     if(!selected) {
+
+                        for (int i = 0; i < selectedPlayerCards.length;i++){
+                            if(i != finalI){
+                                playerCards[i].setVisible(true);
+                                selectedPlayerCards[i].setVisible(false);
+                                //revalidate();
+                                //getRootPane().getContentPane().repaint();
+                                //getRootPane().getContentPane().revalidate();
+                            }
+
+                        }
                         selectedPlayerCards[finalI].setVisible(false);
                         playerCards[finalI].setVisible(true);
-
+                        revalidate();
+                        getRootPane().getContentPane().repaint();
+                        getRootPane().getContentPane().revalidate();
                     }
 
                 }
@@ -298,14 +323,37 @@ public class Accusations extends JPanel {
             weaponsCards[i].addMouseListener(ml = new MouseAdapter() {
                 public void mouseEntered(java.awt.event.MouseEvent evt) {
                     if(!selected) {
-                        weaponsCards[finalI].setVisible(false);
-                        selectedWeaponCards[finalI].setVisible(true);
+                        for (int i = 0; i < selectedWeaponCards.length;i++){
+                            if(i != finalI){
+                                weaponsCards[i].setVisible(false);
+                                selectedWeaponCards[i].setVisible(true);
+                            }
+                        }
+                        selectedWeaponCards[finalI].setVisible(false);
+                        weaponsCards[finalI].setVisible(true);
+
+
+                        getRootPane().getContentPane().repaint();
+                        getRootPane().getContentPane().revalidate();
                     }
                 }
                 public void mouseExited(java.awt.event.MouseEvent evt) {
                     if(!selected) {
-                        weaponsCards[finalI].setVisible(true);
+                        for (int i = 0; i < weaponsCards.length;i++){
+                            if(i != finalI){
+                                weaponsCards[i].setVisible(true);
+                                selectedWeaponCards[i].setVisible(false);
+                                //revalidate();
+                                //getRootPane().getContentPane().repaint();
+                                //getRootPane().getContentPane().revalidate();
+                            }
+
+                        }
                         selectedWeaponCards[finalI].setVisible(false);
+                        weaponsCards[finalI].setVisible(true);
+                        revalidate();
+                        getRootPane().getContentPane().repaint();
+                        getRootPane().getContentPane().revalidate();
                     }
                 }
                 @Override
@@ -398,14 +446,36 @@ public class Accusations extends JPanel {
             roomCards[i].addMouseListener(ml = new MouseAdapter() {
                 public void mouseEntered(java.awt.event.MouseEvent evt) {
                     if(!selected) {
-                        roomCards[finalI].setVisible(false);
-                        selectedRoomCards[finalI].setVisible(true);
+                        if(!selected) {
+                            for (int i = 0; i < roomCards.length;i++){
+                                if(i != finalI){
+                                    roomCards[i].setVisible(false);
+                                    selectedRoomCards[i].setVisible(true);
+                                }
+                            }
+                            selectedRoomCards[finalI].setVisible(false);
+                            roomCards[finalI].setVisible(true);
+                            getRootPane().getContentPane().repaint();
+                            getRootPane().getContentPane().revalidate();
+                        }
                     }
                 }
                 public void mouseExited(java.awt.event.MouseEvent evt) {
                     if(!selected) {
-                        roomCards[finalI].setVisible(true);
+                        for (int i = 0; i < selectedRoomCards.length;i++){
+                            if(i != finalI){
+                                roomCards[i].setVisible(true);
+                                selectedRoomCards[i].setVisible(false);
+                                //revalidate();
+                                //getRootPane().getContentPane().repaint();
+                                //getRootPane().getContentPane().revalidate();
+                            }
+                        }
                         selectedRoomCards[finalI].setVisible(false);
+                        roomCards[finalI].setVisible(true);
+                        revalidate();
+                        getRootPane().getContentPane().repaint();
+                        getRootPane().getContentPane().revalidate();
                     }
                 }
                 @Override
@@ -434,14 +504,24 @@ public class Accusations extends JPanel {
     public void removeRoomCards(int a)
     {
         ArrayList<T11Label> remainingLabels = new ArrayList<>(9);
+        ArrayList<T11Label> selectedRemainingLabels = new ArrayList<>(9);
 
         for (int i = 0; i < roomCards.length; i++){
             if (i != a){
                 remainingLabels.add(roomCards[i]);
             }
         }
+        for (int i = 0; i < selectedRoomCards.length; i++){
+            if (i != a){
+                selectedRemainingLabels.add(selectedRoomCards[i]);
+            }
+        }
 
         for (T11Label label : remainingLabels){
+            remove(label);
+        }
+
+        for (T11Label label : selectedRemainingLabels){
             remove(label);
         }
         getRootPane().getContentPane().repaint();
@@ -472,19 +552,19 @@ public class Accusations extends JPanel {
         add(murderWeaponCard).setBounds(murderBouds[1].getX(),murderBouds[1].getY(), murderBouds[1].getCardSelectWidth(), murderBouds[1].getCardSelectHeight());
         add(muurderRoomCard).setBounds(murderBouds[2].getX(),murderBouds[2].getY(), murderBouds[2].getCardSelectWidth(), murderBouds[2].getCardSelectHeight());
 
-        test();
+
     }
 
     public void test()
     {
+
         if(suspectName.get(playerCard).equals(murderPlayerCardName) && weaponName.get(weaponCard).equals(murderWeaponCardName)
-                && roomName.get(roomCard).equals(muurderRoomCardName))
-        {
-            System.out.println("congrats you won");
+                && roomName.get(roomCard).equals(muurderRoomCardName)){
+            this.finish = 1;
         }
         else
         {
-            System.out.println("you lose");
+            this.finish = 2;
         }
     }
 
@@ -495,4 +575,6 @@ public class Accusations extends JPanel {
     public int getCardSelectWidth() {
         return cardSelectWidth;
     }
+
+    public int getFinish(){return finish;}
 }
