@@ -98,7 +98,7 @@ public class Notes extends JTable {
 
         //Add the weapons title, followed by all of the weapon names
         noteModel.addRow(new String[]{"WEAPONS"});
-        for (int i = 0; i < weaponData.getWeaponAmount(); i++){
+        for (int i = 0; i < WeaponData.WEAPON_AMOUNT ; i++){
             noteModel.addRow(new String[]{weaponData.getWeaponName(i)});
         }
 
@@ -106,7 +106,7 @@ public class Notes extends JTable {
 
         //Add the room title, followed by the room names
         noteModel.addRow(new String[]{"ROOMS"});
-        for (int i = 0; i < roomData.getRoomAmount(); i++){
+        for (int i = 0; i < RoomData.ROOM_AMOUNT ; i++){
             noteModel.addRow(new String[]{roomData.getRoomName(i)});
         }
 

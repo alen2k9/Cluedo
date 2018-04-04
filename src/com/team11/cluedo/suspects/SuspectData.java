@@ -14,6 +14,8 @@ import java.awt.*;
 import java.util.HashMap;
 
 public class SuspectData {
+    public static final int SUSPECT_AMOUNT = 6;
+
     private HashMap<Integer, Point> suspectSpawn = new HashMap<>();
     private HashMap<Integer, String> suspectName = new HashMap<>();
     private HashMap<Integer, Image> suspectToken = new HashMap<>();

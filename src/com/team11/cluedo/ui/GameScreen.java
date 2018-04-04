@@ -10,15 +10,17 @@ package com.team11.cluedo.ui;
 
 import com.team11.cluedo.accustations.Accusations;
 import com.team11.cluedo.assets.Assets;
+import com.team11.cluedo.cards.CardsPanel;
 import com.team11.cluedo.components.Autocomplete;
 import com.team11.cluedo.components.Dice;
 import com.team11.cluedo.components.InputData;
 
 import com.team11.cluedo.board.Board;
+import com.team11.cluedo.players.NotesPanel;
+import com.team11.cluedo.players.NotesTable;
 import com.team11.cluedo.players.Players;
 
 import com.team11.cluedo.questioning.QPanel;
-import com.team11.cluedo.questioning.QuestionPanel;
 
 import com.team11.cluedo.suspects.Suspects;
 import com.team11.cluedo.ui.components.*;
@@ -32,6 +34,8 @@ import javax.swing.border.TitledBorder;
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
 import javax.swing.text.DefaultCaret;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -43,8 +47,11 @@ public class GameScreen extends JFrame implements Screen {
     private JPanel playerPanel;
     private PlayerHandLayout playerHandPanel;
     private PlayerChange playerChange;
-    private NotesPanel notesPanel;
+    private NotesTable notesTable;
     private Dice gameDice;
+    private CardsPanel cardsPanel;
+    private NotesPanel notesPanel;
+    private ButtonPanel buttonPanel;
 
     private QPanel qPanel;
 
@@ -66,6 +73,8 @@ public class GameScreen extends JFrame implements Screen {
     private final Resolution resolution;
     private Dimension currSize;
 
+    private boolean gameEnabled;
+
     public GameScreen(Board gameBoard, Suspects gameSuspects, Weapons gameWeapons, Players gamePlayers, Assets gameAssets, Resolution resolution, String name) throws IOException{
         super(name);
         this.gameBoard = gameBoard;
@@ -77,11 +86,12 @@ public class GameScreen extends JFrame implements Screen {
         this.gameCards = new Cards(resolution);
         this.moveOverlay = new MoveOverlay(this.getGamePlayers().getPlayer(0), this.resolution);
         this.doorOverlay = new DoorOverlay(this.getGamePlayers().getPlayer(0), this.resolution);
-        //this.questionPanel = new QuestionPanel(this, this.resolution);
         this.qPanel = new QPanel(this, this.resolution);
         this.gameDice = new Dice(gameAssets, resolution);
         this.playerChange = new PlayerChange(resolution);
         this.accusations= new Accusations(gameAssets,gameCards,resolution);
+        this.cardsPanel = new CardsPanel(gameAssets, resolution, "Your Cards");
+        this.notesPanel = new NotesPanel(gameAssets,resolution);
     }
 
     @Override
@@ -98,7 +108,9 @@ public class GameScreen extends JFrame implements Screen {
 
         this.playerPanel = setupPlayerPanel();
         this.playerHandPanel = setupCardPanel();
-        this.notesPanel = new NotesPanel(gamePlayers);
+        this.notesTable = new NotesTable(gamePlayers);
+        this.notesPanel.updatePlayerNotes(notesTable);
+        this.buttonPanel = new ButtonPanel(gameAssets, resolution);
         this.boardPanel = new BoardUI();
         JPanel infoPanel = setupInfoPanel();
 
@@ -127,9 +139,11 @@ public class GameScreen extends JFrame implements Screen {
     @Override
     public void reDraw(int currentPlayer) {
         //((PlayerLayout)this.playerPanel.getComponent(0)).reDraw(currentPlayer);
+        this.cardsPanel.updatePlayerHand(getGamePlayers().getPlayer(currentPlayer).getPlayerHand());
         ((PlayerLayout)playerPanel).reDraw(currentPlayer);
         this.playerHandPanel.reDraw(currentPlayer);
-        this.notesPanel.reDraw(currentPlayer);
+        this.notesTable.reDraw(currentPlayer);
+        this.notesPanel.updatePlayerNotes(notesTable);
     }
 
     public void reDrawFrame() {
@@ -228,8 +242,7 @@ public class GameScreen extends JFrame implements Screen {
         infoOutput.setForeground(Color.WHITE);
         infoOutput.setBorder(null);
 
-        JScrollPane[] scrollPane = new JScrollPane[] {new JScrollPane(infoOutput), new JScrollPane(setupHelpPanel()),
-                new JScrollPane(playerHandPanel), new JScrollPane(notesPanel), new JScrollPane()};
+        JScrollPane[] scrollPane = new JScrollPane[] {new JScrollPane(infoOutput), new JScrollPane(setupHelpPanel())};
 
         for (JScrollPane pane : scrollPane) {
             pane.setBorder(null);
@@ -238,9 +251,6 @@ public class GameScreen extends JFrame implements Screen {
 
         infoTabs.addTab("Game Log", null, scrollPane[0], "Game Log - Forget what's happened so far?");
         infoTabs.addTab("Help Panel", null, scrollPane[1], "Help Panel - List of all commands");
-        infoTabs.addTab("Current Cards", null, scrollPane[2], "The Current Cards you're holding");
-        infoTabs.addTab("Notes", null, scrollPane[3], "Check List for who has what cards");
-        infoTabs.addTab("Log", null, scrollPane[4], "See what has happened throughout the game");
 
         JPanel infoPanel = new JPanel(new BorderLayout());
 
@@ -249,10 +259,6 @@ public class GameScreen extends JFrame implements Screen {
         infoPanel.add(infoTabs, BorderLayout.CENTER);
         infoPanel.add(setupCommandPanel(), BorderLayout.SOUTH);
         infoPanel.setPreferredSize(new Dimension(infoPanel.getPreferredSize().width + 3, infoOutput.getPreferredSize().height));
-
-        for (int i = 1 ; i < 4 ; i++) {
-            infoTabs.setEnabledAt(i, false);
-        }
 
         return infoPanel;
 
@@ -322,6 +328,18 @@ public class GameScreen extends JFrame implements Screen {
         return playerChange;
     }
 
+    public CardsPanel getCardsPanel() {
+        return cardsPanel;
+    }
+
+    public NotesPanel getNotesPanel() {
+        return notesPanel;
+    }
+
+    public ButtonPanel getButtonPanel() {
+        return buttonPanel;
+    }
+
     public Dice getGameDice() {
         return gameDice;
     }
@@ -354,39 +372,113 @@ public class GameScreen extends JFrame implements Screen {
         infoTabs.setSelectedIndex(i);
     }
 
+    public void setGameEnabled(boolean gameEnabled) {
+        this.gameEnabled = gameEnabled;
+    }
+
     public void setTabEnabled(int i, boolean bFlag) {
         infoTabs.setEnabledAt(i, bFlag);
     }
+
     public Accusations getAccusations(){
         return accusations;
     }
 
     public class BoardUI extends JLayeredPane {
         public BoardUI() {
+            setBackground(new Color(69,136,100));
+            setBorder(new LineBorder(new Color(108,13,13), 5));
+            setOpaque(true);
 
-            add(gameCards.getMurderEnvelope());
-            add(qPanel);
-            add(accusations);
-            add(playerChange);
-            add(gameDice);
-            add(gameSuspects);
-            add(gameWeapons);
-            add(doorOverlay);
-            add(moveOverlay);
-            add(gameBoard);
+            int index = 0;
+            add(gameCards.getMurderEnvelope(), index++);
+            add(qPanel, index++);
+            add(accusations, index++);
+            add(playerChange, index++);
+            add(buttonPanel, index++);
+            add(cardsPanel, index++);
+            add(notesPanel, index++);
+            add(gameDice,index++);
+            add(gameSuspects,index++);
+            add(gameWeapons,index++);
+            add(doorOverlay,index++);
+            add(moveOverlay,index++);
+            add(gameBoard,index);
 
             qPanel.hideQuestionPanel();
             accusations.setVisible(false);
 
             ImageIcon board = new ImageIcon(gameAssets.getBoardImage());
-            Dimension imageSize = new Dimension((int)(board.getIconWidth()*resolution.getScalePercentage()), (int)(board.getIconHeight()*resolution.getScalePercentage()));
-            this.setPreferredSize(imageSize);
-            this.getComponent(0).setLocation(0,0);
+            int size = (int)(60 * resolution.getScalePercentage());
+            int translate = size/2;
+            Dimension componentSize = new Dimension((int)(board.getIconWidth()*resolution.getScalePercentage()),
+                    (int)(board.getIconHeight()*resolution.getScalePercentage()));
+            Dimension panelSize = new Dimension(componentSize.width + size,
+                    componentSize.height + size);
+            this.setPreferredSize(panelSize);
 
+            this.getComponent(0).setLocation(0,0);
             for (int i = 1 ; i < getComponentCount() ; i++) {
-                this.getComponent(i).setSize(imageSize);
-                this.getComponent(i).setLocation(0,0);
+                if (i < 4) {
+                    this.getComponent(i).setSize(panelSize);
+                    this.getComponent(i).setLocation(0,0);
+                } else if (i >= 7) {
+                    this.getComponent(i).setSize(componentSize);
+                    this.getComponent(i).setLocation(translate, translate);
+                }
             }
+            setupMouse();
+            cardsPanel.setPosY((int)(Board.TILE_SIZE*3*resolution.getScalePercentage()));
+            notesPanel.setLocation((int)(Board.TILE_SIZE*2*resolution.getScalePercentage()),getPreferredSize().height-notesPanel.getTabHeight());
+            notesPanel.setMaxY(getPreferredSize().height);
+            buttonPanel.setLocation(getPreferredSize().width-buttonPanel.getPreferredSize().width-size,
+                    (int)(Board.TILE_SIZE*0.5*resolution.getScalePercentage()));
+        }
+
+        private void setupMouse() {
+           cardsPanel.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    super.mouseClicked(e);
+                    if (gameEnabled) {
+                        cardsPanel.animate();
+                        if (!notesPanel.isEnabled())
+                            notesPanel.animate();
+                    }
+                }
+
+                @Override
+                public void mouseEntered(MouseEvent e) {
+                    super.mouseEntered(e);
+                    if (!cardsPanel.isAnimating())
+                        if (!cardsPanel.isEnabled()) {
+                            cardsPanel.setAlpha(false);
+                            GameScreen.this.repaint();
+                        }
+                }
+
+                @Override
+                public void mouseExited(MouseEvent e) {
+                    super.mouseExited(e);
+                    if (!cardsPanel.isAnimating())
+                        if (!cardsPanel.isEnabled()) {
+                            cardsPanel.setAlpha(true);
+                            GameScreen.this.repaint();
+                        }
+                }
+            });
+
+           notesPanel.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    super.mouseClicked(e);
+                    if (gameEnabled) {
+                        notesPanel.animate();
+                        if (!cardsPanel.isEnabled())
+                            cardsPanel.animate();
+                    }
+                }
+            });
         }
 
         public boolean checkPoint(int x, int y){
@@ -416,7 +508,5 @@ public class GameScreen extends JFrame implements Screen {
             }
             return -1;
         }
-
-
     }
 }

@@ -46,7 +46,7 @@ public class Cards {
     private void setupWeaponCards() {
         weaponCards = new ArrayList<>();
         WeaponData data = new WeaponData();
-        for (int i = 0; i < data.getWeaponAmount() ; i++) {
+        for (int i = 0; i < WeaponData.WEAPON_AMOUNT ; i++) {
             weaponCards.add(new WeaponCard(data.getWeaponCard(i), data.getSelectedWeaponCard(i), data.getWeaponName(i)));
         }
     }
@@ -54,7 +54,7 @@ public class Cards {
     private void setupRoomCards() {
         roomCards = new ArrayList<>();
         RoomData data = new RoomData();
-        for (int i = 0; i < data.getRoomAmount() ; i++) {
+        for (int i = 0; i < RoomData.ROOM_AMOUNT ; i++) {
             roomCards.add(new RoomCard(data.getRoomCard(i), data.getSelectedRoomCard(i), data.getRoomName(i)));
         }
     }

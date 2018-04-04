@@ -70,5 +70,12 @@ public class BoardPos extends JComponent {
         return s.toString();
     }
 
-
+    /*
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        g.setColor(new Color((int)(Math.random()*254),(int)(Math.random()*254),(int)(Math.random()*254),60));
+        g.fillRect(0,0,Board.TILE_SIZE, Board.TILE_SIZE);
+    }
+    */
 }

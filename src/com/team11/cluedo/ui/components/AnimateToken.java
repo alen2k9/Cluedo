@@ -53,7 +53,7 @@ public class AnimateToken extends SwingWorker<Integer, String> {
 
     @Override
     protected Integer doInBackground() throws Exception {
-        int delay = 1;
+        int delay = 2;
 
         commandInput.setGameEnabled(false);
         commandInput.setMoveEnabled(false);
@@ -82,7 +82,6 @@ public class AnimateToken extends SwingWorker<Integer, String> {
                         token.setDrawY(drawY);
                         try {
                             Thread.sleep(delay);
-                            process(new ArrayList<>());
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -129,7 +128,7 @@ public class AnimateToken extends SwingWorker<Integer, String> {
 
     @Override
     protected void process(List<String> chunks) {
-        gameScreen.reDrawFrame();
+        gameScreen.repaint();
     }
 
     public void setToken(Suspect token) {

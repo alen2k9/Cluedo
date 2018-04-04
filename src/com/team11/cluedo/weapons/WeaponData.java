@@ -23,7 +23,7 @@ public class WeaponData {
     private HashMap<Integer, Image> selectedWeaponCard = new HashMap<>();
     private HashMap<Integer, String> weaponID = new HashMap<>();
 
-    private final int weaponAmount = 6;
+    public static final int WEAPON_AMOUNT = 6;
 
     public WeaponData() {
         this.gameAssets = new Assets();
@@ -107,10 +107,6 @@ public class WeaponData {
 
     public Image getSelectedWeaponCard(int index) {
         return selectedWeaponCard.getOrDefault(index, null);
-    }
-
-    public int getWeaponAmount() {
-        return weaponAmount;
     }
 
     public String getWeaponID(int index){
