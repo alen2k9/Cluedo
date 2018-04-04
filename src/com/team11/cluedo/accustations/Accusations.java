@@ -37,6 +37,7 @@ public class Accusations extends JPanel {
     int playerCard;
     int weaponCard;
     int roomCard;
+    int finish = 0;
 
     String murderPlayerCardName;
     String murderWeaponCardName;
@@ -472,19 +473,19 @@ public class Accusations extends JPanel {
         add(murderWeaponCard).setBounds(murderBouds[1].getX(),murderBouds[1].getY(), murderBouds[1].getCardSelectWidth(), murderBouds[1].getCardSelectHeight());
         add(muurderRoomCard).setBounds(murderBouds[2].getX(),murderBouds[2].getY(), murderBouds[2].getCardSelectWidth(), murderBouds[2].getCardSelectHeight());
 
-        test();
+
     }
 
     public void test()
     {
+
         if(suspectName.get(playerCard).equals(murderPlayerCardName) && weaponName.get(weaponCard).equals(murderWeaponCardName)
-                && roomName.get(roomCard).equals(muurderRoomCardName))
-        {
-            System.out.println("congrats you won");
+                && roomName.get(roomCard).equals(muurderRoomCardName)){
+            this.finish = 1;
         }
         else
         {
-            System.out.println("you lose");
+            this.finish = 2;
         }
     }
 
@@ -495,4 +496,6 @@ public class Accusations extends JPanel {
     public int getCardSelectWidth() {
         return cardSelectWidth;
     }
+
+    public int getFinish(){return finish;}
 }
