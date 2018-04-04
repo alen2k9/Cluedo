@@ -12,6 +12,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.lang.annotation.Target;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,12 +42,12 @@ public class QPanel extends JPanel {
     };
 
     private T11Label[] playerLabels = new T11Label[]{
-        new T11Label(playerIcons[0], suspectData.getSuspectName(0)),
-        new T11Label(playerIcons[1], suspectData.getSuspectName(1)),
-        new T11Label(playerIcons[2], suspectData.getSuspectName(2)),
-        new T11Label(playerIcons[3], suspectData.getSuspectName(3)),
-        new T11Label(playerIcons[4], suspectData.getSuspectName(4)),
-        new T11Label(playerIcons[5], suspectData.getSuspectName(5)),
+        new T11Label(playerIcons[0], suspectData.getSuspectID(0)),
+        new T11Label(playerIcons[1], suspectData.getSuspectID(1)),
+        new T11Label(playerIcons[2], suspectData.getSuspectID(2)),
+        new T11Label(playerIcons[3], suspectData.getSuspectID(3)),
+        new T11Label(playerIcons[4], suspectData.getSuspectID(4)),
+        new T11Label(playerIcons[5], suspectData.getSuspectID(5)),
     };
 
     private ImageIcon[] weaponIcons = new ImageIcon[]{
@@ -68,12 +69,12 @@ public class QPanel extends JPanel {
     };
 
     private T11Label[] weaponLabels = new T11Label[]{
-            new T11Label(weaponIcons[0], weaponData.getWeaponName(0)),
-            new T11Label(weaponIcons[1], weaponData.getWeaponName(1)),
-            new T11Label(weaponIcons[2], weaponData.getWeaponName(2)),
-            new T11Label(weaponIcons[3], weaponData.getWeaponName(3)),
-            new T11Label(weaponIcons[4], weaponData.getWeaponName(4)),
-            new T11Label(weaponIcons[5], weaponData.getWeaponName(5)),
+            new T11Label(weaponIcons[0], weaponData.getWeaponID(0)),
+            new T11Label(weaponIcons[1], weaponData.getWeaponID(1)),
+            new T11Label(weaponIcons[2], weaponData.getWeaponID(2)),
+            new T11Label(weaponIcons[3], weaponData.getWeaponID(3)),
+            new T11Label(weaponIcons[4], weaponData.getWeaponID(4)),
+            new T11Label(weaponIcons[5], weaponData.getWeaponID(5)),
     };
 
     private ImageIcon[] roomIcons = new ImageIcon[]{
@@ -131,6 +132,8 @@ public class QPanel extends JPanel {
     private boolean moving;
     private boolean hasSelectedPlayer = false;
     private boolean hasSelectedWeapon = false;
+    private boolean inPlayerState = false;
+    private boolean inWeaponState = false;
 
     private GameScreen gameScreen;
     private Resolution resolution;
@@ -139,25 +142,27 @@ public class QPanel extends JPanel {
         this.gameScreen = gameScreen;
         this.resolution = resolution;
 
-        this.setSize((int) (760 * resolution.getScalePercentage()), (int) (600 * resolution.getScalePercentage()));
-        this.setLocation((int) (10 * resolution.getScalePercentage()), (int) (100 * resolution.getScalePercentage()));
-        setBackground(new Color(0,0,0, 168));
+
+        //this.setSize((int) (760 * resolution.getScalePercentage()), (int) (600 * resolution.getScalePercentage()));
+        //this.setLocation((int) (10 * resolution.getScalePercentage()), (int) (100 * resolution.getScalePercentage()));
+        this.setBackground(new Color(0,0,0, 156));
+
         this.setLayout(null);
         this.setBorder(BorderFactory.createLineBorder(Color.BLACK, 4));
     }
 
     public void displayQuestionPanel(int currentRoom, int currentPlayer){
-        System.out.println("Displaying");
         this.currentRoom = currentRoom;
         this.currentPlayer = currentPlayer;
         this.selectedRoom = roomLabels[currentRoom];
         setupSelectedCards();
 
-        if (selectedPlayer == null){
-            addPlayerCards();
+        if (!hasSelectedPlayer){
+            inPlayerState = true;
+            addCards(playerLabels, 0);
         }
-        else if (selectedWeapon == null){
-           // addWeaponCards();
+        else if (!hasSelectedWeapon){
+            addCards(weaponLabels, 1);
         } else {
             //question();
         }
@@ -165,7 +170,6 @@ public class QPanel extends JPanel {
         this.setVisible(true);
         this.setFocusable(true);
 
-        resetAllBoolean();
     }
 
     public void hideQuestionPanel(){
@@ -173,18 +177,22 @@ public class QPanel extends JPanel {
         this.selectedPlayer = null;
         this.selectedWeapon = null;
         this.selectedCards = new T11Label[3];
-
+        resetAllBoolean();
         this.setVisible(false);
         this.removeAll();
     }
 
     private void resetAllBoolean(){
-
+        this.hasSelectedWeapon = false;
+        this.hasSelectedPlayer = false;
+        this.inWeaponState = false;
+        this.inPlayerState = false;
     }
 
     public void setSelectedPlayer(String player){
 
         for (T11Label label : playerLabels){
+            System.out.println("Comparing " + label.getCardName() + "  and  " + player);
             if (label.getCardName().matches(player)){
                 this.selectedPlayer = label;
                 System.out.println("Selected player is " + selectedPlayer.getCardName());
@@ -207,17 +215,17 @@ public class QPanel extends JPanel {
 
     private void setupSelectedCards(){
 
-        if ((this.getWidth()/6 + (int)(resolution.getScalePercentage() * 20)) % 2 == 0){
-            playerTargetX = (this.getWidth()/6 + (int)(resolution.getScalePercentage() * 20));
+        if ((this.getWidth()/6 - (int)(resolution.getScalePercentage() * 25)) % 2 == 0){
+            playerTargetX = (this.getWidth()/6 - (int)(resolution.getScalePercentage() * 25));
             System.out.println("player x = " + playerTargetX);
         } else {
-            playerTargetX = (this.getWidth()/6 + (int)(resolution.getScalePercentage() * 20) - 1);
+            playerTargetX = (this.getWidth()/6 - (int)(resolution.getScalePercentage() * 25) - 1);
             System.out.println("player x = " + playerTargetX);
         }
 
         //Have to set up room card anyway
-        selectedRoom.setSize(new Dimension((int)(selectedRoom.getIcon().getIconWidth() * (resolution.getScalePercentage() * 0.5)),
-                (int)(selectedRoom.getIcon().getIconHeight() *(resolution.getScalePercentage() * 0.5))));
+        selectedRoom.setSize(new Dimension((int)(selectedRoom.getIcon().getIconWidth() * (resolution.getScalePercentage() * 0.66)),
+                (int)(selectedRoom.getIcon().getIconHeight() *(resolution.getScalePercentage() * 0.66))));
         selectedRoom.setLocation(this.getWidth()/2 - selectedRoom.getWidth()/2, (int)(resolution.getScalePercentage() * 20));
 
         selectedRoom.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
@@ -228,33 +236,40 @@ public class QPanel extends JPanel {
 
         //if we have a selected player then add it
         if (selectedPlayer != null){
-            selectedPlayer.setSize(new Dimension((int)(selectedPlayer.getIcon().getIconWidth() * (resolution.getScalePercentage() * 0.5)),
-                    (int)(selectedPlayer.getIcon().getIconHeight() *(resolution.getScalePercentage() * 0.5))));
+            selectedPlayer.setSize(new Dimension((int)(selectedPlayer.getIcon().getIconWidth() * (resolution.getScalePercentage() * 0.66)),
+                    (int)(selectedPlayer.getIcon().getIconHeight() *(resolution.getScalePercentage() * 0.66))));
 
             selectedPlayer.setLocation(playerTargetX, (int)(resolution.getScalePercentage() * 20));
 
             selectedPlayer.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
 
             this.add(selectedPlayer);
+
+            hasSelectedPlayer = true;
+
             selectedCards[1] = selectedPlayer;
         }
 
-        if ((((getWidth()/3)*2) - (int)(resolution.getScalePercentage() * 25)) % 2 == 0){
-            weaponTargetX = ((((getWidth()/3)*2) - (int)(resolution.getScalePercentage() * 25)));
+        if ((((getWidth()/3)*2) -(int)(resolution.getScalePercentage() * 10) ) % 2 == 0){
+            weaponTargetX = ((((getWidth()/3)*2) - (int)(resolution.getScalePercentage() * 10)));
         } else {
-            weaponTargetX = ((((getWidth()/3)*2) - (int)(resolution.getScalePercentage() * 25)) - 1);
+            weaponTargetX = ((((getWidth()/3)*2) - (int)(resolution.getScalePercentage() * 10)) - 1);
         }
+        System.out.println("Weapon Target X " + weaponTargetX);
 
         //if we hae a selected weapon then add it
         if (selectedWeapon != null){
-            selectedWeapon.setSize(new Dimension((int)(selectedWeapon.getIcon().getIconWidth() * (resolution.getScalePercentage() * 0.5)),
-                    (int)(selectedWeapon.getIcon().getIconHeight() *(resolution.getScalePercentage() * 0.5))));
+            selectedWeapon.setSize(new Dimension((int)(selectedWeapon.getIcon().getIconWidth() * (resolution.getScalePercentage() * 0.66)),
+                    (int)(selectedWeapon.getIcon().getIconHeight() *(resolution.getScalePercentage() * 0.66))));
 
             selectedWeapon.setLocation((weaponTargetX) , (int)(resolution.getScalePercentage() * 20));
 
             selectedWeapon.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
 
             this.add(selectedWeapon);
+
+            hasSelectedWeapon = true;
+
             selectedCards[2] = selectedWeapon;
         }
 
@@ -262,7 +277,7 @@ public class QPanel extends JPanel {
         for (int i = 0; i < 6; i++){
             //Setup the first point
             if (i == 0){
-                labelPoints[i] = new Point((int)(resolution.getScalePercentage() * 20), selectedRoom.getY() + (selectedRoom.getHeight())+ (int)(resolution.getScalePercentage() * 150));
+                labelPoints[i] = new Point((int)(resolution.getScalePercentage() * 25), selectedRoom.getY() + (selectedRoom.getHeight())+ (int)(resolution.getScalePercentage() * 150));
             } else {
                 labelPoints[i] = new Point(sumWidths(i) + (int)(resolution.getScalePercentage() * 7 ) ,selectedRoom.getY()+ (selectedRoom.getHeight()) + (int)(resolution.getScalePercentage() * 150));
             }
@@ -285,10 +300,9 @@ public class QPanel extends JPanel {
         return sum;
     }
 
-    private void addPlayerCards(){
-
+    private void addCards(T11Label[] labels, int flag){
         int i = 0;
-        for (T11Label label : playerLabels){
+        for (T11Label label : labels){
             label.setSize(new Dimension((int) (label.getIcon().getIconWidth() * (resolution.getScalePercentage() * 0.42)),
                     (int)(label.getIcon().getIconHeight() * (resolution.getScalePercentage() * 0.42))));
 
@@ -298,53 +312,141 @@ public class QPanel extends JPanel {
             this.add(label);
         }
 
-        new AnimateMoveIn(playerLabels, labelPoints).execute();
+        new AnimateMoveIn(labels, labelPoints).execute();
+
+        if (flag == 0){
+            inPlayerState = true;
+        } else{
+            inWeaponState = true;
+        }
 
         for (int j = 0; j < 6; j++){
 
             int finalJ = j;
-            playerLabels[j].addMouseListener(new MouseAdapter() {
+            labels[j].addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     super.mouseClicked(e);
-                    hasSelectedPlayer = true;
-                    playerLabels[finalJ].setIcon(playerIcons[finalJ]);
-                    new AnimateCorner(playerLabels, finalJ, 0).execute();
 
+                    if (flag == 0){
+                        hasSelectedPlayer = true;
+                        inPlayerState = false;
+                        labels[finalJ].setIcon(playerIcons[finalJ]);
+                    } else{
+                        hasSelectedWeapon = true;
+                        inWeaponState = false;
+                        labels[finalJ].setIcon(weaponIcons[finalJ]);
+                    }
+
+                    new AnimateCorner(labels, finalJ, flag).execute();
                 }
 
                 @Override
                 public void mouseEntered(MouseEvent e) {
                     super.mouseEntered(e);
-                    //System.out.println(moving + "  " + playerLabels[finalJ].isSelected());
-                    if (!moving && !hasSelectedPlayer){
-                        System.out.println("here");
+                    if (!moving){
                         for (int j = 0; j < 6; j++){
                             if (j != finalJ){
-                                playerLabels[j].setIcon(selectedPlayerIcons[j]);
+
+                                if (flag == 0){
+                                    labels[j].setIcon(selectedPlayerIcons[j]);
+                                } else{
+                                    labels[j].setIcon(selectedWeaponIcons[j]);
+                                }
+
                             }
                         }
-                        playerLabels[finalJ].revalidate();
+                        labels[finalJ].revalidate();
                     }
                 }
 
                 @Override
                 public void mouseExited(MouseEvent e) {
                     super.mouseExited(e);
-                    if (!moving && !hasSelectedPlayer){
+                    if (!moving){
                         for (int j = 0; j < 6; j++){
-                            playerLabels[j].setIcon(playerIcons[j]);
+                            if (flag == 0){
+                                labels[j].setIcon(playerIcons[j]);
+                            } else{
+                                labels[j].setIcon(weaponIcons[j]);
+                            }
+
                         }
-                        playerLabels[finalJ].revalidate();
+                        labels[finalJ].revalidate();
                     }
                 }
             });
         }
     }
 
+    public boolean textSelectCard(String card){
+        //We're in the player selection state
+        System.out.println("Player State : " + inPlayerState);
+        System.out.println("Weapon State : " + inWeaponState);
+        if (inPlayerState){
+            switch (card){
+                case "white":
+                    new AnimateCorner(playerLabels, 0, 0).execute();
+                    inPlayerState = false;
+                    return true;
+                case "green":
+                    new AnimateCorner(playerLabels, 1, 0).execute();
+                    inPlayerState = false;
+                    return true;
+                case "peacock":
+                    new AnimateCorner(playerLabels, 2, 0).execute();
+                    inPlayerState = false;
+                    return true;
+                case "plum":
+                    new AnimateCorner(playerLabels, 3, 0).execute();
+                    inPlayerState = false;
+                    return true;
+                case "scarlett":
+                    new AnimateCorner(playerLabels, 4, 0).execute();
+                    inPlayerState = false;
+                    return true;
+                case "mustard":
+                    new AnimateCorner(playerLabels, 5, 0).execute();
+                    inPlayerState = false;
+                    return true;
+                default:
+                    return false;
+            }
+        } else{
+            switch (card){
+                case "hatchet":
+                    new AnimateCorner(weaponLabels, 0, 1).execute();
+                    inWeaponState = false;
+                    return true;
+                case "dagger":
+                    new AnimateCorner(weaponLabels, 1, 1).execute();
+                    inWeaponState = false;
+                    return true;
+                case "poison":
+                    new AnimateCorner(weaponLabels, 2, 1).execute();
+                    inWeaponState = false;
+                    return true;
+                case "revolver":
+                    new AnimateCorner(weaponLabels, 3, 1).execute();
+                    inWeaponState = false;
+                    return true;
+                case "rope":
+                    new AnimateCorner(weaponLabels, 4, 1).execute();
+                    inWeaponState = false;
+                    return true;
+                case "wrench":
+                    new AnimateCorner(weaponLabels, 5, 1).execute();
+                    inWeaponState = false;
+                    return true;
+                default:
+                    return false;
+            }
+        }
+    }
+
     public class AnimateMoveIn extends SwingWorker<Integer, String>{
 
-        private final int distance = 4, delay = 6;
+        private final int distance = 6, delay = 1;
         private T11Label[] labels;
         private Point[] points;
 
@@ -353,6 +455,8 @@ public class QPanel extends JPanel {
         public AnimateMoveIn(T11Label[] labels, Point[] points) {
             this.labels = labels;
             this.points = points;
+
+            System.out.println("Move in called");
         }
 
 
@@ -408,31 +512,81 @@ public class QPanel extends JPanel {
 
         @Override
         protected void process(List<String> chunks){
-            revalidate();
+            gameScreen.repaint();
         }
     }
 
     public class AnimateMoveOut extends SwingWorker<Integer, String>{
 
-        private final int distance = 4, delay = 4;
+        private final int distance = 6, delay = 1;
 
         private ArrayList<T11Label> labels;
 
+        public AnimateMoveOut(ArrayList<T11Label> labels){
+            this.labels = labels;
+        }
+
         @Override
         protected Integer doInBackground() throws Exception{
-            //while (labels.get(0).getX() !-)
+            process(new ArrayList<>());
+            moving = true;
+            while (labels.get(0).getX() != translatedLabelPointsLeft[0].getX()){
+
+                if (labels.get(0).getX() <= translatedLabelPointsLeft[0].getX()){
+                    labels.get(0).setLocation(translatedLabelPointsLeft[0]);
+                } else{
+                    labels.get(0).setLocation(labels.get(0).getX() - distance, labels.get(0).getY());
+                }
+
+                if (labels.get(1).getX() <= translatedLabelPointsLeft[1].getX()){
+                    labels.get(1).setLocation(translatedLabelPointsLeft[1]);
+                } else{
+                    labels.get(1).setLocation(labels.get(1).getX() - distance, labels.get(1).getY());
+                }
+
+                if (labels.get(2).getX() <= translatedLabelPointsLeft[2].getX()){
+                    labels.get(2).setLocation(translatedLabelPointsLeft[2]);
+                } else{
+                    labels.get(2).setLocation(labels.get(2).getX() - distance, labels.get(2).getY());
+                }
+
+                if (labels.get(3).getX() <= translatedLabelPointsLeft[3].getX()){
+                    labels.get(3).setLocation(translatedLabelPointsLeft[3]);
+                } else{
+                    labels.get(3).setLocation(labels.get(3).getX() - distance, labels.get(3).getY());
+                }
+
+                if (labels.get(4).getX() <= translatedLabelPointsLeft[0].getX()){
+                    labels.get(4).setLocation(translatedLabelPointsLeft[0]);
+                } else{
+                    labels.get(4).setLocation(labels.get(4).getX() - distance, labels.get(4).getY());
+                }
+
+                process(new ArrayList<>());
+                Thread.sleep(delay);
+            }
+            moving = false;
+
+            Thread.sleep(500);
+            if (!hasSelectedWeapon){
+                System.out.println("Has Selected Weapon is false");
+                addCards(weaponLabels, 1);
+                hasSelectedWeapon = true;
+            }
+
+            process(new ArrayList<>());
             return null;
         }
 
         @Override
         protected void process(List<String> chunks){
-            revalidate();
+            gameScreen.repaint();
         }
     }
 
     public class AnimateCorner extends SwingWorker<Integer, String>{
 
-        private final int distance = 2, delay = 4;
+        private final int distance = 2, delay = 1;
         private T11Label[] labels;
         private int index;
         private int flag;
@@ -448,58 +602,154 @@ public class QPanel extends JPanel {
 
         @Override
         protected Integer doInBackground() throws Exception{
-
             process(new ArrayList<>());
 
             if (this.flag == 0){
-                while (labels[index].getX() != playerTargetX || labels[index].getY() != (int)(resolution.getScalePercentage() * 20) ){
-                    if (labels[index].getX() < playerTargetX){
-                        labels[index].setLocation(labels[index].getX() + distance, labels[index].getY());
-                    } else if (labels[index].getX() > playerTargetX){
-                        labels[index].setLocation(labels[index].getX() - distance, labels[index].getY());
-                    }
+                //Will be moving right
+                if (labels[index].getX() < playerTargetX){
+                    while (labels[index].getX() != playerTargetX || labels[index].getY() != (int)(resolution.getScalePercentage() * 20)){
 
-                    if (labels[index].getY() <= (int)(resolution.getScalePercentage() * 20) ){
-                        labels[index].setLocation(labels[index].getX(),(int)(resolution.getScalePercentage() * 20) );
-                    } else{
-                        labels[index].setLocation(labels[index].getX(),(labels[index].getY() - distance));
-                    }
+                        //System.out.println(labels[index].getLocation());
 
-                    if (labels[index].getHeight() >= targetH){
-                        labels[index].setSize(new Dimension(labels[index].getWidth(), targetH));
-                    } else{
-                        labels[index].setSize(new Dimension(labels[index].getWidth(), labels[index].getHeight() + 1));
-                    }
+                        if (labels[index].getX() >= playerTargetX){
+                            labels[index].setLocation(playerTargetX, labels[index].getY());
+                        } else{
+                            labels[index].setLocation(labels[index].getX() + distance, labels[index].getY());
+                        }
+                        if (labels[index].getY() <= (int)(resolution.getScalePercentage() * 20)){
+                            labels[index].setLocation(labels[index].getX(), (int)(resolution.getScalePercentage() * 20));
+                        } else {
+                            labels[index].setLocation(labels[index].getX(), labels[index].getY() - distance);
+                        }
 
-                    if (labels[index].getWidth() >= targetW){
-                        labels[index].setSize(new Dimension(targetW, labels[index].getHeight()));
-                    } else{
-                        labels[index].setSize(new Dimension(labels[index].getWidth() + 1, labels[index].getHeight()));
-                    }
 
-                    process(new ArrayList<>());
-                    Thread.sleep(delay);
+                        if (labels[index].getHeight() >= targetH){
+                            labels[index].setSize(new Dimension(labels[index].getWidth(), targetH));
+                        } else{
+                            labels[index].setSize(new Dimension(labels[index].getWidth(), labels[index].getHeight() + 1));
+                        }
+
+                        if (labels[index].getWidth() >= targetW){
+                            labels[index].setSize(new Dimension(targetW, labels[index].getHeight()));
+                        } else{
+                            labels[index].setSize(new Dimension(labels[index].getWidth() + 1, labels[index].getHeight()));
+                        }
+                        process(new ArrayList<>());
+                        Thread.sleep(delay);
+                    }
+                } else{
+                    while (labels[index].getX() != playerTargetX || labels[index].getY() != (int)(resolution.getScalePercentage() * 20)){
+
+                        //System.out.println(labels[index].getLocation());
+
+                        if (labels[index].getX() <= playerTargetX){
+                            labels[index].setLocation(playerTargetX, labels[index].getY());
+                        } else{
+                            labels[index].setLocation(labels[index].getX() - distance, labels[index].getY());
+                        }
+
+                        if (labels[index].getY() <= (int)(resolution.getScalePercentage() * 20)){
+                            labels[index].setLocation(labels[index].getX(), (int)(resolution.getScalePercentage() * 20));
+                        } else {
+                            labels[index].setLocation(labels[index].getX(), labels[index].getY() - distance);
+                        }
+
+                        if (labels[index].getHeight() >= targetH){
+                            labels[index].setSize(new Dimension(labels[index].getWidth(), targetH));
+                        } else{
+                            labels[index].setSize(new Dimension(labels[index].getWidth(), labels[index].getHeight() + 1));
+                        }
+
+                        if (labels[index].getWidth() >= targetW){
+                            labels[index].setSize(new Dimension(targetW, labels[index].getHeight()));
+                        } else{
+                            labels[index].setSize(new Dimension(labels[index].getWidth() + 1, labels[index].getHeight()));
+                        }
+
+                        process(new ArrayList<>());
+                        Thread.sleep(delay);
+                    }
                 }
             }
 
             else if (this.flag == 1){
-                while (labels[index].getX() != weaponTargetX || labels[index].getY() != (int)(resolution.getScalePercentage() * 20) ){
-                    if (labels[index].getX() < (weaponTargetX)){
-                        labels[index].setLocation(labels[index].getX() + distance, labels[index].getY());
-                    } else if (labels[index].getX() > weaponTargetX){
-                        labels[index].setLocation(labels[index].getX() - distance, labels[index].getY());
+                if (labels[index].getX() < weaponTargetX){
+                    while (labels[index].getX() != weaponTargetX || labels[index].getY() != (int)(resolution.getScalePercentage() * 20)){
+
+                        //System.out.println(labels[index].getLocation());
+
+                        if (labels[index].getX() >= weaponTargetX){
+                            labels[index].setLocation(weaponTargetX, labels[index].getY());
+                        } else{
+                            labels[index].setLocation(labels[index].getX() + distance, labels[index].getY());
+                        }
+
+                        if (labels[index].getY() <= (int)(resolution.getScalePercentage() * 20)){
+                            labels[index].setLocation(labels[index].getX(), (int)(resolution.getScalePercentage() * 20));
+                        } else {
+                            labels[index].setLocation(labels[index].getX(), labels[index].getY() - distance);
+                        }
+
+                        if (labels[index].getHeight() >= targetH){
+                            labels[index].setSize(new Dimension(labels[index].getWidth(), targetH));
+                        } else{
+                            labels[index].setSize(new Dimension(labels[index].getWidth(), labels[index].getHeight() + 1));
+                        }
+
+                        if (labels[index].getWidth() >= targetW){
+                            labels[index].setSize(new Dimension(targetW, labels[index].getHeight()));
+                        } else{
+                            labels[index].setSize(new Dimension(labels[index].getWidth() + 1, labels[index].getHeight()));
+                        }
+                        process(new ArrayList<>());
+                        Thread.sleep(delay);
+                    }
+                } else{
+                    while (labels[index].getX() != weaponTargetX || labels[index].getY() != (int)(resolution.getScalePercentage() * 20)){
+
+                        //System.out.println(labels[index].getLocation());
+
+                        if (labels[index].getX() <= weaponTargetX){
+                            labels[index].setLocation(weaponTargetX, labels[index].getY());
+                        } else{
+                            labels[index].setLocation(labels[index].getX() - distance, labels[index].getY());
+                        }
+
+                        if (labels[index].getY() <= (int)(resolution.getScalePercentage() * 20)){
+                            labels[index].setLocation(labels[index].getX(), (int)(resolution.getScalePercentage() * 20));
+                        } else {
+                            labels[index].setLocation(labels[index].getX(), labels[index].getY() - distance);
+                        }
+
+                        if (labels[index].getHeight() >= targetH){
+                            labels[index].setSize(new Dimension(labels[index].getWidth(), targetH));
+                        } else{
+                            labels[index].setSize(new Dimension(labels[index].getWidth(), labels[index].getHeight() + 1));
+                        }
+
+                        if (labels[index].getWidth() >= targetW){
+                            labels[index].setSize(new Dimension(targetW, labels[index].getHeight()));
+                        } else{
+                            labels[index].setSize(new Dimension(labels[index].getWidth() + 1, labels[index].getHeight()));
+                        }
+
+                        process(new ArrayList<>());
+                        Thread.sleep(delay);
                     }
 
-                    if (labels[index].getY() <= (int)(resolution.getScalePercentage() * 20) ){
-                        labels[index].setLocation(labels[index].getX(),(int)(resolution.getScalePercentage() * 20) );
-                    } else{
-                        labels[index].setLocation(labels[index].getX(),(labels[index].getY() - distance));
-                    }
-
-                    process(new ArrayList<>());
-                    Thread.sleep(delay);
+                    hasSelectedWeapon = true;
                 }
             }
+
+            //Get Remaining cards
+            ArrayList<T11Label> remainingCards = new ArrayList<>(5);
+            for (int i = 0; i < 6; i++){
+                if (i != index){
+                    remainingCards.add(labels[i]);
+                }
+            }
+
+            new AnimateMoveOut(remainingCards).execute();
 
             process(new ArrayList<>());
             return null;
@@ -507,7 +757,7 @@ public class QPanel extends JPanel {
 
         @Override
         protected void process(List<String> chunks){
-            revalidate();
+            gameScreen.repaint();
         }
     }
 
