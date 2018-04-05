@@ -942,6 +942,15 @@ public class CommandInput {
                 }
             }
         });
+
+        gameScreen.getAccusations().getDoneButton().addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                afterAccuse();
+                gameScreen.getAccusations().removeAll();
+            }
+        });
     }
 
     public void setMoveEnabled(boolean moveEnabled) {
@@ -978,21 +987,23 @@ public class CommandInput {
     }
 
     public void accuse(){
-        //setGameEnabled(false);
+
+
         gameScreen.getAccusations().setUpAccustations();
-        gameScreen.getAccusations().test();
-        /*if(gameScreen.getAccusations().getFinish() == 1){
+
+    }
+
+    public void afterAccuse(){
+        Boolean guess = gameScreen.getAccusations().test();
+        if (guess) {
             infoOutput.append("Congratulations, " + currentPlayer.getPlayerName() + "is the winner\n");
             infoOutput.append("Please type 'exit' to finish\n");
-        }
-        else {
+        } else if (!guess) {
             infoOutput.append(currentPlayer.getPlayerName() + "Accused wrong and their turn shall be skipped and removed\n");
             gameScreen.getAccusations().disableAccusation();
-            //setGameEnabled(true);
+            setGameEnabled(true);
             removeCurrentPlayer();
-        }*/
-
-
+        }
     }
 
     public void removeCurrentPlayer(){
