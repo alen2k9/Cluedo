@@ -14,6 +14,9 @@ import com.team11.cluedo.ui.Resolution;
 
 import java.awt.*;
 import javax.swing.*;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
+import java.awt.image.BufferedImage;
 import java.util.Random;
 
 public class Dice extends JComponent {
@@ -53,11 +56,19 @@ public class Dice extends JComponent {
         }
     }
 
+    public Die getLeftDice() {
+        return leftDice;
+    }
+
+    public Die getRightDice() {
+        return rightDice;
+    }
+
     public void setDoAnimation(boolean doAnimation) {
         this.doAnimation = doAnimation;
     }
 
-    private class Die extends T11Label {
+    public class Die extends T11Label {
         private int value;
         private final int initialPreferredSize = (int)(48*resolutionScalar);
 

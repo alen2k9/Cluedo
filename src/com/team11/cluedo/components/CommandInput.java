@@ -46,6 +46,7 @@ public class CommandInput {
     private boolean canRoll, canCheat, canQuestion, canPassage;
     private boolean moveEnabled;
     private boolean gameEnabled;
+    private HashSet<Integer> removedPlayer = new HashSet<>();
 
     public CommandInput(GameScreen gameScreen) {
         this.gameScreen = gameScreen;
@@ -472,7 +473,7 @@ public class CommandInput {
             }
         }
 
-        if (!(command.equals("help") || command.equals("notes") || command.equals("cards"))) {
+        if (!(command.equals("help") || command.equals("notes"))) {
             gameScreen.setTab(0);
         }
         gameScreen.reDrawFrame();
@@ -481,7 +482,7 @@ public class CommandInput {
     private void keyInput() {
         gameScreen.getCommandInput().addKeyListener(new KeyAdapter() {
             public void keyPressed(KeyEvent key) {
-                if (moveEnabled) {
+                if (moveEnabled && !currentPlayer.getSuspectToken().isInRoom()) {
                     if (key.getKeyCode() == KeyEvent.VK_DOWN) {
                         movementHandling.playerMovement(new ArrayList<>(Collections.singletonList(Direction.SOUTH)), remainingMoves, moveEnabled);
                     } else if (key.getKeyCode() == KeyEvent.VK_UP) {
@@ -511,14 +512,14 @@ public class CommandInput {
         this.currentPlayerID++;
         if(this.currentPlayerID == this.numPlayers)
             this.currentPlayerID = 0;
+        if(removedPlayer.contains(this.currentPlayerID))
+            nextPlayer();
+
         this.currentPlayer = this.gameScreen.getGamePlayers().getPlayer(currentPlayerID);
         this.playerName = currentPlayer.getPlayerName();
         movementHandling.setCurrentPlayer(currentPlayer);
 
-        for (int i = 1 ; i < 4 ; i++) {
-            gameScreen.setTabEnabled(i, false);
-        }
-
+        gameScreen.getButtonPanel().getQuestionButton().setEnabled(false);
 
         gameScreen.getPlayerChange().setPlayerCard(currentPlayer);
         gameScreen.getPlayerChange().setVisible(true);
@@ -536,6 +537,9 @@ public class CommandInput {
                 remainingMoves--;
 
                 infoOutput.append(this.playerName + " used secret passageway.\n" + this.playerName + " is now in the " + roomName + ".\n");
+                currentPlayer.getSuspectToken().setPreviousRoom(
+                        gameScreen.getGameBoard().getRoom(currentPlayer.getSuspectToken().getCurrentRoom()).getRoomType()
+                );
                 if (remainingMoves > 0) {
                     for (Point point : this.gameScreen.getGameBoard().getRoom(this.currentPlayer.getSuspectToken().getCurrentRoom()).getEntryPoints()) {
                         overlayTiles.add(new OverlayTile(point));
@@ -578,6 +582,7 @@ public class CommandInput {
                         "Click on a highlighted square to move.\n" +
                         "Use the arrow keys to move.\n");
                 gameScreen.getMoveOverlay().setValidMoves(movementHandling.findValidMoves(remainingMoves), currentPlayer);
+                gameScreen.getButtonPanel().getQuestionButton().setEnabled(false);
                 gameScreen.repaint();
             } else if (returnValue == 0){
                 if (inputs.length == 2){
@@ -627,7 +632,7 @@ public class CommandInput {
     }
 
     private void cards() {
-        this.gameScreen.setTab(2);
+        gameScreen.getCardsPanel().animate();
     }
 
     private void help(String command){
@@ -636,7 +641,7 @@ public class CommandInput {
 
     private void notes(){
         infoOutput.append("You opened your notes.\n");
-        this.gameScreen.setTab(3);
+        gameScreen.getNotesPanel().animate();
     }
 
     private void log() {
@@ -720,27 +725,30 @@ public class CommandInput {
         switch (gameState) {
             case 1: //  Roll
                 gameScreen.getPlayerChange().setVisible(false);
-                for (int i = 1 ; i < 4 ; i++) {
-                    gameScreen.setTabEnabled(i, true);
-                }
-
                 infoOutput.setText("It is now " + playerName + "'s turn.\n");
-                if (currentPlayer.getSuspectToken().isInRoom()) {
+                if (currentPlayer.getSuspectToken().isInRoom() && canQuestion) {
                     infoOutput.append("Type 'Question' to question,\nOr 'roll' to start moving.\n");
+                    gameScreen.getButtonPanel().getQuestionButton().setEnabled(true);
                 } else {
                     infoOutput.append("Type 'Roll' to begin your turn.\n");
                 }
+                gameScreen.getButtonPanel().getRollButton().setEnabled(true);
+                gameScreen.getButtonPanel().getDoneButton().setEnabled(true);
                 break;
             case 2: //  Moving
+                gameScreen.getButtonPanel().getQuestionButton().setEnabled(false);
                 movementHandling.setCurrentPlayer(currentPlayer);
                 setMoveEnabled(movementHandling.enableMove(this.infoOutput));
+                gameScreen.getButtonPanel().getDoneButton().setEnabled(true);
                 break;
             case 3: //  After move
-                if (currentPlayer.getSuspectToken().isInRoom()) {
+                if (currentPlayer.getSuspectToken().isInRoom() && canQuestion) {
                     infoOutput.append("Type 'Question' to question,\nOr 'Done' to finish your turn.\n");
+                    gameScreen.getButtonPanel().getQuestionButton().setEnabled(true);
                 } else {
                     infoOutput.append("Type 'Done' to finish your turn.\n");
                 }
+                gameScreen.getButtonPanel().getDoneButton().setEnabled(true);
                 break;
             case 4:
                 break;
@@ -862,7 +870,6 @@ public class CommandInput {
                     @Override
                     public void mouseExited(MouseEvent e) {
                         super.mouseExited(e);
-
                         if (!(boardPos.getTileType() == TileType.ROOM || boardPos.getTileType() == TileType.DOOR
                                 || boardPos.getTileType() == TileType.SECRETPASSAGE)) {
                             boardPos.setBorder(new EmptyBorder(0, 0, 0, 0));
@@ -946,6 +953,71 @@ public class CommandInput {
                 gameScreen.getPlayerChange().getDoneButton().setForeground(Color.WHITE);
             }
         });
+
+        gameScreen.getGameDice().getLeftDice().addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (canRoll) {
+                    gameScreen.getCommandInput().setText("ROLL");
+                    processCommand();
+                }
+            }
+        });
+
+        gameScreen.getGameDice().getRightDice().addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (canRoll) {
+                    gameScreen.getCommandInput().setText("ROLL");
+                    processCommand();
+                }
+            }
+        });
+
+        gameScreen.getButtonPanel().getRollButton().addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                if (canRoll) {
+                    gameScreen.getCommandInput().setText("ROLL");
+                    processCommand();
+                    gameScreen.getButtonPanel().getRollButton().setEnabled(false);
+                }
+            }
+        });
+
+        gameScreen.getButtonPanel().getDoneButton().addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                if (gameScreen.getButtonPanel().getDoneButton().isEnabled()) {
+                    gameScreen.getCommandInput().setText("DONE");
+                    processCommand();
+                    gameScreen.getButtonPanel().getDoneButton().setEnabled(false);
+                }
+            }
+        });
+
+        gameScreen.getButtonPanel().getQuestionButton().addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                if (gameScreen.getButtonPanel().getQuestionButton().isEnabled()) {
+                    gameScreen.getCommandInput().setText("QUESTION");
+                    processCommand();
+                    gameScreen.getButtonPanel().getQuestionButton().setEnabled(false);
+                }
+            }
+        });
+
+        gameScreen.getAccusations().getDoneButton().addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                afterAccuse();
+                gameScreen.getAccusations().removeAll();
+            }
+        });
     }
 
     public void setMoveEnabled(boolean moveEnabled) {
@@ -954,6 +1026,11 @@ public class CommandInput {
 
     public void setGameEnabled(boolean gameEnabled) {
         this.gameEnabled = gameEnabled;
+        gameScreen.setGameEnabled(gameEnabled);
+    }
+
+    public boolean isGameEnabled() {
+        return gameEnabled;
     }
 
     public void setCurrentPlayerID(int currentPlayerID) {
@@ -977,8 +1054,26 @@ public class CommandInput {
     }
 
     public void accuse(){
-        setGameEnabled(false);
+
+
         gameScreen.getAccusations().setUpAccustations();
 
+    }
+
+    public void afterAccuse(){
+        Boolean guess = gameScreen.getAccusations().test();
+        if (guess) {
+            infoOutput.append("Congratulations, " + currentPlayer.getPlayerName() + "is the winner\n");
+            infoOutput.append("Please type 'exit' to finish\n");
+        } else if (!guess) {
+            infoOutput.append(currentPlayer.getPlayerName() + "Accused wrong and their turn shall be skipped and removed\n");
+            gameScreen.getAccusations().disableAccusation();
+            setGameEnabled(true);
+            removeCurrentPlayer();
+        }
+    }
+
+    public void removeCurrentPlayer(){
+        removedPlayer.add(currentPlayerID);
     }
 }

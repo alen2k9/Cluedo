@@ -17,6 +17,7 @@ public class T11Label extends JLabel {
 
     public T11Label(ImageIcon icon){
         super(icon);
+        super.setDisabledIcon(icon);
     }
 
     public T11Label() {
@@ -25,6 +26,7 @@ public class T11Label extends JLabel {
 
     public T11Label(ImageIcon icon, String name){
         super(icon);
+        super.setDisabledIcon(icon);
         this.name = name;
     }
 
@@ -35,7 +37,11 @@ public class T11Label extends JLabel {
     @Override
     public void paintComponent(Graphics g){
         super.paintComponent(g);
-        ImageIcon image = ((ImageIcon)super.getIcon());
+        ImageIcon image;
+        if (super.isEnabled())
+            image = ((ImageIcon)super.getIcon());
+        else
+            image = ((ImageIcon)super.getDisabledIcon());
         g.drawImage(image.getImage(), 0, 0, getWidth(), getHeight(), this);
     }
 }

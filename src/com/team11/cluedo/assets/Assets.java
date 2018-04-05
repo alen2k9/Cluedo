@@ -307,6 +307,24 @@ public class Assets {
         return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("dice_6.png"));
     }
 
+    public Image getRollButton() {return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("rollButton.png"));}
+
+    public Image getRollButtonPressed() {return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("rollButton_Pressed.png"));}
+
+    //*
+    public Image getAccuseButton() {return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("accuseButton.png"));}
+
+    public Image getAccuseButtonPressed() {return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("accuseButton_Pressed.png"));}
+    //*/
+    public Image getQuestionButton() {return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("questionButton.png"));}
+
+    public Image getQuestionButtonPressed() {return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("questionButton_Pressed.png"));}
+
+    ///*
+    public Image getDoneButton() {return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("doneButton.png"));}
+
+    public Image getDoneButtonPressed() {return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("doneButton_Pressed.png"));}
+    //*/
 
     ////////////////////////////////////////////
     //                                        //
@@ -316,18 +334,6 @@ public class Assets {
 
     private void setupTitleFont() {
         InputStream fontIn = getClass().getResourceAsStream("BulkyPixel.TTF");
-        try {
-            GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(
-                    Font.createFont(Font.TRUETYPE_FONT, fontIn));
-        } catch (FontFormatException f) {
-            System.out.println("Looks like I can't make your font.");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void setupManaspaceFont() {
-        InputStream fontIn = getClass().getResourceAsStream("manaspc.TTF");
         try {
             GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(
                     Font.createFont(Font.TRUETYPE_FONT, fontIn));

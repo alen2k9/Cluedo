@@ -20,7 +20,7 @@ public class RoomData {
     private HashMap<Integer, Image> roomCard = new HashMap<>();
     private HashMap<Integer, Image> roomSelectedCard = new HashMap<>();
     private HashMap<Integer, String> roomID = new HashMap<>();
-    private final int roomAmount = 9;
+    public static final int ROOM_AMOUNT = 9;
 
     public RoomData() {
         setRoomName();
@@ -89,10 +89,6 @@ public class RoomData {
     public Image getSelectedRoomCard(int index) {
         return roomSelectedCard.getOrDefault(index, null);
     }
-
-    public int getRoomAmount() {
-            return this.roomAmount;
-        }
 
     public String getRoomID(int index){
         return roomID.getOrDefault(index, null);

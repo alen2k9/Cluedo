@@ -43,12 +43,12 @@ public class InputData {
         }
 
         RoomData roomData = new RoomData();
-        for (int i = 0; i < roomData.getRoomAmount(); i++){
+        for (int i = 0; i < RoomData.ROOM_AMOUNT ; i++){
             addElement(roomData.getRoomID(i), this.commandData);
         }
 
         WeaponData weaponData = new WeaponData();
-        for (int i = 0; i < weaponData.getWeaponAmount(); i++){
+        for (int i = 0; i < WeaponData.WEAPON_AMOUNT ; i++){
             addElement(weaponData.getWeaponID(i), this.commandData);
         }
     }

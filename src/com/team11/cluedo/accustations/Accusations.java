@@ -10,11 +10,8 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.event.MouseWheelEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-
 
 public class Accusations extends JPanel {
     private Assets gameAssets;
@@ -32,11 +29,15 @@ public class Accusations extends JPanel {
     private  T11Label[] roomCards = new T11Label[9];
     private T11Label[] selectedRoomCards = new T11Label[9];
     private boolean selected = false;
+    private boolean gameOver = false;
+
+    public JButton doneButton;
 
     String[] playerCardsName;
     int playerCard;
     int weaponCard;
     int roomCard;
+    int finish = 0;
 
     String murderPlayerCardName;
     String murderWeaponCardName;
@@ -56,15 +57,18 @@ public class Accusations extends JPanel {
     private HashMap<Integer, String> weaponName = new HashMap<>();
     private  HashMap<Integer, String> roomName = new HashMap<>();
 
+    private int boardX;
+    private int boardY;
+
 
 
     public Accusations(Assets gameAssets, Cards gameCards, Resolution resolution){
         this.gameAssets = gameAssets;
         this.resolution = resolution;
         this.gameCards = gameCards;
-        int boardX = (int) (780 * resolution.getScalePercentage());
-        int boardY  = (int)(810 * resolution.getScalePercentage());
 
+
+        setupButton();
         //setUpAccustations();
 
         ImageIcon b = new ImageIcon(gameAssets.getGreenCard()); //card used for resizing
@@ -155,8 +159,37 @@ public class Accusations extends JPanel {
             roomName.put(7, "Hall");
             roomName.put(8, "Study");
 
-            ;
 
+
+
+
+
+
+
+
+    }
+
+    public void setUpAccustations()
+    {
+        this.setBackground(new Color(0, 0, 0, 168));
+
+        this.setLayout(null);
+        this.setLocation(0,0);
+
+        this.setVisible(true);
+        this.setOpaque(true);
+        setBounds();
+        addCharacterCards();
+    }
+
+    public void disableAccusation()
+    {
+        this.setVisible(false);
+    }
+
+    public void setBounds(){
+        this.boardX = this.getSize().width;
+        this.boardY  =  this.getSize().height;
 
         this.bounds = new Bounds[]{
                 new Bounds(boardX/4 - cardSelectWidth/2,boardY/2,cardSelectWidth,cardSelectHeight),
@@ -185,33 +218,6 @@ public class Accusations extends JPanel {
                 new Bounds(cardSelectWidth*2,cardSelectHeight*2 + 50,cardSelectWidth*2,cardSelectHeight*2),
                 new Bounds(cardSelectWidth*4,cardSelectHeight*2 + 50,cardSelectWidth*2,cardSelectHeight*2)
         };
-
-
-
-        //setUpAccustations();
-        //addCharacterCards();
-
-
-
-
-        //disableAccusation();
-    }
-
-    public void setUpAccustations()
-    {
-        this.setBackground(new Color(46, 46, 46, 107));
-
-        this.setLayout(null);
-        this.setLocation(0,0);
-        this.setSize((int)(780 * resolution.getScalePercentage()),(int)(810 * resolution.getScalePercentage()));
-        this.setVisible(true);
-        this.setOpaque(true);
-        addCharacterCards();
-    }
-
-    public void disableAccusation()
-    {
-        this.setVisible(false);
     }
 
     public void addCharacterCards()
@@ -234,8 +240,19 @@ public class Accusations extends JPanel {
                 public void mouseEntered(java.awt.event.MouseEvent evt) {
                     if(!selected) {
 
-                        selectedPlayerCards[finalI].setVisible(true);
-                        playerCards[finalI].setVisible(false);
+                        for (int i = 0; i < selectedPlayerCards.length;i++){
+                            if(i != finalI){
+                                playerCards[i].setVisible(false);
+                                selectedPlayerCards[i].setVisible(true);
+
+                            }
+
+                        }
+                        selectedPlayerCards[finalI].setVisible(false);
+                        playerCards[finalI].setVisible(true);
+
+                       getRootPane().getContentPane().repaint();
+                       getRootPane().getContentPane().revalidate();
                     }
 
                 }
@@ -248,9 +265,22 @@ public class Accusations extends JPanel {
 
                 public void mouseExited(java.awt.event.MouseEvent evt) {
                     if(!selected) {
+
+                        for (int i = 0; i < selectedPlayerCards.length;i++){
+                            if(i != finalI){
+                                playerCards[i].setVisible(true);
+                                selectedPlayerCards[i].setVisible(false);
+                                //revalidate();
+                                //getRootPane().getContentPane().repaint();
+                                //getRootPane().getContentPane().revalidate();
+                            }
+
+                        }
                         selectedPlayerCards[finalI].setVisible(false);
                         playerCards[finalI].setVisible(true);
-
+                        revalidate();
+                        getRootPane().getContentPane().repaint();
+                        getRootPane().getContentPane().revalidate();
                     }
 
                 }
@@ -298,14 +328,37 @@ public class Accusations extends JPanel {
             weaponsCards[i].addMouseListener(ml = new MouseAdapter() {
                 public void mouseEntered(java.awt.event.MouseEvent evt) {
                     if(!selected) {
-                        weaponsCards[finalI].setVisible(false);
-                        selectedWeaponCards[finalI].setVisible(true);
+                        for (int i = 0; i < selectedWeaponCards.length;i++){
+                            if(i != finalI){
+                                weaponsCards[i].setVisible(false);
+                                selectedWeaponCards[i].setVisible(true);
+                            }
+                        }
+                        selectedWeaponCards[finalI].setVisible(false);
+                        weaponsCards[finalI].setVisible(true);
+
+
+                        getRootPane().getContentPane().repaint();
+                        getRootPane().getContentPane().revalidate();
                     }
                 }
                 public void mouseExited(java.awt.event.MouseEvent evt) {
                     if(!selected) {
-                        weaponsCards[finalI].setVisible(true);
+                        for (int i = 0; i < weaponsCards.length;i++){
+                            if(i != finalI){
+                                weaponsCards[i].setVisible(true);
+                                selectedWeaponCards[i].setVisible(false);
+                                //revalidate();
+                                //getRootPane().getContentPane().repaint();
+                                //getRootPane().getContentPane().revalidate();
+                            }
+
+                        }
                         selectedWeaponCards[finalI].setVisible(false);
+                        weaponsCards[finalI].setVisible(true);
+                        revalidate();
+                        getRootPane().getContentPane().repaint();
+                        getRootPane().getContentPane().revalidate();
                     }
                 }
                 @Override
@@ -335,14 +388,25 @@ public class Accusations extends JPanel {
     public void removePlayerCards(int a)
     {
 
-        ArrayList<T11Label> remainingLabels = new ArrayList<>(5);
+        ArrayList<T11Label> remainingLabels = new ArrayList<>(9);
+        ArrayList<T11Label> selectedRemainingLabels = new ArrayList<>(9);
+
         for (int i = 0; i < playerCards.length; i++){
             if (i != a){
                 remainingLabels.add(playerCards[i]);
             }
         }
+        for (int i = 0; i < selectedPlayerCards.length; i++){
+            if (i != a){
+                selectedRemainingLabels.add(selectedPlayerCards[i]);
+            }
+        }
 
         for (T11Label label : remainingLabels){
+            remove(label);
+        }
+
+        for (T11Label label : selectedRemainingLabels){
             remove(label);
         }
         getRootPane().getContentPane().repaint();
@@ -358,17 +422,28 @@ public class Accusations extends JPanel {
 
     public void removeWeaponCards(int a)
     {
-        ArrayList<T11Label> remainingLabels = new ArrayList<>(6);
+        ArrayList<T11Label> remainingLabels = new ArrayList<>(9);
+        ArrayList<T11Label> selectedRemainingLabels = new ArrayList<>(9);
 
         for (int i = 0; i < weaponsCards.length; i++){
             if (i != a){
                 remainingLabels.add(weaponsCards[i]);
             }
         }
+        for (int i = 0; i < selectedWeaponCards.length; i++){
+            if (i != a){
+                selectedRemainingLabels.add(selectedWeaponCards[i]);
+            }
+        }
 
         for (T11Label label : remainingLabels){
             remove(label);
         }
+
+        for (T11Label label : selectedRemainingLabels){
+            remove(label);
+        }
+
         getRootPane().getContentPane().repaint();
         getRootPane().getContentPane().revalidate();
         chosenWeaponCard.removeMouseListener(ml);
@@ -398,14 +473,36 @@ public class Accusations extends JPanel {
             roomCards[i].addMouseListener(ml = new MouseAdapter() {
                 public void mouseEntered(java.awt.event.MouseEvent evt) {
                     if(!selected) {
-                        roomCards[finalI].setVisible(false);
-                        selectedRoomCards[finalI].setVisible(true);
+                        if(!selected) {
+                            for (int i = 0; i < roomCards.length;i++){
+                                if(i != finalI){
+                                    roomCards[i].setVisible(false);
+                                    selectedRoomCards[i].setVisible(true);
+                                }
+                            }
+                            selectedRoomCards[finalI].setVisible(false);
+                            roomCards[finalI].setVisible(true);
+                            getRootPane().getContentPane().repaint();
+                            getRootPane().getContentPane().revalidate();
+                        }
                     }
                 }
                 public void mouseExited(java.awt.event.MouseEvent evt) {
                     if(!selected) {
-                        roomCards[finalI].setVisible(true);
+                        for (int i = 0; i < selectedRoomCards.length;i++){
+                            if(i != finalI){
+                                roomCards[i].setVisible(true);
+                                selectedRoomCards[i].setVisible(false);
+                                //revalidate();
+                                //getRootPane().getContentPane().repaint();
+                                //getRootPane().getContentPane().revalidate();
+                            }
+                        }
                         selectedRoomCards[finalI].setVisible(false);
+                        roomCards[finalI].setVisible(true);
+                        revalidate();
+                        getRootPane().getContentPane().repaint();
+                        getRootPane().getContentPane().revalidate();
                     }
                 }
                 @Override
@@ -434,14 +531,24 @@ public class Accusations extends JPanel {
     public void removeRoomCards(int a)
     {
         ArrayList<T11Label> remainingLabels = new ArrayList<>(9);
+        ArrayList<T11Label> selectedRemainingLabels = new ArrayList<>(9);
 
         for (int i = 0; i < roomCards.length; i++){
             if (i != a){
                 remainingLabels.add(roomCards[i]);
             }
         }
+        for (int i = 0; i < selectedRoomCards.length; i++){
+            if (i != a){
+                selectedRemainingLabels.add(selectedRoomCards[i]);
+            }
+        }
 
         for (T11Label label : remainingLabels){
+            remove(label);
+        }
+
+        for (T11Label label : selectedRemainingLabels){
             remove(label);
         }
         getRootPane().getContentPane().repaint();
@@ -454,6 +561,7 @@ public class Accusations extends JPanel {
         getRootPane().getContentPane().repaint();
         getRootPane().getContentPane().revalidate();
         chosenRoomCard.setVisible(true);
+
 
         displayEnvelope();
 
@@ -468,24 +576,38 @@ public class Accusations extends JPanel {
         murderWeaponCard = new T11Label(new ImageIcon(gameCards.getMurderEnvelope().getWeaponCard().getCardImage().getScaledInstance(cardSelectWidth, cardSelectHeight, 0)));
         muurderRoomCard = new T11Label(new ImageIcon(gameCards.getMurderEnvelope().getRoomCard().getCardImage().getScaledInstance(cardSelectWidth, cardSelectHeight, 0)));
 
-        add(murderPlayerCard).setBounds(murderBouds[0].getX(),murderBouds[0].getY(), murderBouds[0].getCardSelectWidth(), murderBouds[0].getCardSelectHeight());
-        add(murderWeaponCard).setBounds(murderBouds[1].getX(),murderBouds[1].getY(), murderBouds[1].getCardSelectWidth(), murderBouds[1].getCardSelectHeight());
-        add(muurderRoomCard).setBounds(murderBouds[2].getX(),murderBouds[2].getY(), murderBouds[2].getCardSelectWidth(), murderBouds[2].getCardSelectHeight());
+        add(murderPlayerCard).setBounds(murderBouds[0].getX(), murderBouds[0].getY(), murderBouds[0].getCardSelectWidth(), murderBouds[0].getCardSelectHeight());
+        add(murderWeaponCard).setBounds(murderBouds[1].getX(), murderBouds[1].getY(), murderBouds[1].getCardSelectWidth(), murderBouds[1].getCardSelectHeight());
+        add(muurderRoomCard).setBounds(murderBouds[2].getX(), murderBouds[2].getY(), murderBouds[2].getCardSelectWidth(), murderBouds[2].getCardSelectHeight());
 
-        test();
+        setupButton();
     }
 
-    public void test()
+    public boolean test()
+
     {
-        if(suspectName.get(playerCard).equals(murderPlayerCardName) && weaponName.get(weaponCard).equals(murderWeaponCardName)
-                && roomName.get(roomCard).equals(muurderRoomCardName))
-        {
-            System.out.println("congrats you won");
-        }
-        else
-        {
-            System.out.println("you lose");
-        }
+        boolean guess = Boolean.parseBoolean(null);
+        this.doneButton.setVisible(true);
+
+        return suspectName.get(playerCard).equals(murderPlayerCardName) && weaponName.get(weaponCard).equals(murderWeaponCardName)
+                && roomName.get(roomCard).equals(muurderRoomCardName);
+    }
+
+    private void setupButton() {
+        doneButton = new JButton("DONE");
+        doneButton.setFont(new Font("Bulky Pixels", Font.BOLD, (int)(30 * resolution.getScalePercentage())));
+        doneButton.setBorderPainted(false);
+        doneButton.setContentAreaFilled(false);
+        doneButton.setFocusPainted(false);
+        doneButton.setOpaque(false);
+        doneButton.setVisible(true);
+        doneButton.setForeground(Color.WHITE);
+        this.add(doneButton).setBounds(getWidth()/2,getHeight()/2, doneButton.getPreferredSize().width, doneButton.getPreferredSize().height);
+
+    }
+
+    public JButton getDoneButton() {
+        return doneButton;
     }
 
     public int getCardSelectHeight() {
@@ -495,4 +617,6 @@ public class Accusations extends JPanel {
     public int getCardSelectWidth() {
         return cardSelectWidth;
     }
+
+    public int getFinish(){return finish;}
 }
