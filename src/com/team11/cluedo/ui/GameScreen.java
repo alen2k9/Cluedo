@@ -365,9 +365,9 @@ public class GameScreen extends JFrame implements Screen {
         public BoardUI() {
 
             add(gameCards.getMurderEnvelope());
-            add(qPanel);
             add(accusations);
             add(playerChange);
+            add(qPanel);
             add(gameDice);
             add(gameSuspects);
             add(gameWeapons);

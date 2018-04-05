@@ -93,7 +93,6 @@ public class CommandInput {
         String input = this.gameScreen.getCommandInput().getText();
         String[] inputs = input.toLowerCase().split(" ");
         String command = inputs[0];
-
         this.gameScreen.getCommandInput().setText("");
 
         if (gameEnabled) {
@@ -388,18 +387,42 @@ public class CommandInput {
                     }
                     break;
                 case 4: // Question
+
+                    System.out.println("In case 4");
                     switch (command){
                         case "done":
-                            gameScreen.getqPanel().hideQuestionPanel();
-                            setGameEnabled(true);
-                            canQuestion = false;
-                            if (canRoll){
-                                incrementGamestate(1);
-                            } else{
-                                incrementGamestate(3);
+
+                            System.out.println("//////////////////");
+                            System.out.println("Is Showing : " + gameScreen.getqPanel().isShowingNextPlayer());
+                            System.out.println("Is Looped : " + gameScreen.getqPanel().getLooped() + "\n");
+
+                            if (gameScreen.getqPanel().isShowingNextPlayer() && !gameScreen.getqPanel().getLooped() && gameState == 4){
+                                //Adds in the next set of cards
+                                //Sets the boolean showing to false
+                                //Hides the playerChange
+                                gameScreen.getqPanel().addValidCards();
+                                gameScreen.getqPanel().setShowingNextPlayer(false);
+                                gameScreen.getPlayerChange().setVisible(false);
+                            }
+
+                            else if (gameScreen.getqPanel().isDoneShowing() && !gameScreen.getqPanel().getLooped()){
+                                gameScreen.getqPanel().showNextPlayer();
+                            }
+
+                            else if(gameScreen.getqPanel().isShowingNextPlayer() && gameScreen.getqPanel().getLooped() && gameState == 4){
+                                gameScreen.getqPanel().hideQuestionPanel();
+                                gameScreen.getPlayerChange().setVisible(false);
+                                setGameEnabled(true);
+                                if (canRoll){
+                                    incrementGamestate(1);
+                                } else{
+                                    incrementGamestate(3);
+                                }
                             }
 
                             break;
+
+                        case "finished":
                         case "white":
                             gameScreen.getqPanel().textSelectCard("white");
                             break;
@@ -439,12 +462,13 @@ public class CommandInput {
 
                         default :
                             infoOutput.append("Unknown command entered\n");
-
+                            break;
                     }
 
                     break;
                 case 5: //  Accuse
                     break;
+
             }
         }
 
@@ -777,7 +801,7 @@ public class CommandInput {
             gameEnabled = false;
             incrementGamestate(4);
             this.gameScreen.getQuestionPanel().displayQuestionPanel(currentPlayer.getSuspectToken().getCurrentRoom(), currentPlayerID);
-
+            canQuestion = false;
         }
     }
 
@@ -862,11 +886,54 @@ public class CommandInput {
             }
         }
 
-        gameScreen.getPlayerChange().getDoneButton().addActionListener(e ->{
-            gameScreen.getCommandInput().setText("done");
-            processCommand();
-            gameScreen.getCommandInput().requestFocus();
-            setGameEnabled(true);
+        gameScreen.getPlayerChange().getDoneButton().addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                //System.out.println("Gamestate : " + gameState + " hasLooped: " + gameScreen.getqPanel().getLooped());
+
+                if (gameScreen.getqPanel().isShowingNextPlayer() && !gameScreen.getqPanel().getLooped() && gameState == 4){
+                    //Adds in the next set of cards
+                    //Sets the boolean showing to false
+                    //Hides the playerChange
+                    gameScreen.getqPanel().addValidCards();
+                    gameScreen.getqPanel().setShowingNextPlayer(false);
+                    gameScreen.getPlayerChange().setVisible(false);
+                }
+
+                else if(gameScreen.getqPanel().isShowingNextPlayer() && gameScreen.getqPanel().getLooped() && gameState == 4){
+                    gameScreen.getqPanel().hideQuestionPanel();
+                    gameScreen.getPlayerChange().setVisible(false);
+                    System.out.println("Exit");
+                    setGameEnabled(true);
+                    if (canRoll){
+                        incrementGamestate(1);
+                    } else{
+                        incrementGamestate(3);
+                    }
+                }
+
+                else {
+                    gameScreen.getCommandInput().setText("done");
+                    processCommand();
+                    gameScreen.getCommandInput().requestFocus();
+                    setGameEnabled(true);
+                }
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                super.mouseEntered(e);
+                gameScreen.getPlayerChange().getDoneButton().setForeground(Color.RED);
+                gameScreen.repaint();
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                super.mouseExited(e);
+                gameScreen.getPlayerChange().getDoneButton().setForeground(Color.WHITE);
+                gameScreen.repaint();
+            }
         });
 
 

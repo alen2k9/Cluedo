@@ -1,8 +1,11 @@
 package com.team11.cluedo.questioning;
 
+
 import com.team11.cluedo.assets.Assets;
 import com.team11.cluedo.board.room.RoomData;
+import com.team11.cluedo.cards.Card;
 import com.team11.cluedo.components.T11Label;
+import com.team11.cluedo.players.PlayerHand;
 import com.team11.cluedo.suspects.SuspectData;
 import com.team11.cluedo.ui.GameScreen;
 import com.team11.cluedo.ui.Resolution;
@@ -12,7 +15,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.lang.annotation.Target;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -123,8 +125,12 @@ public class QPanel extends JPanel {
     private Point[] translatedLabelPointsRight = new Point[6];
     private Point[] translatedLabelPointsLeft = new Point[6];
 
+    private ArrayList<T11Label> validCards = new ArrayList<>();
+
+
     private int currentRoom;
     private int currentPlayer;
+    private int nextPlayer;
 
     private int playerTargetX;
     private int weaponTargetX;
@@ -134,17 +140,22 @@ public class QPanel extends JPanel {
     private boolean hasSelectedWeapon = false;
     private boolean inPlayerState = false;
     private boolean inWeaponState = false;
+    private boolean showingNextPlayer = false;
+    private boolean hasResized = false;
+    private boolean hasLooped = false;
+
+    private boolean isFinished;
+    private boolean doneShowing = false;
 
     private GameScreen gameScreen;
     private Resolution resolution;
+
+    private Timer timer;
 
     public QPanel(GameScreen gameScreen, Resolution resolution) {
         this.gameScreen = gameScreen;
         this.resolution = resolution;
 
-
-        //this.setSize((int) (760 * resolution.getScalePercentage()), (int) (600 * resolution.getScalePercentage()));
-        //this.setLocation((int) (10 * resolution.getScalePercentage()), (int) (100 * resolution.getScalePercentage()));
         this.setBackground(new Color(0,0,0, 156));
 
         this.setLayout(null);
@@ -154,6 +165,12 @@ public class QPanel extends JPanel {
     public void displayQuestionPanel(int currentRoom, int currentPlayer){
         this.currentRoom = currentRoom;
         this.currentPlayer = currentPlayer;
+        this.nextPlayer = currentPlayer;
+        this.isFinished = false;
+
+        System.out.println("Current Player :" + this.currentPlayer);
+        //System.out.println("Next Player : " + nextPlayer);
+
         this.selectedRoom = roomLabels[currentRoom];
         setupSelectedCards();
 
@@ -169,7 +186,6 @@ public class QPanel extends JPanel {
 
         this.setVisible(true);
         this.setFocusable(true);
-
     }
 
     public void hideQuestionPanel(){
@@ -182,17 +198,42 @@ public class QPanel extends JPanel {
         this.removeAll();
     }
 
+    public boolean getResized(){
+        return hasResized;
+    }
+
     private void resetAllBoolean(){
         this.hasSelectedWeapon = false;
         this.hasSelectedPlayer = false;
         this.inWeaponState = false;
         this.inPlayerState = false;
+        this.showingNextPlayer = false;
+        this.hasResized = false;
+        this.hasLooped = false;
+        this.isFinished = false;
+        this.doneShowing = false;
+    }
+
+    public boolean isDoneShowing(){
+        return doneShowing;
+    }
+
+    public void setDoneShowing(boolean b){
+        this.doneShowing = b;
+    }
+
+    public boolean isShowingNextPlayer(){
+        return showingNextPlayer;
+    }
+
+    public void setShowingNextPlayer(boolean b){
+        this.showingNextPlayer = b;
     }
 
     public void setSelectedPlayer(String player){
 
         for (T11Label label : playerLabels){
-            System.out.println("Comparing " + label.getCardName() + "  and  " + player);
+            //System.out.println("Comparing " + label.getCardName() + "  and  " + player);
             if (label.getCardName().matches(player)){
                 this.selectedPlayer = label;
                 System.out.println("Selected player is " + selectedPlayer.getCardName());
@@ -213,14 +254,35 @@ public class QPanel extends JPanel {
         selectedCards[2] = selectedWeapon;
     }
 
+    public void setFinished(boolean b){
+        this.isFinished = b;
+    }
+
+    public boolean isFinished(){
+        return isFinished;
+    }
+
+    public void incrementNextPlayer(){
+        System.out.println("Next Player " + nextPlayer + "  player count "  + gameScreen.getGamePlayers().getPlayerCount());
+        if (nextPlayer + 1 == gameScreen.getGamePlayers().getPlayerCount()){
+            nextPlayer = 0;
+        } else{
+            nextPlayer++;
+        }
+        System.out.println("Next Player: " + nextPlayer);
+
+        if (nextPlayer == currentPlayer){
+            hasLooped = true;
+            System.out.println("\nHas Looped\n");
+        }
+    }
+
     private void setupSelectedCards(){
 
         if ((this.getWidth()/6 - (int)(resolution.getScalePercentage() * 25)) % 2 == 0){
             playerTargetX = (this.getWidth()/6 - (int)(resolution.getScalePercentage() * 25));
-            System.out.println("player x = " + playerTargetX);
         } else {
             playerTargetX = (this.getWidth()/6 - (int)(resolution.getScalePercentage() * 25) - 1);
-            System.out.println("player x = " + playerTargetX);
         }
 
         //Have to set up room card anyway
@@ -255,7 +317,6 @@ public class QPanel extends JPanel {
         } else {
             weaponTargetX = ((((getWidth()/3)*2) - (int)(resolution.getScalePercentage() * 10)) - 1);
         }
-        System.out.println("Weapon Target X " + weaponTargetX);
 
         //if we hae a selected weapon then add it
         if (selectedWeapon != null){
@@ -288,6 +349,10 @@ public class QPanel extends JPanel {
             translatedLabelPointsLeft[i] = new Point((int)labelPoints[i].getX() - this.getWidth(), (int)labelPoints[i].getY());
         }
 
+        if (hasSelectedPlayer && hasSelectedWeapon){
+            question();
+        }
+
     }
 
     private int sumWidths(int index){
@@ -301,6 +366,10 @@ public class QPanel extends JPanel {
     }
 
     private void addCards(T11Label[] labels, int flag){
+
+        int targetUp =(int) (translatedLabelPointsLeft[1].getY() - (int)(resolution.getScalePercentage() * 40));
+        int targetDown = (int)(translatedLabelPointsLeft[1].getY());
+
         int i = 0;
         for (T11Label label : labels){
             label.setSize(new Dimension((int) (label.getIcon().getIconWidth() * (resolution.getScalePercentage() * 0.42)),
@@ -327,14 +396,17 @@ public class QPanel extends JPanel {
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     super.mouseClicked(e);
-
                     if (flag == 0){
                         hasSelectedPlayer = true;
                         inPlayerState = false;
+                        selectedPlayer = labels[finalJ];
+                        selectedCards[0] = selectedPlayer;
                         labels[finalJ].setIcon(playerIcons[finalJ]);
                     } else{
                         hasSelectedWeapon = true;
                         inWeaponState = false;
+                        selectedWeapon = labels[finalJ];
+                        selectedCards[2] = selectedWeapon;
                         labels[finalJ].setIcon(weaponIcons[finalJ]);
                     }
 
@@ -347,13 +419,13 @@ public class QPanel extends JPanel {
                     if (!moving){
                         for (int j = 0; j < 6; j++){
                             if (j != finalJ){
-
                                 if (flag == 0){
                                     labels[j].setIcon(selectedPlayerIcons[j]);
+                                    new AnimateMoveUpDown(labels[finalJ], 0, targetUp, targetDown, hasSelectedPlayer ).execute();
                                 } else{
                                     labels[j].setIcon(selectedWeaponIcons[j]);
+                                    new AnimateMoveUpDown(labels[finalJ], 0, targetUp, targetDown, hasSelectedWeapon ).execute();
                                 }
-
                             }
                         }
                         labels[finalJ].revalidate();
@@ -367,10 +439,13 @@ public class QPanel extends JPanel {
                         for (int j = 0; j < 6; j++){
                             if (flag == 0){
                                 labels[j].setIcon(playerIcons[j]);
+                                new AnimateMoveUpDown(labels[finalJ], 1, targetUp, targetDown, hasSelectedPlayer ).execute();
+
                             } else{
                                 labels[j].setIcon(weaponIcons[j]);
-                            }
+                                new AnimateMoveUpDown(labels[finalJ], 1, targetUp, targetDown, hasSelectedWeapon ).execute();
 
+                            }
                         }
                         labels[finalJ].revalidate();
                     }
@@ -379,67 +454,338 @@ public class QPanel extends JPanel {
         }
     }
 
-    public boolean textSelectCard(String card){
-        //We're in the player selection state
-        System.out.println("Player State : " + inPlayerState);
-        System.out.println("Weapon State : " + inWeaponState);
+    private void question(){
+        //Move the player and weapon to the room
+        int questionedPlayer = findLabelID(playerLabels, selectedPlayer);
+
+        if (questionedPlayer == -1){
+            System.out.println("Error finding player");
+        }
+
+        int questionedWeapon = findLabelID(weaponLabels, selectedWeapon);
+        if (questionedPlayer == -1){
+            System.out.println("Error finding weapon");
+        }
+
+        //Move the player and weapon
+
+        //gameScreen.getGamePlayers().getPlayer(questionedPlayer).getSuspectToken().moveToRoom(currentRoom, gameScreen.getGameBoard());
+        //gameScreen.getGameWeapons().moveWeaponToRoom(questionedWeapon, currentRoom);
+
+        ////////////////////////////
+
+        //Pass to the next player
+
+
+        PlayerHand playerHand = gameScreen.getGamePlayers().getPlayer(nextPlayer).getPlayerHand();
+
+        for (Card card : playerHand.getPlayerHand()){
+            if ( (card.getName().matches(selectedPlayer.getCardName()))
+                    || (card.getName().matches(selectedWeapon.getCardName()))
+                    || (card.getName().matches(selectedRoom.getCardName()))){
+                validCards.add(new T11Label(new ImageIcon(card.getCardImage()), card.getName()));
+                //System.out.println("Added " + card.getName() + " to valid cards");
+            }
+        }
+
+        for (Card card : playerHand.getPublicHand()){
+            if ( (card.getName().matches(selectedPlayer.getCardName()))
+                    || (card.getName().matches(selectedWeapon.getCardName()))
+                    || (card.getName().matches(selectedRoom.getCardName()))){
+                validCards.add(new T11Label(new ImageIcon(card.getCardImage()), card.getName()));
+                //System.out.println("Added " + card.getName() + " to valid cards");
+            }
+        }
+
+        //System.out.println("Size of valid cards : " + validCards.size());
+        incrementNextPlayer();
+
+        gameScreen.getPlayerChange().setPlayerCard(gameScreen.getGamePlayers().getPlayer(nextPlayer));
+        gameScreen.getPlayerChange().setVisible(true);
+        this.showingNextPlayer = true;
+
+        gameScreen.reDraw(nextPlayer);
+    }
+
+    public void showNextPlayer(){
+        if (!hasLooped) {
+            incrementNextPlayer();
+            gameScreen.getPlayerChange().setPlayerCard(gameScreen.getGamePlayers().getPlayer(nextPlayer));
+            gameScreen.getPlayerChange().setVisible(true);
+            this.showingNextPlayer = true;
+            gameScreen.reDraw(nextPlayer);
+        } else{
+            doneShowing = false;
+            hideQuestionPanel();
+        }
+    }
+
+    public void resizeSelected(){
+        final int distance = 2;
+        int targetW = (int)(selectedRoom.getWidth() * (resolution.getScalePercentage() * 0.9));
+        int targetH = (int)(selectedRoom.getHeight() * (resolution.getScalePercentage() * 0.9));
+        int roomTarget = getWidth()/2 - targetW/2;
+        int playerTarget = (getWidth()/6);
+        int weaponTarget = ((getWidth()/3)*2 - (int)(resolution.getScalePercentage()*20));
+
+        timer = new Timer(4, e->{
+            if (selectedPlayer.getWidth() == targetW && selectedPlayer.getHeight() == targetH
+                    && selectedRoom.getWidth() == targetW && selectedRoom.getHeight() == targetH
+                    && selectedWeapon.getWidth() == targetW && selectedWeapon.getHeight() == targetH
+                    && selectedPlayer.getX() == playerTarget
+                    && selectedWeapon.getX() == weaponTarget
+                    && selectedRoom.getX() == roomTarget ){
+                timer.stop();
+            } else{
+                //System.out.println("player current location " + selectedPlayer.getLocation());
+                if (selectedPlayer.getWidth() <= targetW){
+                    selectedPlayer.setSize(new Dimension(targetW, selectedPlayer.getHeight()));
+                } else{
+                    selectedPlayer.setSize(new Dimension(selectedPlayer.getWidth() - distance, selectedPlayer.getHeight()));
+                }
+                if (selectedPlayer.getHeight() <= targetH){
+                    selectedPlayer.setSize(new Dimension(selectedPlayer.getWidth(), targetH));
+                } else{
+                    selectedPlayer.setSize(new Dimension(selectedPlayer.getWidth(), selectedPlayer.getHeight()-distance));
+                }
+
+                if (selectedPlayer.getX() >= playerTarget){
+                    selectedPlayer.setLocation(playerTarget, selectedPlayer.getY());
+                } else{
+                    selectedPlayer.setLocation(selectedPlayer.getX() + distance, selectedPlayer.getY());
+                }
+
+                if (selectedRoom.getWidth() <= targetW){
+                    selectedRoom.setSize(new Dimension(targetW, selectedRoom.getHeight()));
+                } else{
+                    selectedRoom.setSize(new Dimension(selectedRoom.getWidth() - distance, selectedRoom.getHeight()));
+                }
+                if (selectedRoom.getHeight() <= targetH){
+                    selectedRoom.setSize(new Dimension(selectedRoom.getWidth(), targetH));
+                } else{
+                    selectedRoom.setSize(new Dimension(selectedRoom.getWidth(), selectedRoom.getHeight()-distance));
+                }
+
+                if (selectedRoom.getX() >= roomTarget){
+                    selectedRoom.setLocation(roomTarget, selectedRoom.getY());
+                } else{
+                    selectedRoom.setLocation(selectedRoom.getX() + distance, selectedRoom.getY());
+                }
+
+                if (selectedWeapon.getWidth() <= targetW){
+                    selectedWeapon.setSize(new Dimension(targetW, selectedWeapon.getHeight()));
+                } else{
+                    selectedWeapon.setSize(new Dimension(selectedWeapon.getWidth() - distance, selectedWeapon.getHeight()));
+                }
+                if (selectedWeapon.getHeight() <= targetH){
+                    selectedWeapon.setSize(new Dimension(selectedWeapon.getWidth(), targetH));
+                } else{
+                    selectedWeapon.setSize(new Dimension(selectedWeapon.getWidth(), selectedWeapon.getHeight() - distance));
+                }
+
+                if (selectedWeapon.getX() >= weaponTarget){
+                    selectedWeapon.setLocation(weaponTarget, selectedWeapon.getY());
+                } else{
+                    selectedWeapon.setLocation(selectedWeapon.getX() + distance, selectedWeapon.getY());
+                }
+
+                gameScreen.repaint();
+            }
+        });
+
+        timer.start();
+        hasResized = true;
+    }
+
+    public boolean getLooped(){
+        return hasLooped;
+    }
+
+    public void setLooped(boolean b){
+        this.hasLooped = b;
+    }
+
+    public void addValidCards(){
+
+        //System.out.println("In add valid cards");
+        ArrayList<T11Label> validCards = new ArrayList<>(0);
+
+        if (validCards.size() == 0){
+
+            //add in a done button
+            JLabel doneLabel = new JLabel("DONE");
+            doneLabel.setFont(new Font("Bulky Pixels", Font.BOLD, (int)(40 * resolution.getScalePercentage())));
+            doneLabel.setSize((int)(resolution.getScalePercentage() * 200), (int)(resolution.getScalePercentage() * 70));
+            doneLabel.setLocation(getWidth()/2 - (int)(resolution.getScalePercentage() * 65), getHeight()/2);
+            doneLabel.setForeground(Color.WHITE);
+            doneLabel.setBackground(new Color(0, 0, 0, 156));
+
+            JLabel infoLabel = new JLabel("YOU HAVE NO CARDS TO SHOW");
+            infoLabel.setFont(new Font("Bulky Pixels", Font.BOLD, (int)(20 * resolution.getScalePercentage())));
+            infoLabel.setSize((int)(resolution.getScalePercentage() * 600), (int)(resolution.getScalePercentage() * 100));
+            infoLabel.setLocation(doneLabel.getX() - (int)(resolution.getScalePercentage() * 150), doneLabel.getY() - (int)(resolution.getScalePercentage() * 100));
+            infoLabel.setForeground(Color.white);
+            infoLabel.setBackground(new Color(0,0,0, 156));
+            add(infoLabel);
+
+            doneShowing = true;
+            doneLabel.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    super.mouseClicked(e);
+
+                    //Increment first
+                    showNextPlayer();
+                    System.out.println("showing next player");
+                }
+
+                @Override
+                public void mouseEntered(MouseEvent e) {
+                    super.mouseEntered(e);
+                    doneLabel.setForeground(Color.RED);
+                    gameScreen.repaint();
+                }
+
+                @Override
+                public void mouseExited(MouseEvent e) {
+                    super.mouseExited(e);
+                    doneLabel.setForeground(Color.WHITE);
+                    gameScreen.repaint();
+                }
+            });
+
+            this.add(doneLabel);
+            gameScreen.repaint();
+        }
+
+        else if (validCards.size() == 1){
+            validCards.get(0).setSize(new Dimension(selectedRoom.getWidth() * (int)(resolution.getScalePercentage() * 1.5),
+                    selectedRoom.getWidth() * (int)(resolution.getScalePercentage() * 1.5) ));
+            validCards.get(0).setLocation(getWidth(), selectedRoom.getY() + selectedRoom.getHeight() + (int) (resolution.getScalePercentage() * 50));
+            add(validCards.get(0));
+
+
+        }
+         else if (validCards.size() == 2){
+
+        }
+
+        else if (validCards.size() == 3){
+
+        } else {
+            System.out.println("More than 3 cards");
+        }
+
+    }
+
+    private int findLabelID(T11Label[] labels, T11Label card){
+        int index = -1;
+        int i = 0;
+
+        for (T11Label label : labels){
+            if (label.getCardName().matches(card.getCardName())){
+                index = i;
+            }
+            i++;
+        }
+
+        return index;
+    }
+
+    public void textSelectCard(String card){
         if (inPlayerState){
             switch (card){
                 case "white":
                     new AnimateCorner(playerLabels, 0, 0).execute();
+                    selectedPlayer = playerLabels[0];
+                    selectedCards[0] = selectedPlayer;
                     inPlayerState = false;
-                    return true;
+                    hasSelectedPlayer = true;
+                    break;
                 case "green":
                     new AnimateCorner(playerLabels, 1, 0).execute();
+                    selectedPlayer = playerLabels[1];
+                    selectedCards[0] = selectedPlayer;
                     inPlayerState = false;
-                    return true;
+                    hasSelectedPlayer = true;
+                    break;
                 case "peacock":
                     new AnimateCorner(playerLabels, 2, 0).execute();
+                    selectedPlayer = playerLabels[2];
+                    selectedCards[0] = selectedPlayer;
                     inPlayerState = false;
-                    return true;
+                    hasSelectedPlayer = true;
+                    break;
                 case "plum":
                     new AnimateCorner(playerLabels, 3, 0).execute();
+                    selectedPlayer = playerLabels[3];
+                    selectedCards[0] = selectedPlayer;
                     inPlayerState = false;
-                    return true;
+                    hasSelectedPlayer = true;
+                    break;
                 case "scarlett":
                     new AnimateCorner(playerLabels, 4, 0).execute();
+                    selectedPlayer = playerLabels[4];
+                    selectedCards[0] = selectedPlayer;
                     inPlayerState = false;
-                    return true;
+                    hasSelectedPlayer = true;
+                    break;
                 case "mustard":
                     new AnimateCorner(playerLabels, 5, 0).execute();
+                    selectedPlayer = playerLabels[5];
+                    selectedCards[0] = selectedPlayer;
                     inPlayerState = false;
-                    return true;
+                    hasSelectedPlayer = true;
+                    break;
                 default:
-                    return false;
+                    break;
             }
         } else{
             switch (card){
                 case "hatchet":
                     new AnimateCorner(weaponLabels, 0, 1).execute();
+                    selectedWeapon = weaponLabels[0];
+                    selectedCards[2] = selectedWeapon;
                     inWeaponState = false;
-                    return true;
+                    hasSelectedWeapon = true;
+                    break;
                 case "dagger":
                     new AnimateCorner(weaponLabels, 1, 1).execute();
+                    selectedWeapon = weaponLabels[1];
+                    selectedCards[2] = selectedWeapon;
                     inWeaponState = false;
-                    return true;
+                    hasSelectedWeapon = true;
+                    break;
                 case "poison":
                     new AnimateCorner(weaponLabels, 2, 1).execute();
+                    selectedWeapon = weaponLabels[2];
+                    selectedCards[2] = selectedWeapon;
                     inWeaponState = false;
-                    return true;
+                    hasSelectedWeapon = true;
+                    break;
                 case "revolver":
                     new AnimateCorner(weaponLabels, 3, 1).execute();
+                    selectedWeapon = weaponLabels[3];
+                    selectedCards[2] = selectedWeapon;
                     inWeaponState = false;
-                    return true;
+                    hasSelectedWeapon = true;
+                    break;
                 case "rope":
                     new AnimateCorner(weaponLabels, 4, 1).execute();
+                    selectedWeapon = weaponLabels[4];
+                    selectedCards[2] = selectedWeapon;
                     inWeaponState = false;
-                    return true;
+                    hasSelectedWeapon = true;
+                    break;
                 case "wrench":
                     new AnimateCorner(weaponLabels, 5, 1).execute();
+                    selectedWeapon = weaponLabels[5];
+                    selectedCards[2] = selectedWeapon;
                     inWeaponState = false;
-                    return true;
+                    hasSelectedWeapon = true;
+                    break;
                 default:
-                    return false;
+                    break;
             }
         }
     }
@@ -456,7 +802,6 @@ public class QPanel extends JPanel {
             this.labels = labels;
             this.points = points;
 
-            System.out.println("Move in called");
         }
 
 
@@ -567,11 +912,13 @@ public class QPanel extends JPanel {
             }
             moving = false;
 
-            Thread.sleep(500);
+            Thread.sleep(250);
             if (!hasSelectedWeapon){
-                System.out.println("Has Selected Weapon is false");
                 addCards(weaponLabels, 1);
-                hasSelectedWeapon = true;
+            }
+
+            if (hasSelectedPlayer && hasSelectedWeapon){
+                question();
             }
 
             process(new ArrayList<>());
@@ -586,7 +933,7 @@ public class QPanel extends JPanel {
 
     public class AnimateCorner extends SwingWorker<Integer, String>{
 
-        private final int distance = 2, delay = 1;
+        private final int distance = 6, delay = 1;
         private T11Label[] labels;
         private int index;
         private int flag;
@@ -607,7 +954,8 @@ public class QPanel extends JPanel {
             if (this.flag == 0){
                 //Will be moving right
                 if (labels[index].getX() < playerTargetX){
-                    while (labels[index].getX() != playerTargetX || labels[index].getY() != (int)(resolution.getScalePercentage() * 20)){
+                    while (labels[index].getX() != playerTargetX || labels[index].getY() != (int)(resolution.getScalePercentage() * 20)
+                            || labels[index].getHeight() != targetH || labels[index].getWidth() != targetW ){
 
                         //System.out.println(labels[index].getLocation());
 
@@ -638,9 +986,8 @@ public class QPanel extends JPanel {
                         Thread.sleep(delay);
                     }
                 } else{
-                    while (labels[index].getX() != playerTargetX || labels[index].getY() != (int)(resolution.getScalePercentage() * 20)){
-
-                        //System.out.println(labels[index].getLocation());
+                    while (labels[index].getX() != playerTargetX || labels[index].getY() != (int)(resolution.getScalePercentage() * 20)
+                            || labels[index].getHeight() != targetH || labels[index].getWidth() != targetW){
 
                         if (labels[index].getX() <= playerTargetX){
                             labels[index].setLocation(playerTargetX, labels[index].getY());
@@ -670,13 +1017,15 @@ public class QPanel extends JPanel {
                         Thread.sleep(delay);
                     }
                 }
+
+                hasSelectedPlayer = true;
             }
 
             else if (this.flag == 1){
                 if (labels[index].getX() < weaponTargetX){
-                    while (labels[index].getX() != weaponTargetX || labels[index].getY() != (int)(resolution.getScalePercentage() * 20)){
+                    while (labels[index].getX() != weaponTargetX || labels[index].getY() != (int)(resolution.getScalePercentage() * 20)
+                            || labels[index].getHeight() != targetH || labels[index].getWidth() != targetW){
 
-                        //System.out.println(labels[index].getLocation());
 
                         if (labels[index].getX() >= weaponTargetX){
                             labels[index].setLocation(weaponTargetX, labels[index].getY());
@@ -705,9 +1054,8 @@ public class QPanel extends JPanel {
                         Thread.sleep(delay);
                     }
                 } else{
-                    while (labels[index].getX() != weaponTargetX || labels[index].getY() != (int)(resolution.getScalePercentage() * 20)){
-
-                        //System.out.println(labels[index].getLocation());
+                    while (labels[index].getX() != weaponTargetX || labels[index].getY() != (int)(resolution.getScalePercentage() * 20)
+                            || labels[index].getHeight() != targetH || labels[index].getWidth() != targetW){
 
                         if (labels[index].getX() <= weaponTargetX){
                             labels[index].setLocation(weaponTargetX, labels[index].getY());
@@ -750,6 +1098,71 @@ public class QPanel extends JPanel {
             }
 
             new AnimateMoveOut(remainingCards).execute();
+
+            process(new ArrayList<>());
+            return null;
+        }
+
+        @Override
+        protected void process(List<String> chunks){
+            gameScreen.repaint();
+        }
+    }
+
+    public class AnimateMoveUpDown extends SwingWorker<Integer, String>{
+
+        private final int distance = 4, delay = 4;
+
+        private int targetUp;
+        private int targetDown;
+
+        private int flag;
+        private T11Label label;
+
+        private boolean hasSelected;
+
+        public AnimateMoveUpDown(T11Label label, int flag, int targetUp, int targetDown, boolean hasSelected){
+            this.label = label;
+            this.flag = flag;
+            this.targetUp = targetUp;
+            this.targetDown = targetDown;
+            this.hasSelected = hasSelected;
+        }
+
+        @Override
+        protected Integer doInBackground() throws Exception{
+
+            process(new ArrayList<>());
+            //Moving up
+            if (flag == 0 && (!hasSelected)){
+                while (label.getY() != targetUp){
+                    if (label.getY() <= targetUp){
+                        label.setLocation(label.getX(), targetUp);
+                    } else{
+                        label.setLocation(label.getX(), label.getY() - distance);
+                    }
+
+                    process(new ArrayList<>());
+                    Thread.sleep(delay);
+                }
+            }
+
+            //Moving down
+            else if  (flag == 1 && (!hasSelected)){
+                Thread.sleep(100);
+
+                while (label.getY() != targetDown){
+                    //System.out.println(label.getLocation());
+                    if (label.getY() >= targetDown){
+                        label.setLocation(label.getX(), targetDown);
+                    } else{
+                        label.setLocation(label.getX(), label.getY() + distance);
+                    }
+
+                    process(new ArrayList<>());
+                    Thread.sleep(delay);
+                }
+            }
 
             process(new ArrayList<>());
             return null;

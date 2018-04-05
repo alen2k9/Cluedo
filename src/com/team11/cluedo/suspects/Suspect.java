@@ -185,6 +185,17 @@ public class Suspect extends TokenComponent implements Mover {
         gameBoard.getRoom(currRoom).getPlayerPositions().remove(nextPoint);
     }
 
+    public void moveToRoom(int roomNum, Board gameBoard){
+        Point currPoint = new Point(getBoardLocation());
+        gameBoard.getRoom(this.getCurrentRoom()).getPlayerPositions().add(currPoint);
+        this.setPreviousRoom(gameBoard.getBoardPos((int)getBoardLocation().getY(), (int)getBoardLocation().getX()).getRoomType());
+        Point nextPoint = gameBoard.getRoom(roomNum).getRandomPoint(gameBoard.getRoom(roomNum).getPlayerPositions());
+        setBoardLocation(nextPoint);
+        this.setCurrentRoom(roomNum);
+        this.canQuestion = false;
+        gameBoard.getRoom(roomNum).getPlayerPositions().remove(roomNum);
+    }
+
     //Method to move the player out of the room
     public int moveOutOfRoom(Board gameBoard, int exitNum){
         Point currPoint = new Point(getBoardLocation());
