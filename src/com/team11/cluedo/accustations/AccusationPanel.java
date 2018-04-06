@@ -91,13 +91,14 @@ public class AccusationPanel extends JPanel {
     private T11Label selectedSuspect, selectedWeapon, selectedRoom;
     private Timer moveCardTimer;
     private JPanel donePanel;
+    private JTextArea infoOutput;
 
     private int cardWidth;
     private int suspectLocX;
     private int roomLocX;
     private int suspectTargetX, weaponTargetX, roomTargetX;
     private boolean suspectSelected, weaponSelected, roomSelected, correctGuess = false,
-            weaponCorrect = false, suspectCorrect = false, roomCorrect = false;
+            weaponCorrect = false, suspectCorrect = false, roomCorrect = false, done = false;
 
     public AccusationPanel(Cards gameCards, Resolution resolution) {
         super(null);
@@ -185,6 +186,7 @@ public class AccusationPanel extends JPanel {
         doneButton.setOpaque(false);
         doneButton.setForeground(Color.WHITE);
         doneButton.setSize(doneButton.getPreferredSize());
+        doneButton.setVisible(false);
 
         doneButton.addMouseListener(new MouseAdapter() {
             @Override
@@ -203,7 +205,7 @@ public class AccusationPanel extends JPanel {
 
     private void displayAccusationPanel() {
         removeAll();
-        resetBools();
+        resetValues();
         setupCards();
 
         int spacing = suspectLabels[0].getWidth() / 6;
@@ -230,13 +232,15 @@ public class AccusationPanel extends JPanel {
         for (int i = 0 ; i < suspectLabels.length ; i++) {
             super.add(suspectLabels[i]);
             suspectLabels[i].setLocation(width + xPosSuspect + (spacing *(i+1))+(suspectLabels[i].getWidth()*(i)), yPos);
-            setupActionListener(suspectLabels[i]);
+            setupActionListener(suspectLabels[i], suspectLabels);
+            suspectLabels[i].setEnabled(false);
         }
 
         for (int i = 0 ; i < weaponLabels.length ; i++) {
             super.add(weaponLabels[i]);
             weaponLabels[i].setLocation(width + xPosSuspect + (spacing *(i+1))+(weaponLabels[i].getWidth()*(i)), yPos);
-            setupActionListener(weaponLabels[i]);
+            setupActionListener(weaponLabels[i], weaponLabels);
+            weaponLabels[i].setEnabled(false);
         }
 
         for (int i = 0 ; i < roomLabels.length ; i++) {
@@ -246,7 +250,8 @@ public class AccusationPanel extends JPanel {
             } else {
                 roomLabels[i].setLocation(width + xPosRoom2 + (spacing *(i-half))+(roomLabels[i].getWidth()*(i-half)), yPos +roomLabels[i].getHeight()+ spacing);
             }
-            setupActionListener(roomLabels[i]);
+            setupActionListener(roomLabels[i], roomLabels);
+            roomLabels[i].setEnabled(false);
         }
         super.setVisible(true);
         slideCards(suspectLabels, suspectLocX,  suspectLabels[0].getY(),
@@ -318,10 +323,11 @@ public class AccusationPanel extends JPanel {
         displayAccusationPanel();
     }
 
-    public String accuse(String input) {
+    public void accuse(String input) {
         boolean doAnimate = false;
 
         if (!suspectSelected) {
+            boolean found = false;
             for (T11Label card : suspectLabels) {
                 if (card.getCardID().equals(input)) {
                     doAnimate = true;
@@ -329,17 +335,24 @@ public class AccusationPanel extends JPanel {
                     selectedSuspect = card;
                     SlideAnimation animate = new SlideAnimation(suspectLabels, false, false);
                     animate.setInitialPos(suspectLabels[0].getX(), suspectLabels[0].getY());
-                    animate.setTargetPos(0-cardWidth, suspectLabels[0].getY());
+                    animate.setTargetPos(0 - cardWidth, suspectLabels[0].getY());
                     animate.setDelay(0);
-                    moveSelectedCard(card, suspectTargetX, getHeight()/12, card.getX(), card.getY(),
-                    (int) ((card.getIcon().getIconWidth() * 0.8 * resolution.getScalePercentage())),
-                    (int) ((card.getIcon().getIconHeight() * 0.8 * resolution.getScalePercentage())));
+                    moveSelectedCard(card, suspectTargetX, getHeight() / 12, card.getX(), card.getY(),
+                            (int) ((card.getIcon().getIconWidth() * 0.8 * resolution.getScalePercentage())),
+                            (int) ((card.getIcon().getIconHeight() * 0.8 * resolution.getScalePercentage())));
                     card.setSelected(true);
                     animate.start();
+                    infoOutput.append("You accused " + card.getCardName() + "! But what did \nthey use?\n");
+                    found = true;
                 }
+            }
+            if (!found) {
+                infoOutput.append("The suspect you suggested didn't attend\nthe party!\n");
+                return;
             }
         }
         if (!doAnimate && !weaponSelected) {
+            boolean found = false;
             for (T11Label card : weaponLabels) {
                 if (card.getCardID().equals(input)) {
                     doAnimate = true;
@@ -347,17 +360,24 @@ public class AccusationPanel extends JPanel {
                     selectedWeapon = card;
                     SlideAnimation animate = new SlideAnimation(weaponLabels, false, false);
                     animate.setInitialPos(weaponLabels[0].getX(), weaponLabels[0].getY());
-                    animate.setTargetPos(0-cardWidth, weaponLabels[0].getY());
+                    animate.setTargetPos(0 - cardWidth, weaponLabels[0].getY());
                     animate.setDelay(0);
-                    moveSelectedCard(card, weaponTargetX, getHeight()/12, card.getX(), card.getY(),
+                    moveSelectedCard(card, weaponTargetX, getHeight() / 12, card.getX(), card.getY(),
                             (int) ((card.getIcon().getIconWidth() * 0.8 * resolution.getScalePercentage())),
                             (int) ((card.getIcon().getIconHeight() * 0.8 * resolution.getScalePercentage())));
                     card.setSelected(true);
                     animate.start();
+                    infoOutput.append("They used the " + card.getCardName() + " so you say?\nWhere did it happen?\n");
+                    found = true;
                 }
+            }
+            if (!found) {
+                infoOutput.append("There was no evidence of this lying around!\n");
+                return;
             }
         }
         if (!doAnimate && !roomSelected) {
+            boolean found = false;
             for (T11Label card : roomLabels) {
                 if (card.getCardID().equals(input)) {
                     doAnimate = true;
@@ -365,34 +385,35 @@ public class AccusationPanel extends JPanel {
                     selectedRoom = card;
                     SlideAnimation animate = new SlideAnimation(roomLabels, false, false);
                     animate.setInitialPos(roomLabels[0].getX(), roomLabels[0].getY());
-                    animate.setTargetPos(0-cardWidth, roomLabels[0].getY());
+                    animate.setTargetPos(0 - cardWidth, roomLabels[0].getY());
                     animate.setDelay(0);
-                    moveSelectedCard(card, roomTargetX, getHeight()/12, card.getX(), card.getY(),
+                    moveSelectedCard(card, roomTargetX, getHeight() / 12, card.getX(), card.getY(),
                             (int) ((card.getIcon().getIconWidth() * 0.8 * resolution.getScalePercentage())),
                             (int) ((card.getIcon().getIconHeight() * 0.8 * resolution.getScalePercentage())));
                     card.setSelected(true);
                     animate.start();
+                    infoOutput.append("It happened in the " + card.getCardName() + "?\nLet's find out.\n");
+                    found = true;
                 }
+            }
+
+            if (!found) {
+                infoOutput.append("That room doesn't exist in this house!\n");
+                return;
             }
         }
         if (doAnimate) {
             if (!suspectSelected) {
-                slideCards(suspectLabels, suspectLocX,  suspectLabels[0].getY(),
+                slideCards(suspectLabels, suspectLocX, suspectLabels[0].getY(),
                         suspectLabels[0].getX(), suspectLabels[0].getY());
             } else if (!weaponSelected) {
-                slideCards(weaponLabels, suspectLocX,  weaponLabels[0].getY(),
+                slideCards(weaponLabels, suspectLocX, weaponLabels[0].getY(),
                         weaponLabels[0].getX(), weaponLabels[0].getY());
             } else if (!roomSelected) {
-                slideCards(roomLabels, roomLocX,  roomLabels[0].getY(),
+                slideCards(roomLabels, roomLocX, roomLabels[0].getY(),
                         roomLabels[0].getX(), roomLabels[0].getY());
             }
         }
-
-        return null;
-    }
-
-    public void accuse(String[] input) {
-
     }
 
     private void displayMurderCards() {
@@ -472,8 +493,10 @@ public class AccusationPanel extends JPanel {
                 if (weaponCorrect && suspectCorrect && roomCorrect) {
                     System.out.println("CORRECT");
                     correctGuess = true;
+                    done = true;
                 } else {
                     correctGuess = false;
+                    done = true;
                 }
                 moveCardTimer.stop();
                 endAccusationPanel();
@@ -541,6 +564,10 @@ public class AccusationPanel extends JPanel {
         return this.correctGuess;
     }
 
+    public boolean isDone() {
+        return done;
+    }
+
     public String getAccusation() {
         return "accused " + selectedSuspect.getCardName() + " with the\n" + selectedWeapon.getCardName() + " in the " +
                 selectedRoom.getCardName() + ".\n";
@@ -550,20 +577,46 @@ public class AccusationPanel extends JPanel {
         return doneButton;
     }
 
-    private void setupActionListener(T11Label card) {
+    public void setInfoOutput(JTextArea infoOutput) {
+        this.infoOutput = infoOutput;
+    }
+
+    private void setupActionListener(T11Label card, T11Label[] cards) {
         card.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                System.out.println("CLICKED");
-                if (!card.isSelected()) {
+                if (!card.isSelected() && card.isEnabled()) {
+                    infoOutput.append("> " + card.getCardID() + "\n");
                     accuse(card.getCardID());
+                }
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                super.mouseEntered(e);
+                if (!card.isSelected()) {
+                    for (T11Label label : cards) {
+                        if (!label.equals(card)) {
+                            label.setEnabled(false);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                super.mouseExited(e);
+                if (!card.isSelected()) {
+                    for (T11Label label : cards) {
+                        label.setEnabled(true);
+                    }
                 }
             }
         });
     }
 
-    private void resetBools() {
+    private void resetValues() {
         this.suspectSelected = false;
         this.weaponSelected = false;
         this.roomSelected = false;
@@ -571,12 +624,14 @@ public class AccusationPanel extends JPanel {
         this.weaponCorrect = false;
         this.suspectCorrect = false;
         this.roomCorrect = false;
+        this.done = false;
+        doneButton.setVisible(false);
     }
 
     public void dispose() {
         removeAll();
         setVisible(false);
-        resetBools();
+        resetValues();
     }
 
     @Override
@@ -584,7 +639,6 @@ public class AccusationPanel extends JPanel {
         super.paintComponent(g);
         g.setColor(new Color(0,0,0, 168));
         g.fillRect(0,0,getWidth(),getHeight());
-        g.dispose();
     }
 
     public class SlideAnimation {
@@ -610,11 +664,13 @@ public class AccusationPanel extends JPanel {
                         if (slideIn) {
                             if (cards[0].getY() <= targetY) {
                                 donePanel.setVisible(true);
+                                card.setEnabled(true);
                                 timer.stop();
                             }
                         } else {
                             if (cards[0].getY() >= targetY) {
                                 donePanel.setVisible(true);
+                                card.setEnabled(true);
                                 timer.stop();
                             }
                         }
@@ -631,6 +687,7 @@ public class AccusationPanel extends JPanel {
                                     if (suspectSelected && weaponSelected && roomSelected) {
                                         displayMurderCards();
                                     }
+                                    card.setEnabled(true);
                                     timer.stop();
                                 }
                             } else {
@@ -638,6 +695,7 @@ public class AccusationPanel extends JPanel {
                                     if (suspectSelected && weaponSelected && roomSelected) {
                                         displayMurderCards();
                                     }
+                                    card.setEnabled(true);
                                     timer.stop();
                                 }
                             }

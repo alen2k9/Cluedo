@@ -28,7 +28,7 @@ public class Assets {
     }
 
     public Image getSplashImage() {
-        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("splashImage.png"));
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("splashImage_1.png"));
     }
 
     ////////////////////////////////////////////
