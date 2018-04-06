@@ -6,9 +6,10 @@ import com.team11.cluedo.ui.Resolution;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
 
 public class PlayerChange extends JPanel {
-    private JButton doneButton;
+    private JLabel doneButton;
     private Resolution resolution;
 
     public PlayerChange(Resolution resolution) {
@@ -22,13 +23,13 @@ public class PlayerChange extends JPanel {
     }
 
     private void setupButton() {
-        doneButton = new JButton("DONE");
+        doneButton = new JLabel("DONE");
         doneButton.setFont(new Font("Bulky Pixels", Font.BOLD, (int)(30 * resolution.getScalePercentage())));
-        doneButton.setBorderPainted(false);
-        doneButton.setContentAreaFilled(false);
-        doneButton.setFocusPainted(false);
+        doneButton.setForeground(Color.WHITE);
+        doneButton.setBackground(new Color(0,0,0,156));
         doneButton.setOpaque(false);
         doneButton.setForeground(Color.WHITE);
+
     }
 
     public void setPlayerCard(Player player){
@@ -56,7 +57,7 @@ public class PlayerChange extends JPanel {
         super.add(doneButton, gbc);
     }
 
-    public JButton getDoneButton() {
+    public JLabel getDoneButton() {
         return doneButton;
     }
 }

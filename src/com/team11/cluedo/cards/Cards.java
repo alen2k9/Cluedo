@@ -87,7 +87,7 @@ public class Cards {
                     if(suspectCards.size() > 0) {
                         tmp = suspectCards.remove(0);
                         gamePlayers.getPlayer(currentPlayer).getPlayerHand().addCardToHand(tmp);
-                        gamePlayers.getPlayer(currentPlayer).getPlayerNotes().paintCell(currentPlayer+1, tmp.getName());
+                        gamePlayers.getPlayer(currentPlayer).getPlayerNotes().paintCell(currentPlayer+1, tmp.getName(), 0);
                     } else {
                         i--;
                         if (currentPlayer == 0)
@@ -100,7 +100,7 @@ public class Cards {
                     if(weaponCards.size() > 0) {
                         tmp = weaponCards.remove(0);
                         gamePlayers.getPlayer(currentPlayer).getPlayerHand().addCardToHand(tmp);
-                        gamePlayers.getPlayer(currentPlayer).getPlayerNotes().paintCell(currentPlayer+1, tmp.getName());
+                        gamePlayers.getPlayer(currentPlayer).getPlayerNotes().paintCell(currentPlayer+1, tmp.getName(), 0);
                     } else {
                         i--;
                         if (currentPlayer == 0)
@@ -113,7 +113,7 @@ public class Cards {
                     if(roomCards.size() > 0) {
                         tmp = roomCards.remove(0);
                         gamePlayers.getPlayer(currentPlayer).getPlayerHand().addCardToHand(tmp);
-                        gamePlayers.getPlayer(currentPlayer).getPlayerNotes().paintCell(currentPlayer+1, tmp.getName());
+                        gamePlayers.getPlayer(currentPlayer).getPlayerNotes().paintCell(currentPlayer+1, tmp.getName(), 0);
                     } else {
                         i--;
                         if (currentPlayer == 0)
@@ -138,7 +138,7 @@ public class Cards {
         for (int i = 0; i < gamePlayers.getPlayerCount(); i++){
             for (Card card : publicEnvelope){
                 gamePlayers.getPlayer(i).getPlayerHand().addPublicCards(card);
-                gamePlayers.getPlayer(i).getPlayerNotes().paintCell(0, card.getName());
+                gamePlayers.getPlayer(i).getPlayerNotes().paintCell(0, card.getName(), 0);
             }
         }
     }

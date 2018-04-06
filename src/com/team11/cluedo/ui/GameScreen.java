@@ -390,15 +390,16 @@ public class GameScreen extends JFrame implements Screen {
 
     public class BoardUI extends JLayeredPane {
         public BoardUI() {
+
             setBackground(new Color(69,136,100));
             setBorder(new LineBorder(new Color(108,13,13), 5));
             setOpaque(true);
 
             int index = 0;
             add(gameCards.getMurderEnvelope(), index++);
-            add(qPanel, index++);
             add(aPanel, index++);
             add(playerChange, index++);
+            add(qPanel, index++);
             add(buttonPanel, index++);
             add(cardsPanel, index++);
             add(notesPanel, index++);
@@ -408,6 +409,7 @@ public class GameScreen extends JFrame implements Screen {
             add(doorOverlay,index++);
             add(moveOverlay,index++);
             add(gameBoard,index);
+
 
             qPanel.hideQuestionPanel();
 //            accusations.setVisible(false);

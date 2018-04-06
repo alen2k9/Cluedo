@@ -25,10 +25,18 @@ public class T11Label extends JLabel {
         super();
     }
 
+    public T11Label(ImageIcon icon, String name, String ID){
+        super(icon);
+        super.setDisabledIcon(icon);
+        this.name = name;
+        this.id = ID;
+    }
+
     public T11Label(ImageIcon icon, String name){
         super(icon);
         super.setDisabledIcon(icon);
         this.name = name;
+
     }
 
     public String getCardName(){
