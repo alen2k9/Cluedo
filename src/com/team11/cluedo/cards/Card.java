@@ -12,10 +12,9 @@ import java.awt.*;
 
 public class Card {
     private Image cardImage, selectedCardImage;
-    private String name;
+    private String name, id;
 
     public Card() {
-
     }
 
     public void setCardImage(Image cardImage) {
@@ -30,6 +29,10 @@ public class Card {
         this.name = name;
     }
 
+    public void setID(String id) {
+        this.id = id;
+    }
+
     public Image getCardImage() {
         return cardImage;
     }
@@ -40,5 +43,9 @@ public class Card {
 
     public String getName() {
         return name;
+    }
+
+    public String getID() {
+        return id;
     }
 }

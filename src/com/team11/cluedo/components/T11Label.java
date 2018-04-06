@@ -13,7 +13,8 @@ import java.awt.*;
 
 public class T11Label extends JLabel {
 
-    String name;
+    private String name, id;
+    private boolean selected = false;
 
     public T11Label(ImageIcon icon){
         super(icon);
@@ -34,6 +35,14 @@ public class T11Label extends JLabel {
         return this.name;
     }
 
+    public void setID(String id) {
+        this.id = id;
+    }
+
+    public String getCardID(){
+        return this.id;
+    }
+
     @Override
     public void paintComponent(Graphics g){
         super.paintComponent(g);
@@ -43,5 +52,13 @@ public class T11Label extends JLabel {
         else
             image = ((ImageIcon)super.getDisabledIcon());
         g.drawImage(image.getImage(), 0, 0, getWidth(), getHeight(), this);
+    }
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
     }
 }

@@ -76,7 +76,8 @@ public class CardsPanel extends JPanel {
         int width = (int)(icon.getIconWidth()*.33*resolution.getScalePercentage());
         int height = (int)(icon.getIconHeight()*.33*resolution.getScalePercentage());
 
-        gbc.gridy = 0; gbc.insets = new Insets(10,2,10,2);
+        gbc.gridy = 0;
+        gbc.insets = new Insets(10,2,10,2);
         if (playerHand.getPublicHand().size() > 0) {
             JPanel publicCards = new JPanel(new GridBagLayout());
             TitledBorder titledBorder = new TitledBorder(new EmptyBorder(0,0,0,0),
@@ -91,10 +92,12 @@ public class CardsPanel extends JPanel {
                 publicCards.add(card, gbc);
             }
             gbc.gridx = 0;
-            gbc.gridwidth = playerHand.getPublicHand().size();
+            gbc.gridwidth = playerHand.getCardAmount();
+            gbc.insets = new Insets(10,2,10,(int)(50*resolution.getScalePercentage()));
             super.add(publicCards, gbc);
             gbc.gridy++;
             gbc.gridwidth = 1;
+            gbc.insets = new Insets(10,2,10,2);
         }
         for (int i = 0 ; i < cardAmount ; i++) {
             JLabel card = new JLabel(new ImageIcon(playerHand.getCard(i).getCardImage().getScaledInstance(

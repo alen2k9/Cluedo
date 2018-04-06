@@ -56,9 +56,9 @@ public class MenuScreen implements Screen {
         this.gameScreen = new GameScreen(gameBoard, gameSuspects, gameWeapons, gamePlayers, gameAssets, resolution, "Cluedo");
         this.gameInput = new CommandInput(gameScreen);
 
-        ///*
+        //*
         SuspectData suspectData = new SuspectData();
-        for (int i = 0; i < 2 ; i++)
+        for (int i = 0; i < 4 ; i++)
             gamePlayers.addPlayer(suspectData.getSuspectName(i), gameSuspects.getSuspect(i), resolution);
 
         startGame();
@@ -75,6 +75,7 @@ public class MenuScreen implements Screen {
     @Override
     public void createScreen(String name) {
         this.frame = new JFrame(name);
+        //this.frame.setIconImage(gameAssets.getIcon());
         this.frame.setResizable(false);
         this.frame.getContentPane().add(this.mainPanel);
         this.frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);

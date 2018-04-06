@@ -102,15 +102,15 @@ public class QPanel extends JPanel {
     };
 
     private T11Label[] roomLabels = new T11Label[]{
-            new T11Label(roomIcons[0], roomData.getRoomName(0)),
-            new T11Label(roomIcons[1], roomData.getRoomName(1)),
-            new T11Label(roomIcons[2], roomData.getRoomName(2)),
-            new T11Label(roomIcons[3], roomData.getRoomName(3)),
-            new T11Label(roomIcons[4], roomData.getRoomName(4)),
-            new T11Label(roomIcons[5], roomData.getRoomName(5)),
-            new T11Label(roomIcons[6], roomData.getRoomName(6)),
-            new T11Label(roomIcons[7], roomData.getRoomName(7)),
-            new T11Label(roomIcons[8], roomData.getRoomName(8)),
+            new T11Label(roomIcons[0], roomData.getRoomID(0)),
+            new T11Label(roomIcons[1], roomData.getRoomID(1)),
+            new T11Label(roomIcons[2], roomData.getRoomID(2)),
+            new T11Label(roomIcons[3], roomData.getRoomID(3)),
+            new T11Label(roomIcons[4], roomData.getRoomID(4)),
+            new T11Label(roomIcons[5], roomData.getRoomID(5)),
+            new T11Label(roomIcons[6], roomData.getRoomID(6)),
+            new T11Label(roomIcons[7], roomData.getRoomID(7)),
+            new T11Label(roomIcons[8], roomData.getRoomID(8)),
     };
 
     private T11Label[] selectedCards = new T11Label[3];
@@ -585,7 +585,6 @@ public class QPanel extends JPanel {
     }
 
     public class AnimateCorner extends SwingWorker<Integer, String>{
-
         private final int distance = 2, delay = 1;
         private T11Label[] labels;
         private int index;
@@ -603,7 +602,6 @@ public class QPanel extends JPanel {
         @Override
         protected Integer doInBackground() throws Exception{
             process(new ArrayList<>());
-
             if (this.flag == 0){
                 //Will be moving right
                 if (labels[index].getX() < playerTargetX){

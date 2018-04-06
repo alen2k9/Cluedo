@@ -22,11 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AnimateToken extends SwingWorker<Integer, String> {
-    private static void failIfInterrupted() throws InterruptedException {
-        if (Thread.currentThread().isInterrupted()) {
-            throw new InterruptedException("Interrupted while searching files");
-        }
-    }
 
     private GameScreen gameScreen;
     private MovementHandling movementHandling;
@@ -63,7 +58,6 @@ public class AnimateToken extends SwingWorker<Integer, String> {
         if(remainingMoves > 0){
             if(currentPlayer.getSuspectToken().checkMove(gameScreen.getGameBoard(), moves)){
                 while (!moves.isEmpty()) {
-                    AnimateToken.failIfInterrupted();
                     Direction direction = moves.remove(0);
                     int initialX = (int) (token.getBoardLocation().getX() * resolutionScalar);
                     int initialY = (int) (token.getBoardLocation().getY() * resolutionScalar);

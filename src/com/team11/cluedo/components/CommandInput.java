@@ -474,6 +474,14 @@ public class CommandInput {
     }
 
     private void nextPlayer() {
+        this.currentPlayerID++;
+        if(this.currentPlayerID == this.numPlayers)
+            this.currentPlayerID = 0;
+        if(removedPlayer.contains(this.currentPlayerID)) {
+            nextPlayer();
+            return;
+        }
+
         this.gameState = 0;
         this.gameScreen.getMoveOverlay().setValidMoves(new HashSet<>(), this.currentPlayer);
         this.gameScreen.getDoorOverlay().setExits(new ArrayList<>(), this.currentPlayer);
@@ -485,17 +493,14 @@ public class CommandInput {
         setGameEnabled(false);
         canQuestion = true;
 
-        this.currentPlayerID++;
-        if(this.currentPlayerID == this.numPlayers)
-            this.currentPlayerID = 0;
-        if(removedPlayer.contains(this.currentPlayerID))
-            nextPlayer();
-
         this.currentPlayer = this.gameScreen.getGamePlayers().getPlayer(currentPlayerID);
         this.playerName = currentPlayer.getPlayerName();
         movementHandling.setCurrentPlayer(currentPlayer);
 
         gameScreen.getButtonPanel().getQuestionButton().setEnabled(false);
+        gameScreen.getButtonPanel().getAccuseButton().setEnabled(false);
+        gameScreen.getButtonPanel().getRollButton().setEnabled(false);
+        gameScreen.getButtonPanel().getDoneButton().setEnabled(false);
 
         gameScreen.getPlayerChange().setPlayerCard(currentPlayer);
         gameScreen.getPlayerChange().setVisible(true);
@@ -887,26 +892,6 @@ public class CommandInput {
             }
         });
 
-        gameScreen.getGameDice().getLeftDice().addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (canRoll) {
-                    gameScreen.getCommandInput().setText("ROLL");
-                    processCommand();
-                }
-            }
-        });
-
-        gameScreen.getGameDice().getRightDice().addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (canRoll) {
-                    gameScreen.getCommandInput().setText("ROLL");
-                    processCommand();
-                }
-            }
-        });
-
         gameScreen.getButtonPanel().getRollButton().addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -943,12 +928,23 @@ public class CommandInput {
             }
         });
 
+
         gameScreen.getAccusations().getDoneButton().addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                afterAccuse();
-                gameScreen.getAccusations().removeAll();
+                infoOutput.append(playerName + " " + gameScreen.getAccusations().getAccusation());
+                gameLog.append(playerName).append(" ").append(gameScreen.getAccusations().getAccusation());
+
+                boolean correct = gameScreen.getAccusations().isCorrectGuess();
+                gameScreen.getAccusations().dispose();
+                if (correct) {
+                    infoOutput.setText("Hoorah!\n" + playerName + " solved the murder\nand won the game!\n" + gameLog.toString());
+                } else {
+                    gameLog.append(playerName).append(" was found murdered\nin the cellar!\n");
+                    removeCurrentPlayer();
+                    nextPlayer();
+                }
             }
         });
     }
@@ -987,12 +983,11 @@ public class CommandInput {
     }
 
     public void accuse(){
-
-
-        gameScreen.getAccusations().setUpAccustations();
-
+        gameScreen.getAccusations().accuse();
+        setGameEnabled(false);
     }
 
+    /*
     public void afterAccuse(){
         Boolean guess = gameScreen.getAccusations().test();
         if (guess) {
@@ -1005,6 +1000,7 @@ public class CommandInput {
             removeCurrentPlayer();
         }
     }
+    //*/
 
     public void removeCurrentPlayer(){
         removedPlayer.add(currentPlayerID);

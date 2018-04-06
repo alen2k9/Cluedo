@@ -359,4 +359,6 @@ public class Assets {
     public Color getDarkerGrey() {
         return new Color(46, 46, 46);
     }
+
+    public Image getIcon() {return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("icon_t11clu.png"));}
 }
