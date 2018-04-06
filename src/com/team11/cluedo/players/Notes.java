@@ -28,6 +28,7 @@ public class Notes extends JTable {
 
     private HashSet<Point> cellToPaint = new HashSet<>();
     private HashSet<Point> customCellsToPaint = new HashSet<>();
+    private HashSet<Point> questionCellsToPaint = new HashSet<>();
 
     private Resolution resolution;
 
@@ -117,11 +118,13 @@ public class Notes extends JTable {
 
     //Method which will paint a desired cell based on the player number and the value of the row they highlight
     //To fill in global cards have playerNum = 0
-    public void paintCell(int playerNum, String value){
+    public void paintCell(int playerNum, String value, int flag){
         int offset = 1;
 
         int rowIndex = 2;
         int columnIndex = playerNum + offset;
+
+
 
         for (int i = 0; i < this.getRowCount(); i++){
             if (this.getModel().getValueAt(i,0).equals(value)){
@@ -129,7 +132,12 @@ public class Notes extends JTable {
             }
         }
 
-        cellToPaint.add(new Point(rowIndex, columnIndex));
+        if (flag == 0){
+            cellToPaint.add(new Point(rowIndex, columnIndex));
+        } else{
+            questionCellsToPaint.add(new Point(rowIndex, columnIndex));
+        }
+
     }
 
 
@@ -194,6 +202,13 @@ public class Notes extends JTable {
                 label.setForeground(Color.DARK_GRAY);
                 label.setFont(new Font("Ariel", Font.BOLD, (int)(25*resolution.getScalePercentage())));
                 label.setText("?");
+            }
+
+            if (questionCellsToPaint.contains(selected)){
+                label.setBackground(Color.GREEN);
+                label.setForeground(Color.DARK_GRAY);
+                label.setFont(new Font("Ariel", Font.BOLD, (int)(25*resolution.getScalePercentage())));
+                label.setText("V");
             }
 
             return label;

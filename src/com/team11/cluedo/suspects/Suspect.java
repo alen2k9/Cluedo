@@ -14,6 +14,7 @@ import com.team11.cluedo.components.TokenComponent;
 import com.team11.cluedo.pathfinder.Mover;
 import com.team11.cluedo.board.Board;
 import com.team11.cluedo.board.room.TileType;
+import com.team11.cluedo.players.Player;
 import com.team11.cluedo.ui.Resolution;
 
 import java.awt.*;
@@ -185,15 +186,22 @@ public class Suspect extends TokenComponent implements Mover {
         gameBoard.getRoom(currRoom).getPlayerPositions().remove(nextPoint);
     }
 
-    public void moveToRoom(int roomNum, Board gameBoard){
+    public void moveToRoom(int roomNum, Board gameBoard, Suspect playerToMove){
         Point currPoint = new Point(getBoardLocation());
-        gameBoard.getRoom(this.getCurrentRoom()).getPlayerPositions().add(currPoint);
-        this.setPreviousRoom(gameBoard.getBoardPos((int)getBoardLocation().getY(), (int)getBoardLocation().getX()).getRoomType());
+        if (playerToMove.getCurrentRoom() != -1){
+            gameBoard.getRoom(this.getCurrentRoom()).getPlayerPositions().add(currPoint);
+            this.setPreviousRoom(gameBoard.getBoardPos((int)getBoardLocation().getY(), (int)getBoardLocation().getX()).getRoomType());
+
+        }
+        System.out.println("At end of if statement");
         Point nextPoint = gameBoard.getRoom(roomNum).getRandomPoint(gameBoard.getRoom(roomNum).getPlayerPositions());
+        System.out.println("Found next Point");
         setBoardLocation(nextPoint);
+        System.out.println("Moved to point");
         this.setCurrentRoom(roomNum);
-        this.canQuestion = false;
-        gameBoard.getRoom(roomNum).getPlayerPositions().remove(roomNum);
+        System.out.println("Set the room number");
+        //gameBoard.getRoom(roomNum).getPlayerPositions().remove(roomNum);
+        System.out.println("At end of move to room");
     }
 
     //Method to move the player out of the room

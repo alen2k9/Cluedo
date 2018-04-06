@@ -14,6 +14,7 @@ import java.awt.*;
 public class T11Label extends JLabel {
 
     String name;
+    String id;
 
     public T11Label(ImageIcon icon){
         super(icon);
@@ -24,14 +25,26 @@ public class T11Label extends JLabel {
         super();
     }
 
+    public T11Label(ImageIcon icon, String name, String ID){
+        super(icon);
+        super.setDisabledIcon(icon);
+        this.name = name;
+        this.id = ID;
+    }
+
     public T11Label(ImageIcon icon, String name){
         super(icon);
         super.setDisabledIcon(icon);
         this.name = name;
+
     }
 
     public String getCardName(){
         return this.name;
+    }
+
+    public String getID(){
+        return this.id;
     }
 
     @Override

@@ -10,6 +10,7 @@ package com.team11.cluedo.ui;
 
 import com.team11.cluedo.assets.Assets;
 import com.team11.cluedo.board.Board;
+import com.team11.cluedo.players.Player;
 import com.team11.cluedo.players.Players;
 import com.team11.cluedo.suspects.SuspectData;
 import com.team11.cluedo.suspects.Suspects;
@@ -52,14 +53,14 @@ public class MenuScreen implements Screen {
         Weapons gameWeapons = new Weapons(gameBoard, resolution);
         Players gamePlayers = new Players();
 
-
         this.gameScreen = new GameScreen(gameBoard, gameSuspects, gameWeapons, gamePlayers, gameAssets, resolution, "Cluedo");
         this.gameInput = new CommandInput(gameScreen);
 
         ///*
         SuspectData suspectData = new SuspectData();
-        for (int i = 0; i < 2 ; i++)
+        for (int i = 0; i < 4 ; i++)
             gamePlayers.addPlayer(suspectData.getSuspectName(i), gameSuspects.getSuspect(i), resolution);
+
 
         startGame();
         //*/

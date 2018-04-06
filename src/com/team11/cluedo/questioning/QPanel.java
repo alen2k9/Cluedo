@@ -5,6 +5,7 @@ import com.team11.cluedo.assets.Assets;
 import com.team11.cluedo.board.room.RoomData;
 import com.team11.cluedo.cards.Card;
 import com.team11.cluedo.components.T11Label;
+import com.team11.cluedo.players.Player;
 import com.team11.cluedo.players.PlayerHand;
 import com.team11.cluedo.suspects.SuspectData;
 import com.team11.cluedo.ui.GameScreen;
@@ -13,9 +14,12 @@ import com.team11.cluedo.weapons.WeaponData;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 public class QPanel extends JPanel {
@@ -44,12 +48,12 @@ public class QPanel extends JPanel {
     };
 
     private T11Label[] playerLabels = new T11Label[]{
-        new T11Label(playerIcons[0], suspectData.getSuspectID(0)),
-        new T11Label(playerIcons[1], suspectData.getSuspectID(1)),
-        new T11Label(playerIcons[2], suspectData.getSuspectID(2)),
-        new T11Label(playerIcons[3], suspectData.getSuspectID(3)),
-        new T11Label(playerIcons[4], suspectData.getSuspectID(4)),
-        new T11Label(playerIcons[5], suspectData.getSuspectID(5)),
+        new T11Label(playerIcons[0], suspectData.getSuspectName(0),suspectData.getSuspectID(0)),
+        new T11Label(playerIcons[1], suspectData.getSuspectName(1),suspectData.getSuspectID(1)),
+        new T11Label(playerIcons[2], suspectData.getSuspectName(2),suspectData.getSuspectID(2)),
+        new T11Label(playerIcons[3], suspectData.getSuspectName(3),suspectData.getSuspectID(3)),
+        new T11Label(playerIcons[4], suspectData.getSuspectName(4),suspectData.getSuspectID(4)),
+        new T11Label(playerIcons[5], suspectData.getSuspectName(5),suspectData.getSuspectID(5)),
     };
 
     private ImageIcon[] weaponIcons = new ImageIcon[]{
@@ -71,12 +75,12 @@ public class QPanel extends JPanel {
     };
 
     private T11Label[] weaponLabels = new T11Label[]{
-            new T11Label(weaponIcons[0], weaponData.getWeaponID(0)),
-            new T11Label(weaponIcons[1], weaponData.getWeaponID(1)),
-            new T11Label(weaponIcons[2], weaponData.getWeaponID(2)),
-            new T11Label(weaponIcons[3], weaponData.getWeaponID(3)),
-            new T11Label(weaponIcons[4], weaponData.getWeaponID(4)),
-            new T11Label(weaponIcons[5], weaponData.getWeaponID(5)),
+            new T11Label(weaponIcons[0], weaponData.getWeaponName(0), weaponData.getWeaponID(0)),
+            new T11Label(weaponIcons[1], weaponData.getWeaponName(1), weaponData.getWeaponID(1)),
+            new T11Label(weaponIcons[2], weaponData.getWeaponName(2),weaponData.getWeaponID(2)),
+            new T11Label(weaponIcons[3], weaponData.getWeaponName(3),weaponData.getWeaponID(3)),
+            new T11Label(weaponIcons[4], weaponData.getWeaponName(4),weaponData.getWeaponID(4)),
+            new T11Label(weaponIcons[5], weaponData.getWeaponName(5),weaponData.getWeaponID(5)),
     };
 
     private ImageIcon[] roomIcons = new ImageIcon[]{
@@ -104,15 +108,15 @@ public class QPanel extends JPanel {
     };
 
     private T11Label[] roomLabels = new T11Label[]{
-            new T11Label(roomIcons[0], roomData.getRoomName(0)),
-            new T11Label(roomIcons[1], roomData.getRoomName(1)),
-            new T11Label(roomIcons[2], roomData.getRoomName(2)),
-            new T11Label(roomIcons[3], roomData.getRoomName(3)),
-            new T11Label(roomIcons[4], roomData.getRoomName(4)),
-            new T11Label(roomIcons[5], roomData.getRoomName(5)),
-            new T11Label(roomIcons[6], roomData.getRoomName(6)),
-            new T11Label(roomIcons[7], roomData.getRoomName(7)),
-            new T11Label(roomIcons[8], roomData.getRoomName(8)),
+            new T11Label(roomIcons[0], roomData.getRoomName(0), roomData.getRoomID(0)),
+            new T11Label(roomIcons[1], roomData.getRoomName(1), roomData.getRoomID(1)),
+            new T11Label(roomIcons[2], roomData.getRoomName(2), roomData.getRoomID(2)),
+            new T11Label(roomIcons[3], roomData.getRoomName(3), roomData.getRoomID(3)),
+            new T11Label(roomIcons[4], roomData.getRoomName(4), roomData.getRoomID(4)),
+            new T11Label(roomIcons[5], roomData.getRoomName(5), roomData.getRoomID(5)),
+            new T11Label(roomIcons[6], roomData.getRoomName(6), roomData.getRoomID(6)),
+            new T11Label(roomIcons[7], roomData.getRoomName(7), roomData.getRoomID(7)),
+            new T11Label(roomIcons[8], roomData.getRoomName(8), roomData.getRoomID(8)),
     };
 
     private T11Label[] selectedCards = new T11Label[3];
@@ -126,6 +130,8 @@ public class QPanel extends JPanel {
     private Point[] translatedLabelPointsLeft = new Point[6];
 
     private ArrayList<T11Label> validCards = new ArrayList<>();
+    private ArrayList<ImageIcon> selectedValidCardIcons = new ArrayList<>();
+    private ArrayList<ImageIcon> validCardIcons = new ArrayList<>();
 
 
     private int currentRoom;
@@ -145,13 +151,22 @@ public class QPanel extends JPanel {
     private boolean hasLooped = false;
 
     private boolean isFinished;
-    private boolean doneShowing = false;
+
+    private boolean showedCard;
+
+    private boolean doneShowing;
+    private boolean canIncrement;
+
+    private int questionState;
+
+    JLabel doneLabel;
+    JLabel infoLabel;
 
     private GameScreen gameScreen;
     private Resolution resolution;
 
     private Timer timer;
-
+    private Timer timerTwo;
     public QPanel(GameScreen gameScreen, Resolution resolution) {
         this.gameScreen = gameScreen;
         this.resolution = resolution;
@@ -163,6 +178,8 @@ public class QPanel extends JPanel {
     }
 
     public void displayQuestionPanel(int currentRoom, int currentPlayer){
+        this.questionState = 0;
+        this.showedCard = false;
         this.currentRoom = currentRoom;
         this.currentPlayer = currentPlayer;
         this.nextPlayer = currentPlayer;
@@ -171,7 +188,8 @@ public class QPanel extends JPanel {
         System.out.println("Current Player :" + this.currentPlayer);
         //System.out.println("Next Player : " + nextPlayer);
 
-        this.selectedRoom = roomLabels[currentRoom];
+        //this.selectedRoom = roomLabels[currentRoom];
+        setRoom(roomLabels[currentRoom]);
         setupSelectedCards();
 
         if (!hasSelectedPlayer){
@@ -189,13 +207,56 @@ public class QPanel extends JPanel {
     }
 
     public void hideQuestionPanel(){
-        this.selectedRoom = null;
-        this.selectedPlayer = null;
-        this.selectedWeapon = null;
+        //System.out.println("Called hide panel");
+        setRoom(null);
+        setPlayer(null);
+        setWeapon(null);
         this.selectedCards = new T11Label[3];
+        //validCards.removeAll(validCards);
         resetAllBoolean();
         this.setVisible(false);
         this.removeAll();
+    }
+
+    public int validCardSize(){
+        return this.validCards.size();
+    }
+
+    private void setPlayer(T11Label label){
+        this.selectedPlayer = label;
+        if (label != null){
+            System.out.println("Set selected player to " + label.getCardName());
+        } else{
+            //System.out.println("Set selected player to " + null);
+        }
+
+    }
+
+    private void setWeapon(T11Label label){
+        this.selectedWeapon = label;
+        if (label != null){
+            System.out.println("Set selected weapon to " + label.getCardName());
+        } else {
+            //System.out.println("Set selected weapon to " + null);
+        }
+
+    }
+
+    private void setRoom(T11Label label){
+        this.selectedRoom = label;
+        if (label != null){
+            System.out.println("Set selected room to " + label.getCardName());
+        }else {
+            //System.out.println("Set selected room to " + null);
+        }
+    }
+
+    public int getQuestionState(){
+        return this.questionState;
+    }
+
+    public void setQuestionState(int state){
+        this.questionState = state;
     }
 
     public boolean getResized(){
@@ -234,9 +295,9 @@ public class QPanel extends JPanel {
 
         for (T11Label label : playerLabels){
             //System.out.println("Comparing " + label.getCardName() + "  and  " + player);
-            if (label.getCardName().matches(player)){
-                this.selectedPlayer = label;
-                System.out.println("Selected player is " + selectedPlayer.getCardName());
+            if (label.getID().matches(player)){
+                setPlayer(label);
+                //System.out.println("Selected player is " + selectedPlayer.getCardName());
             }
         }
 
@@ -245,9 +306,9 @@ public class QPanel extends JPanel {
 
     public void setSelectedWeapon(String weapon){
         for (T11Label label : weaponLabels){
-            if (label.getCardName().matches(weapon)){
-                this.selectedWeapon = label;
-                System.out.println("Selected player is " + selectedWeapon.getCardName());
+            if (label.getID().matches(weapon)){
+                setWeapon(label);
+                //System.out.println("Selected player is " + selectedWeapon.getCardName());
             }
         }
 
@@ -262,18 +323,33 @@ public class QPanel extends JPanel {
         return isFinished;
     }
 
-    public void incrementNextPlayer(){
-        System.out.println("Next Player " + nextPlayer + "  player count "  + gameScreen.getGamePlayers().getPlayerCount());
-        if (nextPlayer + 1 == gameScreen.getGamePlayers().getPlayerCount()){
-            nextPlayer = 0;
-        } else{
-            nextPlayer++;
-        }
-        System.out.println("Next Player: " + nextPlayer);
+    public void removeNoCardLabels(){
+        remove(doneLabel);
+        remove(infoLabel);
+        gameScreen.repaint();
+    }
 
-        if (nextPlayer == currentPlayer){
-            hasLooped = true;
-            System.out.println("\nHas Looped\n");
+    public void incrementNextPlayer(){
+
+        System.out.println("Can increment " + canIncrement);
+
+        if (canIncrement) {
+            nextPlayer++;
+            if (nextPlayer == gameScreen.getGamePlayers().getPlayerCount()) {
+                nextPlayer = 0;
+            }
+            canIncrement = false;
+            System.out.println("Next Player " + nextPlayer);
+
+            if (nextPlayer == currentPlayer) {
+                hasLooped = true;
+                System.out.println("Have looped");
+                questionState = 4;
+            }
+            /*
+            if(removedPlayer.contains(this.nextPlayer))
+                incrementNextPlayer();
+            */
         }
     }
 
@@ -309,7 +385,7 @@ public class QPanel extends JPanel {
 
             hasSelectedPlayer = true;
 
-            selectedCards[1] = selectedPlayer;
+            selectedCards[0] = selectedPlayer;
         }
 
         if ((((getWidth()/3)*2) -(int)(resolution.getScalePercentage() * 10) ) % 2 == 0){
@@ -467,37 +543,20 @@ public class QPanel extends JPanel {
             System.out.println("Error finding weapon");
         }
 
+        System.out.println("Found weapon and player");
         //Move the player and weapon
 
-        //gameScreen.getGamePlayers().getPlayer(questionedPlayer).getSuspectToken().moveToRoom(currentRoom, gameScreen.getGameBoard());
-        //gameScreen.getGameWeapons().moveWeaponToRoom(questionedWeapon, currentRoom);
+        gameScreen.getGameSuspects().getSuspect(questionedPlayer).moveToRoom(currentRoom, gameScreen.getGameBoard(), gameScreen.getGameSuspects().getSuspect(questionedPlayer));
+        System.out.println("Finished moving suspect");
+        gameScreen.getGameWeapons().moveWeaponToRoom(questionedWeapon, currentRoom);
+        gameScreen.repaint();
+
+        System.out.println("Repaint done");
 
         ////////////////////////////
-
         //Pass to the next player
-
-
-        PlayerHand playerHand = gameScreen.getGamePlayers().getPlayer(nextPlayer).getPlayerHand();
-
-        for (Card card : playerHand.getPlayerHand()){
-            if ( (card.getName().matches(selectedPlayer.getCardName()))
-                    || (card.getName().matches(selectedWeapon.getCardName()))
-                    || (card.getName().matches(selectedRoom.getCardName()))){
-                validCards.add(new T11Label(new ImageIcon(card.getCardImage()), card.getName()));
-                //System.out.println("Added " + card.getName() + " to valid cards");
-            }
-        }
-
-        for (Card card : playerHand.getPublicHand()){
-            if ( (card.getName().matches(selectedPlayer.getCardName()))
-                    || (card.getName().matches(selectedWeapon.getCardName()))
-                    || (card.getName().matches(selectedRoom.getCardName()))){
-                validCards.add(new T11Label(new ImageIcon(card.getCardImage()), card.getName()));
-                //System.out.println("Added " + card.getName() + " to valid cards");
-            }
-        }
-
         //System.out.println("Size of valid cards : " + validCards.size());
+        /*
         incrementNextPlayer();
 
         gameScreen.getPlayerChange().setPlayerCard(gameScreen.getGamePlayers().getPlayer(nextPlayer));
@@ -505,18 +564,27 @@ public class QPanel extends JPanel {
         this.showingNextPlayer = true;
 
         gameScreen.reDraw(nextPlayer);
+        */
+        showNextPlayer();
+
     }
 
     public void showNextPlayer(){
+        this.questionState = 1;
         if (!hasLooped) {
+            canIncrement = true;
             incrementNextPlayer();
+            canIncrement = false;
+
+            gameScreen.getInfoOutput().setText("");
+            gameScreen.getInfoOutput().setText("Pass to " + gameScreen.getGamePlayers().getPlayer(nextPlayer).getPlayerName() + "\nand click done or enter 'done'\n");
             gameScreen.getPlayerChange().setPlayerCard(gameScreen.getGamePlayers().getPlayer(nextPlayer));
             gameScreen.getPlayerChange().setVisible(true);
             this.showingNextPlayer = true;
             gameScreen.reDraw(nextPlayer);
         } else{
-            doneShowing = false;
-            hideQuestionPanel();
+            gameScreen.getInfoOutput().setText("");
+            gameScreen.getInfoOutput().setText("Pass to " + gameScreen.getGamePlayers().getPlayer(currentPlayer).getPlayerName() + "\nand click done or enter 'done'\n");
         }
     }
 
@@ -528,14 +596,14 @@ public class QPanel extends JPanel {
         int playerTarget = (getWidth()/6);
         int weaponTarget = ((getWidth()/3)*2 - (int)(resolution.getScalePercentage()*20));
 
-        timer = new Timer(4, e->{
+        timerTwo = new Timer(4, e->{
             if (selectedPlayer.getWidth() == targetW && selectedPlayer.getHeight() == targetH
                     && selectedRoom.getWidth() == targetW && selectedRoom.getHeight() == targetH
                     && selectedWeapon.getWidth() == targetW && selectedWeapon.getHeight() == targetH
                     && selectedPlayer.getX() == playerTarget
                     && selectedWeapon.getX() == weaponTarget
                     && selectedRoom.getX() == roomTarget ){
-                timer.stop();
+                timerTwo.stop();
             } else{
                 //System.out.println("player current location " + selectedPlayer.getLocation());
                 if (selectedPlayer.getWidth() <= targetW){
@@ -593,7 +661,7 @@ public class QPanel extends JPanel {
             }
         });
 
-        timer.start();
+        timerTwo.start();
         hasResized = true;
     }
 
@@ -605,27 +673,88 @@ public class QPanel extends JPanel {
         this.hasLooped = b;
     }
 
-    public void addValidCards(){
+    public void findValidCards(){
+        PlayerHand playerHand = gameScreen.getGamePlayers().getPlayer(nextPlayer).getPlayerHand();
+        this.validCards = new ArrayList<>();
+        this.selectedValidCardIcons = new ArrayList<>();
+        this.validCardIcons = new ArrayList<>();
 
-        //System.out.println("In add valid cards");
-        ArrayList<T11Label> validCards = new ArrayList<>(0);
+        if (selectedRoom == null){
+            System.out.println("Room is null");
+        }
+        if (selectedWeapon == null){
+            System.out.println("Weapon is null");
+        }
+        if (selectedPlayer == null){
+            System.out.println("Player is null");
+        }
 
-        if (validCards.size() == 0){
+        for (int i = 0; i < selectedCards.length; i++){
+            for (Card card : playerHand.getPlayerHand()){
 
+                //System.out.println("Comparing " + card.getName() + " and " + selectedCards[i].getCardName());
+
+                if (card.getName().matches(selectedCards[i].getCardName())){
+                    validCards.add(new T11Label(new ImageIcon(card.getSelectedCardImage()), card.getName()));
+                    selectedValidCardIcons.add(new ImageIcon(card.getSelectedCardImage()));
+                    validCardIcons.add(new ImageIcon(card.getCardImage()));
+                }
+            }
+
+            for (Card card : playerHand.getPublicHand()){
+                //System.out.println("Comparing " + card.getName() + " and " + selectedCards[i].getCardName());
+                if (card.getName().matches(selectedCards[i].getCardName())){
+                    validCards.add(new T11Label(new ImageIcon(card.getSelectedCardImage()), card.getName()));
+                    selectedValidCardIcons.add(new ImageIcon(card.getSelectedCardImage()));
+                    validCardIcons.add(new ImageIcon(card.getCardImage()));
+                }
+            }
+        }
+
+        System.out.println("///////////////////");
+        for (T11Label label : validCards){
+            System.out.println(label.getCardName());
+        }
+        System.out.println("///////////////////");
+
+        System.out.println("Size of Valid cards " + validCards.size());
+    }
+
+    public void addValidCards() {
+
+        findValidCards();
+        final boolean[] cardMoving = {false};
+
+
+        if (!hasResized) {
+            resizeSelected();
+        }
+
+        JLabel selectLabel = new JLabel("SELECT A CARD TO SHOW");
+        selectLabel.setFont(new Font("Bulky Pixels", Font.BOLD, (int) (20 * resolution.getScalePercentage())));
+        selectLabel.setSize((int) (resolution.getScalePercentage() * 400), (int) (resolution.getScalePercentage() * 100));
+        selectLabel.setLocation(selectedRoom.getX() - (int) (resolution.getScalePercentage() * 100), selectedRoom.getY() + (selectedRoom.getHeight()) + (int) (resolution.getScalePercentage() * 50));
+        selectLabel.setForeground(Color.white);
+        selectLabel.setBackground(new Color(0, 0, 0, 156));
+
+        System.out.println("Valid cards size: " + validCards.size());
+
+        if (validCards.size() == 0) {
+            System.out.println("No valid cards");
             //add in a done button
-            JLabel doneLabel = new JLabel("DONE");
-            doneLabel.setFont(new Font("Bulky Pixels", Font.BOLD, (int)(40 * resolution.getScalePercentage())));
-            doneLabel.setSize((int)(resolution.getScalePercentage() * 200), (int)(resolution.getScalePercentage() * 70));
-            doneLabel.setLocation(getWidth()/2 - (int)(resolution.getScalePercentage() * 65), getHeight()/2);
+            doneLabel = new JLabel("DONE");
+            doneLabel.setFont(new Font("Bulky Pixels", Font.BOLD, (int) (40 * resolution.getScalePercentage())));
+            doneLabel.setSize((int) (resolution.getScalePercentage() * 200), (int) (resolution.getScalePercentage() * 70));
+            doneLabel.setLocation(getWidth() / 2 - (int) (resolution.getScalePercentage() * 65), getHeight() / 2);
             doneLabel.setForeground(Color.WHITE);
             doneLabel.setBackground(new Color(0, 0, 0, 156));
 
-            JLabel infoLabel = new JLabel("YOU HAVE NO CARDS TO SHOW");
-            infoLabel.setFont(new Font("Bulky Pixels", Font.BOLD, (int)(20 * resolution.getScalePercentage())));
-            infoLabel.setSize((int)(resolution.getScalePercentage() * 600), (int)(resolution.getScalePercentage() * 100));
-            infoLabel.setLocation(doneLabel.getX() - (int)(resolution.getScalePercentage() * 150), doneLabel.getY() - (int)(resolution.getScalePercentage() * 100));
+            infoLabel = new JLabel("YOU HAVE NO CARDS TO SHOW");
+            infoLabel.setFont(new Font("Bulky Pixels", Font.BOLD, (int) (20 * resolution.getScalePercentage())));
+            infoLabel.setSize((int) (resolution.getScalePercentage() * 600), (int) (resolution.getScalePercentage() * 100));
+            infoLabel.setLocation(doneLabel.getX() - (int) (resolution.getScalePercentage() * 150), doneLabel.getY() - (int) (resolution.getScalePercentage() * 100));
             infoLabel.setForeground(Color.white);
-            infoLabel.setBackground(new Color(0,0,0, 156));
+            infoLabel.setBackground(new Color(0, 0, 0, 156));
             add(infoLabel);
 
             doneShowing = true;
@@ -633,17 +762,22 @@ public class QPanel extends JPanel {
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     super.mouseClicked(e);
-
-                    //Increment first
+                    System.out.println("Done button clicked");
+                    if (hasLooped){
+                        questionState = 4;
+                    }
                     showNextPlayer();
-                    System.out.println("showing next player");
+                    removeNoCardLabels();
+
                 }
 
                 @Override
                 public void mouseEntered(MouseEvent e) {
                     super.mouseEntered(e);
+                    System.out.println("Entered");
                     doneLabel.setForeground(Color.RED);
                     gameScreen.repaint();
+                    doneLabel.repaint();
                 }
 
                 @Override
@@ -651,31 +785,190 @@ public class QPanel extends JPanel {
                     super.mouseExited(e);
                     doneLabel.setForeground(Color.WHITE);
                     gameScreen.repaint();
+                    doneLabel.repaint();
                 }
             });
 
             this.add(doneLabel);
             gameScreen.repaint();
         }
+        else {
+            questionState = 3;
+            if (validCards.size() == 1) {
+                System.out.println("1 valid card");
+                validCards.get(0).setSize(new Dimension((int) (playerIcons[0].getIconWidth() * (resolution.getScalePercentage() * 0.9)),
+                        (int) (playerIcons[0].getIconHeight() * (resolution.getScalePercentage() * 0.9))));
+                validCards.get(0).setLocation(getWidth(), selectedRoom.getY() + selectedRoom.getHeight() + (int) (resolution.getScalePercentage() * 125));
+                add(validCards.get(0));
 
-        else if (validCards.size() == 1){
-            validCards.get(0).setSize(new Dimension(selectedRoom.getWidth() * (int)(resolution.getScalePercentage() * 1.5),
-                    selectedRoom.getWidth() * (int)(resolution.getScalePercentage() * 1.5) ));
-            validCards.get(0).setLocation(getWidth(), selectedRoom.getY() + selectedRoom.getHeight() + (int) (resolution.getScalePercentage() * 50));
-            add(validCards.get(0));
+                timer = new Timer(1, (ActionEvent e) -> {
+                    if (validCards.get(0).getX() <= getWidth() / 2 - validCards.get(0).getWidth() / 2) {
+                        validCards.get(0).setLocation(getWidth() / 2 - validCards.get(0).getWidth() / 2, validCards.get(0).getY());
+                        timer.stop();
+                        cardMoving[0] = false;
+                    } else {
+                        cardMoving[0] = true;
+                        validCards.get(0).setLocation(validCards.get(0).getX() - 10, validCards.get(0).getY());
+                        gameScreen.repaint();
+                    }
+                });
+                gameScreen.repaint();
+                timer.start();
 
+                add(selectLabel);
+                gameScreen.repaint();
+
+            } else if (validCards.size() == 2) {
+
+                System.out.println("2 Valid Cards");
+                for (T11Label card : validCards) {
+                    card.setSize(new Dimension((int) (playerIcons[0].getIconWidth() * (resolution.getScalePercentage() * 0.9)),
+                            (int) (playerIcons[0].getIconHeight() * (resolution.getScalePercentage() * 0.9))));
+                    card.setLocation(getWidth(), selectedRoom.getY() + selectedRoom.getHeight() + (int) (resolution.getScalePercentage() * 125));
+                }
+
+                validCards.get(1).setLocation(validCards.get(1).getX() + validCards.get(1).getWidth() + (int) (resolution.getScalePercentage() * 20), validCards.get(1).getY());
+                add(validCards.get(0));
+                add(validCards.get(1));
+
+                int targetXOne = getWidth() / 2 - (int) (resolution.getScalePercentage() * 20) - validCards.get(0).getWidth();
+                int targetXTwo = getWidth() / 2 + (int) (resolution.getScalePercentage() * 20);
+
+                timer = new Timer(1, (ActionEvent e) -> {
+                    if (validCards.get(0).getX() == targetXOne && validCards.get(1).getX() == targetXTwo) {
+                        timer.stop();
+                    } else {
+                        if (validCards.get(0).getX() <= targetXOne) {
+                            validCards.get(0).setLocation(targetXOne, validCards.get(0).getY());
+                        } else {
+                            validCards.get(0).setLocation(validCards.get(0).getX() - 10, validCards.get(0).getY());
+                        }
+
+                        if (validCards.get(1).getX() <= targetXTwo) {
+                            validCards.get(1).setLocation(targetXTwo, validCards.get(1).getY());
+                        } else {
+                            validCards.get(1).setLocation(validCards.get(1).getX() - 10, validCards.get(1).getY());
+                        }
+
+                        gameScreen.repaint();
+                    }
+                });
+                gameScreen.repaint();
+                timer.start();
+
+                add(selectLabel);
+                gameScreen.repaint();
+
+            } else if (validCards.size() == 3) {
+
+                System.out.println("3 Valid Cards");
+
+                for (T11Label card : validCards) {
+                    card.setSize(new Dimension(new Dimension((int) (playerIcons[0].getIconWidth() * (resolution.getScalePercentage() * 0.9)),
+                            (int) (playerIcons[0].getIconHeight() * (resolution.getScalePercentage() * 0.9)))));
+                }
+                validCards.get(0).setLocation(getWidth(), selectedRoom.getY() + selectedRoom.getHeight() + (int) (resolution.getScalePercentage() * 125));
+                validCards.get(1).setLocation(getWidth() + validCards.get(0).getWidth() + (int) (resolution.getScalePercentage() * 20)
+                        , selectedRoom.getY() + selectedRoom.getHeight() + (int) (resolution.getScalePercentage() * 125));
+
+                validCards.get(2).setLocation(getWidth() + (validCards.get(0).getWidth() * 2) + (int) (resolution.getScalePercentage() * 40)
+                        , selectedRoom.getY() + selectedRoom.getHeight() + (int) (resolution.getScalePercentage() * 125));
+
+                for (T11Label label : validCards) {
+                    add(label);
+                }
+
+                int targetXTwo = (getWidth() / 2 - validCards.get(0).getWidth() / 2);
+                int targetXOne = (targetXTwo - (int) (resolution.getScalePercentage() * 20) - validCards.get(0).getWidth());
+                int targetXThree = (targetXTwo + (validCards.get(0).getWidth()) + (int) (resolution.getScalePercentage() * 20));
+
+                timer = new Timer(1, (ActionEvent e) -> {
+                    if (validCards.get(0).getX() == targetXOne && validCards.get(1).getX() == targetXTwo
+                            && validCards.get(2).getX() == targetXThree) {
+                        timer.stop();
+                        cardMoving[0] = false;
+                    } else {
+                        cardMoving[0] = true;
+                        if (validCards.get(0).getX() <= targetXOne) {
+                            validCards.get(0).setLocation(targetXOne, validCards.get(0).getY());
+                        } else {
+                            validCards.get(0).setLocation(validCards.get(0).getX() - 10, validCards.get(0).getY());
+                        }
+
+                        if (validCards.get(1).getX() <= targetXTwo) {
+                            validCards.get(1).setLocation(targetXTwo, validCards.get(1).getY());
+                        } else {
+                            validCards.get(1).setLocation(validCards.get(1).getX() - 10, validCards.get(1).getY());
+                        }
+
+                        if (validCards.get(2).getX() <= targetXThree) {
+                            validCards.get(2).setLocation(targetXThree, validCards.get(2).getY());
+                        } else {
+                            validCards.get(2).setLocation(validCards.get(2).getX() - 10, validCards.get(2).getY());
+                        }
+                    }
+
+                    gameScreen.repaint();
+                });
+
+                timer.start();
+                gameScreen.repaint();
+
+                add(selectLabel);
+                gameScreen.repaint();
+
+
+            } else{
+                System.out.println("Something went wrong");
+            }
+
+            for (int i = 0; i < validCards.size(); i++) {
+                int finalI = i;
+                validCards.get(i).addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        super.mouseClicked(e);
+                        fillNotes(validCards.get(finalI).getCardName());
+                        selectCard();
+                        remove(selectLabel);
+                        gameScreen.repaint();
+                    }
+
+                    @Override
+                    public void mouseEntered(MouseEvent e) {
+                        super.mouseEntered(e);
+                        if (!cardMoving[0]) {
+                            validCards.get(finalI).setIcon(validCardIcons.get(finalI));
+                        }
+                    }
+
+                    @Override
+                    public void mouseExited(MouseEvent e) {
+                        super.mouseExited(e);
+                        if (!cardMoving[0]) {
+                            validCards.get(finalI).setIcon(selectedValidCardIcons.get(finalI));
+                        }
+                    }
+                });
+            }
 
         }
-         else if (validCards.size() == 2){
 
-        }
+    }
 
-        else if (validCards.size() == 3){
+    public void fillNotes(String selectedCard){
+        gameScreen.getGamePlayers().getPlayer(currentPlayer).getPlayerNotes().paintCell(nextPlayer+1, selectedCard, 1);
+    }
 
-        } else {
-            System.out.println("More than 3 cards");
-        }
-
+    public void selectCard(){
+        hideQuestionPanel();
+        this.showedCard = true;
+        gameScreen.reDraw(currentPlayer);
+        gameScreen.getPlayerChange().setPlayerCard(gameScreen.getGamePlayers().getPlayer(currentPlayer));
+        gameScreen.getPlayerChange().setVisible(true);
+        showingNextPlayer = true;
+        isFinished = true;
+        questionState = 4;
     }
 
     private int findLabelID(T11Label[] labels, T11Label card){
@@ -788,6 +1081,10 @@ public class QPanel extends JPanel {
                     break;
             }
         }
+    }
+
+    public boolean hasShowedCard(){
+        return showedCard;
     }
 
     public class AnimateMoveIn extends SwingWorker<Integer, String>{

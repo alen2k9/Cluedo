@@ -11,8 +11,6 @@ package com.team11.cluedo.components;
 import com.team11.cluedo.board.BoardPos;
 import com.team11.cluedo.board.room.TileType;
 import com.team11.cluedo.players.Player;
-import com.team11.cluedo.questioning.QuestionListener;
-import com.team11.cluedo.questioning.QuestionMouseListener;
 import com.team11.cluedo.suspects.Direction;
 import com.team11.cluedo.suspects.SuspectData;
 import com.team11.cluedo.ui.GameScreen;
@@ -388,79 +386,246 @@ public class CommandInput {
                     }
                     break;
                 case 4: // Question
-
-                    System.out.println("In case 4");
                     switch (command){
                         case "done":
 
-                            System.out.println("//////////////////");
-                            System.out.println("Is Showing : " + gameScreen.getqPanel().isShowingNextPlayer());
-                            System.out.println("Is Looped : " + gameScreen.getqPanel().getLooped() + "\n");
+                            switch (gameScreen.getqPanel().getQuestionState()) {
+                                case (1):   //Showing the player change panel
+                                    gameScreen.getPlayerChange().setVisible(false);
+                                    if (gameScreen.getqPanel().getLooped()) {
+                                        gameScreen.getqPanel().setQuestionState(4); //Have looped therefore close the window and re-enable the game
+                                        gameScreen.getqPanel().hideQuestionPanel();
+                                        setGameEnabled(true);
+                                        if (canRoll) {
+                                            incrementGamestate(1);
+                                        } else {
+                                            incrementGamestate(3);
+                                        }
+                                    } else {
+                                        //gameScreen.getqPanel().findValidCards();
+                                        gameScreen.getqPanel().addValidCards();
+                                        if (gameScreen.getqPanel().validCardSize() != 0) {   //There is cards to show so the done button state doesn't appear
+                                            gameScreen.getqPanel().setQuestionState(3);
+                                        }
+                                        //Show the done button
+                                        else {
+                                            gameScreen.getqPanel().setQuestionState(2);
+                                        }
+                                        gameScreen.getqPanel().setQuestionState(2); //Showing the done button
+                                        gameScreen.getqPanel().addValidCards(); //Player change has been hidden so add in the next set of cards
+                                    }
+                                    break;
 
-                            if (gameScreen.getqPanel().isShowingNextPlayer() && !gameScreen.getqPanel().getLooped() && gameState == 4){
-                                //Adds in the next set of cards
-                                //Sets the boolean showing to false
-                                //Hides the playerChange
-                                gameScreen.getqPanel().addValidCards();
-                                gameScreen.getqPanel().setShowingNextPlayer(false);
-                                gameScreen.getPlayerChange().setVisible(false);
+                                case (2):  //Showing the done button
+                                    if (gameScreen.getqPanel().getLooped()){
+                                        //hide the panel
+                                        gameScreen.getqPanel().hideQuestionPanel();
+                                        //increment the gamestate
+                                        gameScreen.getqPanel().setQuestionState(4);
+                                        setGameEnabled(true);
+                                    } else{
+                                        //Show the player change panel
+                                        gameScreen.getqPanel().setQuestionState(1);
+                                        gameScreen.getqPanel().showNextPlayer();
+                                        gameScreen.getqPanel().setShowingNextPlayer(true);
+                                        gameScreen.getqPanel().removeNoCardLabels();
+                                    }
+                                    break;
+
+                                case (3):   //Showing the cards
+                                    //Need to reject done input
+                                    infoOutput.append("Cannot exit questioning until card has been shown\n");
+                                    break;
+                                case (4):   //Finished showing cards
+                                    gameScreen.getPlayerChange().setVisible(false);
+                                    gameScreen.getqPanel().hideQuestionPanel();
+                                    //System.out.println("Text Shown " + gameScreen.getqPanel().hasShowedCard());
+                                    if (gameScreen.getqPanel().hasShowedCard()){
+                                        gameLog.append(currentPlayer.getPlayerName() + " was shown a card\n");
+                                    } else{
+                                        gameLog.append(currentPlayer.getPlayerName() + " was not shown a card\n");
+                                    }
+                                    setGameEnabled(true);
+                                    if (canRoll){
+                                        incrementGamestate(1);
+                                    } else{
+                                        incrementGamestate(3);
+                                    }
+                                    break;
                             }
-
-                            else if (gameScreen.getqPanel().isDoneShowing() && !gameScreen.getqPanel().getLooped()){
-                                gameScreen.getqPanel().showNextPlayer();
-                            }
-
-                            else if(gameScreen.getqPanel().isShowingNextPlayer() && gameScreen.getqPanel().getLooped() && gameState == 4){
-                                gameScreen.getqPanel().hideQuestionPanel();
-                                gameScreen.getPlayerChange().setVisible(false);
-                                setGameEnabled(true);
-                                if (canRoll){
-                                    incrementGamestate(1);
-                                } else{
-                                    incrementGamestate(3);
-                                }
-                            }
-
                             break;
 
                         case "finished":
                         case "white":
-                            gameScreen.getqPanel().textSelectCard("white");
+                            if (gameScreen.getqPanel().getQuestionState() == 0){
+                                gameScreen.getqPanel().textSelectCard("white");
+                            } else if (gameScreen.getqPanel().getQuestionState() == 3){
+                                gameScreen.getqPanel().selectCard();
+                                gameScreen.getqPanel().fillNotes("Miss White");
+                            }
+
                             break;
                         case "green":
-                            gameScreen.getqPanel().textSelectCard("green");
+                            if (gameScreen.getqPanel().getQuestionState() == 0){
+                                gameScreen.getqPanel().textSelectCard("green");
+                            } else if (gameScreen.getqPanel().getQuestionState() == 3){
+                                gameScreen.getqPanel().selectCard();
+                                gameScreen.getqPanel().fillNotes("Mr. Green");
+                            }
                             break;
                         case "peacock":
-                            gameScreen.getqPanel().textSelectCard("peacock");
+                            if (gameScreen.getqPanel().getQuestionState() == 0){
+                                gameScreen.getqPanel().textSelectCard("peacock");
+                            } else if (gameScreen.getqPanel().getQuestionState() == 3){
+                                gameScreen.getqPanel().selectCard();
+                                gameScreen.getqPanel().fillNotes("Ms. Peacock");
+                            }
                             break;
                         case "plum":
-                            gameScreen.getqPanel().textSelectCard("plum");
+                            if (gameScreen.getqPanel().getQuestionState() == 0){
+                                gameScreen.getqPanel().textSelectCard("plum");
+                            } else if (gameScreen.getqPanel().getQuestionState() == 3){
+                                gameScreen.getqPanel().selectCard();
+                                gameScreen.getqPanel().fillNotes("Mr. Plum");
+                            }
                             break;
                         case "scarlett":
-                            gameScreen.getqPanel().textSelectCard("scarlett");
+                            if (gameScreen.getqPanel().getQuestionState() == 0){
+                                gameScreen.getqPanel().textSelectCard("scarlett");
+                            } else if (gameScreen.getqPanel().getQuestionState() == 3){
+                                gameScreen.getqPanel().selectCard();
+                                gameScreen.getqPanel().fillNotes("Miss Scarlett");
+                            }
                             break;
                         case "mustard":
-                            gameScreen.getqPanel().textSelectCard("mustard");
+                            if (gameScreen.getqPanel().getQuestionState() == 0){
+                                gameScreen.getqPanel().textSelectCard("mustard");
+                            } else if (gameScreen.getqPanel().getQuestionState() == 3){
+                                gameScreen.getqPanel().selectCard();
+                                gameScreen.getqPanel().fillNotes("Colonel Mustard");
+                            }
                             break;
                         case "hatchet":
-                            gameScreen.getqPanel().textSelectCard("hatchet");
+                            if (gameScreen.getqPanel().getQuestionState() == 0){
+                                gameScreen.getqPanel().textSelectCard("hatchet");
+                            } else if (gameScreen.getqPanel().getQuestionState() == 3){
+                                gameScreen.getqPanel().selectCard();
+                                gameScreen.getqPanel().fillNotes("Hatchet");
+                            }
                             break;
                         case "dagger":
-                            gameScreen.getqPanel().textSelectCard("dagger");
+                            if (gameScreen.getqPanel().getQuestionState() == 0){
+                                gameScreen.getqPanel().textSelectCard("dagger");
+                            } else if (gameScreen.getqPanel().getQuestionState() == 3){
+                                gameScreen.getqPanel().selectCard();
+                                gameScreen.getqPanel().fillNotes("Dagger");
+                            }
                             break;
                         case "poison":
-                            gameScreen.getqPanel().textSelectCard("poison");
+                            if (gameScreen.getqPanel().getQuestionState() == 0){
+                                gameScreen.getqPanel().textSelectCard("poison");
+                            } else if (gameScreen.getqPanel().getQuestionState() == 3){
+                                gameScreen.getqPanel().selectCard();
+                                gameScreen.getqPanel().fillNotes("Poison");
+                            }
                             break;
                         case "revolver":
-                            gameScreen.getqPanel().textSelectCard("revolver");
+                            if (gameScreen.getqPanel().getQuestionState() == 0){
+                                gameScreen.getqPanel().textSelectCard("revolver");
+                            } else if (gameScreen.getqPanel().getQuestionState() == 3){
+                                gameScreen.getqPanel().selectCard();
+                                gameScreen.getqPanel().fillNotes("Revolver");
+                            }
                             break;
                         case "rope":
-                            gameScreen.getqPanel().textSelectCard("rope");
+                            if (gameScreen.getqPanel().getQuestionState() == 0){
+                                gameScreen.getqPanel().textSelectCard("rope");
+                            } else if (gameScreen.getqPanel().getQuestionState() == 3){
+                                gameScreen.getqPanel().selectCard();
+                                gameScreen.getqPanel().fillNotes("Rope");
+                            }
                             break;
                         case "wrench":
-                            gameScreen.getqPanel().textSelectCard("wrench");
+                            if (gameScreen.getqPanel().getQuestionState() == 0){
+                                gameScreen.getqPanel().textSelectCard("wrench");
+                            } else if (gameScreen.getqPanel().getQuestionState() == 3){
+                                gameScreen.getqPanel().selectCard();
+                                gameScreen.getqPanel().fillNotes("Wrench");
+                            }
+                            break;
+                        case "kitchen":
+                            if (gameScreen.getqPanel().getQuestionState() == 3){
+                                gameScreen.getqPanel().selectCard();
+                                gameScreen.getqPanel().fillNotes("Kitchen");
+                            } else{
+                                infoOutput.append("Cannot enter a room as input now\n");
+                            }
+                            break;
+                        case "ballroom":
+                            if (gameScreen.getqPanel().getQuestionState() == 3){
+                                gameScreen.getqPanel().selectCard();
+                                gameScreen.getqPanel().fillNotes("Ballroom");
+                            } else{
+                                infoOutput.append("Cannot enter a room as input now\n");
+                            }
+                            break;
+                        case "conservatory":
+                            if (gameScreen.getqPanel().getQuestionState() == 3){
+                                gameScreen.getqPanel().selectCard();
+                                gameScreen.getqPanel().fillNotes("Conservatory");
+                            } else{
+                                infoOutput.append("Cannot enter a room as input now\n");
+                            }
                             break;
 
+                        case "dining":
+                            if (gameScreen.getqPanel().getQuestionState() == 3){
+                                gameScreen.getqPanel().selectCard();
+                                gameScreen.getqPanel().fillNotes("Dining Room");
+                            } else{
+                                infoOutput.append("Cannot enter a room as input now\n");
+                            }
+                            break;
+                        case "billiard":
+                            if (gameScreen.getqPanel().getQuestionState() == 3){
+                                gameScreen.getqPanel().selectCard();
+                                gameScreen.getqPanel().fillNotes("Billiard Room");
+                            } else{
+                                infoOutput.append("Cannot enter a room as input now\n");
+                            }
+                            break;
+                        case "library":
+                            if (gameScreen.getqPanel().getQuestionState() == 3){
+                                gameScreen.getqPanel().selectCard();
+                                gameScreen.getqPanel().fillNotes("Library");
+                            } else{
+                                infoOutput.append("Cannot enter a room as input now\n");
+                            }
+                            break;
+                        case "lounge":
+                            if (gameScreen.getqPanel().getQuestionState() == 3){
+                                gameScreen.getqPanel().selectCard();
+                                gameScreen.getqPanel().fillNotes("Lounge");
+                            } else{
+                                infoOutput.append("Cannot enter a room as input now\n");
+                            }
+                            break;
+                        case "hall":
+                            if (gameScreen.getqPanel().getQuestionState() == 3){
+                                gameScreen.getqPanel().selectCard();
+                                gameScreen.getqPanel().fillNotes("Hall");
+                            } else{
+                                infoOutput.append("Cannot enter a room as input now\n");
+                            }
+                            break;
+                        case "study":
+                            if (gameScreen.getqPanel().getQuestionState() == 3){
+                                gameScreen.getqPanel().selectCard();
+                                gameScreen.getqPanel().fillNotes("Study");
+                            } else{
+                                infoOutput.append("Cannot enter a room as input now\n");
+                            }
+                            break;
                         default :
                             infoOutput.append("Unknown command entered\n");
                             break;
@@ -760,6 +925,7 @@ public class CommandInput {
         WeaponData weaponData = new WeaponData();
         boolean validInput = false;
         //One extra input, determine if weapon or player
+        System.out.println("inputs " + inputs.length);
 
         if (inputs.length == 1){
             validInput = true;
@@ -782,10 +948,12 @@ public class CommandInput {
                 infoOutput.append("Enter a valid player/weapon");
             }
         } else if (inputs.length == 3) {
+
             if ((suspectData.getSuspectID().containsValue(inputs[1]) || suspectData.getSuspectID().containsValue(inputs[2])) &&
                     (weaponData.getWeaponID().containsValue(inputs[1]) || weaponData.getWeaponID().containsValue(inputs[2]))) {
 
                 if (suspectData.getSuspectID().containsValue(inputs[1])) {
+                    //System.out.println("Comparison true");
                     this.gameScreen.getqPanel().setSelectedPlayer(inputs[1]);
                 } else {
                     this.gameScreen.getqPanel().setSelectedPlayer(inputs[2]);
@@ -899,27 +1067,54 @@ public class CommandInput {
                 super.mouseClicked(e);
                 //System.out.println("Gamestate : " + gameState + " hasLooped: " + gameScreen.getqPanel().getLooped());
 
-                if (gameScreen.getqPanel().isShowingNextPlayer() && !gameScreen.getqPanel().getLooped() && gameState == 4){
-                    //Adds in the next set of cards
-                    //Sets the boolean showing to false
-                    //Hides the playerChange
-                    gameScreen.getqPanel().addValidCards();
-                    gameScreen.getqPanel().setShowingNextPlayer(false);
-                    gameScreen.getPlayerChange().setVisible(false);
-                }
+                if (gameState == 4){
+                    switch (gameScreen.getqPanel().getQuestionState()){
+                        case (1):   //Showing the player change panel
+                            gameScreen.getPlayerChange().setVisible(false);
+                            if (gameScreen.getqPanel().getLooped()){
+                                //System.out.println("Going to hide the question panel");
+                                gameScreen.getqPanel().setQuestionState(4); //Have looped therefore close the window and re-enable the game
+                                gameScreen.getqPanel().hideQuestionPanel();
+                                setGameEnabled(true);
+                                if (canRoll){
+                                    incrementGamestate(1);
+                                } else{
+                                    incrementGamestate(3);
+                                }
+                            } else {
+                                //gameScreen.getqPanel().findValidCards();
+                                gameScreen.getqPanel().addValidCards();
+                                if (gameScreen.getqPanel().validCardSize() != 0){   //There is cards to show so the done button state doesn't appear
+                                    gameScreen.getqPanel().setQuestionState(3);
+                                }
+                                //Show the done button
+                                else{
+                                   gameScreen.getqPanel(). setQuestionState(2);
+                                }
+                            }
+                            break;
+                        case (2):   //Showing the done button
+                            //Player change isn't showing therefore cannot ever be in this state
+                            break;
 
-                else if(gameScreen.getqPanel().isShowingNextPlayer() && gameScreen.getqPanel().getLooped() && gameState == 4){
-                    gameScreen.getqPanel().hideQuestionPanel();
-                    gameScreen.getPlayerChange().setVisible(false);
-                    System.out.println("Exit");
-                    setGameEnabled(true);
-                    if (canRoll){
-                        incrementGamestate(1);
-                    } else{
-                        incrementGamestate(3);
+                        case (4):   //Finished selecting a card to show and need to return to the game
+                            gameScreen.getPlayerChange().setVisible(false);
+                            gameScreen.getqPanel().hideQuestionPanel();
+                            setGameEnabled(true);
+                            System.out.println("Button Shown " + gameScreen.getqPanel().hasShowedCard());
+                            if (gameScreen.getqPanel().hasShowedCard()){
+                                gameLog.append(currentPlayer.getPlayerName() + " was shown a card\n");
+                            } else{
+                                gameLog.append(currentPlayer.getPlayerName() + " was not shown a card\n");
+                            }
+                            if (canRoll){
+                                incrementGamestate(1);
+                            } else{
+                                incrementGamestate(3);
+                            }
+                            break;
                     }
                 }
-
                 else {
                     gameScreen.getCommandInput().setText("done");
                     processCommand();
