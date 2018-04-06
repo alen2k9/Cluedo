@@ -42,7 +42,7 @@ public class CommandInput {
 
     private int dice, remainingMoves, numPlayers, currentPlayerID, gameState;
     private boolean canRoll, canCheat, canQuestion, canPassage;
-    private boolean moveEnabled;
+    private boolean moveEnabled, accusing = false;
     private boolean gameEnabled;
     private HashSet<Integer> removedPlayer = new HashSet<>();
 
@@ -102,10 +102,6 @@ public class CommandInput {
                         case "roll":
                             diceRoll();
                             incrementGamestate(2);
-                            break;
-
-                        case "accuse":
-                            accuse();
                             break;
 
                         case "godroll":
@@ -642,8 +638,44 @@ public class CommandInput {
                                 infoOutput.append("Enter 'done' to finish your turn.\n");
                                 break;
                         }
+                    } else if (accusing) {
+                        switch (command) {
+                            case "help":
+                                infoOutput.append("Enter 'cancel' to review your notes.\n");
+                                break;
+                            case "cancel":
+                                gameScreen.getAccusations().dispose();
+                                accusing = false;
+                                gameScreen.getButtonPanel().getAccuseButton().setEnabled(true);
+                                infoOutput.append("Enter 'accuse' when ready to make\nyour accusation.\n");
+                                break;
+                            default:
+                                gameScreen.getAccusations().accuse(command);
+                        }
                     } else {
-                        gameScreen.getAccusations().accuse(command);
+                        switch (command) {
+                            case "help":
+                                if (inputs.length == 1)
+                                    help();
+                                else
+                                    help(inputs[1]);
+                                break;
+                            case "accuse":
+                                accuse();
+                                break;
+                            case "notes":
+                                notes();
+                                break;
+                            case "cards":
+                                cards();
+                                break;
+                            case "log":
+                                log();
+                                break;
+                            case "cheat":
+                                cheat();
+                                break;
+                        }
                     }
                     break;
                 case 6:
@@ -693,6 +725,7 @@ public class CommandInput {
             currentPlayer.getSuspectToken().setPreviousRoom(TileType.AVOID);
         }
         this.canRoll = true; this.canCheat = true; this.canPassage = true;
+        accusing = false;
         this.dice = 0; this.remainingMoves = 0;
         setGameEnabled(false);
         canQuestion = true;
@@ -801,6 +834,7 @@ public class CommandInput {
             infoOutput.append(this.playerName + " rolled a " + this.dice + ".\n");
             this.canRoll = false;
             gameScreen.reDrawFrame();
+            gameScreen.getButtonPanel().getRollButton().setEnabled(false);
         } else {
             infoOutput.append(this.playerName + " already rolled a " + this.dice + ".\n");
         }
@@ -902,8 +936,6 @@ public class CommandInput {
 
     private void accuse(){
         incrementGamestate(5);
-        gameScreen.getAccusations().accuse();
-        gameScreen.getAccusations().setInfoOutput(this.infoOutput);
     }
 
     private void quitGame() {
@@ -944,11 +976,14 @@ public class CommandInput {
             case 4:
                 break;
             case 5:
+                gameScreen.getAccusations().accuse();
+                gameScreen.getAccusations().setInfoOutput(this.infoOutput);
                 infoOutput.append("Ready to accuse?\nPick your suspect.\n");
                 gameScreen.getButtonPanel().getRollButton().setEnabled(false);
                 gameScreen.getButtonPanel().getDoneButton().setEnabled(false);
                 gameScreen.getButtonPanel().getAccuseButton().setEnabled(false);
                 gameScreen.getButtonPanel().getQuestionButton().setEnabled(false);
+                accusing = true;
                 setGameEnabled(false);
                 break;
             case 6:
@@ -1221,9 +1256,20 @@ public class CommandInput {
             }
         });
 
+        gameScreen.getButtonPanel().getAccuseButton().addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                if (gameScreen.getButtonPanel().getAccuseButton().isEnabled()) {
+                    gameScreen.getCommandInput().setText("ACCUSE");
+                    processCommand();
+                    gameScreen.getButtonPanel().getQuestionButton().setEnabled(false);
+                }
+            }
+        });
+
 
         gameScreen.getAccusations().getDoneButton().addActionListener(e -> {
-            System.out.println("PRESSED");
             infoOutput.append(playerName + " " + gameScreen.getAccusations().getAccusation());
             gameLog.append(playerName).append(" ").append(gameScreen.getAccusations().getAccusation());
 
@@ -1241,7 +1287,7 @@ public class CommandInput {
                         super.mouseClicked(e);
                         quitGame();
                     }
-                    
+
                     @Override
                     public void mouseEntered(MouseEvent e) {
                         super.mouseEntered(e);

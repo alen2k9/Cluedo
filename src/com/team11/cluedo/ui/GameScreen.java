@@ -356,10 +356,6 @@ public class GameScreen extends JFrame implements Screen {
         return this.resolution;
     }
 
-    public JTabbedPane getInfoTabs() {
-        return infoTabs;
-    }
-
     public QPanel getQuestionPanel() {
         return qPanel;
     }
@@ -378,10 +374,6 @@ public class GameScreen extends JFrame implements Screen {
 
     public void setGameEnabled(boolean gameEnabled) {
         this.gameEnabled = gameEnabled;
-    }
-
-    public void setTabEnabled(int i, boolean bFlag) {
-        infoTabs.setEnabledAt(i, bFlag);
     }
 
     public AccusationPanel getAccusations(){
