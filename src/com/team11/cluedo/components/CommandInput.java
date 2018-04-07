@@ -1082,6 +1082,12 @@ public class CommandInput {
                                     buffer[1] = Integer.toString(gameScreen.getBoardPanel().checkMoveOut((int)boardPos.getLocation().getY(), (int)boardPos.getLocation().getX()) + 1);
                                     moveOut(buffer);
                                 }
+                            } else if (gameScreen.getGameBoard().getBoardPos((int)boardPos.getLocation().getX(), (int)boardPos.getLocation().getY()).getTileType() == TileType.SECRETPASSAGE){
+                                if (remainingMoves > 0){
+                                    secretPassage();
+                                } else {
+                                    infoOutput.append("Not enough moves to use passageway");
+                                }
                             }
                         } if (moveEnabled) {
                             if (gameScreen.getBoardPanel().checkPoint((int)boardPos.getLocation().getY(), (int)boardPos.getLocation().getX())) {
