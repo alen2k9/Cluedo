@@ -94,7 +94,9 @@ public class CommandInput {
         String command = inputs[0];
         this.gameScreen.getCommandInput().setText("");
 
-        if (gameEnabled) {
+        System.out.println("Gamestate " + gameState);
+
+        if (gameEnabled && gameState != 4) {
             infoOutput.append("> " + input + '\n');
             switch (gameState) {
                 case 1: //  Pre-Roll
@@ -387,8 +389,17 @@ public class CommandInput {
                     break;
                 case 4: // Question
                     switch (command){
-                        case "done":
+                        case "hide":
+                            gameScreen.getqPanel().tempHideQuestionPanel();
+                            setGameEnabled(true);
+                            break;
+                        case "show":
+                            gameState = 4;
+                            gameScreen.getqPanel().showQuestionPanel();
 
+                            setGameEnabled(false);
+                            break;
+                        case "done":
                             switch (gameScreen.getqPanel().getQuestionState()) {
                                 case (1):   //Showing the player change panel
                                     gameScreen.getPlayerChange().setVisible(false);
@@ -402,8 +413,7 @@ public class CommandInput {
                                             incrementGamestate(3);
                                         }
                                     } else {
-                                        //gameScreen.getqPanel().findValidCards();
-                                        gameScreen.getqPanel().addValidCards();
+                                        gameScreen.getqPanel().findValidCards();
                                         if (gameScreen.getqPanel().validCardSize() != 0) {   //There is cards to show so the done button state doesn't appear
                                             gameScreen.getqPanel().setQuestionState(3);
                                         }
@@ -411,8 +421,8 @@ public class CommandInput {
                                         else {
                                             gameScreen.getqPanel().setQuestionState(2);
                                         }
-                                        gameScreen.getqPanel().setQuestionState(2); //Showing the done button
-                                        gameScreen.getqPanel().addValidCards(); //Player change has been hidden so add in the next set of cards
+
+                                        gameScreen.getqPanel().setupValidCards(); //Player change has been hidden so add in the next set of cards
                                     }
                                     break;
 
@@ -428,7 +438,6 @@ public class CommandInput {
                                         gameScreen.getqPanel().setQuestionState(1);
                                         gameScreen.getqPanel().showNextPlayer();
                                         gameScreen.getqPanel().setShowingNextPlayer(true);
-                                        gameScreen.getqPanel().removeNoCardLabels();
                                     }
                                     break;
 
@@ -438,9 +447,13 @@ public class CommandInput {
                                     break;
                                 case (4):   //Finished showing cards
                                     gameScreen.getPlayerChange().setVisible(false);
+                                    gameLog.append(currentPlayer.getPlayerName() + " asked was it \n" +
+                                            gameScreen.getqPanel().getPrevSelectedCards()[0].getCardName() + " with the " + gameScreen.getqPanel().getPrevSelectedCards()[2].getCardName() +
+                                            " in the " + gameScreen.getqPanel().getPrevSelectedCards()[1].getCardName() + "\n");
                                     gameScreen.getqPanel().hideQuestionPanel();
                                     //System.out.println("Text Shown " + gameScreen.getqPanel().hasShowedCard());
-                                    if (gameScreen.getqPanel().hasShowedCard()){
+                                    System.out.println("Finished Questioning " + gameScreen.getqPanel().hasShownCard());
+                                    if (gameScreen.getqPanel().hasShownCard()){
                                         gameLog.append(currentPlayer.getPlayerName() + " was shown a card\n");
                                     } else{
                                         gameLog.append(currentPlayer.getPlayerName() + " was not shown a card\n");
@@ -976,7 +989,8 @@ public class CommandInput {
         if (currentPlayer.getSuspectToken().isInRoom() && canQuestion && validInput) {
             gameEnabled = false;
             incrementGamestate(4);
-            this.gameScreen.getQuestionPanel().displayQuestionPanel(currentPlayer.getSuspectToken().getCurrentRoom(), currentPlayerID);
+            this.gameScreen.getqPanel().setupLabels();
+            this.gameScreen.getqPanel().displayQuestionPanel(currentPlayer.getSuspectToken().getCurrentRoom(), currentPlayerID);
             canQuestion = false;
         }
     }
@@ -1083,7 +1097,7 @@ public class CommandInput {
                                 }
                             } else {
                                 //gameScreen.getqPanel().findValidCards();
-                                gameScreen.getqPanel().addValidCards();
+                                gameScreen.getqPanel().setupValidCards();
                                 if (gameScreen.getqPanel().validCardSize() != 0){   //There is cards to show so the done button state doesn't appear
                                     gameScreen.getqPanel().setQuestionState(3);
                                 }
@@ -1099,10 +1113,13 @@ public class CommandInput {
 
                         case (4):   //Finished selecting a card to show and need to return to the game
                             gameScreen.getPlayerChange().setVisible(false);
-                            gameScreen.getqPanel().hideQuestionPanel();
                             setGameEnabled(true);
-                            System.out.println("Button Shown " + gameScreen.getqPanel().hasShowedCard());
-                            if (gameScreen.getqPanel().hasShowedCard()){
+                            gameLog.append(currentPlayer.getPlayerName() + " asked was it \n" +
+                                    gameScreen.getqPanel().getPrevSelectedCards()[0].getCardName() + " with the " + gameScreen.getqPanel().getPrevSelectedCards()[2].getCardName() +
+                                    " in the " + gameScreen.getqPanel().getPrevSelectedCards()[1].getCardName() + "\n");
+                            gameScreen.getqPanel().hideQuestionPanel();
+                            System.out.println("Finished Questioning " + gameScreen.getqPanel().hasShownCard());
+                            if (gameScreen.getqPanel().hasShownCard()){
                                 gameLog.append(currentPlayer.getPlayerName() + " was shown a card\n");
                             } else{
                                 gameLog.append(currentPlayer.getPlayerName() + " was not shown a card\n");

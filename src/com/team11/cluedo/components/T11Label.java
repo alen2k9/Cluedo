@@ -13,8 +13,9 @@ import java.awt.*;
 
 public class T11Label extends JLabel {
 
-    String name;
-    String id;
+    private String name;
+    private String id;
+    private boolean isSelected = false;
 
     public T11Label(ImageIcon icon){
         super(icon);
@@ -44,6 +45,18 @@ public class T11Label extends JLabel {
     }
 
     public String getID(){
+        return this.id;
+    }
+
+    public boolean isSelected(){
+        return this.isSelected;
+    }
+
+    public void setSelected(boolean selected){
+        this.isSelected = selected;
+    }
+
+    public String getCardID(){
         return this.id;
     }
 
