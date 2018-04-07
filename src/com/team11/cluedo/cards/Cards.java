@@ -39,7 +39,8 @@ public class Cards {
         suspectCards = new ArrayList<>();
         SuspectData data = new SuspectData();
         for (int i = 0; i < data.getSuspectAmount() ; i++) {
-            suspectCards.add(new SuspectCard(data.getSuspectCard(i), data.getSelectedSuspectCard(i), data.getSuspectName(i)));
+            suspectCards.add(new SuspectCard(data.getSuspectCard(i), data.getSelectedSuspectCard(i),
+                    data.getSuspectName(i), data.getSuspectID(i)));
         }
     }
 
@@ -47,7 +48,8 @@ public class Cards {
         weaponCards = new ArrayList<>();
         WeaponData data = new WeaponData();
         for (int i = 0; i < WeaponData.WEAPON_AMOUNT ; i++) {
-            weaponCards.add(new WeaponCard(data.getWeaponCard(i), data.getSelectedWeaponCard(i), data.getWeaponName(i)));
+            weaponCards.add(new WeaponCard(data.getWeaponCard(i), data.getSelectedWeaponCard(i),
+                    data.getWeaponName(i), data.getWeaponID(i)));
         }
     }
 
@@ -55,7 +57,8 @@ public class Cards {
         roomCards = new ArrayList<>();
         RoomData data = new RoomData();
         for (int i = 0; i < RoomData.ROOM_AMOUNT ; i++) {
-            roomCards.add(new RoomCard(data.getRoomCard(i), data.getSelectedRoomCard(i), data.getRoomName(i)));
+            roomCards.add(new RoomCard(data.getRoomCard(i), data.getSelectedRoomCard(i),
+                    data.getRoomName(i), data.getRoomID(i)));
         }
     }
 

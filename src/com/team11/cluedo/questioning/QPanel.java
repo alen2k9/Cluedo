@@ -100,7 +100,7 @@ public class QPanel extends JPanel {
             new T11Label(roomIcons[5], roomData.getRoomName(5), roomData.getRoomID(5)),
             new T11Label(roomIcons[6], roomData.getRoomName(6), roomData.getRoomID(6)),
             new T11Label(roomIcons[7], roomData.getRoomName(7), roomData.getRoomID(7)),
-            new T11Label(roomIcons[8], roomData.getRoomName(8), roomData.getRoomID(8)),
+            new T11Label(roomIcons[8], roomData.getRoomName(8), roomData.getRoomID(8))
     };
 
     //Array used to store the three questioning cards
@@ -289,7 +289,7 @@ public class QPanel extends JPanel {
 
         for (T11Label label : playerLabels){
             //System.out.println("Comparing " + label.getCardName() + "  and  " + player);
-            if (label.getID().matches(player)){
+            if (label.getCardID().matches(player)){
                 setPlayer(label);
                 //System.out.println("Selected player is " + selectedPlayer.getCardName());
             }
@@ -301,12 +301,11 @@ public class QPanel extends JPanel {
     public void setSelectedWeapon(String weapon){
         for (T11Label label : weaponLabels){
 
-            if (label.getID().matches(weapon)){
+            if (label.getCardID().matches(weapon)) {
                 setWeapon(label);
                 //System.out.println("Selected player is " + selectedWeapon.getCardName());
-            }
+            }}
 
-        }
 
         selectedCards[2] = selectedWeapon;
     }
@@ -329,31 +328,14 @@ public class QPanel extends JPanel {
 
     private void setPlayer(T11Label label){
         this.selectedPlayer = label;
-        if (label != null){
-            System.out.println("Set selected player to " + label.getCardName());
-        } else{
-            //System.out.println("Set selected player to " + null);
-        }
-
     }
 
     private void setWeapon(T11Label label){
         this.selectedWeapon = label;
-        if (label != null){
-            System.out.println("Set selected weapon to " + label.getCardName());
-        } else {
-            //System.out.println("Set selected weapon to " + null);
-        }
-
     }
 
     private void setRoom(T11Label label){
         this.selectedRoom = label;
-        if (label != null){
-            System.out.println("Set selected room to " + label.getCardName());
-        }else {
-            //System.out.println("Set selected room to " + null);
-        }
     }
 
     public int getQuestionState(){
@@ -378,13 +360,13 @@ public class QPanel extends JPanel {
         this.hasShownCard = false;
     }
 
-    private void removeNoCardLabels(){
-        if (isDoneShowing){
+
+    private void removeNoCardLabels() {
+        if (isDoneShowing) {
             remove(doneButton);
             remove(noCardsLabel);
             gameScreen.repaint();
         }
-
     }
 
     private void incrementNextPlayer(){
@@ -393,11 +375,8 @@ public class QPanel extends JPanel {
             nextPlayer = 0;
         }
 
-        System.out.println("Next Player " + nextPlayer);
-
         if (nextPlayer == currentPlayer) {
             hasLooped = true;
-            System.out.println("Have looped");
             questionState = 4;
         }
             /*
@@ -638,8 +617,6 @@ public class QPanel extends JPanel {
     }
 
     private void slideCards(T11Label[] cards, int targetX, int targetY, int initialX, int initialY){
-        System.out.println("Inside slideCards");
-        System.out.println("Target " + targetX + " TargetY " + targetY + " InitialX " + initialX + " initialY " + initialY);
         SlideAnimation animate = new SlideAnimation(cards, true, false);
         animate.setInitialPos(initialX, initialY);
         animate.setTargetPos(targetX, targetY);
@@ -962,7 +939,6 @@ public class QPanel extends JPanel {
                         card.setLocation(card.getX(), card.getY() + ((targetY - initialY) / 90));
                         if (slideIn) {
                             if (cards[0].getY() <= targetY) {
-
                                 timer.stop();
                             }
                         } else {

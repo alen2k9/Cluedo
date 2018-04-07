@@ -11,10 +11,11 @@ package com.team11.cluedo.cards;
 import java.awt.*;
 
 public class WeaponCard extends Card {
-    public WeaponCard(Image cardImage, Image selectedCardImage, String name) {
+    public WeaponCard(Image cardImage, Image selectedCardImage, String name, String id) {
         super.setCardImage(cardImage);
         super.setSelectedCardImage(selectedCardImage);
         super.setName(name);
+        super.setID(id);
     }
 
     @Override
@@ -30,6 +31,11 @@ public class WeaponCard extends Card {
     @Override
     public String getName() {
         return super.getName();
+    }
+
+    @Override
+    public String getID() {
+        return super.getID();
     }
 
 

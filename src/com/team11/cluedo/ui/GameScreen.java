@@ -8,6 +8,7 @@
 
 package com.team11.cluedo.ui;
 
+import com.team11.cluedo.accustations.AccusationPanel;
 import com.team11.cluedo.accustations.Accusations;
 import com.team11.cluedo.assets.Assets;
 import com.team11.cluedo.cards.CardsPanel;
@@ -54,6 +55,7 @@ public class GameScreen extends JFrame implements Screen {
     private ButtonPanel buttonPanel;
 
     private QPanel qPanel;
+    private AccusationPanel aPanel;
 
     private MoveOverlay moveOverlay;
     private DoorOverlay doorOverlay;
@@ -77,6 +79,7 @@ public class GameScreen extends JFrame implements Screen {
 
     public GameScreen(Board gameBoard, Suspects gameSuspects, Weapons gameWeapons, Players gamePlayers, Assets gameAssets, Resolution resolution, String name) throws IOException{
         super(name);
+        //super.setIconImage(gameAssets.getIcon());
         this.gameBoard = gameBoard;
         this.gameSuspects = gameSuspects;
         this.gameWeapons = gameWeapons;
@@ -89,7 +92,7 @@ public class GameScreen extends JFrame implements Screen {
         this.qPanel = new QPanel(this, this.resolution);
         this.gameDice = new Dice(gameAssets, resolution);
         this.playerChange = new PlayerChange(resolution);
-        this.accusations= new Accusations(gameAssets,gameCards,resolution);
+        //this.accusations= new Accusations(gameAssets,gameCards,resolution);
         this.cardsPanel = new CardsPanel(gameAssets, resolution, "Your Cards");
         this.notesPanel = new NotesPanel(gameAssets,resolution);
     }
@@ -111,6 +114,7 @@ public class GameScreen extends JFrame implements Screen {
         this.notesTable = new NotesTable(gamePlayers);
         this.notesPanel.updatePlayerNotes(notesTable);
         this.buttonPanel = new ButtonPanel(gameAssets, resolution);
+        this.aPanel = new AccusationPanel(gameCards,resolution);
         this.boardPanel = new BoardUI();
         JPanel infoPanel = setupInfoPanel();
 
@@ -352,10 +356,6 @@ public class GameScreen extends JFrame implements Screen {
         return this.resolution;
     }
 
-    public JTabbedPane getInfoTabs() {
-        return infoTabs;
-    }
-
     public QPanel getQuestionPanel() {
         return qPanel;
     }
@@ -376,12 +376,8 @@ public class GameScreen extends JFrame implements Screen {
         this.gameEnabled = gameEnabled;
     }
 
-    public void setTabEnabled(int i, boolean bFlag) {
-        infoTabs.setEnabledAt(i, bFlag);
-    }
-
-    public Accusations getAccusations(){
-        return accusations;
+    public AccusationPanel getAccusations(){
+        return aPanel;
     }
 
     public class BoardUI extends JLayeredPane {
@@ -393,7 +389,7 @@ public class GameScreen extends JFrame implements Screen {
 
             int index = 0;
             add(gameCards.getMurderEnvelope(), index++);
-            add(accusations, index++);
+            add(aPanel, index++);
             add(playerChange, index++);
             add(qPanel, index++);
             add(buttonPanel, index++);
@@ -408,7 +404,7 @@ public class GameScreen extends JFrame implements Screen {
 
 
             qPanel.hideQuestionPanel();
-            accusations.setVisible(false);
+//            accusations.setVisible(false);
 
             ImageIcon board = new ImageIcon(gameAssets.getBoardImage());
             int size = (int)(60 * resolution.getScalePercentage());

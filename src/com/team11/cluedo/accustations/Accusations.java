@@ -31,9 +31,8 @@ public class Accusations extends JPanel {
     private boolean selected = false;
     private boolean gameOver = false;
 
-    public JButton doneButton;
+    private JButton doneButton;
 
-    String[] playerCardsName;
     int playerCard;
     int weaponCard;
     int roomCard;

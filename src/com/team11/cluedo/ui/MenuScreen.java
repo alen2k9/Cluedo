@@ -26,7 +26,9 @@ import com.team11.cluedo.weapons.Weapons;
 
 public class MenuScreen implements Screen {
     private JFrame frame;
-    private JPanel mainPanel;
+    private JPanel menuPanel;
+    private BackgroundPanel selectionPanel;
+    private JLayeredPane mainPanel;
 
     private int numPlayers;
     private int currentPlayer;
@@ -38,6 +40,8 @@ public class MenuScreen implements Screen {
     private CommandInput gameInput;
 
     private Assets gameAssets;
+    private boolean doSelection = false;
+    private Timer timer;
 
     public MenuScreen() throws IOException {
 
@@ -56,7 +60,7 @@ public class MenuScreen implements Screen {
         this.gameScreen = new GameScreen(gameBoard, gameSuspects, gameWeapons, gamePlayers, gameAssets, resolution, "Cluedo");
         this.gameInput = new CommandInput(gameScreen);
 
-        ///*
+        /*
         SuspectData suspectData = new SuspectData();
         for (int i = 0; i < 4 ; i++)
             gamePlayers.addPlayer(suspectData.getSuspectName(i), gameSuspects.getSuspect(i), resolution);
@@ -65,7 +69,7 @@ public class MenuScreen implements Screen {
         startGame();
         //*/
 
-        /*
+        //*
         //  Calling functions to create screen
         this.setupScreen(0);
         this.createScreen("Cluedo - Title Screen");
@@ -76,26 +80,32 @@ public class MenuScreen implements Screen {
     @Override
     public void createScreen(String name) {
         this.frame = new JFrame(name);
+        //this.frame.setIconImage(gameAssets.getIcon());
         this.frame.setResizable(false);
         this.frame.getContentPane().add(this.mainPanel);
         this.frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        this.frame.pack();
+        //this.frame.pack();
     }
 
     @Override
     public void setupScreen(int state) {
-        if (state == 0) {
-            mainPanel = new JPanel(new FlowLayout(FlowLayout.LEFT,0,0));
-            mainPanel.add(getMenuContent());
-        }
-        else if (state == 1) {
-            mainPanel = new JPanel(new FlowLayout(FlowLayout.LEFT,0,0));
-            mainPanel.add(getPlayerSelection());
-        }
+        menuPanel = new JPanel(new BorderLayout());
+        menuPanel.add(getMenuContent(), BorderLayout.CENTER);
+        selectionPanel = getPlayerSelection();
+
+        mainPanel = new JLayeredPane();
+        menuPanel.setSize(menuPanel.getPreferredSize());
+        mainPanel.setSize(menuPanel.getPreferredSize());
+        selectionPanel.setSize(menuPanel.getPreferredSize());
+        mainPanel.add(menuPanel,0);
+        mainPanel.add(selectionPanel,1);
+        menuPanel.setOpaque(false);
+        selectionPanel.setVisible(false);
     }
 
     @Override
     public void displayScreen() {
+        this.frame.setSize(frame.getPreferredSize());
         this.frame.setLocation(resolution.getScreenSize().width/2 - frame.getSize().width/2, resolution.getScreenSize().height/2 - (frame.getSize().height/2));
         this.frame.setVisible(true);
     }
@@ -113,7 +123,6 @@ public class MenuScreen implements Screen {
     }
 
     public class MenuPanel extends JPanel {
-
         MenuPanel(LayoutManager layout) {
             super.setLayout(layout);
         }
@@ -158,14 +167,23 @@ public class MenuScreen implements Screen {
 
 
         playButton.addActionListener(e -> {
-            this.numPlayers = amountList.getSelectedIndex() + 2;
-            this.currentPlayer = 0;
-
-            this.closeScreen();
-
-            this.setupScreen(1);
-            this.createScreen("Cluedo - Character Selection");
-            this.displayScreen();
+            if (!doSelection) {
+                selectionPanel.setVisible(true);
+                menuPanel.setEnabled(false);
+                playButton.setEnabled(false);
+                doSelection = true;
+                this.numPlayers = amountList.getSelectedIndex() + 2;
+                this.currentPlayer = 0;
+                timer = new Timer(2, e1 -> {
+                    if (menuPanel.getY() <= -frame.getHeight()) {
+                        menuPanel.setVisible(false);
+                        menuPanel.removeAll();
+                        timer.stop();
+                    }
+                    menuPanel.setLocation(menuPanel.getX(), menuPanel.getY() - 20);
+                });
+                timer.start();
+            }
         });
 
         playButton.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -341,12 +359,12 @@ public class MenuScreen implements Screen {
 
         button[index].addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                if (button[index].isEnabled())
+                if (button[index].isEnabled() && doSelection)
                     button[index].setBorderPainted(true);
             }
 
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                if (!button[index].isSelected())
+                if (!button[index].isSelected() && doSelection)
                     button[index].setBorderPainted(false);
             }
         });

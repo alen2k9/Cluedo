@@ -18,7 +18,6 @@ public class BoardPos extends JComponent {
     private boolean isTraversable;
     private boolean isOccupied;
     private TileType tileType, roomType;
-    private int tileSize;
 
     public BoardPos(Point loc, boolean traverse, boolean occ, TileType tileType, TileType roomType, int size){
         this.location = loc;
@@ -26,7 +25,6 @@ public class BoardPos extends JComponent {
         this.isOccupied = occ;
         this.tileType = tileType;
         this.roomType = roomType;
-        this.tileSize = size;
 
         Dimension buttonSize = new Dimension(size, size);
         super.setPreferredSize(buttonSize);
@@ -61,13 +59,10 @@ public class BoardPos extends JComponent {
     }
 
     public String toString(){
-        StringBuilder s = new StringBuilder();
-
-        s.append("\nLocation: " + this.getLocation());
-        s.append("\nIsTraverseable:" + this.isTraversable);
-        s.append("\nIsOccupied: " + this.isOccupied());
-        s.append("\nTileType: " + this.getTileType() + "\n");
-        return s.toString();
+        return "\nLocation: " + this.getLocation() +
+                "\nIsTraverseable:" + this.isTraversable +
+                "\nIsOccupied: " + this.isOccupied() +
+                "\nTileType: " + this.getTileType() + "\n";
     }
 
     /*
@@ -77,5 +72,5 @@ public class BoardPos extends JComponent {
         g.setColor(new Color((int)(Math.random()*254),(int)(Math.random()*254),(int)(Math.random()*254),60));
         g.fillRect(0,0,Board.TILE_SIZE, Board.TILE_SIZE);
     }
-    */
+    //*/
 }

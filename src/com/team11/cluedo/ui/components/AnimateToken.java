@@ -9,6 +9,7 @@
 package com.team11.cluedo.ui.components;
 
 import com.team11.cluedo.board.Board;
+import com.team11.cluedo.board.room.TileType;
 import com.team11.cluedo.components.CommandInput;
 import com.team11.cluedo.components.CommandProcessing;
 import com.team11.cluedo.components.MovementHandling;
@@ -22,11 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AnimateToken extends SwingWorker<Integer, String> {
-    private static void failIfInterrupted() throws InterruptedException {
-        if (Thread.currentThread().isInterrupted()) {
-            throw new InterruptedException("Interrupted while searching files");
-        }
-    }
 
     private GameScreen gameScreen;
     private MovementHandling movementHandling;
@@ -63,7 +59,6 @@ public class AnimateToken extends SwingWorker<Integer, String> {
         if(remainingMoves > 0){
             if(currentPlayer.getSuspectToken().checkMove(gameScreen.getGameBoard(), moves)){
                 while (!moves.isEmpty()) {
-                    AnimateToken.failIfInterrupted();
                     Direction direction = moves.remove(0);
                     int initialX = (int) (token.getBoardLocation().getX() * resolutionScalar);
                     int initialY = (int) (token.getBoardLocation().getY() * resolutionScalar);
@@ -119,6 +114,10 @@ public class AnimateToken extends SwingWorker<Integer, String> {
         if (remainingMoves == 0 && moveEnabled) {
             commandInput.setMoveEnabled(movementHandling.disableMove());
             commandInput.incrementGamestate(3);
+        }
+
+        if(currentPlayer.getSuspectToken().getPreviousRoom() == TileType.CELLAR) {
+            commandInput.incrementGamestate(5);
         }
         commandInput.setRemainingMoves(remainingMoves);
         process(new ArrayList<>());

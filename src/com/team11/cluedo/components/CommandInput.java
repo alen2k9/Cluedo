@@ -42,7 +42,7 @@ public class CommandInput {
 
     private int dice, remainingMoves, numPlayers, currentPlayerID, gameState;
     private boolean canRoll, canCheat, canQuestion, canPassage;
-    private boolean moveEnabled;
+    private boolean moveEnabled, accusing = false;
     private boolean gameEnabled;
     private HashSet<Integer> removedPlayer = new HashSet<>();
 
@@ -94,7 +94,7 @@ public class CommandInput {
         String command = inputs[0];
         this.gameScreen.getCommandInput().setText("");
 
-        System.out.println("Gamestate " + gameState);
+        //System.out.println("Gamestate " + gameState);
 
         if (gameEnabled && gameState != 4) {
             infoOutput.append("> " + input + '\n');
@@ -104,10 +104,6 @@ public class CommandInput {
                         case "roll":
                             diceRoll();
                             incrementGamestate(2);
-                            break;
-
-                        case "accuse":
-                            accuse();
                             break;
 
                         case "godroll":
@@ -427,13 +423,13 @@ public class CommandInput {
                                     break;
 
                                 case (2):  //Showing the done button
-                                    if (gameScreen.getqPanel().getLooped()){
+                                    if (gameScreen.getqPanel().getLooped()) {
                                         //hide the panel
                                         gameScreen.getqPanel().hideQuestionPanel();
                                         //increment the gamestate
                                         gameScreen.getqPanel().setQuestionState(4);
                                         setGameEnabled(true);
-                                    } else{
+                                    } else {
                                         //Show the player change panel
                                         gameScreen.getqPanel().setQuestionState(1);
                                         gameScreen.getqPanel().showNextPlayer();
@@ -452,23 +448,24 @@ public class CommandInput {
                                             " in the " + gameScreen.getqPanel().getPrevSelectedCards()[1].getCardName() + "\n");
                                     gameScreen.getqPanel().hideQuestionPanel();
                                     //System.out.println("Text Shown " + gameScreen.getqPanel().hasShowedCard());
-                                    System.out.println("Finished Questioning " + gameScreen.getqPanel().hasShownCard());
-                                    if (gameScreen.getqPanel().hasShownCard()){
+
+                                    if (gameScreen.getqPanel().hasShownCard()) {
                                         gameLog.append(currentPlayer.getPlayerName() + " was shown a card\n");
-                                    } else{
-                                        gameLog.append(currentPlayer.getPlayerName() + " was not shown a card\n");
+                                    }
+                                    else{
+                                        gameLog.append(currentPlayer.getPlayerName()).append(" was not shown a card\n");
                                     }
                                     setGameEnabled(true);
-                                    if (canRoll){
+                                    if (canRoll) {
                                         incrementGamestate(1);
-                                    } else{
+                                    } else {
                                         incrementGamestate(3);
                                     }
                                     break;
                             }
-                            break;
 
                         case "finished":
+                            break;
                         case "white":
                             if (gameScreen.getqPanel().getQuestionState() == 0){
                                 gameScreen.getqPanel().textSelectCard("white");
@@ -646,8 +643,58 @@ public class CommandInput {
 
                     break;
                 case 5: //  Accuse
+                    if (gameScreen.getAccusations().isDone()) {
+                        switch (command) {
+                            case "done":
+                                gameScreen.getAccusations().getDoneButton().doClick();
+                                break;
+                            default:
+                                infoOutput.append("Enter 'done' to finish your turn.\n");
+                                break;
+                        }
+                    } else if (accusing) {
+                        switch (command) {
+                            case "help":
+                                infoOutput.append("Enter 'cancel' to review your notes.\n");
+                                break;
+                            case "cancel":
+                                gameScreen.getAccusations().dispose();
+                                accusing = false;
+                                gameScreen.getButtonPanel().getAccuseButton().setEnabled(true);
+                                infoOutput.append("Enter 'accuse' when ready to make\nyour accusation.\n");
+                                break;
+                            default:
+                                gameScreen.getAccusations().accuse(command);
+                        }
+                    } else {
+                        switch (command) {
+                            case "help":
+                                if (inputs.length == 1)
+                                    help();
+                                else
+                                    help(inputs[1]);
+                                break;
+                            case "accuse":
+                                accuse();
+                                break;
+                            case "notes":
+                                notes();
+                                break;
+                            case "cards":
+                                cards();
+                                break;
+                            case "log":
+                                log();
+                                break;
+                            case "cheat":
+                                cheat();
+                                break;
+                        }
+                    }
                     break;
-
+                case 6:
+                    quitGame();
+                    break;
             }
         }
 
@@ -676,6 +723,15 @@ public class CommandInput {
     }
 
     private void nextPlayer() {
+        if (gameScreen.getGamePlayers().getPlayerCount() - removedPlayer.size() > 0) {
+            this.currentPlayerID++;
+            if (this.currentPlayerID == this.numPlayers)
+                this.currentPlayerID = 0;
+            if (removedPlayer.contains(this.currentPlayerID)) {
+                nextPlayer();
+                return;
+            }
+        }
         this.gameState = 0;
         this.gameScreen.getMoveOverlay().setValidMoves(new HashSet<>(), this.currentPlayer);
         this.gameScreen.getDoorOverlay().setExits(new ArrayList<>(), this.currentPlayer);
@@ -683,21 +739,19 @@ public class CommandInput {
             currentPlayer.getSuspectToken().setPreviousRoom(TileType.AVOID);
         }
         this.canRoll = true; this.canCheat = true; this.canPassage = true;
+        accusing = false;
         this.dice = 0; this.remainingMoves = 0;
         setGameEnabled(false);
         canQuestion = true;
-
-        this.currentPlayerID++;
-        if(this.currentPlayerID == this.numPlayers)
-            this.currentPlayerID = 0;
-        if(removedPlayer.contains(this.currentPlayerID))
-            nextPlayer();
 
         this.currentPlayer = this.gameScreen.getGamePlayers().getPlayer(currentPlayerID);
         this.playerName = currentPlayer.getPlayerName();
         movementHandling.setCurrentPlayer(currentPlayer);
 
         gameScreen.getButtonPanel().getQuestionButton().setEnabled(false);
+        gameScreen.getButtonPanel().getAccuseButton().setEnabled(false);
+        gameScreen.getButtonPanel().getRollButton().setEnabled(false);
+        gameScreen.getButtonPanel().getDoneButton().setEnabled(false);
 
         gameScreen.getPlayerChange().setPlayerCard(currentPlayer);
         gameScreen.getPlayerChange().setVisible(true);
@@ -794,6 +848,7 @@ public class CommandInput {
             infoOutput.append(this.playerName + " rolled a " + this.dice + ".\n");
             this.canRoll = false;
             gameScreen.reDrawFrame();
+            gameScreen.getButtonPanel().getRollButton().setEnabled(false);
         } else {
             infoOutput.append(this.playerName + " already rolled a " + this.dice + ".\n");
         }
@@ -893,6 +948,10 @@ public class CommandInput {
         }
     }
 
+    private void accuse(){
+        incrementGamestate(5);
+    }
+
     private void quitGame() {
         infoOutput.append("Exit\n");
         this.gameScreen.closeScreen();
@@ -930,6 +989,19 @@ public class CommandInput {
                 break;
             case 4:
                 break;
+            case 5:
+                gameScreen.getAccusations().accuse();
+                gameScreen.getAccusations().setInfoOutput(this.infoOutput);
+                infoOutput.append("Ready to accuse?\nPick your suspect.\n");
+                gameScreen.getButtonPanel().getRollButton().setEnabled(false);
+                gameScreen.getButtonPanel().getDoneButton().setEnabled(false);
+                gameScreen.getButtonPanel().getAccuseButton().setEnabled(false);
+                gameScreen.getButtonPanel().getQuestionButton().setEnabled(false);
+                accusing = true;
+                setGameEnabled(false);
+                break;
+            case 6:
+                infoOutput.append("\n\nEnter anything to close the game.\n\n");
         }
     }
 
@@ -1166,31 +1238,11 @@ public class CommandInput {
             }
         });
 
-        gameScreen.getGameDice().getLeftDice().addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (canRoll) {
-                    gameScreen.getCommandInput().setText("ROLL");
-                    processCommand();
-                }
-            }
-        });
-
-        gameScreen.getGameDice().getRightDice().addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (canRoll) {
-                    gameScreen.getCommandInput().setText("ROLL");
-                    processCommand();
-                }
-            }
-        });
-
         gameScreen.getButtonPanel().getRollButton().addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                if (canRoll) {
+                if (gameScreen.getButtonPanel().getRollButton().isEnabled() && gameEnabled) {
                     gameScreen.getCommandInput().setText("ROLL");
                     processCommand();
                     gameScreen.getButtonPanel().getRollButton().setEnabled(false);
@@ -1202,7 +1254,7 @@ public class CommandInput {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                if (gameScreen.getButtonPanel().getDoneButton().isEnabled()) {
+                if (gameScreen.getButtonPanel().getDoneButton().isEnabled() && gameEnabled) {
                     gameScreen.getCommandInput().setText("DONE");
                     processCommand();
                     gameScreen.getButtonPanel().getDoneButton().setEnabled(false);
@@ -1214,7 +1266,7 @@ public class CommandInput {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                if (gameScreen.getButtonPanel().getQuestionButton().isEnabled()) {
+                if (gameScreen.getButtonPanel().getQuestionButton().isEnabled() && gameEnabled) {
                     gameScreen.getCommandInput().setText("QUESTION");
                     processCommand();
                     gameScreen.getButtonPanel().getQuestionButton().setEnabled(false);
@@ -1222,12 +1274,57 @@ public class CommandInput {
             }
         });
 
-        gameScreen.getAccusations().getDoneButton().addMouseListener(new MouseAdapter() {
+        gameScreen.getButtonPanel().getAccuseButton().addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                afterAccuse();
-                gameScreen.getAccusations().removeAll();
+                if (gameScreen.getButtonPanel().getAccuseButton().isEnabled()) {
+                    gameScreen.getCommandInput().setText("ACCUSE");
+                    processCommand();
+                    gameScreen.getButtonPanel().getQuestionButton().setEnabled(false);
+                }
+            }
+        });
+
+
+        gameScreen.getAccusations().getDoneButton().addActionListener(e -> {
+            infoOutput.append(playerName + " " + gameScreen.getAccusations().getAccusation());
+            gameLog.append(playerName).append(" ").append(gameScreen.getAccusations().getAccusation());
+
+            boolean correct = gameScreen.getAccusations().isCorrectGuess();
+            gameScreen.getAccusations().dispose();
+            if (correct) {
+                infoOutput.setText("Hoorah!\n" + playerName + " solved the murder\nand won the game!\n" + gameLog.toString());
+                incrementGamestate(6);
+                gameScreen.getPlayerChange().setDoneButton("Quit Game");
+                gameScreen.getPlayerChange().setEndGame(currentPlayer);
+                gameScreen.getPlayerChange().getDoneButton().removeAll();
+                gameScreen.getPlayerChange().getDoneButton().addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        super.mouseClicked(e);
+                        quitGame();
+                    }
+
+                    @Override
+                    public void mouseEntered(MouseEvent e) {
+                        super.mouseEntered(e);
+                        gameScreen.getPlayerChange().getDoneButton().setForeground(Color.RED);
+                        gameScreen.repaint();
+                    }
+
+                    @Override
+                    public void mouseExited(MouseEvent e) {
+                        super.mouseExited(e);
+                        gameScreen.getPlayerChange().getDoneButton().setForeground(Color.WHITE);
+                        gameScreen.repaint();
+                    }
+                });
+                gameScreen.getPlayerChange().setVisible(true);
+            } else {
+                gameLog.append(playerName).append(" was found murdered\nin the cellar!\n");
+                removeCurrentPlayer();
+                nextPlayer();
             }
         });
     }
@@ -1239,10 +1336,6 @@ public class CommandInput {
     public void setGameEnabled(boolean gameEnabled) {
         this.gameEnabled = gameEnabled;
         gameScreen.setGameEnabled(gameEnabled);
-    }
-
-    public boolean isGameEnabled() {
-        return gameEnabled;
     }
 
     public void setCurrentPlayerID(int currentPlayerID) {
@@ -1265,27 +1358,7 @@ public class CommandInput {
         return gameLog;
     }
 
-    public void accuse(){
-
-
-        gameScreen.getAccusations().setUpAccustations();
-
-    }
-
-    public void afterAccuse(){
-        Boolean guess = gameScreen.getAccusations().test();
-        if (guess) {
-            infoOutput.append("Congratulations, " + currentPlayer.getPlayerName() + "is the winner\n");
-            infoOutput.append("Please type 'exit' to finish\n");
-        } else if (!guess) {
-            infoOutput.append(currentPlayer.getPlayerName() + "Accused wrong and their turn shall be skipped and removed\n");
-            gameScreen.getAccusations().disableAccusation();
-            setGameEnabled(true);
-            removeCurrentPlayer();
-        }
-    }
-
-    public void removeCurrentPlayer(){
+    private void removeCurrentPlayer(){
         removedPlayer.add(currentPlayerID);
     }
 }
