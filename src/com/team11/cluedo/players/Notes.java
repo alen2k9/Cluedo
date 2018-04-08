@@ -216,7 +216,13 @@ public class Notes extends JTable {
 
             if (emptyCellsToPaint.contains(selected)){
                 label.setBackground(Color.LIGHT_GRAY);
-
+                label.setText("");
+                if (questionCellsToPaint.contains(selected)){
+                    label.setBackground(Color.GREEN);
+                    label.setForeground(Color.DARK_GRAY);
+                    label.setFont(new Font("Ariel", Font.BOLD, (int)(25*resolution.getScalePercentage())));
+                    label.setText("V");
+                }
             }
 
             return label;

@@ -80,7 +80,7 @@ public class MenuScreen implements Screen {
     @Override
     public void createScreen(String name) {
         this.frame = new JFrame(name);
-        //this.frame.setIconImage(gameAssets.getIcon());
+        this.frame.setIconImage(gameAssets.getIcon());
         this.frame.setResizable(false);
         this.frame.getContentPane().add(this.mainPanel);
         this.frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -164,7 +164,6 @@ public class MenuScreen implements Screen {
         gbc.gridwidth = 3;
         gbc.gridx = 0; gbc.gridy = 1;
         menuPanel.add(playButton, gbc);
-
 
         playButton.addActionListener(e -> {
             if (!doSelection) {

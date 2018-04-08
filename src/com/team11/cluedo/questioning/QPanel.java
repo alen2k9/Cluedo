@@ -300,13 +300,9 @@ public class QPanel extends JPanel {
 
     public void setSelectedWeapon(String weapon){
         for (T11Label label : weaponLabels){
-
             if (label.getCardID().matches(weapon)) {
                 setWeapon(label);
-                //System.out.println("Selected player is " + selectedWeapon.getCardName());
             }}
-
-
         selectedCards[2] = selectedWeapon;
     }
 
@@ -349,6 +345,11 @@ public class QPanel extends JPanel {
     public boolean hasShownCard(){
         return hasShownCard;
     }
+
+    public void setHasShownCard(boolean shown){
+        this.hasShownCard = shown;
+    }
+
     private void resetAllBoolean(){
         this.hasSelectedWeapon = false;
         this.hasSelectedPlayer = false;
@@ -359,7 +360,6 @@ public class QPanel extends JPanel {
         this.doneSelecting = false;
         this.hasShownCard = false;
     }
-
 
     private void removeNoCardLabels() {
         if (isDoneShowing) {
@@ -379,10 +379,6 @@ public class QPanel extends JPanel {
             hasLooped = true;
             questionState = 4;
         }
-            /*
-            if(removedPlayer.contains(this.nextPlayer))
-                incrementNextPlayer();
-            */
     }
 
     private void setupCards(){
@@ -646,9 +642,7 @@ public class QPanel extends JPanel {
             System.out.println("Error finding weapon");
         }
 
-        System.out.println("Found weapon and player");
         //Move the player and weapon
-
         gameScreen.getGameSuspects().getSuspect(questionedPlayer).moveToRoom(currentRoom, gameScreen.getGameBoard(), gameScreen.getGameSuspects().getSuspect(questionedPlayer));
         //System.out.println("Finished moving suspect");
         gameScreen.getGameWeapons().moveWeaponToRoom(questionedWeapon, currentRoom);
@@ -669,6 +663,7 @@ public class QPanel extends JPanel {
             incrementNextPlayer();
             gameScreen.getInfoOutput().setText("");
             gameScreen.getInfoOutput().setText("Pass to " + gameScreen.getGamePlayers().getPlayer(nextPlayer).getPlayerName() + "\nand click done or enter 'done'\n");
+            gameScreen.getInfoOutput().append("Enter hide/show to hide or show the question panel.\n");
             gameScreen.getPlayerChange().setPlayerCard(gameScreen.getGamePlayers().getPlayer(nextPlayer));
             gameScreen.getPlayerChange().setVisible(true);
             this.showingNextPlayer = true;

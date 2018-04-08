@@ -361,4 +361,5 @@ public class Assets {
     }
 
     public Image getIcon() {return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("icon_t11clu.png"));}
+
 }

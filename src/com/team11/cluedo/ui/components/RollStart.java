@@ -30,6 +30,11 @@ public class RollStart extends SwingWorker<Integer, String> {
         this.infoOutput = infoOutput;
         this.currentPlayer = currentPlayer;
         this.currentPlayerID = currentPlayerID;
+
+        this.gameScreen.getGameDice().setLeftDice(gameScreen.getGameBoard().getWidth()/2 - gameScreen.getGameDice().getLeftDice().getWidth()
+                ,gameScreen.getHeight()/2 - gameScreen.getGameDice().getLeftDice().getHeight());
+        this.gameScreen.getGameDice().setRightDice(gameScreen.getGameBoard().getWidth()/2 + (int)(gameScreen.getResolution().getScalePercentage()*10)
+                ,gameScreen.getHeight()/2 - gameScreen.getGameDice().getLeftDice().getHeight());
     }
 
 
@@ -104,6 +109,10 @@ public class RollStart extends SwingWorker<Integer, String> {
 
         commandInput.setCurrentPlayerID(currentPlayerID);
         commandInput.setUpMouseClick();
+
+        gameScreen.getGameDice().setLeftDice((int)gameScreen.getGameDice().getLeftLocation().getX(), (int)gameScreen.getGameDice().getLeftLocation().getY());
+        gameScreen.getGameDice().setRightDice((int)gameScreen.getGameDice().getRightLocation().getX(), (int)gameScreen.getGameDice().getRightLocation().getY());
+
         commandInput.playerTurn();
         gameScreen.getCommandInput().requestFocus();
         return null;

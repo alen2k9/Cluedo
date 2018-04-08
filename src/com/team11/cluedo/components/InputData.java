@@ -34,6 +34,8 @@ public class InputData {
         addElement("question", this.commandData);
         addElement("cards", this.commandData);
         addElement("log", this.commandData);
+        addElement("show", this.commandData);
+        addElement("hide", this.commandData);
 
 
 
