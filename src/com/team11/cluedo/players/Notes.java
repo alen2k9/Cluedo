@@ -29,7 +29,7 @@ public class Notes extends JTable {
     private HashSet<Point> cellToPaint = new HashSet<>();
     private HashSet<Point> customCellsToPaint = new HashSet<>();
     private HashSet<Point> questionCellsToPaint = new HashSet<>();
-
+    private HashSet<Point> emptyCellsToPaint = new HashSet<>();
     private Resolution resolution;
 
     public Notes(Resolution resolution){
@@ -134,8 +134,10 @@ public class Notes extends JTable {
 
         if (flag == 0){
             cellToPaint.add(new Point(rowIndex, columnIndex));
-        } else{
+        } else if (flag == 1){
             questionCellsToPaint.add(new Point(rowIndex, columnIndex));
+        } else{
+            emptyCellsToPaint.add(new Point(rowIndex, columnIndex));
         }
 
     }
@@ -204,11 +206,23 @@ public class Notes extends JTable {
                 label.setText("?");
             }
 
+            //Boxes filled in by questioning
             if (questionCellsToPaint.contains(selected)){
                 label.setBackground(Color.GREEN);
                 label.setForeground(Color.DARK_GRAY);
                 label.setFont(new Font("Ariel", Font.BOLD, (int)(25*resolution.getScalePercentage())));
                 label.setText("V");
+            }
+
+            if (emptyCellsToPaint.contains(selected)){
+                label.setBackground(Color.LIGHT_GRAY);
+                label.setText("");
+                if (questionCellsToPaint.contains(selected)){
+                    label.setBackground(Color.GREEN);
+                    label.setForeground(Color.DARK_GRAY);
+                    label.setFont(new Font("Ariel", Font.BOLD, (int)(25*resolution.getScalePercentage())));
+                    label.setText("V");
+                }
             }
 
             return label;

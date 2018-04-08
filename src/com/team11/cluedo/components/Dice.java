@@ -24,6 +24,9 @@ public class Dice extends JComponent {
     private Die leftDice;
     private Die rightDice;
 
+    private Point leftLocation;
+    private Point rightLocation;
+
     private Assets gameAssets;
     private double resolutionScalar;
 
@@ -43,6 +46,17 @@ public class Dice extends JComponent {
 
         super.add(leftDice);
         super.add(rightDice);
+
+        leftLocation = leftDice.getLocation();
+        rightLocation = rightDice.getLocation();
+    }
+
+    public Point getLeftLocation(){
+        return leftLocation;
+    }
+
+    public Point getRightLocation(){
+        return rightLocation;
     }
 
     public int rollDice() {
@@ -195,7 +209,7 @@ public class Dice extends JComponent {
             return null;
         }
 
-        private void getInitialPosition() {
+        public void getInitialPosition() {
             leftDice.setPreferredSize(new Dimension((int)(80*resolutionScalar),(int)(80*resolutionScalar)));
             rightDice.setPreferredSize(new Dimension((int)(80*resolutionScalar),(int)(80*resolutionScalar)));
 
@@ -207,5 +221,13 @@ public class Dice extends JComponent {
             initialX = (int)(dimension.getWidth()/2 - width/2);
             initialY = (int)(dimension.getHeight()/2 + height*3);
         }
+    }
+
+    public void setLeftDice(int x, int y){
+        leftDice.setLocation(x,y);
+    }
+
+    public void setRightDice(int x, int y){
+        rightDice.setLocation(x,y);
     }
 }
