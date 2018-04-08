@@ -209,22 +209,26 @@ public class MenuScreen implements Screen {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10);
 
+        ImageIcon icon = new ImageIcon(gameAssets.getWhiteCard());
+        int width = (int)(icon.getIconWidth() * 0.8 * resolution.getScalePercentage());
+        int height = (int)(icon.getIconHeight() * 0.8 * resolution.getScalePercentage());
+
         JButton[] characterButtons = new JButton[] {
-            new JButton(new ImageIcon(this.gameAssets.getWhiteCard())),
-            new JButton(new ImageIcon(this.gameAssets.getGreenCard())),
-            new JButton(new ImageIcon(this.gameAssets.getPeacockCard())),
-            new JButton(new ImageIcon(this.gameAssets.getPlumCard())),
-            new JButton(new ImageIcon(this.gameAssets.getScarletCard())),
-            new JButton(new ImageIcon(this.gameAssets.getMustardCard()))
+            new JButton(new ImageIcon(this.gameAssets.getWhiteCard().getScaledInstance(width, height, 0))),
+            new JButton(new ImageIcon(this.gameAssets.getGreenCard().getScaledInstance(width, height, 0))),
+            new JButton(new ImageIcon(this.gameAssets.getPeacockCard().getScaledInstance(width, height, 0))),
+            new JButton(new ImageIcon(this.gameAssets.getPlumCard().getScaledInstance(width, height, 0))),
+            new JButton(new ImageIcon(this.gameAssets.getScarletCard().getScaledInstance(width, height, 0))),
+            new JButton(new ImageIcon(this.gameAssets.getMustardCard().getScaledInstance(width, height, 0)))
         };
 
         ImageIcon[] selectedCharacters = new ImageIcon[] {
-            new ImageIcon(this.gameAssets.getSelectedWhiteCard()),
-            new ImageIcon(this.gameAssets.getSelectedGreenCard()),
-            new ImageIcon(this.gameAssets.getSelectedPeacockCard()),
-            new ImageIcon(this.gameAssets.getSelectedPlumCard()),
-            new ImageIcon(this.gameAssets.getSelectedScarletCard()),
-            new ImageIcon(this.gameAssets.getSelectedMustardCard())
+            new ImageIcon(this.gameAssets.getSelectedWhiteCard().getScaledInstance(width, height, 0)),
+            new ImageIcon(this.gameAssets.getSelectedGreenCard().getScaledInstance(width, height, 0)),
+            new ImageIcon(this.gameAssets.getSelectedPeacockCard().getScaledInstance(width, height, 0)),
+            new ImageIcon(this.gameAssets.getSelectedPlumCard().getScaledInstance(width, height, 0)),
+            new ImageIcon(this.gameAssets.getSelectedScarletCard().getScaledInstance(width, height, 0)),
+            new ImageIcon(this.gameAssets.getSelectedMustardCard().getScaledInstance(width, height, 0))
         };
 
         for (int i = 0, x = 0, y = 1 ; i < characterButtons.length ; i++, x++) {

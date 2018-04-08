@@ -155,7 +155,7 @@ public class AccusationPanel extends JPanel {
             weaponLabels[i].setID(weaponData.getWeaponID(i));
         }
         for (int i = 0 ; i < roomLabels.length ; i++) {
-            roomLabels[i].setDisabledIcon(roomIcons[i]);
+            roomLabels[i].setDisabledIcon(selectedRoomIcons[i]);
             roomLabels[i].setSize(cardSize);
             roomLabels[i].setID(roomData.getRoomID(i));
         }

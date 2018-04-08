@@ -242,11 +242,11 @@ public class Assets {
     }
 
     public Image getSelectedKitchenCard() {
-        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("roomCard.png"));
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("kitchenCard_Selected.png"));
     }
 
     public Image getSelectedBallroomCard() {
-        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("roomCard.png"));
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("ballroomCard_Selected.png"));
     }
 
     public Image getSelectedConservatoryCard() {
@@ -254,15 +254,15 @@ public class Assets {
     }
 
     public Image getSelectedDiningCard() {
-        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("roomCard.png"));
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("diningRoomCard_Selected.png"));
     }
 
     public Image getSelectedBilliardCard() {
-        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("roomCard.png"));
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("billiardRoomCard_Selected.png"));
     }
 
     public Image getSelectedLibraryCard() {
-        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("roomCard.png"));
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("libraryCard_Selected.png"));
     }
 
     public Image getSelectedLoungeCard() {
@@ -270,11 +270,11 @@ public class Assets {
     }
 
     public Image getSelectedHallCard() {
-        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("roomCard.png"));
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("hallCard_Selected.png"));
     }
 
     public Image getSelectedStudyCard() {
-        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("roomCard.png"));
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("studyCard_Selected.png"));
     }
 
     ////////////////////////////////////////////
