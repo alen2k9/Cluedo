@@ -250,7 +250,7 @@ public class Assets {
     }
 
     public Image getSelectedConservatoryCard() {
-        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("roomCard.png"));
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("conservatoryCard_Selected.png"));
     }
 
     public Image getSelectedDiningCard() {

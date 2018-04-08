@@ -70,7 +70,6 @@ public class GameScreen extends JFrame implements Screen {
     private final Players gamePlayers;
     private final Assets gameAssets;
     private final Cards gameCards;
-    private Accusations accusations;
 
     private final Resolution resolution;
     private Dimension currSize;
@@ -79,7 +78,7 @@ public class GameScreen extends JFrame implements Screen {
 
     public GameScreen(Board gameBoard, Suspects gameSuspects, Weapons gameWeapons, Players gamePlayers, Assets gameAssets, Resolution resolution, String name) throws IOException{
         super(name);
-        //super.setIconImage(gameAssets.getIcon());
+        super.setIconImage(gameAssets.getIcon());
         this.gameBoard = gameBoard;
         this.gameSuspects = gameSuspects;
         this.gameWeapons = gameWeapons;
@@ -92,7 +91,6 @@ public class GameScreen extends JFrame implements Screen {
         this.qPanel = new QPanel(this, this.resolution);
         this.gameDice = new Dice(gameAssets, resolution);
         this.playerChange = new PlayerChange(resolution);
-        //this.accusations= new Accusations(gameAssets,gameCards,resolution);
         this.cardsPanel = new CardsPanel(gameAssets, resolution, "Your Cards");
         this.notesPanel = new NotesPanel(gameAssets,resolution);
     }
