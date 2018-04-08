@@ -266,7 +266,7 @@ public class Assets {
     }
 
     public Image getSelectedLoungeCard() {
-        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("roomCard.png"));
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("loungeCard_Selected.png"));
     }
 
     public Image getSelectedHallCard() {
