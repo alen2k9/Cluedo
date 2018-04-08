@@ -503,6 +503,7 @@ public class QPanel extends JPanel {
                             (int) ((card.getIcon().getIconHeight() * 0.8 * resolution.getScalePercentage())));
                     card.setSelected(true);
                     animate.start();
+                    inPlayerState = false;
                 }
             }
         }
@@ -526,15 +527,10 @@ public class QPanel extends JPanel {
         }
         System.out.println(doAnimate);
         if (doAnimate) {
-            System.out.println("Inside do animate");
-            System.out.println("player: " + hasSelectedPlayer);
-            System.out.println("player: " + hasSelectedWeapon);
-
             if (!hasSelectedPlayer) {
                 slideCards(playerLabels, labelSlideX,  playerLabels[0].getY(),
                         playerLabels[0].getX(), playerLabels[0].getY());
             } else if (!hasSelectedWeapon) {
-                System.out.println("Inside !hasSelected");
                 slideCards(weaponLabels, labelSlideX,  weaponLabels[0].getY(),
                         weaponLabels[0].getX(), weaponLabels[0].getY());
             }
@@ -551,6 +547,7 @@ public class QPanel extends JPanel {
                     super.mouseClicked(e);
                     if (!labels[finalI].isSelected()) {
                         addCards(labels[finalI].getCardName());
+
                     }
                 }
 
@@ -837,6 +834,10 @@ public class QPanel extends JPanel {
     public void setSelectedCardName(String name){
         System.out.println("Selected Card is " + name);
         this.selectedCardName = name;
+    }
+
+    public String getShower(){
+        return this.shower;
     }
 
     public void printShower(){

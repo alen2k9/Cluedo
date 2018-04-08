@@ -94,8 +94,6 @@ public class CommandInput {
         String command = inputs[0];
         this.gameScreen.getCommandInput().setText("");
 
-        //System.out.println("Gamestate " + gameState);
-
         if (gameEnabled && gameState != 4) {
             infoOutput.append("> " + input + '\n');
             switch (gameState) {
@@ -155,7 +153,6 @@ public class CommandInput {
 
                         case "hide":
                             this.gameScreen.getQuestionPanel().hideQuestionPanel();
-                            //this.gameScreen.getQuestionPanel().removeKeyListener(gameScreen.getQuestionPanel().getKeyListeners()[0]);
                             this.gameScreen.getCommandInput().requestFocus();
                             break;
 
@@ -447,10 +444,10 @@ public class CommandInput {
                                     gameScreen.getqPanel().hideQuestionPanel();
 
                                     if (gameScreen.getqPanel().hasShownCard()) {
-                                        gameLog.append(currentPlayer.getPlayerName() + " was shown a card\n");
+                                        gameLog.append(currentPlayer.getPlayerName() + " was shown a card by " + gameScreen.getqPanel().getShower() + "\n\n");
                                     }
                                     else{
-                                        gameLog.append(currentPlayer.getPlayerName()).append(" was not shown a card\n");
+                                        gameLog.append(currentPlayer.getPlayerName()).append(" was not shown a card by anyone\n");
                                     }
                                     setGameEnabled(true);
                                     if (canRoll) {
@@ -1372,9 +1369,9 @@ public class CommandInput {
                                     " in the " + gameScreen.getqPanel().getPrevSelectedCards()[1].getCardName() + "\n\n");
                             gameScreen.getqPanel().hideQuestionPanel();
                             if (gameScreen.getqPanel().hasShownCard()){
-                                gameLog.append(currentPlayer.getPlayerName() + " was shown a card\n\n");
+                                gameLog.append(currentPlayer.getPlayerName() + " was shown a card by " + gameScreen.getqPanel().getShower() + "\n\n");
                             } else{
-                                gameLog.append(currentPlayer.getPlayerName() + " was not shown a card\n\n");
+                                gameLog.append(currentPlayer.getPlayerName() + " was not shown a card by anyone\n\n");
                             }
 
                             if (canRoll){
