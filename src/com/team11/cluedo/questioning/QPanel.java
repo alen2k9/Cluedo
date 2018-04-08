@@ -111,6 +111,7 @@ public class QPanel extends JPanel {
     private T11Label selectedPlayer;
     private T11Label selectedWeapon;
     private T11Label selectedRoom;
+    private T11Label selectedCard;
 
     //Array lists of the valid cards found when checking each players hand
     private ArrayList<T11Label> validCards = new ArrayList<>();
@@ -145,6 +146,8 @@ public class QPanel extends JPanel {
     private JLabel noCardsLabel;
     private JLabel doneButton;
 
+    private String shower;
+
     private GameScreen gameScreen;
     private Resolution resolution;
 
@@ -157,6 +160,10 @@ public class QPanel extends JPanel {
         this.resolution = resolution;
         this.setupLabels();
         this.setupButtonsAndLabels();
+    }
+
+    public boolean displaying(){
+        return this.isVisible();
     }
 
     private void setupButtonsAndLabels(){
@@ -696,6 +703,7 @@ public class QPanel extends JPanel {
             }
         }
     }
+
     private int findLabelID(T11Label[] labels, T11Label card){
         int index = -1;
         int i = 0;
@@ -710,6 +718,15 @@ public class QPanel extends JPanel {
         return index;
     }
 
+    public boolean containsCard(String cardID){
+        for (int i = 0; i < validCards.size();i++){
+            System.out.println("Comparing " + validCards.get(i).getCardName() + " and " + cardID);
+            if (validCards.get(i).getCardName().matches(cardID)){
+                return true;
+            }
+        }
+        return false;
+    }
 
     public void setupValidCards() {
         this.validCards = new ArrayList<>();
@@ -771,6 +788,8 @@ public class QPanel extends JPanel {
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     super.mouseClicked(e);
+                    selectedCard = label;
+                    shower = label.getCardName();
                     hasShownCard = true;
                     selectCard();
                     fillNotes(label.getCardName());
@@ -802,8 +821,8 @@ public class QPanel extends JPanel {
         }
     }
 
-
     public void selectCard(){
+        this.shower = gameScreen.getGamePlayers().getPlayer(nextPlayer).getPlayerName();
         hideQuestionPanel();
         gameScreen.reDraw(currentPlayer);
         gameScreen.getPlayerChange().setPlayerCard(gameScreen.getGamePlayers().getPlayer(currentPlayer));
@@ -811,6 +830,10 @@ public class QPanel extends JPanel {
         showingNextPlayer = true;
         doneQuestioning = true;
         questionState = 4;
+    }
+
+    public void printShower(){
+        gameScreen.getInfoOutput().append(gameScreen.getGamePlayers().getPlayer(nextPlayer).getPlayerName() + " showed you a card.\n");
     }
 
     public void textSelectCard(String card){
