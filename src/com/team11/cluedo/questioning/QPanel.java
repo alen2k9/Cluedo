@@ -147,6 +147,7 @@ public class QPanel extends JPanel {
     private JLabel doneButton;
 
     private String shower;
+    private String selectedCardName;
 
     private GameScreen gameScreen;
     private Resolution resolution;
@@ -789,7 +790,8 @@ public class QPanel extends JPanel {
                 public void mouseClicked(MouseEvent e) {
                     super.mouseClicked(e);
                     selectedCard = label;
-                    shower = label.getCardName();
+                    shower = gameScreen.getGamePlayers().getPlayer(nextPlayer).getPlayerName();
+                    setSelectedCardName(label.getCardName());
                     hasShownCard = true;
                     selectCard();
                     fillNotes(label.getCardName());
@@ -832,8 +834,15 @@ public class QPanel extends JPanel {
         questionState = 4;
     }
 
+    public void setSelectedCardName(String name){
+        System.out.println("Selected Card is " + name);
+        this.selectedCardName = name;
+    }
+
     public void printShower(){
-        gameScreen.getInfoOutput().append(gameScreen.getGamePlayers().getPlayer(nextPlayer).getPlayerName() + " showed you a card.\n");
+        //gameScreen.getInfoOutput().append(gameScreen.getGamePlayers().getPlayer(nextPlayer).getPlayerName() + " showed you a card.\n");
+        System.out.println("Next Player is " + gameScreen.getGamePlayers().getPlayer(nextPlayer).getPlayerName());
+        gameScreen.getInfoOutput().append(gameScreen.getGamePlayers().getPlayer(nextPlayer).getPlayerName() + " showed you the " + selectedCardName + " card.\n\n");
     }
 
     public void textSelectCard(String card){

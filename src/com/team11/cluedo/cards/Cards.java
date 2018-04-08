@@ -154,8 +154,15 @@ public class Cards {
             for (Card card : publicEnvelope){
                 gamePlayers.getPlayer(i).getPlayerHand().addPublicCards(card);
                 gamePlayers.getPlayer(i).getPlayerNotes().paintCell(0, card.getName(), 0);
+                for (int j = 1; j < 8; j++){
+                    gamePlayers.getPlayer(i).getPlayerNotes().paintCell(j, card.getName(), 2);
+                }
+
             }
+
+
         }
+
     }
 
     public MurderEnvelope getMurderEnvelope() {

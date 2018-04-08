@@ -481,11 +481,19 @@ public class CommandInput {
                                 cards();
                             }
                             break;
+                        case "notes":
+                            if (gameScreen.getqPanel().displaying()){
+                                infoOutput.append("Cannot display your notes right now.\nTry hiding the question menu with 'hide'.\n\n");
+                            } else {
+                                notes();
+                            }
+                            break;
                         case "white":
                             if (gameScreen.getqPanel().getQuestionState() == 0){
                                 gameScreen.getqPanel().textSelectCard("white");
                             } else if (gameScreen.getqPanel().getQuestionState() == 3){
                                 if (gameScreen.getqPanel().containsCard("Miss White")) {
+                                    gameScreen.getqPanel().setSelectedCardName("Miss White");
                                     gameScreen.getqPanel().setHasShownCard(true);
                                     gameScreen.getqPanel().selectCard();
                                     gameScreen.getqPanel().fillNotes("Miss White");
@@ -501,6 +509,7 @@ public class CommandInput {
                                 gameScreen.getqPanel().textSelectCard("green");
                             } else if (gameScreen.getqPanel().getQuestionState() == 3){
                                 if (gameScreen.getqPanel().containsCard("Mr. Green")) {
+                                    gameScreen.getqPanel().setSelectedCardName("Mr Green");
                                     gameScreen.getqPanel().setHasShownCard(true);
                                     gameScreen.getqPanel().selectCard();
                                     gameScreen.getqPanel().fillNotes("Mr. Green");
@@ -515,6 +524,7 @@ public class CommandInput {
                                 gameScreen.getqPanel().textSelectCard("peacock");
                             } else if (gameScreen.getqPanel().getQuestionState() == 3){
                                 if (gameScreen.getqPanel().containsCard("Ms. Peacock")) {
+                                    gameScreen.getqPanel().setSelectedCardName("Ms. Peacock");
                                     gameScreen.getqPanel().setHasShownCard(true);
                                     gameScreen.getqPanel().selectCard();
                                     gameScreen.getqPanel().fillNotes("Ms. Peacock");
@@ -529,6 +539,7 @@ public class CommandInput {
                                 gameScreen.getqPanel().textSelectCard("plum");
                             } else if (gameScreen.getqPanel().getQuestionState() == 3){
                                 if (gameScreen.getqPanel().containsCard("Mr. Plum")) {
+                                    gameScreen.getqPanel().setSelectedCardName("Mr. Plum");
                                     gameScreen.getqPanel().setHasShownCard(true);
                                     gameScreen.getqPanel().selectCard();
                                     gameScreen.getqPanel().fillNotes("Mr. Plum");
@@ -543,6 +554,7 @@ public class CommandInput {
                                 gameScreen.getqPanel().textSelectCard("scarlett");
                             } else if (gameScreen.getqPanel().getQuestionState() == 3){
                                 if (gameScreen.getqPanel().containsCard("Miss Scarlett")) {
+                                    gameScreen.getqPanel().setSelectedCardName("Miss Scarlett");
                                     gameScreen.getqPanel().setHasShownCard(true);
                                     gameScreen.getqPanel().selectCard();
                                     gameScreen.getqPanel().fillNotes("Miss Scarlett");
@@ -557,6 +569,7 @@ public class CommandInput {
                                 gameScreen.getqPanel().textSelectCard("mustard");
                             } else if (gameScreen.getqPanel().getQuestionState() == 3){
                                 if (gameScreen.getqPanel().containsCard("Colonel Mustard")) {
+                                    gameScreen.getqPanel().setSelectedCardName("Colonel Mustard");
                                     gameScreen.getqPanel().setHasShownCard(true);
                                     gameScreen.getqPanel().selectCard();
                                     gameScreen.getqPanel().fillNotes("Colonel Mustard");
@@ -571,6 +584,7 @@ public class CommandInput {
                                 gameScreen.getqPanel().textSelectCard("hatchet");
                             } else if (gameScreen.getqPanel().getQuestionState() == 3){
                                 if (gameScreen.getqPanel().containsCard("Hatchet")) {
+                                    gameScreen.getqPanel().setSelectedCardName("Hatchet");
                                     gameScreen.getqPanel().setHasShownCard(true);
                                     gameScreen.getqPanel().selectCard();
                                     gameScreen.getqPanel().fillNotes("Hatchet");
@@ -585,6 +599,7 @@ public class CommandInput {
                                 gameScreen.getqPanel().textSelectCard("dagger");
                             } else if (gameScreen.getqPanel().getQuestionState() == 3){
                                 if (gameScreen.getqPanel().containsCard("Dagger")) {
+                                    gameScreen.getqPanel().setSelectedCardName("Dagger");
                                     gameScreen.getqPanel().setHasShownCard(true);
                                     gameScreen.getqPanel().selectCard();
                                     gameScreen.getqPanel().fillNotes("Dagger");
@@ -599,6 +614,7 @@ public class CommandInput {
                                 gameScreen.getqPanel().textSelectCard("poison");
                             } else if (gameScreen.getqPanel().getQuestionState() == 3){
                                 if (gameScreen.getqPanel().containsCard("Poison")) {
+                                    gameScreen.getqPanel().setSelectedCardName("Poison");
                                     gameScreen.getqPanel().setHasShownCard(true);
                                     gameScreen.getqPanel().selectCard();
                                     gameScreen.getqPanel().fillNotes("Poison");
@@ -613,6 +629,7 @@ public class CommandInput {
                                 gameScreen.getqPanel().textSelectCard("revolver");
                             } else if (gameScreen.getqPanel().getQuestionState() == 3){
                                 if (gameScreen.getqPanel().containsCard("Revolver")) {
+                                    gameScreen.getqPanel().setSelectedCardName("Revolver");
                                     gameScreen.getqPanel().setHasShownCard(true);
                                     gameScreen.getqPanel().selectCard();
                                     gameScreen.getqPanel().fillNotes("Revolver");
@@ -627,6 +644,7 @@ public class CommandInput {
                                 gameScreen.getqPanel().textSelectCard("rope");
                             } else if (gameScreen.getqPanel().getQuestionState() == 3){
                                 if (gameScreen.getqPanel().containsCard("Rope")) {
+                                    gameScreen.getqPanel().setSelectedCardName("Rope");
                                     gameScreen.getqPanel().setHasShownCard(true);
                                     gameScreen.getqPanel().selectCard();
                                     gameScreen.getqPanel().fillNotes("Rope");
@@ -641,6 +659,7 @@ public class CommandInput {
                                 gameScreen.getqPanel().textSelectCard("wrench");
                             } else if (gameScreen.getqPanel().getQuestionState() == 3){
                                 if (gameScreen.getqPanel().containsCard("Wrench")) {
+                                    gameScreen.getqPanel().setSelectedCardName("Wrench");
                                     gameScreen.getqPanel().setHasShownCard(true);
                                     gameScreen.getqPanel().selectCard();
                                     gameScreen.getqPanel().fillNotes("Wrench");
@@ -653,6 +672,7 @@ public class CommandInput {
                         case "kitchen":
                             if (gameScreen.getqPanel().getQuestionState() == 3){
                                 if (gameScreen.getqPanel().containsCard("Kitchen")) {
+                                    gameScreen.getqPanel().setSelectedCardName("Kitchen");
                                     gameScreen.getqPanel().setHasShownCard(true);
                                     gameScreen.getqPanel().selectCard();
                                     gameScreen.getqPanel().fillNotes("Kitchen");
@@ -667,6 +687,7 @@ public class CommandInput {
                         case "ballroom":
                             if (gameScreen.getqPanel().getQuestionState() == 3){
                                 if (gameScreen.getqPanel().containsCard("Ballroom")) {
+                                    gameScreen.getqPanel().setSelectedCardName("Ballroom");
                                     gameScreen.getqPanel().setHasShownCard(true);
                                     gameScreen.getqPanel().selectCard();
                                     gameScreen.getqPanel().fillNotes("Ballroom");
@@ -681,6 +702,7 @@ public class CommandInput {
                         case "conservatory":
                             if (gameScreen.getqPanel().getQuestionState() == 3){
                                 if (gameScreen.getqPanel().containsCard("Conservatory")) {
+                                    gameScreen.getqPanel().setSelectedCardName("Conservatory");
                                     gameScreen.getqPanel().setHasShownCard(true);
                                     gameScreen.getqPanel().selectCard();
                                     gameScreen.getqPanel().fillNotes("Conservatory");
@@ -696,6 +718,7 @@ public class CommandInput {
                         case "dining":
                             if (gameScreen.getqPanel().getQuestionState() == 3){
                                 if (gameScreen.getqPanel().containsCard("Dining")) {
+                                    gameScreen.getqPanel().setSelectedCardName("Dining");
                                     gameScreen.getqPanel().setHasShownCard(true);
                                     gameScreen.getqPanel().selectCard();
                                     gameScreen.getqPanel().fillNotes("Dining");
@@ -710,6 +733,7 @@ public class CommandInput {
                         case "billiard":
                             if (gameScreen.getqPanel().getQuestionState() == 3){
                                 if (gameScreen.getqPanel().containsCard("Billiard")) {
+                                    gameScreen.getqPanel().setSelectedCardName("Billiard");
                                     gameScreen.getqPanel().setHasShownCard(true);
                                     gameScreen.getqPanel().selectCard();
                                     gameScreen.getqPanel().fillNotes("Billiard Room");
@@ -724,6 +748,7 @@ public class CommandInput {
                         case "library":
                             if (gameScreen.getqPanel().getQuestionState() == 3){
                                 if (gameScreen.getqPanel().containsCard("Library")) {
+                                    gameScreen.getqPanel().setSelectedCardName("Library");
                                     gameScreen.getqPanel().setHasShownCard(true);
                                     gameScreen.getqPanel().selectCard();
                                     gameScreen.getqPanel().fillNotes("Library");
@@ -738,6 +763,7 @@ public class CommandInput {
                         case "lounge":
                             if (gameScreen.getqPanel().getQuestionState() == 3){
                                 if (gameScreen.getqPanel().containsCard("Lounge")) {
+                                    gameScreen.getqPanel().setSelectedCardName("Lounge");
                                     gameScreen.getqPanel().setHasShownCard(true);
                                     gameScreen.getqPanel().selectCard();
                                     gameScreen.getqPanel().fillNotes("Lounge");
@@ -752,6 +778,7 @@ public class CommandInput {
                         case "hall":
                             if (gameScreen.getqPanel().getQuestionState() == 3){
                                 if (gameScreen.getqPanel().containsCard("Hall")) {
+                                    gameScreen.getqPanel().setSelectedCardName("Hall");
                                     gameScreen.getqPanel().setHasShownCard(true);
                                     gameScreen.getqPanel().selectCard();
                                     gameScreen.getqPanel().fillNotes("Hall");
@@ -766,6 +793,7 @@ public class CommandInput {
                         case "study":
                             if (gameScreen.getqPanel().getQuestionState() == 3){
                                 if (gameScreen.getqPanel().containsCard("Study")) {
+                                    gameScreen.getqPanel().setSelectedCardName("Study");
                                     gameScreen.getqPanel().setHasShownCard(true);
                                     gameScreen.getqPanel().selectCard();
                                     gameScreen.getqPanel().fillNotes("Study");
@@ -1335,14 +1363,14 @@ public class CommandInput {
                         case (4):   //Finished selecting a card to show and need to return to the game
                             gameScreen.getPlayerChange().setVisible(false);
                             setGameEnabled(true);
-                            gameLog.append(currentPlayer.getPlayerName() + " asked was it zn\n" +
+                            gameLog.append(currentPlayer.getPlayerName() + " asked was it \n\n" +
                                     gameScreen.getqPanel().getPrevSelectedCards()[0].getCardName() + " with the " + gameScreen.getqPanel().getPrevSelectedCards()[2].getCardName() +
                                     " in the " + gameScreen.getqPanel().getPrevSelectedCards()[1].getCardName() + "\n\n");
                             gameScreen.getqPanel().hideQuestionPanel();
                             if (gameScreen.getqPanel().hasShownCard()){
-                                gameLog.append(currentPlayer.getPlayerName() + " was shown a cardzn\n");
+                                gameLog.append(currentPlayer.getPlayerName() + " was shown a card\n\n");
                             } else{
-                                gameLog.append(currentPlayer.getPlayerName() + " was not shown a cardzn\n");
+                                gameLog.append(currentPlayer.getPlayerName() + " was not shown a card\n\n");
                             }
 
                             if (canRoll){
