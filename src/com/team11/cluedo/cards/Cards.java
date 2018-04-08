@@ -88,6 +88,11 @@ public class Cards {
                         tmp = suspectCards.remove(0);
                         gamePlayers.getPlayer(currentPlayer).getPlayerHand().addCardToHand(tmp);
                         gamePlayers.getPlayer(currentPlayer).getPlayerNotes().paintCell(currentPlayer+1, tmp.getName(), 0);
+                        for (int j = 0; j < 8; j++){
+                            if (j != currentPlayer+1){
+                                gamePlayers.getPlayer(currentPlayer).getPlayerNotes().paintCell(j, tmp.getName(), 2);
+                            }
+                        }
                     } else {
                         i--;
                         if (currentPlayer == 0)
@@ -101,6 +106,11 @@ public class Cards {
                         tmp = weaponCards.remove(0);
                         gamePlayers.getPlayer(currentPlayer).getPlayerHand().addCardToHand(tmp);
                         gamePlayers.getPlayer(currentPlayer).getPlayerNotes().paintCell(currentPlayer+1, tmp.getName(), 0);
+                        for (int j = 0; j < 8; j++){
+                            if (j != currentPlayer+1){
+                                gamePlayers.getPlayer(currentPlayer).getPlayerNotes().paintCell(j, tmp.getName(), 2);
+                            }
+                        }
                     } else {
                         i--;
                         if (currentPlayer == 0)
@@ -114,6 +124,11 @@ public class Cards {
                         tmp = roomCards.remove(0);
                         gamePlayers.getPlayer(currentPlayer).getPlayerHand().addCardToHand(tmp);
                         gamePlayers.getPlayer(currentPlayer).getPlayerNotes().paintCell(currentPlayer+1, tmp.getName(), 0);
+                        for (int j = 0; j < 8; j++){
+                            if (j != currentPlayer+1){
+                                gamePlayers.getPlayer(currentPlayer).getPlayerNotes().paintCell(j, tmp.getName(), 2);
+                            }
+                        }
                     } else {
                         i--;
                         if (currentPlayer == 0)
