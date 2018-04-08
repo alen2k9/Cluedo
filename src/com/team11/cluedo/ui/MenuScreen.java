@@ -168,6 +168,9 @@ public class MenuScreen implements Screen {
         playButton.addActionListener(e -> {
             if (!doSelection) {
                 selectionPanel.setVisible(true);
+                for (int i = 0 ; i < selectionPanel.getComponents().length ; i++) {
+                    selectionPanel.getComponent(i).setEnabled(false);
+                }
                 menuPanel.setEnabled(false);
                 playButton.setEnabled(false);
                 doSelection = true;
@@ -178,8 +181,11 @@ public class MenuScreen implements Screen {
                         menuPanel.setVisible(false);
                         menuPanel.removeAll();
                         timer.stop();
+                        for (int i = 0 ; i < selectionPanel.getComponents().length ; i++) {
+                            selectionPanel.getComponent(i).setEnabled(true);
+                        }
                     }
-                    menuPanel.setLocation(menuPanel.getX(), menuPanel.getY() - 20);
+                    menuPanel.setLocation(menuPanel.getX(), menuPanel.getY() - 30);
                 });
                 timer.start();
             }

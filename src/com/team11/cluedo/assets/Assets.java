@@ -250,7 +250,7 @@ public class Assets {
     }
 
     public Image getSelectedConservatoryCard() {
-        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("roomCard.png"));
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("conservatoryCard_Selected.png"));
     }
 
     public Image getSelectedDiningCard() {
@@ -266,7 +266,7 @@ public class Assets {
     }
 
     public Image getSelectedLoungeCard() {
-        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("roomCard.png"));
+        return Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("loungeCard_Selected.png"));
     }
 
     public Image getSelectedHallCard() {

@@ -1157,6 +1157,10 @@ public class CommandInput {
                 gameScreen.getButtonPanel().getDoneButton().setEnabled(true);
                 break;
             case 4:
+                gameScreen.getButtonPanel().getRollButton().setEnabled(false);
+                gameScreen.getButtonPanel().getDoneButton().setEnabled(false);
+                gameScreen.getButtonPanel().getAccuseButton().setEnabled(false);
+                gameScreen.getButtonPanel().getQuestionButton().setEnabled(false);
                 break;
             case 5:
                 gameScreen.getAccusations().accuse();
