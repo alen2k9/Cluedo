@@ -1,16 +1,23 @@
+/*
+ * Code to handle the change over screen.
+ *
+ * Authors Team11:  Jack Geraghty - 16384181
+ *                  Conor Beenham - 16350851
+ *                  Alen Thomas   - 16333003
+ */
+
 package com.team11.cluedo.ui.components;
 
-import com.team11.cluedo.components.T11Label;
 import com.team11.cluedo.players.Player;
 import com.team11.cluedo.ui.Resolution;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
 
 public class PlayerChange extends JPanel {
     private JLabel doneButton, textLabel;
     private Resolution resolution;
+    private String text;
 
     public PlayerChange(Resolution resolution) {
         this.resolution = resolution;
@@ -18,7 +25,7 @@ public class PlayerChange extends JPanel {
         setupButton("DONE");
 
         setLayout(new GridBagLayout());
-        setBackground(new Color(0,0,0, 168));
+        setOpaque(false);
         setVisible(false);
     }
 
@@ -60,7 +67,7 @@ public class PlayerChange extends JPanel {
     public void setEndGame(Player player){
         this.removeAll();
 
-        textLabel = new JLabel((player.getPlayerName() + " has solved the murder!"));
+        textLabel = new JLabel((player.getPlayerName() + " " + this.text));
         textLabel.setFont(new Font("Bulky Pixels", Font.BOLD, (int)(20 * resolution.getScalePercentage())));
         textLabel.setForeground(Color.WHITE);
         textLabel.setBackground(Color.BLACK);
@@ -71,6 +78,7 @@ public class PlayerChange extends JPanel {
                 0
         ));
         JLabel playerCard = new JLabel(icon);
+
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5,5,5,5);
@@ -88,5 +96,16 @@ public class PlayerChange extends JPanel {
 
     public void setDoneButton(String text) {
         setupButton(text);
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        g.setColor(new Color(0,0,0, 168));
+        g.fillRect(0,0,getWidth(),getHeight());
     }
 }

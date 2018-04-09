@@ -9,7 +9,6 @@
 package com.team11.cluedo.ui;
 
 import com.team11.cluedo.accustations.AccusationPanel;
-import com.team11.cluedo.accustations.Accusations;
 import com.team11.cluedo.assets.Assets;
 import com.team11.cluedo.cards.CardsPanel;
 import com.team11.cluedo.components.Autocomplete;
