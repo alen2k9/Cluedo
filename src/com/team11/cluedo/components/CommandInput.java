@@ -36,9 +36,11 @@ public class CommandInput {
     private GameScreen gameScreen;
     private HelpCommand helpCommand;
     private JTextArea infoOutput;
+    private JTextArea personalInfo;
     private Player currentPlayer;
     private String playerName;
     private StringBuilder gameLog;
+    private String[] personal;
 
     private int dice, remainingMoves, numPlayers, currentPlayerID, gameState;
     private boolean canRoll, canCheat, canQuestion, canPassage;
@@ -62,6 +64,7 @@ public class CommandInput {
         this.currentPlayer = gameScreen.getGamePlayers().getPlayer(currentPlayerID);
         this.playerName = currentPlayer.getPlayerName();
         this.infoOutput = gameScreen.getInfoOutput();
+        this.personalInfo = gameScreen.getPersonal();
         this.helpCommand = new HelpCommand(infoOutput);
         this.gameState = 0;
 
@@ -72,7 +75,7 @@ public class CommandInput {
 
         this.gameScreen.getCommandInput().addActionListener(e -> processCommand());
         keyInput();
-
+        setUpPersonal();
         gameScreen.reDrawFrame();
         SwingUtilities.invokeLater(() -> new RollStart(gameScreen, this, infoOutput, currentPlayer, currentPlayerID).execute());
     }
@@ -889,6 +892,7 @@ public class CommandInput {
     }
 
     private void nextPlayer() {
+        addToPersonal();
         if (gameScreen.getGamePlayers().getPlayerCount() - removedPlayer.size() > 0) {
             this.currentPlayerID++;
             if (this.currentPlayerID == this.numPlayers)
@@ -897,6 +901,7 @@ public class CommandInput {
                 nextPlayer();
                 return;
             }
+            addPersonal();
         }
         this.gameState = 0;
         this.gameScreen.getMoveOverlay().setValidMoves(new HashSet<>(), this.currentPlayer);
@@ -1173,6 +1178,23 @@ public class CommandInput {
             case 6:
                 infoOutput.append("\n\nEnter anything to close the game.\n\n");
         }
+    }
+
+
+    private void setUpPersonal(){
+        personal = new String[6];
+
+    }
+
+    private void addToPersonal(){
+        String string = personalInfo.getText();
+        String S = this.personal[currentPlayerID] + "\n "+ string;
+        this.personal[currentPlayerID] = S;
+        personalInfo.removeAll();
+    }
+
+    private void addPersonal(){
+        personalInfo.setText(personal[currentPlayerID]);
     }
 
     private void question(String[] inputs) {

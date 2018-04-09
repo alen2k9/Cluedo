@@ -60,6 +60,7 @@ public class GameScreen extends JFrame implements Screen {
     private DoorOverlay doorOverlay;
 
     private JTextArea infoOutput;
+    private JTextArea personal;
     private JTabbedPane infoTabs;
     private JTextField commandInput;
 
@@ -213,7 +214,7 @@ public class GameScreen extends JFrame implements Screen {
     }
 
     private JTextArea setupPersonalPanel() {
-        JTextArea personal = new JTextArea(15, 25);
+        personal = new JTextArea(15, 25);
         int fontSize = (int)(18 * resolution.getScalePercentage());
         personal.setFont(new Font("Orange Kid",Font.BOLD, fontSize));
         personal.setEditable(true); infoOutput.setLineWrap(true);
@@ -309,6 +310,8 @@ public class GameScreen extends JFrame implements Screen {
     public JTextField getCommandInput() {
         return commandInput;
     }
+
+    public JTextArea getPersonal(){return personal;}
 
     public Board getGameBoard() {
         return gameBoard;
