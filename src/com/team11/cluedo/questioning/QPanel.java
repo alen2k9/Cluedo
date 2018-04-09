@@ -728,7 +728,7 @@ public class QPanel extends JPanel {
             incrementNextPlayer();
             gameScreen.getInfoOutput().setText("");
             gameScreen.getInfoOutput().setText("Pass to " + gameScreen.getGamePlayers().getPlayer(nextPlayer).getPlayerName() + "\nand click done or enter 'done'\n");
-            gameScreen.getInfoOutput().append("Enter hide/show to hide or show the question panel.\n");
+
             gameScreen.getPlayerChange().setPlayerCard(gameScreen.getGamePlayers().getPlayer(nextPlayer));
             gameScreen.getPlayerChange().setVisible(true);
             this.showingNextPlayer = true;
@@ -888,6 +888,8 @@ public class QPanel extends JPanel {
 
     private void selectCard(){
         this.shower = gameScreen.getGamePlayers().getPlayer(nextPlayer).getPlayerName();
+        gameScreen.getInfoOutput().setText("");
+        gameScreen.getInfoOutput().setText("Pass to " + gameScreen.getGamePlayers().getPlayer(currentPlayer).getPlayerName() + ",\nand enter 'done'.\n\n");
         hideQuestionPanel();
         gameScreen.reDraw(currentPlayer);
         gameScreen.getPlayerChange().setPlayerCard(gameScreen.getGamePlayers().getPlayer(currentPlayer));
@@ -907,8 +909,7 @@ public class QPanel extends JPanel {
     }
 
     public void printShower(){
-        //gameScreen.getInfoOutput().append(gameScreen.getGamePlayers().getPlayer(nextPlayer).getPlayerName() + " showed you a card.\n");
-        System.out.println("Next Player is " + gameScreen.getGamePlayers().getPlayer(nextPlayer).getPlayerName());
+        gameScreen.getInfoOutput().setText("");
         gameScreen.getInfoOutput().append(gameScreen.getGamePlayers().getPlayer(nextPlayer).getPlayerName() + " showed you the " + selectedCardName + " card.\n\n");
     }
 

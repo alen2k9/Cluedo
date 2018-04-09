@@ -75,10 +75,17 @@ public class HelpCommand {
                             "     - Cheat\n");
                 }
                 break;
+            case 4: //Questioning
+                infoOutput.append("     - Done\n" +
+                        "     - Notes\n" +
+                        "     - Cards\n" +
+                        "     - Show\n" +
+                        "     - Hide\n" +
+                        "     - Log\n" );
         }
     }
 
-    public void output(String command) {
+    public void output(String command, int gameState) {
         switch (command) {
             case "roll":
                 infoOutput.append("'Roll' :\n" +
@@ -121,13 +128,31 @@ public class HelpCommand {
                 break;
 
             case "done":
-                infoOutput.append("'Done' :\n" +
-                        "Current player will end their turn.\n\n");
+                switch (gameState){
+                    case 4:
+                        infoOutput.append("'Done' :\n" +
+                                "Pass to next player.\n\n");
+                        break;
+                    default:
+                        infoOutput.append("'Done' :\n" +
+                                "Current player will end their turn.\n\n");
+                }
+
                 break;
 
             case "quit":
                 infoOutput.append("'Quit' :\n" +
                         "Player can quit/stop entire game.\n\n");
+                break;
+
+            case "show":
+                infoOutput.append("'Show' :\n" +
+                        "Shows the question panel if it is hidden.\n\n");
+                break;
+
+            case "hide":
+                infoOutput.append("'Hide' :\n" +
+                        "Hides the question panel so you can look at your notes.\n\n");
                 break;
 
             default:

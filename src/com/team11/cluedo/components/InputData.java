@@ -29,16 +29,14 @@ public class InputData {
         addElement("move", this.commandData);
         addElement("cheat", this.commandData);
         addElement("notes", this.commandData);
-        addElement("godroll", this.commandData);
+
         addElement("finished", this.commandData);
         addElement("question", this.commandData);
         addElement("cards", this.commandData);
         addElement("log", this.commandData);
         addElement("show", this.commandData);
         addElement("hide", this.commandData);
-
-
-
+        
         SuspectData suspectData = new SuspectData();
         for (int i = 0; i < suspectData.getSuspectAmount(); i++){
             addElement(suspectData.getSuspectID(i), this.commandData);
