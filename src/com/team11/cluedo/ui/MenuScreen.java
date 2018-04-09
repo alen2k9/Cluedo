@@ -129,9 +129,9 @@ public class MenuScreen implements Screen {
 
         @Override
         public void paintComponent(Graphics g) {
+            super.paintComponent(g);
             Image splashImage = gameAssets.getSplashImage();
-            ImageIcon splash = new ImageIcon(splashImage);
-            g.drawImage(splashImage, 0, 0, (int)(splash.getIconWidth() * resolution.getScalePercentage()),(int)(splash.getIconHeight() * resolution.getScalePercentage()),this);
+            g.drawImage(splashImage, 0, 0, getWidth(), getHeight(),this);
         }
     }
 
@@ -202,7 +202,7 @@ public class MenuScreen implements Screen {
         });
 
         ImageIcon splash = new ImageIcon(gameAssets.getSplashImage());
-        Dimension imageSize = new Dimension((int)(splash.getIconWidth() * this.resolution.getScalePercentage()), (int)(splash.getIconHeight() * this.resolution.getScalePercentage()));
+        Dimension imageSize = new Dimension((int)(splash.getIconWidth() * 0.8 * this.resolution.getScalePercentage()), (int)(splash.getIconHeight() * 0.8 * this.resolution.getScalePercentage()));
         menuPanel.setPreferredSize(imageSize);
         return menuPanel;
     }
@@ -216,8 +216,8 @@ public class MenuScreen implements Screen {
         gbc.insets = new Insets(10, 10, 10, 10);
 
         ImageIcon icon = new ImageIcon(gameAssets.getWhiteCard());
-        int width = (int)(icon.getIconWidth() * 0.8 * resolution.getScalePercentage());
-        int height = (int)(icon.getIconHeight() * 0.8 * resolution.getScalePercentage());
+        int width = (int)(icon.getIconWidth() * 0.75 * resolution.getScalePercentage());
+        int height = (int)(icon.getIconHeight() * 0.75 * resolution.getScalePercentage());
 
         JButton[] characterButtons = new JButton[] {
             new JButton(new ImageIcon(this.gameAssets.getWhiteCard().getScaledInstance(width, height, 0))),
