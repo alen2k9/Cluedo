@@ -1113,23 +1113,22 @@ public class CommandInput {
 
     private void questionCaseOne(){
         gameScreen.getPlayerChange().setVisible(false);
-        if (gameScreen.getqPanel().getLooped()) {
-            //System.out.println("Going to hide the question panel");
+        if (gameScreen.getqPanel().getLooped()){
             gameScreen.getqPanel().setQuestionState(4); //Have looped therefore close the window and re-enable the game
             gameScreen.getqPanel().hideQuestionPanel();
             gameLog.append(currentPlayer.getPlayerName())
                     .append(" suggested it was\n")
                     .append(gameScreen.getqPanel().getPrevSelectedCards()[0].getCardName())
                     .append(" with the ").append(gameScreen.getqPanel().getPrevSelectedCards()[2].getCardName())
-                    .append(" in the ").append(gameScreen.getqPanel().getPrevSelectedCards()[1].getCardName())
-                    .append("\n");
+                    .append(" in the\n").append(gameScreen.getqPanel().getPrevSelectedCards()[1].getCardName())
+                    .append(".\n\n");
             gameLog.append(currentPlayer.getPlayerName()).append(" was not shown a card.\n\n");
             infoOutput.append("No players had the cards you suggested.\n");
             setGameEnabled(true);
-            if (canRoll) {
-                incrementGamestate(1);
-            } else {
-                incrementGamestate(3);
+            if (canRoll){
+            incrementGamestate(1);
+            } else{
+            incrementGamestate(3);
             }
         } else {
             gameScreen.getInfoOutput().append("Enter hide/show to hide or show the question panel.\n");
@@ -1165,13 +1164,19 @@ public class CommandInput {
 
     private void questionCaseFour(){
         gameScreen.getPlayerChange().setVisible(false);
-        gameLog.append(currentPlayer.getPlayerName() + " asked was it, \n" +
-                gameScreen.getqPanel().getPrevSelectedCards()[0].getCardName() + " with the " + gameScreen.getqPanel().getPrevSelectedCards()[2].getCardName() +
-                " in the " + gameScreen.getqPanel().getPrevSelectedCards()[1].getCardName() + ".\n\n");
+        gameLog.append(currentPlayer.getPlayerName())
+                .append(" suggested it was\n")
+                .append(gameScreen.getqPanel().getPrevSelectedCards()[0].getCardName())
+                .append(" with the ").append(gameScreen.getqPanel().getPrevSelectedCards()[2].getCardName())
+                .append(" in the\n").append(gameScreen.getqPanel().getPrevSelectedCards()[1].getCardName())
+                .append(".\n\n");
         gameScreen.getqPanel().hideQuestionPanel();
 
         if (gameScreen.getqPanel().hasShownCard()) {
-            gameLog.append(currentPlayer.getPlayerName() + " was shown a card by " + gameScreen.getqPanel().getShower() + "\n\n");
+            gameLog.append(currentPlayer.getPlayerName())
+                    .append(" was shown a card by ")
+                    .append(gameScreen.getqPanel().getShower())
+                    .append("\n\n");
         }
         else{
             gameLog.append(currentPlayer.getPlayerName()).append(" was not shown a card by anyone\n");

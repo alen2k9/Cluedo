@@ -45,8 +45,8 @@ public class RoomData {
         roomID.put(0, "kitchen");
         roomID.put(1, "ballroom");
         roomID.put(2, "conservatory");
-        roomID.put(3, "dining");
-        roomID.put(4, "billiard ");
+        roomID.put(3, "diningroom");
+        roomID.put(4, "billiardroom");
         roomID.put(5, "library");
         roomID.put(6, "lounge");
         roomID.put(7, "hall");
