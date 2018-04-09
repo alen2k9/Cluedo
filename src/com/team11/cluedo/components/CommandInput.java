@@ -440,6 +440,7 @@ public class CommandInput {
                                     infoOutput.append("Cannot exit questioning until card has been shown\n");
                                     break;
                                 case (4):   //Finished showing cards
+                                    System.err.println("AAAAAAARGH DONE");
                                     gameScreen.getPlayerChange().setVisible(false);
                                     gameLog.append(currentPlayer.getPlayerName() + " asked was it, \n" +
                                             gameScreen.getqPanel().getPrevSelectedCards()[0].getCardName() + " with the " + gameScreen.getqPanel().getPrevSelectedCards()[2].getCardName() +
@@ -488,325 +489,8 @@ public class CommandInput {
                                 notes();
                             }
                             break;
-                        case "white":
-                            if (gameScreen.getqPanel().getQuestionState() == 0){
-                                gameScreen.getqPanel().textSelectCard("white");
-                            } else if (gameScreen.getqPanel().getQuestionState() == 3){
-                                if (gameScreen.getqPanel().containsCard("Miss White")) {
-                                    gameScreen.getqPanel().setSelectedCardName("Miss White");
-                                    gameScreen.getqPanel().setHasShownCard(true);
-                                    gameScreen.getqPanel().selectCard();
-                                    gameScreen.getqPanel().fillNotes("Miss White");
-                                }
-                                else {
-                                    infoOutput.append("Not a valid card to select");
-                                }
-                            }
-
-                            break;
-                        case "green":
-                            if (gameScreen.getqPanel().getQuestionState() == 0){
-                                gameScreen.getqPanel().textSelectCard("green");
-                            } else if (gameScreen.getqPanel().getQuestionState() == 3){
-                                if (gameScreen.getqPanel().containsCard("Mr. Green")) {
-                                    gameScreen.getqPanel().setSelectedCardName("Mr Green");
-                                    gameScreen.getqPanel().setHasShownCard(true);
-                                    gameScreen.getqPanel().selectCard();
-                                    gameScreen.getqPanel().fillNotes("Mr. Green");
-                                }
-                                else {
-                                    infoOutput.append("Not a valid card to select");
-                                }
-                            }
-                            break;
-                        case "peacock":
-                            if (gameScreen.getqPanel().getQuestionState() == 0){
-                                gameScreen.getqPanel().textSelectCard("peacock");
-                            } else if (gameScreen.getqPanel().getQuestionState() == 3){
-                                if (gameScreen.getqPanel().containsCard("Ms. Peacock")) {
-                                    gameScreen.getqPanel().setSelectedCardName("Ms. Peacock");
-                                    gameScreen.getqPanel().setHasShownCard(true);
-                                    gameScreen.getqPanel().selectCard();
-                                    gameScreen.getqPanel().fillNotes("Ms. Peacock");
-                                }
-                                else {
-                                    infoOutput.append("Not a valid card to select");
-                                }
-                            }
-                            break;
-                        case "plum":
-                            if (gameScreen.getqPanel().getQuestionState() == 0){
-                                gameScreen.getqPanel().textSelectCard("plum");
-                            } else if (gameScreen.getqPanel().getQuestionState() == 3){
-                                if (gameScreen.getqPanel().containsCard("Mr. Plum")) {
-                                    gameScreen.getqPanel().setSelectedCardName("Mr. Plum");
-                                    gameScreen.getqPanel().setHasShownCard(true);
-                                    gameScreen.getqPanel().selectCard();
-                                    gameScreen.getqPanel().fillNotes("Mr. Plum");
-                                }
-                                else {
-                                    infoOutput.append("Not a valid card to select");
-                                }
-                            }
-                            break;
-                        case "scarlett":
-                            if (gameScreen.getqPanel().getQuestionState() == 0){
-                                gameScreen.getqPanel().textSelectCard("scarlett");
-                            } else if (gameScreen.getqPanel().getQuestionState() == 3){
-                                if (gameScreen.getqPanel().containsCard("Miss Scarlett")) {
-                                    gameScreen.getqPanel().setSelectedCardName("Miss Scarlett");
-                                    gameScreen.getqPanel().setHasShownCard(true);
-                                    gameScreen.getqPanel().selectCard();
-                                    gameScreen.getqPanel().fillNotes("Miss Scarlett");
-                                }
-                                else {
-                                    infoOutput.append("Not a valid card to select");
-                                }
-                            }
-                            break;
-                        case "mustard":
-                            if (gameScreen.getqPanel().getQuestionState() == 0){
-                                gameScreen.getqPanel().textSelectCard("mustard");
-                            } else if (gameScreen.getqPanel().getQuestionState() == 3){
-                                if (gameScreen.getqPanel().containsCard("Colonel Mustard")) {
-                                    gameScreen.getqPanel().setSelectedCardName("Colonel Mustard");
-                                    gameScreen.getqPanel().setHasShownCard(true);
-                                    gameScreen.getqPanel().selectCard();
-                                    gameScreen.getqPanel().fillNotes("Colonel Mustard");
-                                }
-                                else {
-                                    infoOutput.append("Not a valid card to select");
-                                }
-                            }
-                            break;
-                        case "hatchet":
-                            if (gameScreen.getqPanel().getQuestionState() == 0){
-                                gameScreen.getqPanel().textSelectCard("hatchet");
-                            } else if (gameScreen.getqPanel().getQuestionState() == 3){
-                                if (gameScreen.getqPanel().containsCard("Hatchet")) {
-                                    gameScreen.getqPanel().setSelectedCardName("Hatchet");
-                                    gameScreen.getqPanel().setHasShownCard(true);
-                                    gameScreen.getqPanel().selectCard();
-                                    gameScreen.getqPanel().fillNotes("Hatchet");
-                                }
-                                else {
-                                    infoOutput.append("Not a valid card to select");
-                                }
-                            }
-                            break;
-                        case "dagger":
-                            if (gameScreen.getqPanel().getQuestionState() == 0){
-                                gameScreen.getqPanel().textSelectCard("dagger");
-                            } else if (gameScreen.getqPanel().getQuestionState() == 3){
-                                if (gameScreen.getqPanel().containsCard("Dagger")) {
-                                    gameScreen.getqPanel().setSelectedCardName("Dagger");
-                                    gameScreen.getqPanel().setHasShownCard(true);
-                                    gameScreen.getqPanel().selectCard();
-                                    gameScreen.getqPanel().fillNotes("Dagger");
-                                }
-                                else {
-                                    infoOutput.append("Not a valid card to select");
-                                }
-                            }
-                            break;
-                        case "poison":
-                            if (gameScreen.getqPanel().getQuestionState() == 0){
-                                gameScreen.getqPanel().textSelectCard("poison");
-                            } else if (gameScreen.getqPanel().getQuestionState() == 3){
-                                if (gameScreen.getqPanel().containsCard("Poison")) {
-                                    gameScreen.getqPanel().setSelectedCardName("Poison");
-                                    gameScreen.getqPanel().setHasShownCard(true);
-                                    gameScreen.getqPanel().selectCard();
-                                    gameScreen.getqPanel().fillNotes("Poison");
-                                }
-                                else {
-                                    infoOutput.append("Not a valid card to select");
-                                }
-                            }
-                            break;
-                        case "revolver":
-                            if (gameScreen.getqPanel().getQuestionState() == 0){
-                                gameScreen.getqPanel().textSelectCard("revolver");
-                            } else if (gameScreen.getqPanel().getQuestionState() == 3){
-                                if (gameScreen.getqPanel().containsCard("Revolver")) {
-                                    gameScreen.getqPanel().setSelectedCardName("Revolver");
-                                    gameScreen.getqPanel().setHasShownCard(true);
-                                    gameScreen.getqPanel().selectCard();
-                                    gameScreen.getqPanel().fillNotes("Revolver");
-                                }
-                                else {
-                                    infoOutput.append("Not a valid card to select");
-                                }
-                            }
-                            break;
-                        case "rope":
-                            if (gameScreen.getqPanel().getQuestionState() == 0){
-                                gameScreen.getqPanel().textSelectCard("rope");
-                            } else if (gameScreen.getqPanel().getQuestionState() == 3){
-                                if (gameScreen.getqPanel().containsCard("Rope")) {
-                                    gameScreen.getqPanel().setSelectedCardName("Rope");
-                                    gameScreen.getqPanel().setHasShownCard(true);
-                                    gameScreen.getqPanel().selectCard();
-                                    gameScreen.getqPanel().fillNotes("Rope");
-                                }
-                                else {
-                                    infoOutput.append("Not a valid card to select");
-                                }
-                            }
-                            break;
-                        case "wrench":
-                            if (gameScreen.getqPanel().getQuestionState() == 0){
-                                gameScreen.getqPanel().textSelectCard("wrench");
-                            } else if (gameScreen.getqPanel().getQuestionState() == 3){
-                                if (gameScreen.getqPanel().containsCard("Wrench")) {
-                                    gameScreen.getqPanel().setSelectedCardName("Wrench");
-                                    gameScreen.getqPanel().setHasShownCard(true);
-                                    gameScreen.getqPanel().selectCard();
-                                    gameScreen.getqPanel().fillNotes("Wrench");
-                                }
-                                else {
-                                    infoOutput.append("Not a valid card to select");
-                                }
-                            }
-                            break;
-                        case "kitchen":
-                            if (gameScreen.getqPanel().getQuestionState() == 3){
-                                if (gameScreen.getqPanel().containsCard("Kitchen")) {
-                                    gameScreen.getqPanel().setSelectedCardName("Kitchen");
-                                    gameScreen.getqPanel().setHasShownCard(true);
-                                    gameScreen.getqPanel().selectCard();
-                                    gameScreen.getqPanel().fillNotes("Kitchen");
-                                }
-                                else {
-                                    infoOutput.append("Not a valid card to select");
-                                }
-                            } else{
-                                infoOutput.append("Cannot enter a room as input now\n");
-                            }
-                            break;
-                        case "ballroom":
-                            if (gameScreen.getqPanel().getQuestionState() == 3){
-                                if (gameScreen.getqPanel().containsCard("Ballroom")) {
-                                    gameScreen.getqPanel().setSelectedCardName("Ballroom");
-                                    gameScreen.getqPanel().setHasShownCard(true);
-                                    gameScreen.getqPanel().selectCard();
-                                    gameScreen.getqPanel().fillNotes("Ballroom");
-                                }
-                                else {
-                                    infoOutput.append("Not a valid card to select");
-                                }
-                            } else{
-                                infoOutput.append("Cannot enter a room as input now\n");
-                            }
-                            break;
-                        case "conservatory":
-                            if (gameScreen.getqPanel().getQuestionState() == 3){
-                                if (gameScreen.getqPanel().containsCard("Conservatory")) {
-                                    gameScreen.getqPanel().setSelectedCardName("Conservatory");
-                                    gameScreen.getqPanel().setHasShownCard(true);
-                                    gameScreen.getqPanel().selectCard();
-                                    gameScreen.getqPanel().fillNotes("Conservatory");
-                                }
-                                else {
-                                    infoOutput.append("Not a valid card to select");
-                                }
-                            } else{
-                                infoOutput.append("Cannot enter a room as input now\n");
-                            }
-                            break;
-
-                        case "dining":
-                            if (gameScreen.getqPanel().getQuestionState() == 3){
-                                if (gameScreen.getqPanel().containsCard("Dining")) {
-                                    gameScreen.getqPanel().setSelectedCardName("Dining");
-                                    gameScreen.getqPanel().setHasShownCard(true);
-                                    gameScreen.getqPanel().selectCard();
-                                    gameScreen.getqPanel().fillNotes("Dining");
-                                }
-                                else {
-                                    infoOutput.append("Not a valid card to select");
-                                }
-                            } else{
-                                infoOutput.append("Cannot enter a room as input now\n");
-                            }
-                            break;
-                        case "billiard":
-                            if (gameScreen.getqPanel().getQuestionState() == 3){
-                                if (gameScreen.getqPanel().containsCard("Billiard")) {
-                                    gameScreen.getqPanel().setSelectedCardName("Billiard");
-                                    gameScreen.getqPanel().setHasShownCard(true);
-                                    gameScreen.getqPanel().selectCard();
-                                    gameScreen.getqPanel().fillNotes("Billiard Room");
-                                }
-                                else {
-                                    infoOutput.append("Not a valid card to select");
-                                }
-                            } else{
-                                infoOutput.append("Cannot enter a room as input now\n");
-                            }
-                            break;
-                        case "library":
-                            if (gameScreen.getqPanel().getQuestionState() == 3){
-                                if (gameScreen.getqPanel().containsCard("Library")) {
-                                    gameScreen.getqPanel().setSelectedCardName("Library");
-                                    gameScreen.getqPanel().setHasShownCard(true);
-                                    gameScreen.getqPanel().selectCard();
-                                    gameScreen.getqPanel().fillNotes("Library");
-                                }
-                                else {
-                                    infoOutput.append("Not a valid card to select");
-                                }
-                            } else{
-                                infoOutput.append("Cannot enter a room as input now\n");
-                            }
-                            break;
-                        case "lounge":
-                            if (gameScreen.getqPanel().getQuestionState() == 3){
-                                if (gameScreen.getqPanel().containsCard("Lounge")) {
-                                    gameScreen.getqPanel().setSelectedCardName("Lounge");
-                                    gameScreen.getqPanel().setHasShownCard(true);
-                                    gameScreen.getqPanel().selectCard();
-                                    gameScreen.getqPanel().fillNotes("Lounge");
-                                }
-                                else {
-                                    infoOutput.append("Not a valid card to select");
-                                }
-                            } else{
-                                infoOutput.append("Cannot enter a room as input now\n");
-                            }
-                            break;
-                        case "hall":
-                            if (gameScreen.getqPanel().getQuestionState() == 3){
-                                if (gameScreen.getqPanel().containsCard("Hall")) {
-                                    gameScreen.getqPanel().setSelectedCardName("Hall");
-                                    gameScreen.getqPanel().setHasShownCard(true);
-                                    gameScreen.getqPanel().selectCard();
-                                    gameScreen.getqPanel().fillNotes("Hall");
-                                }
-                                else {
-                                    infoOutput.append("Not a valid card to select");
-                                }
-                            } else{
-                                infoOutput.append("Cannot enter a room as input now\n");
-                            }
-                            break;
-                        case "study":
-                            if (gameScreen.getqPanel().getQuestionState() == 3){
-                                if (gameScreen.getqPanel().containsCard("Study")) {
-                                    gameScreen.getqPanel().setSelectedCardName("Study");
-                                    gameScreen.getqPanel().setHasShownCard(true);
-                                    gameScreen.getqPanel().selectCard();
-                                    gameScreen.getqPanel().fillNotes("Study");
-                                }
-                                else {
-                                    infoOutput.append("Not a valid card to select");
-                                }
-                            } else{
-                                infoOutput.append("Cannot enter a room as input now\n");
-                            }
-                            break;
-                        default :
-                            infoOutput.append("Unknown command entered\n");
+                        default:
+                            gameScreen.getqPanel().question(input);
                             break;
                     }
 
@@ -1354,13 +1038,22 @@ public class CommandInput {
                 //System.out.println("Gamestate : " + gameState + " hasLooped: " + gameScreen.getqPanel().getLooped());
 
                 if (gameState == 4){
+                    System.err.println(gameScreen.getqPanel().getQuestionState());
                     switch (gameScreen.getqPanel().getQuestionState()){
-                        case (1):   //Showing the player change panel
+                        case (1):   // Showing the player change panel
                             gameScreen.getPlayerChange().setVisible(false);
                             if (gameScreen.getqPanel().getLooped()){
                                 //System.out.println("Going to hide the question panel");
                                 gameScreen.getqPanel().setQuestionState(4); //Have looped therefore close the window and re-enable the game
                                 gameScreen.getqPanel().hideQuestionPanel();
+                                gameLog.append(currentPlayer.getPlayerName())
+                                        .append(" suggested it was\n")
+                                        .append(gameScreen.getqPanel().getPrevSelectedCards()[0].getCardName())
+                                        .append(" with the ").append(gameScreen.getqPanel().getPrevSelectedCards()[2].getCardName())
+                                        .append(" in the ").append(gameScreen.getqPanel().getPrevSelectedCards()[1].getCardName())
+                                        .append("\n");
+                                gameLog.append(currentPlayer.getPlayerName()).append(" was not shown a card.\n\n");
+                                infoOutput.append("No players had the cards you suggested.\n");
                                 setGameEnabled(true);
                                 if (canRoll){
                                     incrementGamestate(1);
@@ -1386,14 +1079,15 @@ public class CommandInput {
                         case (4):   //Finished selecting a card to show and need to return to the game
                             gameScreen.getPlayerChange().setVisible(false);
                             setGameEnabled(true);
-                            gameLog.append(currentPlayer.getPlayerName() + " asked was it \n\n" +
-                                    gameScreen.getqPanel().getPrevSelectedCards()[0].getCardName() + " with the " + gameScreen.getqPanel().getPrevSelectedCards()[2].getCardName() +
-                                    " in the " + gameScreen.getqPanel().getPrevSelectedCards()[1].getCardName() + "\n\n");
+                            gameLog.append(currentPlayer.getPlayerName())
+                                    .append(" suggested it was\n")
+                                    .append(gameScreen.getqPanel().getPrevSelectedCards()[0].getCardName())
+                                    .append(" with the ").append(gameScreen.getqPanel().getPrevSelectedCards()[2].getCardName())
+                                    .append(" in the ").append(gameScreen.getqPanel().getPrevSelectedCards()[1].getCardName())
+                                    .append("\n");
                             gameScreen.getqPanel().hideQuestionPanel();
                             if (gameScreen.getqPanel().hasShownCard()){
-                                gameLog.append(currentPlayer.getPlayerName() + " was shown a card by " + gameScreen.getqPanel().getShower() + "\n\n");
-                            } else{
-                                gameLog.append(currentPlayer.getPlayerName() + " was not shown a card by anyone\n\n");
+                                gameLog.append(currentPlayer.getPlayerName()).append(" was shown a card by ").append(gameScreen.getqPanel().getShower()).append("\n\n");
                             }
 
                             if (canRoll){
@@ -1402,6 +1096,8 @@ public class CommandInput {
                                 incrementGamestate(3);
                             }
                             gameScreen.getqPanel().printShower();
+                            break;
+                        default:
                             break;
                     }
                 }

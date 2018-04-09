@@ -8,7 +8,6 @@
 
 package com.team11.cluedo.questioning;
 
-
 import com.team11.cluedo.assets.Assets;
 import com.team11.cluedo.board.room.RoomData;
 import com.team11.cluedo.cards.Card;
@@ -21,7 +20,6 @@ import com.team11.cluedo.weapons.WeaponData;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -119,7 +117,6 @@ public class QPanel extends JPanel {
     private T11Label selectedPlayer;
     private T11Label selectedWeapon;
     private T11Label selectedRoom;
-    private T11Label selectedCard;
 
     //Array lists of the valid cards found when checking each players hand
     private ArrayList<T11Label> validCards = new ArrayList<>();
@@ -246,6 +243,8 @@ public class QPanel extends JPanel {
         };
     }
 
+
+
     public void displayQuestionPanel(int currentRoom, int currentPlayer){
         this.setupLabels();
         prevSelectedCards = new T11Label[3];
@@ -283,18 +282,66 @@ public class QPanel extends JPanel {
     }
 
     public void showQuestionPanel(){
-        System.out.println("Showing");
         super.setVisible(true);
         repaint();
     }
 
-    public void tempHideQuestionPanel(){
-        super.setVisible(false);
+    public void question(String input) {
+        boolean found = false;
+
+        if (!hasSelectedPlayer || !hasSelectedWeapon)
+            textSelectCard(input);
+        if (questionState == 3) {
+            for (T11Label card : playerLabels) {
+                if (card.getCardID().equals(input)) {
+                    for (T11Label card2 : validCards) {
+                        if (selectedCards[0] == card && card2.getCardName().equals(card.getCardName())) {
+                            found = true;
+                            showCard(card.getCardName());
+                        }
+                    }
+                }
+            }
+            if (!found) {
+                for (T11Label card : weaponLabels) {
+                    if (card.getCardID().equals(input)) {
+                        for (T11Label card2 : validCards) {
+                                if (selectedCards[2] == card && card2.getCardName().equals(card.getCardName())) {
+                                found = true;
+                                showCard(card.getCardName());
+                            }
+                        }
+                    }
+                }
+            }
+            if (!found) {
+                for (T11Label card : roomLabels) {
+                    if (card.getCardID().equals(input)) {
+                        for (T11Label card2 : validCards) {
+                            if (selectedCards[1] == card && card2.getCardName().equals(card.getCardName())) {
+                                found = true;
+                                showCard(card.getCardName());
+                            }
+                        }
+                    }
+                }
+            }
+            if (!found) {
+                gameScreen.getInfoOutput().append("You don't have this card!\n");
+            }
+        }
+    }
+    //*/
+
+    private void showCard(String cardName) {
+        setSelectedCardName(cardName);
+        setHasShownCard(true);
+        selectCard();
+        fillNotes(cardName);
     }
 
-    //Boolean accessors/mutators
-    public boolean isShowingNextPlayer(){
-        return showingNextPlayer;
+    public void tempHideQuestionPanel(){
+        super.setVisible(false);
     }
 
     public void setShowingNextPlayer(boolean b){
@@ -304,10 +351,8 @@ public class QPanel extends JPanel {
     public void setSelectedPlayer(String player){
 
         for (T11Label label : playerLabels){
-            //System.out.println("Comparing " + label.getCardName() + "  and  " + player);
             if (label.getCardID().matches(player)){
                 setPlayer(label);
-                //System.out.println("Selected player is " + selectedPlayer.getCardName());
             }
         }
 
@@ -320,14 +365,6 @@ public class QPanel extends JPanel {
                 setWeapon(label);
             }}
         selectedCards[2] = selectedWeapon;
-    }
-
-    public void setDoneQuestioning(boolean b){
-        this.doneQuestioning = b;
-    }
-
-    public boolean isDoneQuestioning(){
-        return doneQuestioning;
     }
 
     public void setQuestionState(int state){
@@ -362,7 +399,7 @@ public class QPanel extends JPanel {
         return hasShownCard;
     }
 
-    public void setHasShownCard(boolean shown){
+    private void setHasShownCard(boolean shown){
         this.hasShownCard = shown;
     }
 
@@ -572,8 +609,8 @@ public class QPanel extends JPanel {
                 @Override
                 public void mouseExited(MouseEvent e) {
                     super.mouseExited(e);
-                    for (int j = 0; j < labels.length; j++){
-                        labels[j].setEnabled(true);
+                    for (T11Label label : labels) {
+                        label.setEnabled(true);
                     }
                 }
             });
@@ -681,10 +718,10 @@ public class QPanel extends JPanel {
             gameScreen.getPlayerChange().setVisible(true);
             this.showingNextPlayer = true;
             gameScreen.reDraw(nextPlayer);
-
         } else{
             gameScreen.getInfoOutput().setText("");
             gameScreen.getInfoOutput().setText("Pass to " + gameScreen.getGamePlayers().getPlayer(currentPlayer).getPlayerName() + "\nand click done or enter 'done'\n");
+            questionState = 4;
         }
     }
 
@@ -693,16 +730,16 @@ public class QPanel extends JPanel {
         this.validCards = new ArrayList<>();
         this.validCardIcons = new ArrayList<>();
 
-        for (int i = 0; i < selectedCards.length; i++){
-            for (Card card : playerHand.getPlayerHand()){
-                if (card.getName().matches(selectedCards[i].getCardName())){
+        for (T11Label selectedCard : selectedCards) {
+            for (Card card : playerHand.getPlayerHand()) {
+                if (card.getName().matches(selectedCard.getCardName())) {
                     validCards.add(new T11Label(new ImageIcon(card.getSelectedCardImage()), card.getName()));
                     validCardIcons.add(new ImageIcon(card.getCardImage()));
                 }
             }
 
-            for (Card card : playerHand.getPublicHand()){
-                if (card.getName().matches(selectedCards[i].getCardName())){
+            for (Card card : playerHand.getPublicHand()) {
+                if (card.getName().matches(selectedCard.getCardName())) {
                     validCards.add(new T11Label(new ImageIcon(card.getSelectedCardImage()), card.getName()));
                     validCardIcons.add(new ImageIcon(card.getCardImage()));
                 }
@@ -722,16 +759,6 @@ public class QPanel extends JPanel {
         }
 
         return index;
-    }
-
-    public boolean containsCard(String cardID){
-        for (int i = 0; i < validCards.size();i++){
-            System.out.println("Comparing " + validCards.get(i).getCardName() + " and " + cardID);
-            if (validCards.get(i).getCardName().matches(cardID)){
-                return true;
-            }
-        }
-        return false;
     }
 
     public void setupValidCards() {
@@ -794,7 +821,6 @@ public class QPanel extends JPanel {
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     super.mouseClicked(e);
-                    selectedCard = label;
                     shower = gameScreen.getGamePlayers().getPlayer(nextPlayer).getPlayerName();
                     setSelectedCardName(label.getCardName());
                     hasShownCard = true;
@@ -828,7 +854,7 @@ public class QPanel extends JPanel {
         }
     }
 
-    public void selectCard(){
+    private void selectCard(){
         this.shower = gameScreen.getGamePlayers().getPlayer(nextPlayer).getPlayerName();
         hideQuestionPanel();
         gameScreen.reDraw(currentPlayer);
@@ -839,7 +865,7 @@ public class QPanel extends JPanel {
         questionState = 4;
     }
 
-    public void setSelectedCardName(String name){
+    private void setSelectedCardName(String name){
         System.out.println("Selected Card is " + name);
         this.selectedCardName = name;
     }
@@ -854,94 +880,36 @@ public class QPanel extends JPanel {
         gameScreen.getInfoOutput().append(gameScreen.getGamePlayers().getPlayer(nextPlayer).getPlayerName() + " showed you the " + selectedCardName + " card.\n\n");
     }
 
-    public void textSelectCard(String card){
+    private void textSelectCard(String card){
+        boolean found = false;
         if (inPlayerState){
-            switch (card){
-                case "white":
-                    addCards("Miss White");
-                    selectedPlayer = playerLabels[0];
+            for (T11Label sCard : playerLabels) {
+                if (sCard.getCardID().equals(card)) {
+                    addCards(sCard.getCardName());
+                    selectedPlayer = sCard;
                     selectedCards[0] = selectedPlayer;
                     inPlayerState = false;
                     hasSelectedPlayer = true;
+                    found = true;
                     break;
-                case "green":
-                    addCards("Mr. Green");
-                    selectedPlayer = playerLabels[1];
-                    selectedCards[0] = selectedPlayer;
-                    inPlayerState = false;
-                    hasSelectedPlayer = true;
-                    break;
-                case "peacock":
-                    addCards("Ms. Peacock");
-                    selectedPlayer = playerLabels[2];
-                    selectedCards[0] = selectedPlayer;
-                    inPlayerState = false;
-                    hasSelectedPlayer = true;
-                    break;
-                case "plum":
-                    addCards("Mr. Plum");
-                    selectedPlayer = playerLabels[3];
-                    selectedCards[0] = selectedPlayer;
-                    inPlayerState = false;
-                    hasSelectedPlayer = true;
-                    break;
-                case "scarlett":
-                    addCards("Miss Scarlett");
-                    selectedPlayer = playerLabels[4];
-                    selectedCards[0] = selectedPlayer;
-                    inPlayerState = false;
-                    hasSelectedPlayer = true;
-                    break;
-                case "mustard":
-                    addCards("Colonel Mustard");
-                    selectedPlayer = playerLabels[5];
-                    selectedCards[0] = selectedPlayer;
-                    inPlayerState = false;
-                    hasSelectedPlayer = true;
-                    break;
-                default:
-                    break;
+                }
+            }
+            if (!found) {
+                gameScreen.getInfoOutput().append("This person didn't attend the party.\n");
             }
         } else{
-            switch (card){
-                case "hatchet":
-                    addCards("Hatchet");
-                    selectedWeapon = weaponLabels[0];
+            for (T11Label wCard : weaponLabels) {
+                if (wCard.getCardID().equals(card)) {
+                    addCards(wCard.getCardName());
+                    selectedWeapon = wCard;
                     selectedCards[2] = selectedWeapon;
                     hasSelectedWeapon = true;
+                    found = true;
                     break;
-                case "dagger":
-                    addCards("Dagger");
-                    selectedWeapon = weaponLabels[1];
-                    selectedCards[2] = selectedWeapon;
-                    hasSelectedWeapon = true;
-                    break;
-                case "poison":
-                    addCards("Poison");
-                    selectedWeapon = weaponLabels[2];
-                    selectedCards[2] = selectedWeapon;
-                    hasSelectedWeapon = true;
-                    break;
-                case "revolver":
-                    addCards("Revolver");
-                    selectedWeapon = weaponLabels[3];
-                    selectedCards[2] = selectedWeapon;
-                    hasSelectedWeapon = true;
-                    break;
-                case "rope":
-                    addCards("Rope");
-                    selectedWeapon = weaponLabels[4];
-                    selectedCards[2] = selectedWeapon;
-                    hasSelectedWeapon = true;
-                    break;
-                case "wrench":
-                    addCards("Wrench");
-                    selectedWeapon = weaponLabels[5];
-                    selectedCards[2] = selectedWeapon;
-                    hasSelectedWeapon = true;
-                    break;
-                default:
-                    break;
+                }
+            }
+            if (!found) {
+                gameScreen.getInfoOutput().append("There was no evidence of this lying around!\n");
             }
         }
     }
