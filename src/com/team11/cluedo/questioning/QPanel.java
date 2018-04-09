@@ -175,6 +175,19 @@ public class QPanel extends JPanel {
         return this.isVisible();
     }
 
+    public T11Label getSelectedCard() {
+        selectedCard.setEnabled(true);
+        return selectedCard;
+    }
+
+    public void setSelectedCard(T11Label label){
+        this.selectedCard = label;
+    }
+
+    public int getNextPlayer(){
+        return this.nextPlayer;
+    }
+
     private void setupButtonsAndLabels(){
         doneButton = new JLabel("DONE");
         doneButton.setFont(new Font("Bulky Pixels", Font.BOLD, (int)(30 * resolution.getScalePercentage())));
@@ -728,6 +741,11 @@ public class QPanel extends JPanel {
         for (int i = 0; i < validCards.size();i++){
             System.out.println("Comparing " + validCards.get(i).getCardName() + " and " + cardID);
             if (validCards.get(i).getCardName().matches(cardID)){
+                //new T11Label(roomIcons[0], roomData.getRoomName(0), roomData.getRoomID(0)),
+
+                T11Label label = new T11Label(validCardIcons.get(i), validCards.get(i).getCardName());
+                selectedCard = label;
+                System.out.println("Selected Card is " + selectedCard.getCardName());
                 return true;
             }
         }
@@ -794,7 +812,7 @@ public class QPanel extends JPanel {
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     super.mouseClicked(e);
-                    selectedCard = label;
+                    selectedCard = new T11Label(validCardIcons.get(validCards.indexOf(label)), label.getCardName());
                     shower = gameScreen.getGamePlayers().getPlayer(nextPlayer).getPlayerName();
                     setSelectedCardName(label.getCardName());
                     hasShownCard = true;

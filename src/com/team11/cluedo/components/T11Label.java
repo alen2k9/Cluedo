@@ -24,7 +24,6 @@ public class T11Label extends JLabel {
     public T11Label() {
         super();
     }
-
     public T11Label(ImageIcon icon, String name, String ID){
         super(icon);
         super.setDisabledIcon(icon);
