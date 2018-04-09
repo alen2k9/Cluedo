@@ -47,7 +47,7 @@ public class TokenComponent extends JLabel {
         this.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                System.out.println("ID: " + tokenID + "\nName: " + tokenName + "\nLocation: " + tokenLocation);
+                //System.out.println("ID: " + tokenID + "\nName: " + tokenName + "\nLocation: " + tokenLocation);
             }
         });
     }

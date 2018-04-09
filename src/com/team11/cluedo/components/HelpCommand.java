@@ -22,16 +22,14 @@ public class HelpCommand {
                             "     - Quit\n" +
                             "     - Notes\n" +
                             "     - Cards\n" +
-                            "     - Log\n" +
-                            "     - Cheat\n");
+                            "     - Log\n");
                 } else {
                     infoOutput.append("     - Roll\n" +
                             "     - Done\n" +
                             "     - Quit\n" +
                             "     - Notes\n" +
                             "     - Cards\n" +
-                            "     - Log\n" +
-                            "     - Cheat\n");
+                            "     - Log\n");
                 }
                 break;
             case 2: //  After-Roll
@@ -42,8 +40,7 @@ public class HelpCommand {
                             "     - Quit\n" +
                             "     - Notes\n" +
                             "     - Cards\n" +
-                            "     - Log\n" +
-                            "     - Cheat\n");
+                            "     - Log\n");
 
                 } else {
                     infoOutput.append("     - Done\n" +
@@ -51,7 +48,6 @@ public class HelpCommand {
                         "     - Notes\n" +
                         "     - Cards\n" +
                         "     - Log\n" +
-                        "     - Cheat\n" +
                         "Enter 'U', 'R', 'D', or 'L' to move.\n" +
                         "Click on a highlighted square to move.\n" +
                         "Use the arrow keys to move.\n");
@@ -64,22 +60,38 @@ public class HelpCommand {
                             "     - Quit\n" +
                             "     - Notes\n" +
                             "     - Cards\n" +
-                            "     - Log\n" +
-                            "     - Cheat\n");
+                            "     - Log\n");
                 } else {
                     infoOutput.append("     - Done\n" +
                             "     - Quit\n" +
                             "     - Notes\n" +
                             "     - Cards\n" +
-                            "     - Log\n" +
-                            "     - Cheat\n");
+                            "     - Log\n");
                 }
+                break;
+            case 4:
+                infoOutput.append("     - Hide\n" +
+                        "     - Close\n" +
+                        "     - Notes\n" +
+                        "     - Cards\n" +
+                        "     - Log\n");
+                break;
+            case 5: //  After move
+                infoOutput.append("     - Accuse\n" +
+                        "     - Notes\n" +
+                        "     - Cards\n" +
+                        "     - Log\n");
                 break;
         }
     }
 
     public void output(String command) {
         switch (command) {
+            case "accuse":
+                infoOutput.append("'Accuse' :\n" +
+                        "Make your accusation.\nAccuse right, win the game, but accuse wrong...\n\n");
+                break;
+
             case "roll":
                 infoOutput.append("'Roll' :\n" +
                         "    Dice would roll giving you the number\n" +
@@ -128,6 +140,12 @@ public class HelpCommand {
             case "quit":
                 infoOutput.append("'Quit' :\n" +
                         "Player can quit/stop entire game.\n\n");
+                break;
+
+            case "log":
+                infoOutput.append("'Log' :\n" +
+                        "Prints the log of the game so far.\n" +
+                        "Questions asked, cards show and accusations made.\n");
                 break;
 
             default:
