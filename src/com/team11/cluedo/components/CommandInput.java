@@ -14,21 +14,19 @@ import com.team11.cluedo.players.Player;
 import com.team11.cluedo.suspects.Direction;
 import com.team11.cluedo.suspects.SuspectData;
 import com.team11.cluedo.ui.GameScreen;
-
-import com.team11.cluedo.ui.components.RollStart;
 import com.team11.cluedo.ui.components.OverlayTile;
+import com.team11.cluedo.ui.components.RollStart;
 import com.team11.cluedo.weapons.WeaponData;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-
-import java.awt.event.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.*;
 import java.util.List;
-import java.util.HashSet;
 
 public class CommandInput {
     private MovementHandling movementHandling;
@@ -676,7 +674,7 @@ public class CommandInput {
     }
 
     private void help(String command){
-        helpCommand.output(command);
+        helpCommand.output(command, gameState);
     }
 
     private void notes(){
@@ -1116,32 +1114,33 @@ public class CommandInput {
     private void questionCaseOne(){
         gameScreen.getPlayerChange().setVisible(false);
         if (gameScreen.getqPanel().getLooped()){
-        gameScreen.getqPanel().setQuestionState(4); //Have looped therefore close the window and re-enable the game
-        gameScreen.getqPanel().hideQuestionPanel();
-        gameLog.append(currentPlayer.getPlayerName())
-                .append(" suggested it was\n")
-                .append(gameScreen.getqPanel().getPrevSelectedCards()[0].getCardName())
-                .append(" with the ").append(gameScreen.getqPanel().getPrevSelectedCards()[2].getCardName())
-                .append(" in the\n").append(gameScreen.getqPanel().getPrevSelectedCards()[1].getCardName())
-                .append(".\n\n");
-        gameLog.append(currentPlayer.getPlayerName()).append(" was not shown a card.\n\n");
-        infoOutput.append("No players had the cards you suggested.\n");
-        setGameEnabled(true);
-        if (canRoll){
-        incrementGamestate(1);
-        } else{
-        incrementGamestate(3);
-        }
+            gameScreen.getqPanel().setQuestionState(4); //Have looped therefore close the window and re-enable the game
+            gameScreen.getqPanel().hideQuestionPanel();
+            gameLog.append(currentPlayer.getPlayerName())
+                    .append(" suggested it was\n")
+                    .append(gameScreen.getqPanel().getPrevSelectedCards()[0].getCardName())
+                    .append(" with the ").append(gameScreen.getqPanel().getPrevSelectedCards()[2].getCardName())
+                    .append(" in the\n").append(gameScreen.getqPanel().getPrevSelectedCards()[1].getCardName())
+                    .append(".\n\n");
+            gameLog.append(currentPlayer.getPlayerName()).append(" was not shown a card.\n\n");
+            infoOutput.append("No players had the cards you suggested.\n");
+            setGameEnabled(true);
+            if (canRoll){
+            incrementGamestate(1);
+            } else{
+            incrementGamestate(3);
+            }
         } else {
-        //gameScreen.getqPanel().findValidCards();
-        gameScreen.getqPanel().setupValidCards();
-        if (gameScreen.getqPanel().validCardSize() != 0){   //There is cards to show so the done button state doesn't appear
-        gameScreen.getqPanel().setQuestionState(3);
-        }
-        //Show the done button
-        else{
-        gameScreen.getqPanel(). setQuestionState(2);
-        }
+            gameScreen.getInfoOutput().append("Enter hide/show to hide or show the question panel.\n");
+            //gameScreen.getqPanel().findValidCards();
+            gameScreen.getqPanel().setupValidCards();
+            if (gameScreen.getqPanel().validCardSize() != 0) {   //There is cards to show so the done button state doesn't appear
+                gameScreen.getqPanel().setQuestionState(3);
+            }
+            //Show the done button
+            else {
+                gameScreen.getqPanel().setQuestionState(2);
+            }
         }
     }
 
