@@ -1,47 +1,82 @@
-List Of Commands
---------------------------------------------------------------
-- 'roll' : Dice would roll giving you the number
-of movements you are allowed to move
+Welcome to Cluedo by Team 11.
+These are the rules of Cluedo
+To play you will need 2-6 players
+There are 21 cards:
+- 6 Player Cards
+    - White
+    - PLum
+    - Green
+    - Mustard
+    - Scarlet
+    - Peacock
 
-- 'move' : Move player in desired direction 
-        l = Left	
-        r = Right
-        u = Up
-        d = Down
-    Example
-    'move llddru' : 
-         move left 2 spaces, move down 2 spaces,
-         move right once and move up once
-    -You can use arrow keys to move
-    -User can also click the highlighted squares
-    -Type 'move' again to toggle movement on and off
+- 6 Weapon Cards:
+    - Dagger
+    - Hatchet
+    - Poison
+    - Revolver
+    - Rope
+    - Wrench
 
-- 'exit' : user can exit a room with this command.
-        Exit depends on number of door's in room.
-        Doors to choose from are ranged 1-4
-        i.e. 1 is leftmost door, 4 is rightmost door
-Example
-    'exit 2' :
-        Player will exit through second door.
-    'exit' :
-        Player will exit through first door by default.
+- 9 Room Cards:
+    - Hall
+    - Kitchen
+    - Ballroom
+    - Study
+    - Library
+    - Billiard Room
+    - Conservatory
+    - Dining Room
+    - Lounge
 
-- 'cards' : This will display the current cards that
-	the user has
+Start of Game
+-------------
+- A player, weapon and room card are added
+  to the Murder Envelope
+    - These are the cards you are trying
+      to guess
 
-- 'passage' : If player is in a room with secret passage,
-this command will let them use the secret passage.
+- Each payer then rolls the dice to see who
+  goes first.
 
-- 'notes' : Opens the users notes page.
-        You can click on any cell to highlight
-        what cards you know are not part of the
-        murder.
-	
-- 'cheat' : Displays the cards in the envelope
-			 
-- 'done' : Current player will end their turn.
-Next Player's turn will start.
+- There is a tab on the left which show
+ your current cards and public cards.
 
-- 'back' : Brings you back to the game log.
+- The tab on the bottom is your checklist
 
-- 'quit' : Player can quit/stop entire game.
+In - Game
+-------------
+- You can roll the dice in 2 ways
+    - press dice button
+    - type 'roll'
+
+- You can move using
+    - Click on highlighted tile
+    - Use arrow keys
+    - type l - left
+           r - right
+           u - up
+           d - down
+
+- Once in room you can question a player
+  by clicking on the cards or typing in
+  the card names
+
+- Questioning moves the player in question
+  to that room and other players are asked if
+  they have that card
+
+- If they do they have to show it to you
+
+End Game
+--------------
+- You can enter the main room in the
+  center and you accuse
+
+- If you guess right you will win,
+  else your turns are cancelled but you
+  will still need to show your cards if
+  questioned
+
+- Last player standing wins
+

@@ -215,7 +215,7 @@ public class GameScreen extends JFrame implements Screen {
 
     private JTextArea setupPersonalPanel() {
         personal = new JTextArea(15, 25);
-        int fontSize = (int)(18 * resolution.getScalePercentage());
+        int fontSize = (int)(25 * resolution.getScalePercentage());
         personal.setFont(new Font("Orange Kid",Font.BOLD, fontSize));
         personal.setEditable(true); infoOutput.setLineWrap(true);
         personal.setBackground(Color.DARK_GRAY);
