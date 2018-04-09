@@ -170,6 +170,7 @@ public class Accusations extends JPanel {
 
     public void setUpAccustations()
     {
+        removeAll();
         this.setBackground(new Color(0, 0, 0, 168));
 
         this.setLayout(null);

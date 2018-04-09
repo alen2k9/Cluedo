@@ -213,6 +213,18 @@ public class GameScreen extends JFrame implements Screen {
         return helpOutput;
     }
 
+    private JTextArea setupPersonalPanel() {
+        JTextArea personal = new JTextArea(15, 25);
+        int fontSize = (int)(18 * resolution.getScalePercentage());
+        personal.setFont(new Font("Orange Kid",Font.BOLD, fontSize));
+        personal.setEditable(true); infoOutput.setLineWrap(true);
+        personal.setBackground(Color.DARK_GRAY);
+        personal.setForeground(Color.WHITE);
+        personal.setBorder(null);
+
+        return personal;
+    }
+
     private JPanel setupInfoPanel() {
         UIManager.put("TabbedPane.selected", gameAssets.getDarkerGrey());
         UIManager.put("TabbedPane.contentAreaColor", gameAssets.getDarkerGrey());
@@ -244,7 +256,7 @@ public class GameScreen extends JFrame implements Screen {
         infoOutput.setForeground(Color.WHITE);
         infoOutput.setBorder(null);
 
-        JScrollPane[] scrollPane = new JScrollPane[] {new JScrollPane(infoOutput), new JScrollPane(setupHelpPanel())};
+        JScrollPane[] scrollPane = new JScrollPane[] {new JScrollPane(infoOutput), new JScrollPane(setupHelpPanel()), new JScrollPane(setupPersonalPanel())};
 
         for (JScrollPane pane : scrollPane) {
             pane.setBorder(null);
@@ -253,6 +265,7 @@ public class GameScreen extends JFrame implements Screen {
 
         infoTabs.addTab("Game Log", null, scrollPane[0], "Game Log - Forget what's happened so far?");
         infoTabs.addTab("Help Panel", null, scrollPane[1], "Help Panel - List of all commands");
+        infoTabs.addTab("personal log", null, scrollPane[2], "Personal Log - Add personal info");
 
         JPanel infoPanel = new JPanel(new BorderLayout());
 
