@@ -1476,36 +1476,55 @@ public class CommandInput {
                 infoOutput.setText("Hoorah!\n" + playerName + " solved the murder\nand won the game!\n" + gameLog.toString());
                 incrementGamestate(6);
                 gameScreen.getPlayerChange().setDoneButton("Quit Game");
+                gameScreen.getPlayerChange().setText("has solved the murder!");
                 gameScreen.getPlayerChange().setEndGame(currentPlayer);
                 gameScreen.getPlayerChange().getDoneButton().removeAll();
-                gameScreen.getPlayerChange().getDoneButton().addMouseListener(new MouseAdapter() {
-                    @Override
-                    public void mouseClicked(MouseEvent e) {
-                        super.mouseClicked(e);
-                        quitGame();
-                    }
-
-                    @Override
-                    public void mouseEntered(MouseEvent e) {
-                        super.mouseEntered(e);
-                        gameScreen.getPlayerChange().getDoneButton().setForeground(Color.RED);
-                        gameScreen.repaint();
-                    }
-
-                    @Override
-                    public void mouseExited(MouseEvent e) {
-                        super.mouseExited(e);
-                        gameScreen.getPlayerChange().getDoneButton().setForeground(Color.WHITE);
-                        gameScreen.repaint();
-                    }
-                });
+                setEndGameButton(gameScreen.getPlayerChange().getDoneButton());
                 gameScreen.getPlayerChange().setVisible(true);
             } else {
                 gameLog.append(playerName).append(" was found murdered\nin the cellar!\n");
                 removeCurrentPlayer();
-                nextPlayer();
+                if (gameScreen.getGamePlayers().getPlayerCount() - removedPlayer.size() == 1) {
+                    gameScreen.getPlayerChange().setDoneButton("Quit Game");
+                    gameScreen.getPlayerChange().setText("has one by default. Congratulations?");
+                    for (int i = 0 ; i < gameScreen.getGamePlayers().getPlayerCount() ; i++) {
+                        if (!removedPlayer.contains(i)) {
+                           currentPlayer = gameScreen.getGamePlayers().getPlayer(i);
+                        }
+                    }
+                    infoOutput.setText(currentPlayer.getPlayerName() + " was the last member alive,\nand won by default.\nCongratulations?\n" + gameLog.toString());
+                    gameScreen.getPlayerChange().setEndGame(currentPlayer);
+                    gameScreen.getPlayerChange().getDoneButton().removeAll();
+                    setEndGameButton(gameScreen.getPlayerChange().getDoneButton());
+                    gameScreen.getPlayerChange().setVisible(true);
+                } else {
+                    nextPlayer();
+                }
             }
         });
+    }
+
+    private void setEndGameButton(JLabel button) {
+        button.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                quitGame();
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                super.mouseEntered(e);
+                button.setForeground(Color.RED);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                super.mouseExited(e);
+                button.setForeground(Color.WHITE);
+            }
+        });
+
     }
 
     public void setMoveEnabled(boolean moveEnabled) {
