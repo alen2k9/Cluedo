@@ -871,9 +871,7 @@ public class CommandInput {
     }
 
     private void addToPersonal(){
-        String string = personalInfo.getText();
-        String S = this.personal[currentPlayerID] + "\n "+ string;
-        this.personal[currentPlayerID] = S;
+        this.personal[currentPlayerID] = personalInfo.getText();
         personalInfo.removeAll();
     }
 
