@@ -6,7 +6,7 @@
  *                  Alen Thomas   - 16333003
  */
 
-package com.team11.cluedo.accustations;
+package com.team11.cluedo.accusations;
 
 import com.team11.cluedo.assets.Assets;
 import com.team11.cluedo.board.room.RoomData;
