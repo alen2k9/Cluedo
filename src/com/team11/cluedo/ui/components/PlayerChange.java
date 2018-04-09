@@ -8,6 +8,7 @@
 
 package com.team11.cluedo.ui.components;
 
+import com.team11.cluedo.components.T11Label;
 import com.team11.cluedo.players.Player;
 import com.team11.cluedo.ui.Resolution;
 
@@ -60,6 +61,24 @@ public class PlayerChange extends JPanel {
         super.add(textLabel, gbc);
         gbc.gridy = 1;
         super.add(playerCard, gbc);
+        gbc.gridy = 2;
+        super.add(doneButton, gbc);
+    }
+
+    public void setSelectedCard(Player player, T11Label card){
+        this.removeAll();
+
+        JLabel infoText = new JLabel(player.getPlayerName() + " " + this.text);
+        infoText.setFont(new Font("Bulky Pixels", Font.BOLD, (int)(20 * resolution.getScalePercentage())));
+        infoText.setForeground(Color.WHITE);
+        infoText.setBackground(Color.BLACK);
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5,5,5,5);
+        gbc.gridx = 0; gbc.gridy = 0;
+        super.add(infoText, gbc);
+        gbc.gridy = 1;
+        super.add(card, gbc);
         gbc.gridy = 2;
         super.add(doneButton, gbc);
     }
