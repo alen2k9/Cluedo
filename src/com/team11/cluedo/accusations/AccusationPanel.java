@@ -499,7 +499,6 @@ public class AccusationPanel extends JPanel {
 
             if (!moveWeaponCard && !moveSuspectCard && !moveRoomCard) {
                 if (weaponCorrect && suspectCorrect && roomCorrect) {
-                    System.out.println("CORRECT");
                     correctGuess = true;
                     done = true;
                 } else {

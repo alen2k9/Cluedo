@@ -95,9 +95,6 @@ public class CommandInput {
         String command = inputs[0];
         this.gameScreen.getCommandInput().setText("");
 
-        System.out.println("state " + gameState + " command " + command);
-        System.out.println("Is in room " +currentPlayer.getSuspectToken().isInRoom());
-
         if (gameEnabled && gameState != 4) {
             infoOutput.append("> " + input + '\n');
             switch (gameState) {
@@ -824,9 +821,7 @@ public class CommandInput {
     }
 
     private void addToPersonal(){
-        String string = personalInfo.getText();
-        String S = this.personal[currentPlayerID] + "\n "+ string;
-        this.personal[currentPlayerID] = S;
+        this.personal[currentPlayerID] = personalInfo.getText();
         personalInfo.removeAll();
     }
 
@@ -839,23 +834,18 @@ public class CommandInput {
         WeaponData weaponData = new WeaponData();
         boolean validInput = false;
         //One extra input, determine if weapon or player
-        System.out.println("inputs " + inputs.length);
 
         if (inputs.length == 1){
             validInput = true;
         }
         else if (inputs.length == 2){
-
-            System.out.println(inputs[1]);
             //is a player
             if (suspectData.getSuspectID().containsValue(inputs[1])){
-                System.out.println("suspect data contains");
                 this.gameScreen.getqPanel().setSelectedPlayer(inputs[1]);
                 validInput = true;
             }
             //is a weapon
             else if (weaponData.getWeaponID().containsValue(inputs[1])){
-                System.out.println("Is not player");
                 this.gameScreen.getqPanel().setSelectedWeapon(inputs[1]);
                 validInput = true;
             } else {
@@ -867,7 +857,6 @@ public class CommandInput {
                     (weaponData.getWeaponID().containsValue(inputs[1]) || weaponData.getWeaponID().containsValue(inputs[2]))) {
 
                 if (suspectData.getSuspectID().containsValue(inputs[1])) {
-                    //System.out.println("Comparison true");
                     this.gameScreen.getqPanel().setSelectedPlayer(inputs[1]);
                 } else {
                     this.gameScreen.getqPanel().setSelectedPlayer(inputs[2]);
@@ -906,9 +895,7 @@ public class CommandInput {
                         super.mouseClicked(e);
                         if (currentPlayer.getSuspectToken().isInRoom()){
                             if (gameScreen.getGameBoard().getBoardPos((int)boardPos.getLocation().getX(), (int)boardPos.getLocation().getY()).getTileType() == TileType.DOOR){
-                                System.out.println("Is in room and clicked door");
                                 if (remainingMoves > 0){
-                                    System.out.println("Greater than zero");
                                     String[] buffer = new String[2];
                                     buffer[1] = Integer.toString(gameScreen.getBoardPanel().checkMoveOut((int)boardPos.getLocation().getY(), (int)boardPos.getLocation().getX()) + 1);
                                     moveOut(buffer);
@@ -988,10 +975,7 @@ public class CommandInput {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                //System.out.println("Gamestate : " + gameState + " hasLooped: " + gameScreen.getqPanel().getLooped());
-
                 if (gameState == 4){
-                    System.err.println(gameScreen.getqPanel().getQuestionState());
                     switch (gameScreen.getqPanel().getQuestionState()){
                         case (1):   //Showing the player change panel
                            questionCaseOne();
@@ -1176,7 +1160,7 @@ public class CommandInput {
     }
 
     private void questionCaseThree(){
-
+        infoOutput.append("You cannot end until questioning is over!\n");
     }
 
     private void questionCaseFour(){

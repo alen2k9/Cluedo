@@ -120,7 +120,6 @@ public class Board extends JComponent implements TileBasedMap {
                 }
                 else if (line[j].matches("2")) {
                     boardPos = new BoardPos(new Point(i,j), false, false, TileType.SECRETPASSAGE, TileType.BLANK, tileSize);
-                    //System.out.println("Passage Way: " + i + " " +  j);
                 }
                 else if (line[j].matches("K")) {
                     boardPos = createNonTraversal(new Point(i,j), TileType.ROOM, TileType.KITCHEN);
@@ -174,7 +173,6 @@ public class Board extends JComponent implements TileBasedMap {
                 }
                 else if (line[j].matches("D")) {
                     boardPos = createTraversal(new Point(i,j), TileType.DOOR, TileType.BLANK);
-                    //System.out.println("j : " + j + " i : " + i);
                 }
                 else if (line[j].matches("-")) {
                     boardPos = createTraversal(new Point(i,j), TileType.HALLWAY, TileType.BLANK);
@@ -187,9 +185,6 @@ public class Board extends JComponent implements TileBasedMap {
                 }
                 else if (line[j].matches("A")){
                     boardPos = createTraversal(new Point(i,j), TileType.AVOID, TileType.BLANK);
-                }
-                else {
-                    System.out.println("Unknown Tile Type, Please Check BoardInfo.txt");
                 }
 
                 board[i][j] = boardPos;

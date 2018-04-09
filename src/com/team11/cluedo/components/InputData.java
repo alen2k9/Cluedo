@@ -36,7 +36,7 @@ public class InputData {
         addElement("log", this.commandData);
         addElement("show", this.commandData);
         addElement("hide", this.commandData);
-        
+
         SuspectData suspectData = new SuspectData();
         for (int i = 0; i < suspectData.getSuspectAmount(); i++){
             addElement(suspectData.getSuspectID(i), this.commandData);

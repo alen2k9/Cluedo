@@ -261,6 +261,7 @@ public class QPanel extends JPanel {
 
 
     public void displayQuestionPanel(int currentRoom, int currentPlayer){
+        gameScreen.getInfoOutput().append("Select who you might think it could be.\n");
         this.setupLabels();
         prevSelectedCards = new T11Label[3];
         removeAll();
@@ -523,7 +524,6 @@ public class QPanel extends JPanel {
 
         //Assign the card points array as this method must be called
         if (!hasSelectedPlayer){
-            System.out.println("Length " + playerLabels.length);
             for (int i = 0; i < playerLabels.length; i++){
                 super.add(playerLabels[i]);
                 playerLabels[i].setLocation(getWidth() + (this.spacing*(i+1))+(playerLabels[i].getWidth()*(i)), cardY);
@@ -585,7 +585,6 @@ public class QPanel extends JPanel {
                 }
             }
         }
-        System.out.println(doAnimate);
         if (doAnimate) {
             if (!hasSelectedPlayer) {
                 slideCards(playerLabels, labelSlideX,  playerLabels[0].getY(),
@@ -598,7 +597,6 @@ public class QPanel extends JPanel {
     }
 
     private void setupActionListener(T11Label[] labels) {
-
         for (int i = 0; i < labels.length; i++){
             int finalI = i;
             labels[i].addMouseListener(new MouseAdapter() {
@@ -607,7 +605,10 @@ public class QPanel extends JPanel {
                     super.mouseClicked(e);
                     if (!labels[finalI].isSelected()) {
                         addCards(labels[finalI].getCardName());
-
+                        gameScreen.getInfoOutput().append("> " + labels[finalI].getCardName() + "\n");
+                        if (!hasSelectedWeapon) {
+                            gameScreen.getInfoOutput().append("Select the suspects weapon of choice.\n");
+                        }
                     }
                 }
 
@@ -697,23 +698,12 @@ public class QPanel extends JPanel {
         selectedCards[2] = selectedWeapon;
         prevSelectedCards = selectedCards.clone();
         int questionedPlayer = findLabelID(playerLabels, selectedPlayer);
-
-        if (questionedPlayer == -1){
-            System.out.println("Error finding player");
-        }
-
         int questionedWeapon = findLabelID(weaponLabels, selectedWeapon);
-        if (questionedPlayer == -1){
-            System.out.println("Error finding weapon");
-        }
 
         //Move the player and weapon
         gameScreen.getGameSuspects().getSuspect(questionedPlayer).moveToRoom(currentRoom, gameScreen.getGameBoard(), gameScreen.getGameSuspects().getSuspect(questionedPlayer));
-        //System.out.println("Finished moving suspect");
         gameScreen.getGameWeapons().moveWeaponToRoom(questionedWeapon, currentRoom);
         gameScreen.repaint();
-
-        //System.out.println("Repaint done");
 
         showNextPlayer();
     }
@@ -778,13 +768,11 @@ public class QPanel extends JPanel {
 
     public boolean containsCard(String cardID){
         for (int i = 0; i < validCards.size();i++){
-            System.out.println("Comparing " + validCards.get(i).getCardName() + " and " + cardID);
             if (validCards.get(i).getCardName().matches(cardID)){
                 //new T11Label(roomIcons[0], roomData.getRoomName(0), roomData.getRoomID(0)),
 
                 T11Label label = new T11Label(validCardIcons.get(i), validCards.get(i).getCardName());
                 selectedCard = label;
-                System.out.println("Selected Card is " + selectedCard.getCardName());
                 return true;
             }
         }
@@ -796,10 +784,6 @@ public class QPanel extends JPanel {
         findValidCards();
 
         int cardY  = getHeight()-(getHeight()/2);
-
-        for (T11Label label : validCards){
-            System.out.println(label.getCardName());
-        }
 
         T11Label[] validCardArray = this.validCards.toArray(new T11Label[0]);
         for (int i = 0; i < validCardArray.length; i++){
@@ -900,7 +884,6 @@ public class QPanel extends JPanel {
     }
 
     private void setSelectedCardName(String name){
-        System.out.println("Selected Card is " + name);
         this.selectedCardName = name;
     }
 
@@ -924,6 +907,7 @@ public class QPanel extends JPanel {
                     inPlayerState = false;
                     hasSelectedPlayer = true;
                     found = true;
+                    gameScreen.getInfoOutput().append("Select the suspects weapon of choice.\n");
                     break;
                 }
             }
