@@ -14,9 +14,6 @@ import com.team11.cluedo.ui.Resolution;
 
 import java.awt.*;
 import javax.swing.*;
-import java.awt.geom.AffineTransform;
-import java.awt.image.AffineTransformOp;
-import java.awt.image.BufferedImage;
 import java.util.Random;
 
 public class Dice extends JComponent {
@@ -102,6 +99,10 @@ public class Dice extends JComponent {
         public void setRoll(int value) {
             this.value = value;
             setIcon();
+        }
+
+        public Dimension getInitialPreferredSize() {
+            return new Dimension(initialPreferredSize, initialPreferredSize);
         }
         
         private void setIcon(){
@@ -205,7 +206,6 @@ public class Dice extends JComponent {
 
                 Thread.sleep(15);
             }
-
             return null;
         }
 
@@ -222,12 +222,7 @@ public class Dice extends JComponent {
             initialY = (int)(dimension.getHeight()/2 + height*3);
         }
     }
-
-    public void setLeftDice(int x, int y){
-        leftDice.setLocation(x,y);
-    }
-
-    public void setRightDice(int x, int y){
-        rightDice.setLocation(x,y);
+    public Dimension getDiceSize() {
+        return new Dimension((int)(80*resolutionScalar),(int)(80*resolutionScalar));
     }
 }
