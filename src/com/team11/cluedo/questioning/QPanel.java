@@ -157,6 +157,8 @@ public class QPanel extends JPanel {
     private GameScreen gameScreen;
     private Resolution resolution;
 
+    private T11Label selectedCard;
+
     public QPanel(GameScreen gameScreen, Resolution resolution) {
         super(null);
         super.setBackground(new Color(0,0,0,156));
@@ -170,6 +172,19 @@ public class QPanel extends JPanel {
 
     public boolean displaying(){
         return this.isVisible();
+    }
+
+    public T11Label getSelectedCard() {
+        selectedCard.setEnabled(true);
+        return selectedCard;
+    }
+
+    public void setSelectedCard(T11Label label){
+        this.selectedCard = label;
+    }
+
+    public int getNextPlayer(){
+        return this.nextPlayer;
     }
 
     private void setupButtonsAndLabels(){
@@ -246,6 +261,7 @@ public class QPanel extends JPanel {
 
 
     public void displayQuestionPanel(int currentRoom, int currentPlayer){
+        gameScreen.getInfoOutput().append("Select who you might think it could be.\n");
         this.setupLabels();
         prevSelectedCards = new T11Label[3];
         removeAll();
@@ -583,7 +599,6 @@ public class QPanel extends JPanel {
     }
 
     private void setupActionListener(T11Label[] labels) {
-
         for (int i = 0; i < labels.length; i++){
             int finalI = i;
             labels[i].addMouseListener(new MouseAdapter() {
@@ -592,7 +607,10 @@ public class QPanel extends JPanel {
                     super.mouseClicked(e);
                     if (!labels[finalI].isSelected()) {
                         addCards(labels[finalI].getCardName());
-
+                        gameScreen.getInfoOutput().append("> " + labels[finalI].getCardName() + "\n");
+                        if (!hasSelectedWeapon) {
+                            gameScreen.getInfoOutput().append("Select the suspects weapon of choice.\n");
+                        }
                     }
                 }
 
@@ -761,6 +779,21 @@ public class QPanel extends JPanel {
         return index;
     }
 
+    public boolean containsCard(String cardID){
+        for (int i = 0; i < validCards.size();i++){
+            System.out.println("Comparing " + validCards.get(i).getCardName() + " and " + cardID);
+            if (validCards.get(i).getCardName().matches(cardID)){
+                //new T11Label(roomIcons[0], roomData.getRoomName(0), roomData.getRoomID(0)),
+
+                T11Label label = new T11Label(validCardIcons.get(i), validCards.get(i).getCardName());
+                selectedCard = label;
+                System.out.println("Selected Card is " + selectedCard.getCardName());
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void setupValidCards() {
         this.validCards = new ArrayList<>();
         findValidCards();
@@ -821,6 +854,8 @@ public class QPanel extends JPanel {
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     super.mouseClicked(e);
+                    selectedCard = new T11Label(validCardIcons.get(validCards.indexOf(label)), label.getCardName());
+
                     shower = gameScreen.getGamePlayers().getPlayer(nextPlayer).getPlayerName();
                     setSelectedCardName(label.getCardName());
                     hasShownCard = true;
@@ -891,6 +926,7 @@ public class QPanel extends JPanel {
                     inPlayerState = false;
                     hasSelectedPlayer = true;
                     found = true;
+                    gameScreen.getInfoOutput().append("Select the suspects weapon of choice.\n");
                     break;
                 }
             }
