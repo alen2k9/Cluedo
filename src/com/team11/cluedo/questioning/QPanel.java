@@ -246,6 +246,7 @@ public class QPanel extends JPanel {
 
 
     public void displayQuestionPanel(int currentRoom, int currentPlayer){
+        gameScreen.getInfoOutput().append("Select who you might think it could be.\n");
         this.setupLabels();
         prevSelectedCards = new T11Label[3];
         removeAll();
@@ -583,7 +584,6 @@ public class QPanel extends JPanel {
     }
 
     private void setupActionListener(T11Label[] labels) {
-
         for (int i = 0; i < labels.length; i++){
             int finalI = i;
             labels[i].addMouseListener(new MouseAdapter() {
@@ -592,7 +592,10 @@ public class QPanel extends JPanel {
                     super.mouseClicked(e);
                     if (!labels[finalI].isSelected()) {
                         addCards(labels[finalI].getCardName());
-
+                        gameScreen.getInfoOutput().append("> " + labels[finalI].getCardName() + "\n");
+                        if (!hasSelectedWeapon) {
+                            gameScreen.getInfoOutput().append("Select the suspects weapon of choice.\n");
+                        }
                     }
                 }
 
@@ -891,6 +894,7 @@ public class QPanel extends JPanel {
                     inPlayerState = false;
                     hasSelectedPlayer = true;
                     found = true;
+                    gameScreen.getInfoOutput().append("Select the suspects weapon of choice.\n");
                     break;
                 }
             }
