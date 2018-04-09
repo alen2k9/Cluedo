@@ -304,7 +304,7 @@ public class QPanel extends JPanel {
 
     public void question(String input) {
         boolean found = false;
-        findValidCards();
+        //findValidCards();
         if (!hasSelectedPlayer || !hasSelectedWeapon)
             textSelectCard(input);
         if (questionState == 3) {
@@ -351,13 +351,15 @@ public class QPanel extends JPanel {
                 for (T11Label card : roomLabels) {
                     if (card.getCardID().equals(input)) {
                         System.out.println("Input was equal");
-
-
                         for (T11Label card2 : validCards) {
                             System.out.println("Comparing " + (selectedCards[1] == card));
                             System.out.println("Comparing " + card2.getCardID().equals(input));
                             System.out.println("INput : "+ input);
-                            if (selectedCards[1].getCardID() == card.getCardID() && card2.getCardID().equals(input)) {
+                            if (selectedCards[1] == null){
+                                System.out.print("null");
+                            }
+                            
+                            if (selectedCards[1].getCardID().equals(card.getCardID()) && card2.getCardID().equals(input)) {
                                 found = true;
                                 showCard(card.getCardName());
                                 selectedCard = card;
