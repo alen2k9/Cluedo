@@ -1133,7 +1133,7 @@ public class CommandInput {
             }
         } else {
             gameScreen.getInfoOutput().append("Enter hide/show to hide or show the question panel.\n");
-            //gameScreen.getqPanel().findValidCards();
+            gameScreen.getqPanel().findValidCards();
             gameScreen.getqPanel().setupValidCards();
             if (gameScreen.getqPanel().validCardSize() != 0) {   //There is cards to show so the done button state doesn't appear
                 gameScreen.getqPanel().setQuestionState(3);
