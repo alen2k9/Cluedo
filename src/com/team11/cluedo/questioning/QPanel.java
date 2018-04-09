@@ -304,41 +304,66 @@ public class QPanel extends JPanel {
 
     public void question(String input) {
         boolean found = false;
-
+        findValidCards();
         if (!hasSelectedPlayer || !hasSelectedWeapon)
             textSelectCard(input);
         if (questionState == 3) {
             for (T11Label card : playerLabels) {
+
                 if (card.getCardID().equals(input)) {
+
+                    System.out.println("Input was equal");
                     for (T11Label card2 : validCards) {
-                        if (selectedCards[0] == card && card2.getCardName().equals(card.getCardName())) {
+                        System.out.println("Comparing " + (selectedCards[0] == card));
+                        System.out.println("Comparing " + card2.getCardID().equals(input));
+                        System.out.println("INput : "+ input);
+                        if (selectedCards[0].getCardID() == card.getCardID() && card2.getCardID().equals(input)) {
                             found = true;
                             showCard(card.getCardName());
+                            selectedCard = card;
                         }
                     }
+
                 }
+
             }
             if (!found) {
                 for (T11Label card : weaponLabels) {
                     if (card.getCardID().equals(input)) {
+                        System.out.println("Input was equal");
+
+
                         for (T11Label card2 : validCards) {
-                                if (selectedCards[2] == card && card2.getCardName().equals(card.getCardName())) {
+                            System.out.println("Comparing " + (selectedCards[2].getCardID() == card.getCardID()));
+                            System.out.println("Comparing " + card2.getCardID().equals(input));
+                            System.out.println("INput : "+ input);
+                                if (selectedCards[2].getCardID() == card.getCardID() && card2.getCardID().equals(input)) {
                                 found = true;
                                 showCard(card.getCardName());
+                                    selectedCard = card;
                             }
                         }
+
                     }
                 }
             }
             if (!found) {
                 for (T11Label card : roomLabels) {
                     if (card.getCardID().equals(input)) {
+                        System.out.println("Input was equal");
+
+
                         for (T11Label card2 : validCards) {
-                            if (selectedCards[1] == card && card2.getCardName().equals(card.getCardName())) {
+                            System.out.println("Comparing " + (selectedCards[1] == card));
+                            System.out.println("Comparing " + card2.getCardID().equals(input));
+                            System.out.println("INput : "+ input);
+                            if (selectedCards[1].getCardID() == card.getCardID() && card2.getCardID().equals(input)) {
                                 found = true;
                                 showCard(card.getCardName());
+                                selectedCard = card;
                             }
                         }
+
                     }
                 }
             }
@@ -738,18 +763,20 @@ public class QPanel extends JPanel {
         for (T11Label selectedCard : selectedCards) {
             for (Card card : playerHand.getPlayerHand()) {
                 if (card.getName().matches(selectedCard.getCardName())) {
-                    validCards.add(new T11Label(new ImageIcon(card.getSelectedCardImage()), card.getName()));
+                    validCards.add(new T11Label(new ImageIcon(card.getSelectedCardImage()), card.getName(), card.getID()));
                     validCardIcons.add(new ImageIcon(card.getCardImage()));
                 }
             }
 
             for (Card card : playerHand.getPublicHand()) {
                 if (card.getName().matches(selectedCard.getCardName())) {
-                    validCards.add(new T11Label(new ImageIcon(card.getSelectedCardImage()), card.getName()));
+                    validCards.add(new T11Label(new ImageIcon(card.getSelectedCardImage()), card.getName(), card.getID()));
                     validCardIcons.add(new ImageIcon(card.getCardImage()));
                 }
             }
         }
+
+        System.out.println("Size of valid cards " + validCards.size());
     }
 
     private int findLabelID(T11Label[] labels, T11Label card){
