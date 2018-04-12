@@ -1,12 +1,21 @@
+package gameengine;
+
+import gameengine.Player;
+import gameengine.Query;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class Log implements Iterable<String>, Iterator<String>, LogAPI {
+public class Log implements Iterable<String>, Iterator<String> {
 
     private final ArrayList<String> messages = new ArrayList<>();
     private Iterator<String> iterator;
 
-    public void addExchange(Player currentPlayer, Player queriedPlayer, Query query, boolean cardFound) {
+    Log () {
+        messages.add(" TEST ");
+    }
+
+    void addExchange(Player currentPlayer, Player queriedPlayer, Query query, boolean cardFound) {
         messages.add(currentPlayer + " questioned " + queriedPlayer + " about " + query.getSuspect() + " with the "
                 + query.getWeapon() + " in the " + query.getRoom() + ".");
         if (cardFound) {
@@ -16,7 +25,7 @@ public class Log implements Iterable<String>, Iterator<String>, LogAPI {
         }
     }
 
-    public void addExchange(Player currentPlayer, Player queriedPlayer, Query query, Card card) {
+    void addExchange(Player currentPlayer, Player queriedPlayer, Query query, Card card) {
         messages.add(currentPlayer + " questioned " + queriedPlayer + " about " + query.getSuspect() + " with the "
                 + query.getWeapon() + " in the " + query.getRoom() + ".");
         messages.add(queriedPlayer + " showed one card: " + card + ".");

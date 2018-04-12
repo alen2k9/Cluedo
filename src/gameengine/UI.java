@@ -1,7 +1,9 @@
+package gameengine;
+
 import javax.swing.*;
 import java.awt.*;
 
-public class UI {
+class UI {
 
     private static final int FRAME_WIDTH = 1200;
     private static final int FRAME_HEIGHT = 800;
@@ -14,7 +16,7 @@ public class UI {
     private boolean inputIsDone, cardFound;
     private Card selectedCard;
 
-    UI(Tokens characters, Weapons weapons, Bot[] bots) {
+    UI(Tokens characters, Weapons weapons) {
         JFrame frame = new JFrame();
         boardPanel = new BoardPanel(characters, weapons);
         frame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
@@ -29,11 +31,11 @@ public class UI {
 
     /* Display Methods */
 
-    public void clearScreen() {
+    void clearScreen() {
         infoPanel.clearScreen();
     }
 
-    public void display() {
+    void display() {
         boardPanel.refresh();
     }
 
@@ -41,25 +43,29 @@ public class UI {
         infoPanel.addText(string);
     }
 
-    public void displayMurderAnnouncement() {
+    void displayMurderAnnouncement() {
         displayString("WELCOME TO CLUEDO");
         displayString("A murder has been committed.");
         displayString("You must solve the case.");
     }
 
-    public void displayCardsDealt() {
+    void displayCardsDealt() {
         displayString("The cards have been dealt.");
     }
 
-    public void displayDice(Player player, Dice dice) {
+    void displayPlayerShuffle() {
+        displayString("The players have been shuffled.");
+    }
+
+    void displayDice(Player player, Dice dice) {
         displayString(player + " rolls " + dice + ".");
     }
 
-    public void displayRollDraw() {
+    void displayRollDraw() {
         displayString("Draw.");
     }
 
-    public void displayRollWinner(Player player) {
+    void displayRollWinner(Player player) {
         displayString(player + " wins the roll.");
     }
 
@@ -77,7 +83,7 @@ public class UI {
         }
     }
 
-    public void displayNotes(Player player, Deck deck) {
+    void displayNotes(Player player, Deck deck) {
         displayString("---- SUSPECTS -----");
         for(String cardName : Names.SUSPECT_NAMES) {
             displayNote(player, deck, cardName);
@@ -92,11 +98,11 @@ public class UI {
         }
     }
 
-    public void displaySolution(Cards cards) {
+    void displaySolution(Cards cards) {
         displayString("The solutions is: " + cards);
     }
 
-    public void displayHelp() {
+    void displayHelp() {
         displayString("Commands:");
         displayString("roll = roll the dice and move your token.");
         displayString("   u = up");
@@ -111,7 +117,7 @@ public class UI {
         displayString("quit = end the game.");
     }
 
-    public void displayLog(Log log) {
+    void displayLog(Log log) {
         if (log.isEmpty()) {
             displayString("Empty.");
         } else {
@@ -121,7 +127,7 @@ public class UI {
         }
     }
 
-    public void displayAccuseResult(boolean result) {
+    void displayAccuseResult(boolean result) {
         if (result) {
             displayString("The accusation is correct.");
         } else {
@@ -129,14 +135,14 @@ public class UI {
         }
     }
 
-    public void displayWinner(Player player, Cards murderCards) {
+    void displayWinner(Player player, Cards murderCards) {
         displayString("");
         displayString("The solution is: " + murderCards);
         displayString("The winner is: " + player);
         displayString("Game Over.");
     }
 
-    public void displayEliminated(Player player) {
+    void displayEliminated(Player player) {
         displayString(player + " was eliminated.");
     }
 
@@ -146,35 +152,35 @@ public class UI {
         displayString("Error: " + message + ".");
     }
 
-    public void displayErrorNotADoor() {
+    void displayErrorNotADoor() {
         displayError("Not a door");
     }
 
-    public void displayErrorInvalidMove() {
+    void displayErrorInvalidMove() {
         displayError("Invalid move");
     }
 
-    public void displayErrorAlreadyMoved() {
+    void displayErrorAlreadyMoved() {
         displayError("Already moved this turn");
     }
 
-    public void displayErrorNoPassage() {
+    void displayErrorNoPassage() {
         displayError("Not in a room with a passage");
     }
 
-    public void displayErrorDidNotEnterRoom() {
+    void displayErrorDidNotEnterRoom() {
         displayError("Did not enter a room this turn");
     }
 
-    public void displayErrorAlreadyQuestioned() {
+    void displayErrorAlreadyQuestioned() {
         displayError("Already asked a question this turn");
     }
 
-    public void displayErrorNotInCellar() {
+    void displayErrorNotInCellar() {
         displayError("Not in the cellar");
     }
 
-    public void displayErrorInCellar() {
+    void displayErrorInCellar() {
         displayError("In the cellar");
     }
 
@@ -184,17 +190,17 @@ public class UI {
         input = commandPanel.getCommand();
     }
 
-    public void displayName(Player player) {
+    void displayName(Player player) {
         displayString("Enter new player name:");
         displayString("> " + player.getName());
     }
 
-    public void displayToken(Player player) {
+    void displayToken(Player player) {
         displayString("Enter your character name:");
         displayString("> " + player.getToken().getName());
     }
 
-    public void inputCommand(Player player) {
+    void inputCommand(Player player) {
         boolean valid = false;
         do {
             displayString(player + " type your command:");
@@ -210,11 +216,11 @@ public class UI {
         } while (!valid);
     }
 
-    public String getCommand() {
+    String getCommand() {
         return command;
     }
 
-    public void inputSuspect(Player player) {
+    void inputSuspect(Player player) {
         boolean valid = false;
         do {
             displayString(player + " enter suspect name:");
@@ -230,7 +236,7 @@ public class UI {
         } while (!valid);
     }
 
-    public void inputWeapon(Player player) {
+    void inputWeapon(Player player) {
         boolean valid = false;
         do {
             displayString(player + " enter weapon name:");
@@ -246,7 +252,7 @@ public class UI {
         } while (!valid);
     }
 
-    public void inputRoom(Player player) {
+    void inputRoom(Player player) {
         boolean valid = false;
         do {
             displayString(player + " enter room name:");
@@ -262,15 +268,15 @@ public class UI {
         } while (!valid);
     }
 
-    public Query getQuery(Room room) {
+    Query getQuery(Room room) {
         return new Query(suspect, weapon, room.toString());
     }
 
-    public Query getQuery() {
+    Query getQuery() {
         return new Query(suspect, weapon, room);
     }
 
-    public void inputMove(Player player, int moveNumber, int movesAvailable) {
+    void inputMove(Player player, int moveNumber, int movesAvailable) {
         boolean valid = false;
         do {
             displayString(player + " enter move " + moveNumber + " of " + movesAvailable + ":");
@@ -285,11 +291,11 @@ public class UI {
         } while (!valid);
     }
 
-    public String getMove() {
+    String getMove() {
         return move;
     }
 
-    public void inputDoor(Player player) {
+    void inputDoor(Player player) {
         boolean valid = false;
         do {
             displayString(player + " enter door number:");
@@ -305,11 +311,11 @@ public class UI {
         } while (!valid);
     }
 
-    public int getDoor() {
+    int getDoor() {
         return door;
     }
 
-    public void inputResponse(Player currentPlayer, Player playerQueried, Query query) {
+    void inputResponse(Player currentPlayer, Player playerQueried, Query query) {
         boolean valid = false;
         cardFound = false;
         displayString(currentPlayer + " asked a question.");
@@ -345,11 +351,11 @@ public class UI {
         } while (!valid);
     }
 
-    public boolean cardFound() {
+    boolean cardFound() {
         return cardFound;
     }
 
-    public Card getCard() {
+    Card getCard() {
         return selectedCard;
     }
 

@@ -1,3 +1,5 @@
+package gameengine;
+
 public class Weapon {
 
     private final String name;
@@ -16,7 +18,7 @@ public class Weapon {
         return position;
     }
 
-    public void setRoom(Room room) {
+    void setRoom(Room room) {
         position = room.addItem();
     }
 

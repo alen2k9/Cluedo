@@ -1,22 +1,23 @@
+package gameengine;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
-
 
 public class Cards implements Iterable<Card>, Iterator<Card> {
 
     private final ArrayList<Card> cards  = new ArrayList<>();
     private Iterator<Card> iterator;
 
-    public void shuffle() {
+    void shuffle() {
         Collections.shuffle (cards);
     }
 
-    public void add(Card card) {
+    void add(Card card) {
         cards.add(card);
     }
 
-    public void add(Cards cards) {
+    void add(Cards cards) {
         this.cards.addAll(cards.asList());
     }
 
@@ -49,7 +50,7 @@ public class Cards implements Iterable<Card>, Iterator<Card> {
         return cards;
     }
 
-    public Card take() {
+    Card take() {
         Card card = cards.get(0);
         cards.remove(0);
         return card;
@@ -72,7 +73,6 @@ public class Cards implements Iterable<Card>, Iterator<Card> {
         return iterator;
     }
 
-    @Override
     public String toString() {
         StringBuilder cardNames = new StringBuilder();
         boolean firstCard = true;

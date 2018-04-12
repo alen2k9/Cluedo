@@ -1,3 +1,5 @@
+package gameengine;
+
 public class Card {
 
     private final String name;

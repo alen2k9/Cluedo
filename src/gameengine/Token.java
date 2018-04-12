@@ -1,3 +1,5 @@
+package gameengine;
+
 import java.awt.*;
 
 public class Token {
@@ -26,7 +28,7 @@ public class Token {
         return color;
     }
 
-    public void setPosition(Coordinates position) {
+    void setPosition(Coordinates position) {
         this.position = position;
     }
 
@@ -34,19 +36,19 @@ public class Token {
         return position;
     }
 
-    public void enterRoom(Room room) {
+    void enterRoom(Room room) {
         this.room = room;
         position = this.room.addItem();
         isInRoom = true;
     }
 
-    public void leaveRoom(int doorIndex) {
+    void leaveRoom(int doorIndex) {
         room.removeItem(position);
         position = room.getDoorCoordinates(doorIndex);
         isInRoom = false;
     }
 
-    public void leaveRoom() {
+    void leaveRoom() {
         leaveRoom(0);
     }
 

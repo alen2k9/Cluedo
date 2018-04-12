@@ -1,5 +1,8 @@
+package bots;
 
-public class Bot implements BotAPI {
+import gameengine.*;
+
+public class Bot2 implements BotAPI {
 
     // The public API of Bot must not change
     // This is ONLY class that you can edit in the program
@@ -7,17 +10,29 @@ public class Bot implements BotAPI {
     // Bot may not alter the state of the board or the player objects
     // It may only inspect the state of the board and the player objects
 
+    private Player player;
+    private PlayersInfo playersInfo;
+    private Map map;
+    private Dice dice;
+    private Log log;
+    private Deck deck;
 
-    Bot (PlayerAPI player, MapAPI map, DiceAPI dice, LogAPI log) {
+    public Bot2 (Player player, PlayersInfo playersInfo, Map map, Dice dice, Log log, Deck deck) {
+        this.player = player;
+        this.playersInfo = playersInfo;
+        this.map = map;
+        this.dice = dice;
+        this.log = log;
+        this.deck = deck;
     }
 
     public String getName() {
-        return "Bot";
+        return "Bot2"; // must match the class name
     }
 
     public String getCommand() {
         // Add your code here
-        return "help";
+        return "done";
     }
 
     public String getMove() {
@@ -50,4 +65,7 @@ public class Bot implements BotAPI {
         return matchingCards.get().toString();
     }
 
+    public void notifyResponse(Log response) {
+        // Add your code here
+    }
 }

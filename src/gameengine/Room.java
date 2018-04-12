@@ -1,3 +1,5 @@
+package gameengine;
+
 public class Room {
 
     private final static int ITEM_AREA_WIDTH = 4;      // an item is a token or a weapon
@@ -36,7 +38,7 @@ public class Room {
         return doors.length;
     }
 
-    public Coordinates addItem() {
+    Coordinates addItem() {
         int squareNumber = 0;
         while (squaresOccupied[squareNumber]) {
                 squareNumber++;
@@ -53,12 +55,12 @@ public class Room {
         return position;
     }
 
-    public void removeItem(Coordinates position) {
+    void removeItem(Coordinates position) {
         int squareNumber = (position.getRow()-tokenArea.getRow())*ITEM_AREA_WIDTH+position.getCol()-tokenArea.getCol();
         squaresOccupied[squareNumber] = false;
     }
 
-    public void addPassage(Room room) {
+    void addPassage(Room room) {
         hasPassage = true;
         passageDestination = room;
     }
@@ -75,7 +77,6 @@ public class Room {
         return accusationAllowed;
     }
 
-    @Override
     public String toString() {
         return name;
     }

@@ -1,18 +1,20 @@
+package gameengine;
+
 public class Coordinates {
 
     private int col,row;
 
-    Coordinates(int col, int row) {
+    public Coordinates(int col, int row) {
         this.col = col;
         this.row = row;
     }
 
-    Coordinates(Coordinates coordinates) {
+    public Coordinates(Coordinates coordinates) {
         col = coordinates.getCol ();
         row = coordinates.getRow ();
     }
 
-    public void add(Coordinates coordinates) {
+    void add(Coordinates coordinates) {
         col = col + coordinates.getCol ();
         row = row + coordinates.getRow ();
     }

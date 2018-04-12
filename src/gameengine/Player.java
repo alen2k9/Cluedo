@@ -1,11 +1,15 @@
-public class Player implements PlayerAPI {
+package gameengine;
+
+import bots.BotAPI;
+
+public class Player {
 
     private final String name;
     private final Token token;
     private Cards cards = new Cards();
     private final Cards viewedCards = new Cards();
     private boolean eliminated = false;
-    private Bot bot;
+    private BotAPI bot;
 
     Player(String name, Token token) {
         this.name = name;
@@ -24,7 +28,7 @@ public class Player implements PlayerAPI {
         return token;
     }
 
-    public void addCards(Cards cards) {
+    void addCards(Cards cards) {
         this.cards = cards;
     }
 
@@ -32,7 +36,7 @@ public class Player implements PlayerAPI {
         return cards;
     }
 
-    public void addViewedCard(Card card) {
+    void addViewedCard(Card card) {
         viewedCards.add(card);
     }
 
@@ -45,7 +49,7 @@ public class Player implements PlayerAPI {
         return false;
     }
 
-    public void eliminate() {
+    void eliminate() {
         eliminated = true;
     }
 
@@ -57,15 +61,14 @@ public class Player implements PlayerAPI {
         return cards.contains (name);
     }
 
-    public void addBot (Bot bot) {
+    void addBot (BotAPI bot) {
         this.bot = bot;
     }
 
-    public Bot getBot () {
+    BotAPI getBot () {
         return bot;
     }
 
-    @Override
     public String toString() {
         return name + " (" + token.getName() + ")";
     }

@@ -1,11 +1,20 @@
-import java.lang.reflect.*;
+package gameengine;
+
+import bots.BotAPI;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
 public class Cluedo {
 
-    private static final int NUM_PLAYERS = 4;
+
+    private static final String[] ALL_BOT_NAMES = {"Bot"};
+    private static final int NUM_PLAYERS = 3;
+    private static final int DELAY = 10000;  // in milliseconds
+
     private final Tokens tokens  = new Tokens();
     private final Players players = new Players();
     private final Dice dice = new Dice();
@@ -16,10 +25,10 @@ public class Cluedo {
     private Token currentToken;
     private final Deck deck = new Deck();
     private final Log log = new Log();
-    private Bot[] bots = new Bot[NUM_PLAYERS];
-    private static final String[] ALL_BOT_NAMES = {"Bot"};
-    private final UI ui = new UI(tokens,weapons,bots);
-    public String[] botNames = new String[NUM_PLAYERS];
+    private BotAPI[] bots = new BotAPI[NUM_PLAYERS];
+    private final UI ui = new UI(tokens,weapons);
+    private String[] botNames = new String[NUM_PLAYERS];
+    private PlayersInfo playersInfo = new PlayersInfo(players);
 
     private void announceTheGame() {
         ui.displayMurderAnnouncement();
@@ -29,10 +38,9 @@ public class Cluedo {
         ArrayList<String> suspectNames = new ArrayList<>(Arrays.asList(Names.SUSPECT_NAMES));
         Collections.shuffle(suspectNames);
         if (args.length<NUM_PLAYERS) {
-            botNames[0] = "Bot";
-            botNames[1] = "Bot";
-            botNames[2] = "Bot";
-            botNames[3] = "Bot";
+            botNames[0] = "Bot1";
+            botNames[1] = "Bot2";
+            botNames[2] = "Bot3";
         } else {
             for (int i=0; i<NUM_PLAYERS; i++) {
                 boolean found = false;
@@ -52,9 +60,9 @@ public class Cluedo {
             Token token = tokens.get(suspectNames.get(i));
             Player newPlayer = new Player(botNames[i], token);
             try {
-                Class<?> botClass = Class.forName(botNames[i]);
-                Constructor<?> botCons = botClass.getDeclaredConstructor(PlayerAPI.class, MapAPI.class, DiceAPI.class, LogAPI.class);
-                bots[i] = (Bot) botCons.newInstance(newPlayer,map,dice,log);
+                Class<?> botClass = Class.forName("bots." + botNames[i]);
+                Constructor<?> botCons = botClass.getDeclaredConstructor(Player.class,PlayersInfo.class,Map.class,Dice.class,Log.class,Deck.class);
+                bots[i] = (BotAPI) botCons.newInstance(newPlayer,playersInfo,map,dice,log,deck);
             } catch (IllegalAccessException ex) {
                 System.out.println("Error: Bot instantiation fail (IAE)");
                 Thread.currentThread().interrupt();
@@ -79,6 +87,8 @@ public class Cluedo {
     }
 
     private void rollToStart() {
+        players.shuffle();
+        ui.displayPlayerShuffle();;
         Players playersToRoll = new Players(players), playersWithHighRoll = new Players();
         boolean tie = false;
         do {
@@ -189,6 +199,9 @@ public class Cluedo {
                     ui.inputSuspect(currentPlayer);
                     ui.inputWeapon(currentPlayer);
                     Query query = ui.getQuery(currentToken.getRoom());
+                    if (tokens.get(query.getSuspect()).isInRoom()) {
+                        tokens.get(query.getSuspect()).leaveRoom();
+                    }
                     tokens.get(query.getSuspect()).enterRoom(currentToken.getRoom());
                     weapons.get(query.getWeapon()).setRoom(currentToken.getRoom());
                     ui.display();
@@ -210,6 +223,7 @@ public class Cluedo {
                         numberOfQueriesDone++;
                     } while (!ui.cardFound() && numberOfQueriesDone<players.count()-1);
                     ui.displayLog(miniLog);
+                    currentPlayer.getBot().notifyResponse(miniLog);
                     questionOver = true;
                 } else {
                     ui.displayErrorInCellar();
@@ -263,9 +277,6 @@ public class Cluedo {
             moveOver = false;
             questionOver = false;
             enteredRoom = false;
-            if (!firstTurn) {
-                ui.clearScreen();
-            }
             firstTurn = false;
             do {
                 currentPlayer = players.getCurrentPlayer();
@@ -310,6 +321,11 @@ public class Cluedo {
                         quit = true;
                         break;
                     }
+                }
+                try {
+                    Thread.sleep(DELAY);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             } while (!turnOver);
             if (!gameOver) {

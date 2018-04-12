@@ -1,3 +1,5 @@
+package gameengine;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -6,7 +8,7 @@ public class Query implements Iterable<String>, Iterator<String> {
     private final ArrayList<String> query = new ArrayList<>();
     private Iterator<String> iterator;
 
-    Query (String suspectName, String weaponName, String roomName) {
+    public Query (String suspectName, String weaponName, String roomName) {
         query.add(suspectName);
         query.add(weaponName);
         query.add(roomName);

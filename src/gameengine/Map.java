@@ -1,6 +1,8 @@
+package gameengine;
+
 import java.util.HashMap;
 
-public class Map implements MapAPI {
+public class Map {
 
     public final static int NUM_ROOMS = Names.ROOM_NAMES.length;
     public final static int D = 100, C=101, X=102;  // D = Door threshold, C = Corridor, X = Room or Prohibited

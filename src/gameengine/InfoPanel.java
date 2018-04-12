@@ -1,8 +1,10 @@
+package gameengine;
+
 import javax.swing.*;
 import javax.swing.text.DefaultCaret;
 import java.awt.*;
 
-public class InfoPanel extends JPanel {
+class InfoPanel extends JPanel {
 
     private static final long serialVersionUID = 1L;
     private static final int TEXT_AREA_HEIGHT = 40;
@@ -24,11 +26,11 @@ public class InfoPanel extends JPanel {
         add(scrollPane, BorderLayout.CENTER);
     }
 
-    public void addText(String text) {
+    void addText(String text) {
         textArea.setText(textArea.getText()+"\n"+text);
     }
 
-    public void clearScreen() {
+    void clearScreen() {
         textArea.setText("");
     }
 }

@@ -1,3 +1,5 @@
+package gameengine;
+
 public class Deck {
 
     private final Cards suspectCards = new Cards();
@@ -20,7 +22,7 @@ public class Deck {
         }
     }
 
-    public void selectMurderCards() {
+    void selectMurderCards() {
         suspectCards.shuffle();
         murderCards.add(suspectCards.take());
         weaponCards.shuffle();
@@ -29,11 +31,11 @@ public class Deck {
         murderCards.add(roomCards.take());
     }
 
-    public Cards getMurderCards() {
+    Cards getMurderCards() {
         return murderCards;
     }
 
-    public void prepareToDeal(int numberOfPlayers) {
+    void prepareToDeal(int numberOfPlayers) {
         allCards.add(suspectCards);
         allCards.add(weaponCards);
         allCards.add(roomCards);
@@ -50,7 +52,11 @@ public class Deck {
         return sharedCards.contains(name);
     }
 
-    public Cards dealCards() {
+    public Cards getSharedCards() {
+        return sharedCards;
+    }
+
+    Cards dealCards() {
         Cards hand = new Cards();
         for (int i = 0; i<numberOfCardsEach; i++) {
             hand.add(allCards.take());

@@ -1,4 +1,7 @@
+package gameengine;
+
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 
 public class Players implements Iterable<Player>, Iterator<Player> {
@@ -16,11 +19,11 @@ public class Players implements Iterable<Player>, Iterator<Player> {
         }
     }
 
-    public void clear() {
+    void clear() {
         players.clear();
     }
 
-    public void add(Player player) {
+    void add(Player player) {
         players.add(player);
     }
 
@@ -33,7 +36,7 @@ public class Players implements Iterable<Player>, Iterator<Player> {
         return false;
     }
 
-    public Player get(int index) {
+    Player get(int index) {
         return players.get(index);
     }
 
@@ -41,18 +44,18 @@ public class Players implements Iterable<Player>, Iterator<Player> {
         return players.size();
     }
 
-    public void setCurrentPlayer(String name) {
+    void setCurrentPlayer(String name) {
         currentPlayerIndex = 0;
         while (!players.get(currentPlayerIndex).hasName(name)) {
             currentPlayerIndex++;
         }
     }
 
-    public Player getCurrentPlayer () {
+    Player getCurrentPlayer () {
         return players.get(currentPlayerIndex);
     }
 
-    public void turnOver() {
+    void turnOver() {
         do {
             if (currentPlayerIndex < players.size() - 1) {
                 currentPlayerIndex++;
@@ -62,7 +65,7 @@ public class Players implements Iterable<Player>, Iterator<Player> {
         } while (players.get(currentPlayerIndex).isEliminated());
     }
 
-    public Player getPlayerOnTheLeft(Player player) {
+    Player getPlayerOnTheLeft(Player player) {
         int index = players.indexOf(player);
         if (index < players.size()-1) {
             index++;
@@ -70,6 +73,10 @@ public class Players implements Iterable<Player>, Iterator<Player> {
             index = 0;
         }
         return players.get(index);
+    }
+
+    void shuffle() {
+        Collections.shuffle(players);
     }
 
     public boolean hasNext() {

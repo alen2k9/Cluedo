@@ -1,3 +1,5 @@
+package gameengine;
+
 final public class Names {
 
     public final static String[] SUSPECT_NAMES = {"Plum", "White", "Scarlett", "Green", "Mustard", "Peacock"};
