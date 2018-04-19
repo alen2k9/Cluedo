@@ -1,7 +1,7 @@
 /*
     Team11 Authors :    Jack Geraghty - 16384181
                         Conor Beenham -
-                        Alen Thomas   -
+                        Alen Thomas   - 16333003
 */
 
 package bots;
@@ -48,6 +48,11 @@ public class Team11 implements BotAPI {
 
     public String getName() {
         return "Team11"; // must match the class name
+    }
+
+    @Override
+    public String getVersion() {
+        return null;
     }
 
     public String getCommand() {
@@ -114,6 +119,26 @@ public class Team11 implements BotAPI {
 
     public void notifyResponse(Log response) {
         // Add your code here
+    }
+
+    @Override
+    public void notifyPlayerName(String playerName) {
+
+    }
+
+    @Override
+    public void notifyTurnOver(String playerName, String position) {
+
+    }
+
+    @Override
+    public void notifyQuery(String playerName, String query) {
+
+    }
+
+    @Override
+    public void notifyReply(String playerName, boolean cardShown) {
+
     }
 
     private String doExit() {
