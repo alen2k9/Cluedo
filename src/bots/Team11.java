@@ -1,7 +1,7 @@
 /*
     Team11 Authors :    Jack Geraghty - 16384181
                         Conor Beenham -
-                        Alen Thomas   -
+                        Alen Thomas   - 16333003
 */
 
 package bots;
@@ -10,8 +10,11 @@ import gameengine.*;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.PriorityQueue;
+
+
 
 public class Team11 implements BotAPI {
 
@@ -28,7 +31,15 @@ public class Team11 implements BotAPI {
     private Log log;
     private Deck deck;
 
+    ArrayList<String> moveList;
+
+    int targetX, targetY;
+
     private int rollResult;
+    private QuestioningLogic questioningLogic = new QuestioningLogic();
+    private String currentRoom;
+    private boolean inRoom, inCellar, rollDone, questionDone, questioning, accusing, moveDone, moving, doOnce;
+
 
     public Team11(Player player, PlayersInfo playersInfo, Map map, Dice dice, Log log, Deck deck) {
         this.player = player;
@@ -37,36 +48,97 @@ public class Team11 implements BotAPI {
         this.dice = dice;
         this.log = log;
         this.deck = deck;
+
+        inRoom = false;
+        doOnce = true;
+        inCellar = false;
+        resetBools();
     }
 
     public String getName() {
         return "Team11"; // must match the class name
     }
 
+    @Override
+    public String getVersion() {
+        return null;
+    }
+
     public String getCommand() {
-        // Add your code here
-        return "done";
+        if (!questioningLogic.isInitialised())
+            questioningLogic.initialiseCards();
+
+        if (!questionDone && inRoom && questioningLogic.shouldQuestion())
+            return doQuestion();
+        if (questionDone && inRoom && !rollDone)
+            return doRoll();
+        if (!rollDone)
+            return doRoll();
+        if (inRoom && moving)
+            return doExit();
+        if (moveDone && inRoom && !questionDone)
+            return doQuestion();
+        if (questioningLogic.readyToAccuse() && inCellar)
+            return doAccuse();
+        return endTurn();
     }
 
     public String getMove() {
         // Add your code here
-        int tarX = 5, tarY = 7;
-        ArrayList<String> commands = movementHandling(player.getToken().getPosition().getRow(), player.getToken().getPosition().getCol(), tarX, tarY);
-        return "r";
-    }
 
+        if (doOnce) {
+            this.targetX = 7;
+            this.targetY = 4;
+
+            moveList = movementHandling(player.getToken().getPosition().getRow(), player.getToken().getPosition().getCol(), targetX, targetY);
+            System.out.println(moveList);
+            doOnce = false;
+        }
+        if (moveList.size() > 0){
+            return moveList.remove(0);
+        }
+        else {
+            int row = player.getToken().getPosition().getRow();
+            int col = player.getToken().getPosition().getCol();
+
+            if (map.isDoor(player.getToken().getPosition(), new Coordinates(col,row-1 ))){
+                return "u";
+            }
+            else if (map.isDoor(player.getToken().getPosition(), new Coordinates(col, row+1 ))){
+                return "d";
+            }
+            else if (map.isDoor(player.getToken().getPosition(), new Coordinates(col-1, row))){
+                return "l";
+            } else{
+                return "r";
+            }
+        }
+    }
     public String getSuspect() {
         // Add your code here
+        if (questioning)
+            return questioningLogic.getCardToQuestion(0);
+        if (accusing)
+            return questioningLogic.getCardToAccuse(0);
         return Names.SUSPECT_NAMES[0];
     }
 
     public String getWeapon() {
         // Add your code here
+        if (questioning) {
+            questioning = false;
+            questionDone = true;
+            return questioningLogic.getCardToQuestion(1);
+        }
+        if (accusing)
+            return questioningLogic.getCardToAccuse(1);
         return Names.WEAPON_NAMES[0];
     }
 
     public String getRoom() {
         // Add your code here
+        if (accusing)
+            return questioningLogic.getCardToAccuse(2);
         return Names.ROOM_NAMES[0];
     }
 
@@ -82,9 +154,187 @@ public class Team11 implements BotAPI {
 
     public void notifyResponse(Log response) {
         // Add your code here
+
     }
 
+    @Override
+    public void notifyPlayerName(String playerName) {
 
+    }
+
+    @Override
+    public void notifyTurnOver(String playerName, String position) {
+
+    }
+
+    @Override
+    public void notifyQuery(String playerName, String query) {
+
+    }
+
+    @Override
+    public void notifyReply(String playerName, boolean cardShown) {
+
+    }
+
+    private String doExit() {
+        inRoom = false;
+        currentRoom = null;
+        return "exit";
+    }
+
+    private String doQuestion() {
+        questioning = true;
+        return "question";
+    }
+
+    private String doRoll() {
+        rollDone = true;
+        moving = true;
+        moveList = new ArrayList<>();
+
+        System.out.println("Move list is: " + moveList);
+        return "roll";
+    }
+
+    private String doAccuse() {
+        accusing = true;
+        return "accuse";
+    }
+
+    private String endTurn() {
+        resetBools();
+        return "done";
+    }
+
+    private void resetBools() {
+        questioning = false;
+        questionDone = false;
+        moveDone = false;
+        moving = false;
+        rollDone = false;
+        accusing = false;
+        doOnce = true;
+    }
+
+    public class QuestioningLogic {
+        private final HashSet<String> roomCards = new HashSet<>(), suspectCards = new HashSet<>(), weaponCards = new HashSet<>();
+        private final HashSet<String> myRoomCards = new HashSet<>(), mySuspectCards = new HashSet<>(), myWeaponCards = new HashSet<>();
+        private final HashSet<String > knownCards = new HashSet<>();
+        private final HashSet<String > publicCards = new HashSet<>();
+
+        private String accusedSuspect, accusedWeapon, accusedRoom;
+        private boolean foundSuspect = false, foundWeapon = false, foundRoom = false;
+        private boolean initialised = false;
+
+        public void initialiseCards() {
+            roomCards.addAll(Arrays.asList(Names.ROOM_CARD_NAMES));
+            suspectCards.addAll(Arrays.asList(Names.SUSPECT_NAMES));
+            weaponCards.addAll(Arrays.asList(Names.WEAPON_NAMES));
+
+            System.out.println("PLAYER: ");
+            for (Object o : player.getCards()) {
+                System.out.println(o.toString());
+                if (roomCards.contains(o.toString())) {
+                    myRoomCards.add(o.toString());
+                    roomCards.remove(o.toString());
+                } else if (weaponCards.contains(o.toString())) {
+                    myWeaponCards.add(o.toString());
+                    weaponCards.remove(o.toString());
+                } else if (suspectCards.contains(o.toString())) {
+                    mySuspectCards.add(o.toString());
+                    suspectCards.remove(o.toString());
+                }
+                knownCards.add(o.toString());
+            }
+
+            System.out.println("SHARED: ");
+            for (Object o : deck.getSharedCards()) {
+                if (roomCards.contains(o.toString())) {
+                    publicCards.add(o.toString());
+                    roomCards.remove(o.toString());
+                } else if (weaponCards.contains(o.toString())) {
+                    publicCards.add(o.toString());
+                    weaponCards.remove(o.toString());
+                } else if (suspectCards.contains(o.toString())) {
+                    publicCards.add(o.toString());
+                    suspectCards.remove(o.toString());
+                }
+                knownCards.add(o.toString());
+                System.out.println(o.toString());
+            }
+
+            initialised = true;
+        }
+
+        public boolean isInitialised() {
+            return initialised;
+        }
+
+        public String getCardToQuestion(int cardType) {
+            switch (cardType) {
+                case 0:
+                    return questionCard(foundSuspect, suspectCards, mySuspectCards, accusedSuspect);
+                case 1:
+                    return questionCard(foundWeapon, weaponCards, myWeaponCards, accusedWeapon);
+                case 2:
+                    return questionCard(foundRoom, roomCards, myRoomCards, accusedRoom);
+                default:
+                    return null;
+            }
+        }
+
+        public String getCardToAccuse(int cardType) {
+            switch (cardType) {
+                case 0:
+                    return accusedSuspect;
+                case 1:
+                    return accusedWeapon;
+                case 2:
+                    return accusedRoom;
+                default:
+                    return null;
+            }
+        }
+
+        public String questionCard(boolean found, HashSet<String> cards, HashSet<String> myCards, String accusedCard) {
+            if (!found)
+                return cards.stream().findFirst().orElse(null);
+            else if (!myCards.isEmpty())
+                return myCards.stream().findFirst().orElse(null);
+            else
+                return accusedCard;
+        }
+
+        public boolean shouldQuestion() {
+            return (!knownCards.contains(currentRoom) && !publicCards.contains(currentRoom)) ||
+                    (foundRoom && (accusedRoom.equals(currentRoom) || myRoomCards.contains(currentRoom)));
+        }
+
+        public boolean readyToAccuse() {
+            return foundSuspect && foundWeapon && foundRoom;
+        }
+
+        public void printKnownCards() {
+            if (publicCards.size() > 0) {
+                StringBuilder s = new StringBuilder();
+                s.append("Shared cards: ");
+                for (String name : publicCards) {
+                    s.append(name).append(", ");
+                }
+                System.out.println(s.toString());
+            }
+            if (knownCards.size() > 0) {
+                StringBuilder s = new StringBuilder();
+                s.append("Known cards: ");
+                for (String name : knownCards) {
+                    s.append(name).append(", ");
+                }
+                System.out.println(s.toString());
+            }
+        }
+
+    }
 
     /*
         Method to handle the movement of the bot
@@ -95,13 +345,13 @@ public class Team11 implements BotAPI {
         P.S. I hope this works :)
         It has not been tested
     */
-    public ArrayList<String> movementHandling(int currX, int currY, int tarX, int tarY){
+    private ArrayList<String> movementHandling(int currX, int currY, int tarX, int tarY){
         Path path;
-        Pathfinding pathfinding = new Pathfinding(map, rollResult, false);
+        Pathfinding pathfinding = new Pathfinding(map, 100, false);
         path = pathfinding.findPath(currX,currY,tarX, tarY);
         ArrayList<String> movementCommands = pathToDirections(path);
-        System.out.println(movementCommands);
         System.out.println("Path is " + path);
+        System.out.println(movementCommands);
 
         return movementCommands;
     }
@@ -110,23 +360,25 @@ public class Team11 implements BotAPI {
         ArrayList<String> directions = new ArrayList<>();
 
         Point previousPoint = new Point( player.getToken().getPosition().getRow(), player.getToken().getPosition().getCol() );
+        System.out.println(previousPoint);
+        System.out.println(path);
 
         Point nextPoint = new Point(path.getStep(0).getY(), path.getStep(0).getX());
 
         for (int i = 0; i < path.getLength(); i++){
             if (nextPoint.getX() == previousPoint.getX()){
-                if (nextPoint.getY() > previousPoint.getY()){
-                    directions.add("s");
-                }else {
+                if (nextPoint.getY() < previousPoint.getY()){
                     directions.add("u");
+                }else {
+                    directions.add("d");
                 }
             }
 
             else if (nextPoint.getY() == previousPoint.getY()){
-                if (nextPoint.getX() > previousPoint.getX()){
-                    directions.add("r");
-                } else {
+                if (nextPoint.getX() < previousPoint.getX()){
                     directions.add("l");
+                } else {
+                    directions.add("r");
                 }
             }
 
@@ -136,16 +388,18 @@ public class Team11 implements BotAPI {
                 nextPoint = new Point(path.getStep(i+1).getY(), path.getStep(i+1).getX());
             }
         }
-        path.getSteps().remove(0);
+
+        //path.getSteps().remove(0);
+        System.out.println("Directions:" + directions);
         return directions;
     }
 
-    private class Pathfinding{
-        private HashSet closed = new HashSet();
+    private class Pathfinding {
+        private HashSet closed = new HashSet<>();
         private PriorityQueue open = new PriorityQueue();
 
         private Map tbMap;
-        private int maxDistance;
+        private int maxSearchDistance;
 
         private Node[][] nodes;
         private boolean allowDiagMovement;
@@ -154,99 +408,95 @@ public class Team11 implements BotAPI {
 
         private boolean pathFinderVisited[][];
 
-        public Pathfinding(Map tbMap, int maxSearchDistance, boolean allowDiagMovement) {
+        public Pathfinding(Map map, int maxSearchDistance, boolean allowDiagMovement) {
             this(map, maxSearchDistance, allowDiagMovement, new ClosestHeuristic());
         }
 
-        public Pathfinding(Map tbMap, int maxDistance, boolean allowDiagMovement, AStarHeuristic heuristic){
+
+        public Pathfinding(Map map, int maxSearchDistance,
+                               boolean allowDiagMovement, AStarHeuristic heuristic) {
             this.heuristic = heuristic;
-            this.tbMap = tbMap;
-            this.maxDistance = maxDistance;
+            this.tbMap = map;
+            this.maxSearchDistance = maxSearchDistance;
             this.allowDiagMovement = allowDiagMovement;
 
-
-            nodes = new Node[tbMap.NUM_ROWS][tbMap.NUM_COLS];
-            for (int i = 0; i < tbMap.NUM_ROWS; i++){
-                for (int j = 0; j < tbMap.NUM_COLS; j++){
-                    nodes[i][j] = new Node(i,j);
+            nodes = new Node[Map.NUM_ROWS][Map.NUM_COLS];
+            for (int x=0;x<Map.NUM_ROWS;x++) {
+                for (int y=0;y< Map.NUM_COLS;y++) {
+                    nodes[x][y] = new Node(x,y);
                 }
             }
-
-            this.pathFinderVisited = new boolean[tbMap.NUM_ROWS][tbMap.NUM_COLS];
-            for (int i = 0; i < tbMap.NUM_ROWS; i++){
-                for (int j = 0; j < tbMap.NUM_COLS; j++){
-                    pathFinderVisited[i][j] = false;
-                }
-            }
+            this.pathFinderVisited = new boolean[Map.NUM_ROWS][Map.NUM_COLS];
         }
 
-        @SuppressWarnings("unchecked")
-        public Path findPath(int sx, int sy, int tx, int ty){
+        public Path findPath(int sx, int sy, int tx, int ty) {
+            System.out.println("tx " + tx + " ty " + ty);
+
             nodes[sx][sy].cost = 0;
             nodes[sx][sy].depth = 0;
-
             closed.clear();
             open.clear();
-            open.add(nodes[sx][sy]);
+            addToOpen(nodes[sx][sy]);
 
             nodes[tx][ty].parent = null;
 
             int maxDepth = 0;
-            while ((maxDepth < maxDistance) && open.size() != 0){
+            while ((maxDepth < maxSearchDistance) && (open.size() != 0)) {
+                // pull out the first node in our open list, this is determined to
+
+                // be the most likely to be the next step based on our heuristic
+
                 Node current = getFirstInOpen();
-                if (current == nodes[tx][ty]){
+                if (current == nodes[tx][ty]) {
                     break;
                 }
 
                 removeFromOpen(current);
                 addToClosed(current);
 
-                for (int x = -1; x < 2; x++) {
-                    for (int y = -1; y < 2; y++) {
-                        // not a neighbour, it's the current tile
+                for (int x=-1;x<2;x++) {
+                    for (int y=-1;y<2;y++) {
+                        // not a neighbour, its the current tile
+
                         if ((x == 0) && (y == 0)) {
                             continue;
                         }
 
-                        // if we're not allowing diagonal movement then only one of x or y can be set
+                        // if we're not allowing diaganol movement then only
+
+                        // one of x or y can be set
+
                         if (!allowDiagMovement) {
                             if ((x != 0) && (y != 0)) {
                                 continue;
                             }
                         }
 
-                        //Determine the location of the neighbour and evaluate it
+                        // determine the location of the neighbour and evaluate it
+
                         int xp = x + current.x;
                         int yp = y + current.y;
 
                         if (isValidLocation(sx,sy,xp,yp)) {
-                            // the cost to get to this node is cost the current plus the movement
-                            // cost to reach this node. Note that the heuristic value is only used
-                            // in the sorted open list
 
                             float nextStepCost = current.cost + getMovementCost(current.x, current.y, xp, yp);
                             Node neighbour = nodes[xp][yp];
-                            this.pathFinderVisited[xp][yp] = true ;
-                            if (nextStepCost < 1000){
+                            pathFinderVisited[xp][yp] = true;
 
-                                if (nextStepCost < neighbour.cost) {
-                                    if (inOpenList(neighbour)) {
-                                        removeFromOpen(neighbour);
-                                    }
-                                    if (inClosedList(neighbour)) {
-                                        removeFromClosed(neighbour);
-                                    }
+                            if (nextStepCost < neighbour.cost) {
+                                if (inOpenList(neighbour)) {
+                                    removeFromOpen(neighbour);
+                                }
+                                if (inClosedList(neighbour)) {
+                                    removeFromClosed(neighbour);
                                 }
                             }
 
-                            else {
-                                return null;
-                            }
 
-                            //Check to see if the neighbour has been processed or discarded before now
                             if (!inOpenList(neighbour) && !(inClosedList(neighbour))) {
+                                //System.out.println("HERE");
                                 neighbour.cost = nextStepCost;
-                                neighbour.heuristic = getHeuristicCost(xp, yp, tx, ty);
+                                neighbour.heuristic = heuristic.getCost(xp, yp, tx, ty);
                                 maxDepth = Math.max(maxDepth, neighbour.setParent(current));
                                 addToOpen(neighbour);
                             }
@@ -255,115 +505,104 @@ public class Team11 implements BotAPI {
                 }
             }
 
-            //We've run out of places to search therefore there must be no path
-            if (nodes[tx][ty].parent == null) {
-                return null;
-            }
-
-            //If we get to this point then we have a valid path and by using the parent node of each node we can work back to the original node
             Path path = new Path();
             Node target = nodes[tx][ty];
             while (target != nodes[sx][sy]) {
                 path.prependStep(target.x, target.y);
                 target = target.parent;
             }
+            path.prependStep(sx,sy);
 
-            //Return the valid path found
             return path;
+    }
+        private float getMovementCost(int x, int y, int xp, int xy){
+            return 1;
         }
+        private boolean isValidLocation(int sx, int sy, int xp, int yp){
 
-        private float getMovementCost(int sx, int sy, int tx, int ty){
-            if (tbMap.isDoor(new Coordinates(sx, sy), new Coordinates(tx,ty)) ||
-                    tbMap.isCorridor(new Coordinates(tx,ty))){
-                return 1;
-            } else{
-                return 10;
+            boolean inBounds = !( ((xp < 0) || xp >= (Map.NUM_ROWS))  || ((yp < 0) || (yp >= Map.NUM_COLS)));
+
+            if (inBounds){
+                System.out.println("Is door: " + tbMap.isDoor(new Coordinates(xp,yp), new Coordinates(sx,sy)));
+                System.out.println(yp + "  " + xp);
+                inBounds = (tbMap.isCorridor(new Coordinates(yp,xp))  || tbMap.isDoor(new Coordinates(sy,sx), new Coordinates(yp,xp)));
             }
+
+            return inBounds;
         }
 
-        private float getHeuristicCost(int x, int y, int tx, int ty){
-            return heuristic.getCost(x,y,tx,ty);
-        }
 
-        private boolean isValidLocation(int sx, int sy, int xp,int yp){
-            return tbMap.isDoor(new Coordinates(sx, sy), new Coordinates(xp, yp)) &&
-                    tbMap.isCorridor(new Coordinates(sx, sy));
-        }
-
-        private Node getFirstInOpen(){
+        private Node getFirstInOpen() {
             return (Node) open.peek();
         }
 
         @SuppressWarnings("unchecked")
-        private void addToOpen(Node node){
+        private void addToOpen(Node node) {
             open.add(node);
         }
 
-        private boolean inOpenList(Node node){
+        private boolean inOpenList(Node node) {
             return open.contains(node);
         }
 
-        private void removeFromOpen(Node node){
+        private void removeFromOpen(Node node) {
             open.remove(node);
         }
 
         @SuppressWarnings("unchecked")
-        private void addToClosed(Node node){
+        private void addToClosed(Node node) {
             closed.add(node);
         }
 
-        private boolean inClosedList(Node node){
+        private boolean inClosedList(Node node) {
             return closed.contains(node);
         }
 
-        private void removeFromClosed(Node node){
+        private void removeFromClosed(Node node) {
             closed.remove(node);
         }
+    }
 
-        private class Node implements Comparable{
-            private int x, y;
-            private int depth;
-            private float cost;
-            private float heuristic;
-            private Node parent;
+    private class Node implements Comparable {
+        //The x coordinate of the node
+        private int x;
+        //The y coordinate of the node
+        private int y;
+        //The path cost for this node
+        private float cost;
+        //The parent of this node, how we reached the current node
+        private Node parent;
+        // The heuristic cost of this node
+        private float heuristic;
+        // The search depth of this node
+        private int depth;
 
-            public Node(int x, int y){
-                this.x = x;
-                this.y = y;
-            }
+        public Node(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
 
-            public int setParent(Node parent){
-                depth = parent.depth + 1;
-                this.parent = parent;
-                return depth;
-            }
+        private int setParent(Node parent) {
+            depth = parent.depth + 1;
+            this.parent = parent;
 
-            @Override
-            public int compareTo(Object other){
-                Node o = (Node) other;
-                float f = heuristic + cost;
-                float of = o.heuristic + o.cost;
+            return depth;
+        }
 
-                if (f < of){
-                    return -1;
-                } else if (f > of){
-                    return 1;
-                } else {
-                    return 0;
-                }
-            }
+        public int compareTo(Object other) {
+            Node o = (Node) other;
+
+            float f = heuristic + cost;
+            float of = o.heuristic + o.cost;
+
+            return Float.compare(f, of);
         }
     }
 
     private class ClosestHeuristic implements AStarHeuristic{
         @Override
         public float getCost(int x, int y, int tx, int ty){
-            float dx = tx - x;
-            float dy = ty - y;
-
-            float result = (float) (Math.sqrt((dx*dx)+(dy*dy)));
-
-            return result;
+            return Math.abs( (x - tx) + (y-ty));
         }
     }
 
