@@ -178,17 +178,41 @@ public class Team11 implements BotAPI {
 
     @Override
     public void notifyTurnOver(String playerName, String position) {
-
+        questioningLogic.analyseLatestQuery();
     }
 
     @Override
     public void notifyQuery(String playerName, String query) {
+        System.out.println("Player:" + playerName + " : " + query);
+        String suspect = null, weapon = null, room = null;
+        for (String suspectName : Names.SUSPECT_NAMES) {
+            if (query.contains(suspectName)) {
+                suspect = suspectName;
+                break;
+            }
+        }
+        for (String weaponName : Names.WEAPON_NAMES) {
+            if (query.contains(weaponName)) {
+                weapon = weaponName;
+                break;
+            }
+        }
+        for (String roomName : Names.ROOM_CARD_NAMES) {
+            if (query.contains(roomName)) {
+                room = roomName;
+                break;
+            }
+        }
 
+        questioningLogic.getLatestQuery().setQueryingPlayer(playerName);
+        questioningLogic.getLatestQuery().setQuery(suspect, weapon, room);
     }
 
     @Override
     public void notifyReply(String playerName, boolean cardShown) {
-
+        if (cardShown) {
+            questioningLogic.getLatestQuery().setQueriedPlayer(playerName);
+        }
     }
 
     private String doExit() {
@@ -242,6 +266,8 @@ public class Team11 implements BotAPI {
         private final HashSet<String> myRoomCards = new HashSet<>(), mySuspectCards = new HashSet<>(), myWeaponCards = new HashSet<>();
         private final HashSet<String > knownCards = new HashSet<>();
         private final HashSet<String > publicCards = new HashSet<>();
+
+        private LatestQuery latestQuery = new LatestQuery();
 
         private String accusedSuspect, accusedWeapon, accusedRoom;
         private boolean foundSuspect = false, foundWeapon = false, foundRoom = false;
@@ -337,6 +363,36 @@ public class Team11 implements BotAPI {
             return foundSuspect && foundWeapon && foundRoom;
         }
 
+        public void analyseLatestQuery() {
+            boolean knowSus = false, knowWeapon = false, knowRoom = false;
+            if (mySuspectCards.contains(latestQuery.getQuery().getSuspect())
+                    || knownCards.contains(latestQuery.getQuery().getSuspect())) {
+                knowSus = true;
+            }
+            if (myWeaponCards.contains(latestQuery.getQuery().getWeapon())
+                    || knownCards.contains(latestQuery.getQuery().getWeapon())) {
+                knowWeapon = true;
+            }
+            if (myRoomCards.contains(latestQuery.getQuery().getRoom())
+                    || knownCards.contains(latestQuery.getQuery().getRoom())) {
+                knowRoom = true;
+            }
+
+            if ((knowSus && knowWeapon) || (knowSus && knowRoom) || (knowWeapon && knowRoom)) {
+                if (knowSus && knowWeapon) {
+                    knownCards.add(latestQuery.getQuery().getRoom());
+                } else if (knowSus) {
+                    knownCards.add(latestQuery.getQuery().getWeapon());
+                } else {
+                    knownCards.add(latestQuery.getQuery().getSuspect());
+                }
+            }
+        }
+
+        public LatestQuery getLatestQuery() {
+            return latestQuery;
+        }
+
         public void printKnownCards() {
             if (publicCards.size() > 0) {
                 StringBuilder s = new StringBuilder();
@@ -354,6 +410,36 @@ public class Team11 implements BotAPI {
                 }
                 System.out.println(s.toString());
             }
+        }
+    }
+
+
+    public class LatestQuery {
+        private Query query;
+        private String queryingPlayer, queriedPlayer;
+
+        public void setQuery(String suspect, String weapon, String room) {
+            this.query = new Query(suspect, weapon, room);
+        }
+
+        public void setQueryingPlayer(String queryingPlayer) {
+            this.queryingPlayer = queryingPlayer;
+        }
+
+        public void setQueriedPlayer(String queriedPlayer) {
+            this.queriedPlayer = queriedPlayer;
+        }
+
+        public Query getQuery() {
+            return this.query;
+        }
+
+        public String getQueryingPlayer() {
+            return queryingPlayer;
+        }
+
+        public String getQueriedPlayer() {
+            return queriedPlayer;
         }
     }
 
