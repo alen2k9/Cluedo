@@ -68,18 +68,35 @@ public class Team11 implements BotAPI {
         if (!questioningLogic.isInitialised())
             questioningLogic.initialiseCards();
 
-        if (!questionDone && inRoom && questioningLogic.shouldQuestion())
+        if(player.getToken().isInRoom()) {
+            currentRoom = player.getToken().getRoom().toString();
+            inRoom = true;
+            if (moving) {
+                moveDone = true;
+                moving = false;
+            }
+        } else {
+            currentRoom = null;
+            inRoom = false;
+        }
+
+        System.out.println("question done: " + questionDone  +
+                "\ninRoom: " + inRoom  + "\nshouldQ:" + questioningLogic.shouldQuestion());
+
+        if (!questionDone && inRoom && questioningLogic.shouldQuestion()) {
+            System.out.println("SHOULD QUESTION");
             return doQuestion();
-        if (questionDone && inRoom && !rollDone)
+        } else if (questionDone && inRoom && !rollDone) {
             return doRoll();
-        if (!rollDone)
+        } else if (!rollDone) {
             return doRoll();
-        if (inRoom && moving)
+        } else if (inRoom && moving) {
             return doExit();
-        if (moveDone && inRoom && !questionDone)
+        } else if (moveDone && inRoom && !questionDone) {
             return doQuestion();
-        if (questioningLogic.readyToAccuse() && inCellar)
+        } else if (questioningLogic.readyToAccuse() && inCellar) {
             return doAccuse();
+        }
         return endTurn();
     }
 
@@ -354,6 +371,8 @@ public class Team11 implements BotAPI {
         }
 
         public boolean shouldQuestion() {
+            System.out.println((!knownCards.contains(currentRoom) && !publicCards.contains(currentRoom)) ||
+                    (foundRoom && (accusedRoom.equals(currentRoom) || myRoomCards.contains(currentRoom))));
             return (!knownCards.contains(currentRoom) && !publicCards.contains(currentRoom)) ||
                     (foundRoom && (accusedRoom.equals(currentRoom) || myRoomCards.contains(currentRoom)));
         }
