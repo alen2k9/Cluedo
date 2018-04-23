@@ -374,7 +374,7 @@ public class Team11 implements BotAPI {
         public boolean shouldQuestion() {
             System.out.println((!knownCards.contains(currentRoom) && !publicCards.contains(currentRoom)) ||
                     (foundRoom && (accusedRoom.equals(currentRoom) || myRoomCards.contains(currentRoom))));
-            return (!knownCards.contains(currentRoom) && !publicCards.contains(currentRoom)) ||
+            return (targetRooms.get(0).equals(currentRoom) && !publicCards.contains(currentRoom)) ||
                     (foundRoom && (accusedRoom.equals(currentRoom) || myRoomCards.contains(currentRoom)));
         }
 
