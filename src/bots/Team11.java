@@ -198,6 +198,7 @@ public class Team11 implements BotAPI {
     }
 
     private String doQuestion() {
+        targetRooms.addLast(targetRooms.removeFirst());
         questioning = true;
         return "question";
     }
@@ -354,7 +355,6 @@ public class Team11 implements BotAPI {
                 System.out.println(s.toString());
             }
         }
-
     }
 
     private String getTargetRoom(){
@@ -490,10 +490,9 @@ public class Team11 implements BotAPI {
     private ArrayList<String> pathToDirections(Path path){
         ArrayList<String> directions = new ArrayList<>();
 
-        Point previousPoint = new Point( player.getToken().getPosition().getRow(), player.getToken().getPosition().getCol() );
+        Point previousPoint = new Point(player.getToken().getPosition().getRow(),player.getToken().getPosition().getCol());
         //System.out.println(previousPoint);
-        System.out.println(path);
-
+        //System.out.println(path);
         Point nextPoint = new Point(path.getStep(0).getY(), path.getStep(0).getX());
 
         for (int i = 0; i < path.getLength(); i++){
@@ -504,13 +503,10 @@ public class Team11 implements BotAPI {
                     directions.add("d");
                 }
             }
-
             else if (nextPoint.getY() == previousPoint.getY()){
                 if (nextPoint.getX() < previousPoint.getX()){
-                    //System.out.println(nextPoint.getX() + " < " + previousPoint.getX());
                     directions.add("l");
                 } else {
-                    //System.out.println(nextPoint.getX() + " > " + previousPoint.getX());
                     directions.add("r");
                 }
             }
@@ -522,8 +518,6 @@ public class Team11 implements BotAPI {
             }
         }
 
-        //path.getSteps().remove(0);
-        //System.out.println("Directions:" + directions);
         return directions;
     }
 
