@@ -184,7 +184,65 @@ public class Team11 implements BotAPI {
     }
 
     public void notifyResponse(Log response) {
-        // Add your code here
+        String player = null;
+        String suspect = null;
+        String weapon = null;
+        String room = null;
+        String card;
+
+        for (String responseItem : response) {
+            System.out.println(responseItem);
+            if(responseItem.contains("showed one card")){
+                card = responseItem.substring(responseItem.indexOf(": ")+2, responseItem.length() - 1);
+                System.out.println(card);
+                questioningLogic.addKnownCard(card);
+            }
+        }
+
+         while(response.hasNext()){
+             if(response.next().contains("did not show any cards.")){
+                 if(Objects.equals(response.next(), "questioned")){
+                 player = response.next();
+             }
+                 if(Objects.equals(response.next(), "about")){
+                     suspect = response.next();
+                 }
+                 if(Objects.equals(response.next(), "with the")){
+                     weapon = response.next();
+                 }
+                 if(Objects.equals(response.next(), "in the")){
+                     room = response.next();
+                 }
+                 System.out.println("\n\n\nDid not show cards\n\n\n");
+             }
+
+             else{
+                 //System.out.println(response.iterator() + "\n\n\n\n\n");
+                 for (String shownCard : Names.SUSPECT_NAMES) {
+                     if (response.toString().contains(shownCard)) {
+                         card = shownCard;
+                         questioningLogic.addKnownCard(card);
+                         break;
+                     }
+                 }
+                 for (String shownCard : Names.WEAPON_NAMES) {
+                     if (response.toString().contains(shownCard)) {
+                         card = shownCard;
+                         questioningLogic.addKnownCard(card);
+                         break;
+                     }
+                 }
+                 for (String shownCard : Names.ROOM_NAMES) {
+                     if (response.toString().contains(shownCard)) {
+                         card = shownCard;
+                         questioningLogic.addKnownCard(card);
+                         break;
+                     }
+                 }
+
+             }
+         }
+
 
     }
 
@@ -429,6 +487,11 @@ public class Team11 implements BotAPI {
                 }
                 System.out.println(s.toString());
             }
+        }
+
+        public void addKnownCard(String knownCard){
+            System.out.println("Known card" + knownCard+ "\n");
+            this.knownCards.add(knownCard);
         }
     }
 

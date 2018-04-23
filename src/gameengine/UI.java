@@ -6,7 +6,7 @@ import java.awt.*;
 class UI {
 
     private static final int FRAME_WIDTH = 1200;
-    private static final int FRAME_HEIGHT = 800;
+    private static final int FRAME_HEIGHT = 700;
 
     private final BoardPanel boardPanel;
     private final InfoPanel infoPanel = new InfoPanel();
