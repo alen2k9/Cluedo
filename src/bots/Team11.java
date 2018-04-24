@@ -33,6 +33,7 @@ public class Team11 implements BotAPI {
 
 
     int targetX, targetY;
+    int count;
 
     private int rollResult;
     private QuestioningLogic questioningLogic = new QuestioningLogic();
@@ -184,9 +185,13 @@ public class Team11 implements BotAPI {
     }
 
     public void notifyResponse(Log response) {
-
+        count = 0;
         String card;
         String question;
+        String suspectCard = "";
+        String weaponCard = "";
+        String roomCard = "";
+
 
         for (String responseItem : response) {
             System.out.println(responseItem);
@@ -196,10 +201,27 @@ public class Team11 implements BotAPI {
                 if(!questioningLogic.checkKnownCards(card)){
                     questioningLogic.addKnownCard(card);
                 }
-                else if(responseItem.contains("did not show any cards")){
 
+            }else if (responseItem.contains("did not show any cards")){
+                count++;
+            }
+        }
+        System.out.println(playersInfo.numPlayers());
+        if(count >= playersInfo.numPlayers()-1){
+            for (String responseItem : response) {
+                if(responseItem.contains("questioned")){
+                    System.out.println("\n\n" + responseItem + "\n\n");
+                    question = responseItem;
+                    suspectCard = question.substring(question.indexOf("about ")+6, question.indexOf( " with the" ));
+                    System.out.println("Suspect Accusation card" + suspectCard);
+                    weaponCard = question.substring(question.lastIndexOf("with the ")+9, question.indexOf( " in the" ));
+                    System.out.println("weapon Accusation card" + weaponCard);
+                    roomCard = question.substring(question.lastIndexOf("in the ")+7, question.length()-1);
+                    System.out.println("room Accusation card" + roomCard);
                 }
             }
+            questioningLogic.setAccusation(suspectCard,weaponCard,roomCard);
+
         }
 
 
@@ -400,6 +422,15 @@ public class Team11 implements BotAPI {
             return foundSuspect && foundWeapon && foundRoom;
         }
 
+        public void setAccusation(String accusedSuspect, String accusedWeapon, String accusedRoom){
+            this.accusedSuspect = accusedSuspect;
+            this.accusedWeapon = accusedWeapon;
+            this.accusedRoom = accusedRoom;
+            foundRoom = true;
+            foundWeapon = true;
+            foundRoom = true;
+        }
+
         public void analyseLatestQuery() {
             boolean knowSus = false, knowWeapon = false, knowRoom = false;
             if (mySuspectCards.contains(latestQuery.getQuery().getSuspect())
@@ -477,6 +508,9 @@ public class Team11 implements BotAPI {
         }
 
         public boolean checkKnownCards(String knownCard){
+            System.out.println("suspectcard hashset after"+ suspectCards);
+            System.out.println("weapon hashset after"+ weaponCards);
+            System.out.println("room hashset after"+ roomCards);
            boolean doesContain;
            if(knownCards.contains(knownCard))
            {
