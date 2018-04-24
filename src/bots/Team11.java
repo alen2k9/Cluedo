@@ -137,6 +137,13 @@ public class Team11 implements BotAPI {
                 }
             }
 
+            if (!map.isValidMove(player.getToken().getPosition(), "l")){
+                return "r";
+            }
+            if (!map.isValidMove(player.getToken().getPosition(), "r")){
+                return "l";
+            }
+
             if (map.isDoor(player.getToken().getPosition(), new Coordinates(col-1, row))){
                 return "l";
             } else{
