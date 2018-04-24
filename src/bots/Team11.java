@@ -184,64 +184,23 @@ public class Team11 implements BotAPI {
     }
 
     public void notifyResponse(Log response) {
-        String player = null;
-        String suspect = null;
-        String weapon = null;
-        String room = null;
+
         String card;
+        String question;
 
         for (String responseItem : response) {
             System.out.println(responseItem);
             if(responseItem.contains("showed one card")){
                 card = responseItem.substring(responseItem.indexOf(": ")+2, responseItem.length() - 1);
                 System.out.println(card);
-                questioningLogic.addKnownCard(card);
+                if(!questioningLogic.checkKnownCards(card)){
+                    questioningLogic.addKnownCard(card);
+                }
+                else if(responseItem.contains("did not show any cards")){
+
+                }
             }
         }
-
-         while(response.hasNext()){
-             if(response.next().contains("did not show any cards.")){
-                 if(Objects.equals(response.next(), "questioned")){
-                 player = response.next();
-             }
-                 if(Objects.equals(response.next(), "about")){
-                     suspect = response.next();
-                 }
-                 if(Objects.equals(response.next(), "with the")){
-                     weapon = response.next();
-                 }
-                 if(Objects.equals(response.next(), "in the")){
-                     room = response.next();
-                 }
-                 System.out.println("\n\n\nDid not show cards\n\n\n");
-             }
-
-             else{
-                 //System.out.println(response.iterator() + "\n\n\n\n\n");
-                 for (String shownCard : Names.SUSPECT_NAMES) {
-                     if (response.toString().contains(shownCard)) {
-                         card = shownCard;
-                         questioningLogic.addKnownCard(card);
-                         break;
-                     }
-                 }
-                 for (String shownCard : Names.WEAPON_NAMES) {
-                     if (response.toString().contains(shownCard)) {
-                         card = shownCard;
-                         questioningLogic.addKnownCard(card);
-                         break;
-                     }
-                 }
-                 for (String shownCard : Names.ROOM_NAMES) {
-                     if (response.toString().contains(shownCard)) {
-                         card = shownCard;
-                         questioningLogic.addKnownCard(card);
-                         break;
-                     }
-                 }
-
-             }
-         }
 
 
     }
@@ -339,8 +298,9 @@ public class Team11 implements BotAPI {
     public class QuestioningLogic {
         private final HashSet<String> roomCards = new HashSet<>(), suspectCards = new HashSet<>(), weaponCards = new HashSet<>();
         private final HashSet<String> myRoomCards = new HashSet<>(), mySuspectCards = new HashSet<>(), myWeaponCards = new HashSet<>();
-        private final HashSet<String > knownCards = new HashSet<>();
-        private final HashSet<String > publicCards = new HashSet<>();
+        private final HashSet<String> knownCards = new HashSet<>();
+        private final HashSet<String> publicCards = new HashSet<>();
+
 
         private LatestQuery latestQuery = new LatestQuery();
 
@@ -490,8 +450,42 @@ public class Team11 implements BotAPI {
         }
 
         public void addKnownCard(String knownCard){
-            System.out.println("Known card" + knownCard+ "\n");
+            System.out.println("Known card: " + knownCard+ "\n");
             this.knownCards.add(knownCard);
+
+            if (suspectCards.contains(knownCard)) {
+                System.out.println("suspectcard hashset before "+ suspectCards);
+                System.out.println("Removed Suspect: "+ suspectCards.remove(knownCard));
+                System.out.println("suspectcard hashset after"+ suspectCards);
+            }
+
+            if (weaponCards.contains(knownCard)) {
+                System.out.println("suspectcard hashset before"+ weaponCards);
+                System.out.println("Removed weapon: "+ weaponCards.remove(knownCard));
+                System.out.println("suspectcard hashset after"+ weaponCards);
+            }
+            if (roomCards.contains(knownCard)) {
+                System.out.println("suspectcard hashset before"+ roomCards);
+                System.out.println("Removed room: "+ roomCards.remove(knownCard));
+                System.out.println("suspectcard hashset after"+ roomCards);
+                targetRooms.remove(knownCard);
+                if(targetRooms.isEmpty()){
+                    targetRooms.add("Cellar");
+                }
+            }
+
+        }
+
+        public boolean checkKnownCards(String knownCard){
+           boolean doesContain;
+           if(knownCards.contains(knownCard))
+           {
+               doesContain = true;
+           }
+           else{
+               doesContain = false;
+           }
+           return doesContain;
         }
     }
 
@@ -527,7 +521,7 @@ public class Team11 implements BotAPI {
 
     private String getTargetRoom(){
         if (targetRooms.size() > 0) {
-            return targetRooms.peek();
+            return targetRooms.peekFirst();
         }
         return null;
     }
