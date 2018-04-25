@@ -187,7 +187,6 @@ public class Team11 implements BotAPI {
             if (i % 2 != 0 && !s.contains("TEST")){
                 answers.add(s);
             } else {
-                System.out.println(s);
                 question = s;
             }
             i++;
@@ -539,14 +538,11 @@ public class Team11 implements BotAPI {
 
             if ((knowSus && knowWeapon) || (knowSus && knowRoom) || (knowWeapon && knowRoom)) {
                 if (knowSus && knowWeapon) {
-                    System.out.println("Adding ROOM " + latestQuery.getQuery().getRoom());
                     knownCards.add(latestQuery.getQuery().getRoom());
 
                 } else if (knowSus) {
-                    System.out.println("Adding WEAPON " + latestQuery.getQuery().getWeapon());
                     knownCards.add(latestQuery.getQuery().getWeapon());
                 } else {
-                    System.out.println("Adding Sus " + latestQuery.getQuery().getSuspect());
                     knownCards.add(latestQuery.getQuery().getSuspect());
                 }
             }
@@ -595,18 +591,15 @@ public class Team11 implements BotAPI {
     }
 
     private void getTargetRoomDoor(String roomName) {
-        ////System.out.println("Room Name " + roomName);
         ArrayList<Coordinates> doors = new ArrayList<>();
         int index;
         switch (roomName) {
             case "Kitchen":
-                ////System.out.println("In case kitchen");
                 this.targetX = 7;
                 this.targetY = 4;
                 break;
 
             case "Ballroom":
-                ////System.out.println("In case ballroom");
                 doors.add(new Coordinates(9, 8));
                 doors.add(new Coordinates(7, 5));
                 doors.add(new Coordinates(14, 8));
@@ -618,38 +611,32 @@ public class Team11 implements BotAPI {
                 break;
 
             case "Conservatory":
-                ////System.out.println("In case conservatory");
                 this.targetX = 5;
                 this.targetY = 18;
 
                 break;
 
             case "Billiard Room":
-                ////System.out.println("In case billiard");
                 this.targetX = 9;
                 this.targetY = 17;
                 break;
 
             case "Library":
-                ////System.out.println("In case library");
                 doors.add(new Coordinates(16, 16));
                 doors.add(new Coordinates(20, 13));
 
                 index = getClosestDoor(doors);
-                ////System.out.println("Closest door is " + doors.get(index));
 
                 this.targetX = doors.get(index).getRow();
                 this.targetY = doors.get(index).getCol();
                 break;
 
             case "Study":
-                ////System.out.println("In case study");
                 this.targetX = 20;
                 this.targetY = 16;
                 break;
 
             case "Hall":
-                ////System.out.println("In case hall");
                 doors.add(new Coordinates(11, 17));
                 doors.add(new Coordinates(12, 17));
                 doors.add(new Coordinates(15, 20));
@@ -660,13 +647,11 @@ public class Team11 implements BotAPI {
                 break;
 
             case "Lounge":
-                ////System.out.println("In case lounge");
                 this.targetX = 18;
                 this.targetY = 6;
                 break;
 
             case "Dining Room":
-                ////System.out.println("In case dining");
                 doors.add(new Coordinates(6, 16));
                 doors.add(new Coordinates(8, 12));
 
@@ -681,7 +666,6 @@ public class Team11 implements BotAPI {
                 break;
         }
 
-        ////System.err.println("Target X " + targetX + " TargetY " + targetY);
 
     }
 
@@ -708,8 +692,6 @@ public class Team11 implements BotAPI {
         room we think the bot should move to.
         TarX and TarY should be set to be the door tile itself not the doorMat
 
-        P.S. I hope this works :)
-        It has not been tested
     */
     private ArrayList<String> movementHandling(int currX, int currY, int tarX, int tarY) {
         Path path;
@@ -724,8 +706,6 @@ public class Team11 implements BotAPI {
         ArrayList<String> directions = new ArrayList<>();
 
         Point previousPoint = new Point(player.getToken().getPosition().getRow(), player.getToken().getPosition().getCol());
-        ////System.out.println(previousPoint);
-        ////System.out.println(path);
         Point nextPoint = new Point(path.getStep(0).getY(), path.getStep(0).getX());
 
         for (int i = 0; i < path.getLength(); i++) {
@@ -789,7 +769,6 @@ public class Team11 implements BotAPI {
         }
 
         private Path findPath(int sx, int sy, int tx, int ty) {
-            ////System.out.println("tx " + tx + " ty " + ty);
 
             nodes[sx][sy].cost = 0;
             nodes[sx][sy].depth = 0;
@@ -850,7 +829,6 @@ public class Team11 implements BotAPI {
                             }
 
                             if (!inOpenList(neighbour) && !(inClosedList(neighbour))) {
-                                ////System.out.println("HERE");
                                 neighbour.cost = nextStepCost;
                                 neighbour.heuristic = heuristic.getCost(xp, yp, tx, ty);
                                 maxDepth = Math.max(maxDepth, neighbour.setParent(current));
