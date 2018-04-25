@@ -1,6 +1,6 @@
 /*
     Team11 Authors :    Jack Geraghty - 16384181
-                        Conor Beenham -
+                        Conor Beenham - 16350851
                         Alen Thomas   - 16333003
 */
 
@@ -10,9 +10,7 @@ import gameengine.*;
 import gameengine.Map;
 
 import java.awt.*;
-import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.*;
 
 
@@ -70,7 +68,6 @@ public class Team11 implements BotAPI {
     }
 
     public String getCommand() {
-
         //System.out.println("Player Position " + player.getToken().getPosition());
         if (player.getToken().getPosition().getRow() == 14 && player.getToken().getPosition().getCol() == 12){
             inCellar = true;
@@ -93,15 +90,12 @@ public class Team11 implements BotAPI {
 
 
 
-        if (!accusing && !questionDone && inRoom && questioningLogic.shouldQuestion()) {
-            return doQuestion();
-        } else if (questionDone && inRoom && !rollDone) {
+        //if (!accusing && !questionDone && inRoom && questioningLogic.shouldQuestion()) {
+            //return doQuestion();
+        //} else
+        if (!rollDone) {
             return doRoll();
-        } else if (!rollDone) {
-            return doRoll();
-        } else if (inRoom && moving) {
-            return doExit();
-        } else if (moveDone && inRoom && !questionDone) {
+        } else if (moveDone && inRoom && !questionDone && !(player.getToken().getRoom().hasName("Cellar"))) {
             return doQuestion();
         } else if (questioningLogic.readyToAccuse() && inCellar) {
             return doAccuse();
@@ -393,6 +387,7 @@ public class Team11 implements BotAPI {
         }
 
 
+        //questioningLogic.analyseLatestQuery();
     }
     @Override
     public void notifyPlayerName(String playerName) {
@@ -401,6 +396,7 @@ public class Team11 implements BotAPI {
 
     @Override
     public void notifyTurnOver(String playerName, String position) {
+        System.err.println("TURN OVER GRR");
         questioningLogic.analyseLatestQuery();
     }
 
@@ -544,6 +540,37 @@ public class Team11 implements BotAPI {
                 System.out.println(o.toString());
             }
 
+            ArrayList<String> cards = new ArrayList<>();
+            while (!suspectCards.isEmpty()) {
+                cards.add(suspectCards.stream().findFirst().get());
+                suspectCards.remove(suspectCards.stream().findFirst().get());
+            }
+            Collections.shuffle(cards);
+            Collections.shuffle(cards);
+            while (!cards.isEmpty())
+                suspectCards.add(cards.remove(0));
+
+            cards = new ArrayList<>();
+
+            while (!weaponCards.isEmpty()) {
+                cards.add(weaponCards.stream().findFirst().get());
+                weaponCards.remove(weaponCards.stream().findFirst().get());
+            }
+            Collections.shuffle(cards);
+            Collections.shuffle(cards);
+            while (!cards.isEmpty())
+                weaponCards.add(cards.remove(0));
+
+            cards = new ArrayList<>();
+            while (!roomCards.isEmpty()) {
+                cards.add(roomCards.stream().findFirst().get());
+                roomCards.remove(roomCards.stream().findFirst().get());
+            }
+            Collections.shuffle(cards);
+            Collections.shuffle(cards);
+            while (!cards.isEmpty())
+                roomCards.add(cards.remove(0));
+
             targetRooms = new LinkedList<>(roomCards);
             initialised = true;
         }
@@ -620,6 +647,8 @@ public class Team11 implements BotAPI {
                     knownCards.add(latestQuery.getQuery().getSuspect());
                 }
             }
+            System.err.println(latestQuery.getQuery().getSuspect() + " IN THE " + latestQuery.getQuery().getRoom() +
+            " WITH THE " + latestQuery.getQuery().getWeapon());
         }
 
         public LatestQuery getLatestQuery() {
