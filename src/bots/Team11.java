@@ -64,17 +64,11 @@ public class Team11 implements BotAPI {
 
     @Override
     public String getVersion() {
-        return null;
+        return "1.0.notBroken";
     }
 
     public String getCommand() {
-        ////System.out.println("Player Position " + player.getToken().getPosition());
-        if (inRoom && player.getToken().getRoom().hasName("Cellar")){
-            inCellar = true;
-            return doAccuse();
-        }
         if (!questioningLogic.isInitialised()) {
-            //System.err.println("NEW GAME");
             questioningLogic.initialiseCards();
         }
 
@@ -90,11 +84,11 @@ public class Team11 implements BotAPI {
             inRoom = false;
         }
 
+        if (inRoom && player.getToken().getRoom().hasName("Cellar")){
+            inCellar = true;
+            return doAccuse();
+        }
 
-
-        //if (!accusing && !questionDone && inRoom && questioningLogic.shouldQuestion()) {
-            //return doQuestion();
-        //} else
         if (!rollDone) {
             return doRoll();
         } else if (moveDone && inRoom && !questionDone && !(player.getToken().getRoom().hasName("Cellar"))) {
@@ -109,7 +103,6 @@ public class Team11 implements BotAPI {
         String targetRoom = getTargetRoom();
         getTargetRoomDoor(targetRoom);
         if (doOnce) {
-            //System.err.println("Target Room " + targetRoom);
             moveList = movementHandling(player.getToken().getPosition().getRow(), player.getToken().getPosition().getCol(), targetX, targetY);
             doOnce = false;
         }
@@ -200,15 +193,6 @@ public class Team11 implements BotAPI {
             i++;
         }
 
-        //System.out.println("\n-------------------");
-        //System.out.println("-------Question------");
-        //System.out.println(question);
-        //System.out.println("     --------     ");
-        //System.out.println("-------Answers-------");
-        for (String s : answers){
-            //System.out.println(s);
-        }
-
         //Get the questioned suspect weapon and room
         String qRoom = currentRoom;
         String qSuspect;
@@ -218,14 +202,11 @@ public class Team11 implements BotAPI {
         String[] splitQuestion = question.split(" ");
 
         qSuspect = splitQuestion[6];
-        //System.out.println("\t-Questioned Suspect is " + qSuspect);
         if (splitQuestion[9].matches("Lead")){
             qWeapon = "Lead Pipe";
-        }else{
+        } else {
             qWeapon = splitQuestion[9];
         }
-        //System.out.println("\t-Questioned Weapon is " + qWeapon);
-        //System.out.println("\t-Questioned Room is " + qRoom + "\n");
 
         //Get the returned card
         String returnedCard = "";
@@ -238,11 +219,8 @@ public class Team11 implements BotAPI {
             extraWord = splitAnswers[splitAnswers.length-2];
 
             if (s.contains("not show any cards")){
-                //System.out.println("No card shown");
                 numShown++;
             } else{
-
-                //System.out.println("A card was shown");
                 if (extraWord.matches("Lead")){
                     returnedCard = "Lead Pipe";
                 } else if (extraWord.matches("Billiard")){
@@ -252,17 +230,10 @@ public class Team11 implements BotAPI {
                 } else{
                     returnedCard = splitAnswers[splitAnswers.length-1];
                 }
-
-                //System.out.println("\t-Card shown is " + returnedCard + "\n\n");
             }
 
-
             if (numShown < 2){
-                ////System.out.println("Room Cards " + questioningLogic.roomCards + "\nTarget Rooms: " + targetRooms + "\n");
                 if (questioningLogic.suspectCards.contains(returnedCard)){
-                    //System.out.println("Card shown was a suspect");
-
-                    //System.out.println("Suspect List(Start) " + questioningLogic.suspectCards);
                     if (questioningLogic.foundSuspect){
 
                         Random random = new Random();
@@ -272,11 +243,9 @@ public class Team11 implements BotAPI {
                     }
 
                     else if (questioningLogic.suspectCards.size() == 1 && !questioningLogic.foundSuspect){
-                        //System.err.println("Suspect cards is now down to one");
                         if (questioningLogic.suspectCards.stream().findFirst().isPresent()){
                             questioningLogic.accusedSuspect = questioningLogic.suspectCards.stream().findFirst().get();
                             questioningLogic.foundSuspect = true;
-                            //System.out.println("\t\t Accused Suspect found: " + questioningLogic.accusedSuspect);
 
                             if (!questioningLogic.accusedSuspect.matches("White")){
                                 questioningLogic.suspectCards.add("White");
@@ -289,19 +258,13 @@ public class Team11 implements BotAPI {
                             } else {
                                 questioningLogic.suspectCards.add("Plum");
                             }
-                            //System.out.println("--Updated Suspect Cards to " + questioningLogic.suspectCards);
                         }
                     } else {
-                        //System.out.println("Haven't reached the end of suspect cards yet");
                         questioningLogic.suspectCards.remove(returnedCard);
-                        //System.out.println("Removing " + returnedCard + " from suspects");
-                        //System.out.println("Suspect List " + questioningLogic.suspectCards);
+                        questioningLogic.knownCards.add(returnedCard);
                     }
 
                 } else if (questioningLogic.weaponCards.contains(returnedCard)){
-                    //System.out.println("Card shown was a weapon");
-
-                    //System.out.println("Weapon List(Start) " + questioningLogic.weaponCards);
                     if (questioningLogic.foundWeapon){
                         Random random = new Random();
                         int randNum = random.nextInt(6);
@@ -310,11 +273,9 @@ public class Team11 implements BotAPI {
                     }
 
                     else if (questioningLogic.weaponCards.size() == 1 && !questioningLogic.foundWeapon){
-                        //System.err.println("Weapon cards is now down to one");
                         if (questioningLogic.weaponCards.stream().findFirst().isPresent()){
                             questioningLogic.accusedWeapon = questioningLogic.weaponCards.stream().findFirst().get();
                             questioningLogic.foundWeapon = true;
-                            //System.out.println("\t\t Accused weapon found: " + questioningLogic.accusedWeapon);
 
                             if (!questioningLogic.accusedWeapon.matches("Dagger")){
                                 questioningLogic.suspectCards.add("Dagger");
@@ -327,32 +288,23 @@ public class Team11 implements BotAPI {
                             } else {
                                 questioningLogic.suspectCards.add("Rope");
                             }
-                            //System.out.println("--Updated Weapon Cards to " + questioningLogic.weaponCards);
                         }
                     } else {
-                        //System.out.println("Haven't reached the end of weapon cards yet");
                         questioningLogic.weaponCards.remove(returnedCard);
-                        //System.out.println("Removing " + returnedCard + " from weapons");
-                        //System.out.println("Weapon List " + questioningLogic.weaponCards);
+                        questioningLogic.knownCards.add(returnedCard);
                     }
                 } else if (questioningLogic.roomCards.contains(returnedCard)){
-                    //System.out.println("Card shown was a room");
-
-                    //System.out.println("Room List(Start) " + questioningLogic.roomCards);
                     if (questioningLogic.foundRoom){
                         Random random = new Random();
                         int randNum = random.nextInt(8);
-                        //System.err.println("FOUND ROOM");
                         questioningLogic.roomCards.remove(questioningLogic.roomCards.stream().findFirst().get());
                         questioningLogic.roomCards.add(Names.ROOM_NAMES[randNum]);
                     }
 
                     else if (questioningLogic.roomCards.size() == 1 && !questioningLogic.foundRoom){
-                        //System.err.println("Room cards is now down to one");
                         if (questioningLogic.roomCards.stream().findFirst().isPresent()){
                             questioningLogic.accusedRoom = questioningLogic.roomCards.stream().findFirst().get();
                             questioningLogic.foundRoom = true;
-                            //System.out.println("\t\t Accused weapon found: " + questioningLogic.accusedRoom);
 
                             if (!currentRoom.matches(currentRoom) &&!questioningLogic.accusedRoom.matches("Kitchen")){
                                 questioningLogic.roomCards.add("Kitchen");
@@ -361,22 +313,16 @@ public class Team11 implements BotAPI {
                             }
 
                             targetRooms.addLast(currentRoom);
-                            //System.out.println("--Updated Room Cards to " + questioningLogic.roomCards);
                         }
                     } else {
-                        //System.out.println("Haven't reached the end of room cards yet");
                         questioningLogic.roomCards.remove(returnedCard);
+                        questioningLogic.knownCards.add(returnedCard);
                         if (!accusing) {
                             targetRooms = new LinkedList<>(questioningLogic.roomCards);
                         }
-                        //System.out.println("Removing " + returnedCard + " from rooms");
-                        //System.out.println("Room List " + questioningLogic.roomCards);
-
                     }
                 }
-            } else{
-                //We have what we're looking for
-                //System.err.println("Moving to Cellar");
+            } else {
                 targetRooms = new LinkedList<>();
                 targetRooms.addFirst("Cellar");
                 questioningLogic.accusedRoom = qRoom;
@@ -386,12 +332,8 @@ public class Team11 implements BotAPI {
                 questioningLogic.accusedWeapon = qWeapon;
                 questioningLogic.foundWeapon = true;
                 accusing = true;
-
             }
         }
-
-
-        //questioningLogic.analyseLatestQuery();
     }
     @Override
     public void notifyPlayerName(String playerName) {
@@ -400,13 +342,10 @@ public class Team11 implements BotAPI {
 
     @Override
     public void notifyTurnOver(String playerName, String position) {
-        //System.err.println("TURN OVER GRR");
-        //questioningLogic.analyseLatestQuery();
     }
 
     @Override
     public void notifyQuery(String playerName, String query) {
-        //System.out.println("Player:" + playerName + " : " + query);
         String suspect = null, weapon = null, room = null;
         for (String suspectName : Names.SUSPECT_NAMES) {
             if (query.contains(suspectName)) {
@@ -435,6 +374,7 @@ public class Team11 implements BotAPI {
     public void notifyReply(String playerName, boolean cardShown) {
         if (cardShown) {
             questioningLogic.getLatestQuery().setQueriedPlayer(playerName);
+            questioningLogic.analyseLatestQuery();
         }
     }
 
@@ -447,7 +387,6 @@ public class Team11 implements BotAPI {
     private String doQuestion() {
         numShown = 0;
         questionCounter++;
-        //System.err.println("QUESTION COUNT:" + questionCounter);
         questioning = true;
         return "question";
     }
@@ -466,21 +405,10 @@ public class Team11 implements BotAPI {
 
     private String doAccuse() {
         accusing = true;
-        //System.err.println("ACCUSING @ QUESTION COUNT:" + questionCounter);
         return "accuse";
     }
 
     private String endTurn() {
-        /*if (questioningLogic.accusedRoom != null && questioningLogic.accusedSuspect != null
-                && questioningLogic.accusedWeapon != null){
-            questioningLogic.foundRoom = true;
-            questioningLogic.foundWeapon = true;
-            questioningLogic.foundSuspect = true;
-        }*/
-        //System.out.println("\n----------------");
-        //System.out.println("Turn " + turnCounter);
-        //System.out.println("Question " + questionCounter);
-        //System.out.println("----------------\n");
         turnCounter++;
         numShown = 0;
         resetBools();
@@ -514,9 +442,7 @@ public class Team11 implements BotAPI {
             suspectCards.addAll(Arrays.asList(Names.SUSPECT_NAMES));
             weaponCards.addAll(Arrays.asList(Names.WEAPON_NAMES));
 
-            //System.out.println("PLAYER: ");
             for (Object o : player.getCards()) {
-                //System.out.println(o.toString());
                 if (roomCards.contains(o.toString())) {
                     myRoomCards.add(o.toString());
                     roomCards.remove(o.toString());
@@ -530,7 +456,6 @@ public class Team11 implements BotAPI {
                 knownCards.add(o.toString());
             }
 
-            //System.out.println("SHARED: ");
             for (Object o : deck.getSharedCards()) {
                 if (roomCards.contains(o.toString())) {
                     publicCards.add(o.toString());
@@ -543,7 +468,6 @@ public class Team11 implements BotAPI {
                     suspectCards.remove(o.toString());
                 }
                 knownCards.add(o.toString());
-                //System.out.println(o.toString());
             }
 
             targetRooms = new LinkedList<>(roomCards);
@@ -615,15 +539,17 @@ public class Team11 implements BotAPI {
 
             if ((knowSus && knowWeapon) || (knowSus && knowRoom) || (knowWeapon && knowRoom)) {
                 if (knowSus && knowWeapon) {
+                    System.out.println("Adding ROOM " + latestQuery.getQuery().getRoom());
                     knownCards.add(latestQuery.getQuery().getRoom());
+
                 } else if (knowSus) {
+                    System.out.println("Adding WEAPON " + latestQuery.getQuery().getWeapon());
                     knownCards.add(latestQuery.getQuery().getWeapon());
                 } else {
+                    System.out.println("Adding Sus " + latestQuery.getQuery().getSuspect());
                     knownCards.add(latestQuery.getQuery().getSuspect());
                 }
             }
-            //System.err.println(latestQuery.getQuery().getSuspect() + " IN THE " + latestQuery.getQuery().getRoom() +
-            //" WITH THE " + latestQuery.getQuery().getWeapon());
         }
 
         public LatestQuery getLatestQuery() {
