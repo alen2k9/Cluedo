@@ -69,12 +69,12 @@ public class Team11 implements BotAPI {
 
     public String getCommand() {
         ////System.out.println("Player Position " + player.getToken().getPosition());
-        if (player.getToken().getPosition().getRow() == 14 && player.getToken().getPosition().getCol() == 12){
+        if (inRoom && player.getToken().getRoom().hasName("Cellar")){
             inCellar = true;
             return doAccuse();
         }
         if (!questioningLogic.isInitialised()) {
-            System.err.println("NEW GAME");
+            //System.err.println("NEW GAME");
             questioningLogic.initialiseCards();
         }
 
@@ -191,9 +191,10 @@ public class Team11 implements BotAPI {
         ArrayList<String> answers = new ArrayList<>();
         int i = 0;
         for (String s : response){
-            if (i % 2 == 0 && !s.contains("TEST")){
+            if (i % 2 != 0 && !s.contains("TEST")){
                 answers.add(s);
             } else {
+                System.out.println(s);
                 question = s;
             }
             i++;
@@ -215,6 +216,7 @@ public class Team11 implements BotAPI {
 
         question = question.replace(".", "");
         String[] splitQuestion = question.split(" ");
+
         qSuspect = splitQuestion[6];
         //System.out.println("\t-Questioned Suspect is " + qSuspect);
         if (splitQuestion[9].matches("Lead")){
@@ -399,7 +401,7 @@ public class Team11 implements BotAPI {
     @Override
     public void notifyTurnOver(String playerName, String position) {
         //System.err.println("TURN OVER GRR");
-        questioningLogic.analyseLatestQuery();
+        //questioningLogic.analyseLatestQuery();
     }
 
     @Override
@@ -445,7 +447,7 @@ public class Team11 implements BotAPI {
     private String doQuestion() {
         numShown = 0;
         questionCounter++;
-        System.err.println("QUESTION COUNT:" + questionCounter);
+        //System.err.println("QUESTION COUNT:" + questionCounter);
         questioning = true;
         return "question";
     }
@@ -464,7 +466,7 @@ public class Team11 implements BotAPI {
 
     private String doAccuse() {
         accusing = true;
-        System.err.println("ACCUSING @ QUESTION COUNT:" + questionCounter);
+        //System.err.println("ACCUSING @ QUESTION COUNT:" + questionCounter);
         return "accuse";
     }
 

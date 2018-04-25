@@ -11,10 +11,10 @@ import java.io.IOException;
 class BoardPanel extends JPanel {
 
     private static final long serialVersionUID = 1L;
-    private static final int FRAME_WIDTH = 700, FRAME_HEIGHT = 700;  // must be even
-    private static final float COL_OFFSET = 52f*700/750, ROW_OFFSET = 29f*700/750;
-    private static final float COL_SCALE = 26.9f*700/750, ROW_SCALE = 27.1f*700/750;
-    private static final int TOKEN_RADIUS = 12*700/750;   // must be even
+    private static final int FRAME_WIDTH = 750, FRAME_HEIGHT = 750;  // must be even
+    private static final float COL_OFFSET = 52f, ROW_OFFSET = 29f;
+    private static final float COL_SCALE = 26.9f, ROW_SCALE = 27.1f;
+    private static final int TOKEN_RADIUS = 12;   // must be even
 
     private final Tokens suspects;
     private final Weapons weapons;

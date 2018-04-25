@@ -19,6 +19,10 @@ public class Coordinates {
         row = row + coordinates.getRow ();
     }
 
+    public boolean equals(Coordinates coordinates) {
+        return (col == coordinates.getCol()) && (row == coordinates.getRow());
+    }
+
     public int getRow() {
         return row;
     }

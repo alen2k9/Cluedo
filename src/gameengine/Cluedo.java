@@ -12,7 +12,7 @@ public class Cluedo {
 
     private static final String[] ALL_BOT_NAMES = {"Bot"};
     private static final int NUM_PLAYERS = 3;
-    private static final int DELAY = 10;  // in milliseconds
+    private static final int DELAY = 200;  // in milliseconds
 
     private final Tokens tokens  = new Tokens();
     private final Players players = new Players();
@@ -39,9 +39,7 @@ public class Cluedo {
         if (args.length<NUM_PLAYERS) {
             botNames[0] = "Bot1";
             botNames[1] = "Bot2";
-            botNames[2] = "Team11";
-            if (NUM_PLAYERS > 3)
-                botNames[3] = "Bot3";
+            botNames[2] = "Bot3";
         } else {
             for (int i=0; i<NUM_PLAYERS; i++) {
                 boolean found = false;
@@ -84,6 +82,11 @@ public class Cluedo {
             newPlayer.addBot(bots[i]);
             ui.displayName(newPlayer);
             ui.displayToken(newPlayer);
+        }
+        for (BotAPI bot : bots) {
+            for (BotAPI botNamed : bots) {
+                bot.notifyPlayerName(botNamed.getName());
+            }
         }
     }
 
@@ -200,6 +203,9 @@ public class Cluedo {
                     ui.inputSuspect(currentPlayer);
                     ui.inputWeapon(currentPlayer);
                     Query query = ui.getQuery(currentToken.getRoom());
+                    for (BotAPI bot : bots) {
+                        bot.notifyQuery(currentPlayer.getName(),query.toString());
+                    }
                     if (tokens.get(query.getSuspect()).isInRoom()) {
                         tokens.get(query.getSuspect()).leaveRoom();
                     }
@@ -215,8 +221,14 @@ public class Cluedo {
                             Card cardViewed = ui.getCard();
                             currentPlayer.addViewedCard(cardViewed);
                             miniLog.addExchange(currentPlayer, playerQueried, query, cardViewed);
+                            for (BotAPI bot : bots) {
+                                bot.notifyReply(playerQueried.getName(), true);
+                            }
                         } else {
                             miniLog.addExchange(currentPlayer, playerQueried, query, false);
+                            for (BotAPI bot : bots) {
+                                bot.notifyReply(playerQueried.getName(), false);
+                            }
                         }
                         log.addExchange(currentPlayer, playerQueried, query, ui.cardFound());
                         ui.clearScreen();
@@ -309,6 +321,9 @@ public class Cluedo {
                     }
                     case "done": {
                         turnOver = true;
+                        for (BotAPI bot : bots) {
+                            bot.notifyTurnOver(currentPlayer.getName(),currentPlayer.getToken().getPosition().toString());
+                        }
                         break;
                     }
                     case "log": {

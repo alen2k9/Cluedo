@@ -6,7 +6,7 @@ import java.awt.*;
 class UI {
 
     private static final int FRAME_WIDTH = 1200;
-    private static final int FRAME_HEIGHT = 700;
+    private static final int FRAME_HEIGHT = 800;
 
     private final BoardPanel boardPanel;
     private final InfoPanel infoPanel = new InfoPanel();
@@ -192,7 +192,7 @@ class UI {
 
     void displayName(Player player) {
         displayString("Enter new player name:");
-        displayString("> " + player.getName());
+        displayString("> " + player.getName() + " " + player.getBot().getVersion());
     }
 
     void displayToken(Player player) {

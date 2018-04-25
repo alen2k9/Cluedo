@@ -63,7 +63,7 @@ public class Bot1 implements BotAPI {
     public String getCommand() {
 
         //System.out.println("Player Position " + player.getToken().getPosition());
-        if (player.getToken().getPosition().getRow() == 14 && player.getToken().getPosition().getCol() == 12){
+        if (inRoom && player.getToken().getRoom().hasName("Cellar")){
             inCellar = true;
             return doAccuse();
         }
@@ -180,9 +180,10 @@ public class Bot1 implements BotAPI {
         ArrayList<String> answers = new ArrayList<>();
         int i = 0;
         for (String s : response){
-            if (i % 2 == 0 && !s.contains("TEST")){
+            if (i % 2 != 0 && !s.contains("TEST")){
                 answers.add(s);
             } else {
+                System.out.println(s);
                 question = s;
             }
             i++;
@@ -342,7 +343,7 @@ public class Bot1 implements BotAPI {
 
     @Override
     public void notifyTurnOver(String playerName, String position) {
-        questioningLogic.analyseLatestQuery();
+        //questioningLogic.analyseLatestQuery();
     }
 
     @Override
